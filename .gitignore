@@ -1,0 +1,7 @@
+.git
+.DS_Store
+logs/*
+uploads/*
+theme/static
+.idea
+new
