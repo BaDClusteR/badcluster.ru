@@ -1,0 +1,3 @@
+User-agent: *
+Host: badcluster.ru
+Sitemap: https://badcluster.ru/sitemap.xml
