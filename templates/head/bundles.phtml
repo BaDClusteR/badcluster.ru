@@ -1,0 +1,12 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Head\Bundles $this */
+
+$bundler = $this->getBundler();
+?>
+<?php foreach ($this->getJsBundles() as $bundle) :?>
+    <script src="<?=$bundler->getBundleWebPath($bundle, 'js')?>"></script>
+<?php endforeach; ?>
+<?php foreach ($this->getCssBundles() as $bundle) :?>
+    <link href="<?=$bundler->getBundleWebPath($bundle, 'css')?>" rel="stylesheet" />
+<?php endforeach; ?>

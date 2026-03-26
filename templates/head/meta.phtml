@@ -1,0 +1,9 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Head\Meta $this */
+?>
+<meta charset="UTF-8">
+
+<?php foreach ($this->getMeta() as $meta) :?>
+    <meta name="<?=$meta->name?>" content="<?=$meta->content?>" />
+<?php endforeach; ?>

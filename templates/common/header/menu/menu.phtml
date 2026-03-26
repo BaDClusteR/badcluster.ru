@@ -1,0 +1,13 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Header\Menu\Menu $this */
+$items = $this->getMenuItems()
+?>
+
+<?php if (!empty($items)) : ?>
+    <nav class="header__nav">
+        <?php foreach ($items as $item) : ?>
+            <a href="<?=$item->url?>" class="header__nav-link"><?=$item->title?></a>
+        <?php endforeach; ?>
+    </nav>
+<?php endif; ?>

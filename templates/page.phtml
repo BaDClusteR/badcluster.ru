@@ -1,0 +1,18 @@
+<?php
+
+use BC\Widget\Page\APage;
+
+/** @var APage $this */
+
+?>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <?=$this->renderWidgetList('head', ['page' => $this])?>
+</head>
+<body>
+    <div class="container">
+        <?=$this->renderWidgetList('body', ['page' => $this])?>
+    </div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\JsBundles $this */
+
+$bundler = $this->getBundler();
+?>
+<?php foreach ($this->getJsBundles() as $bundle) :?>
+    <script src="<?=$bundler->getBundleWebPath($bundle, 'js')?>"></script>
+<?php endforeach; ?>

@@ -1,0 +1,4 @@
+routes:
+  index:
+    path: /
+    controller: BC\Controller\Index::test

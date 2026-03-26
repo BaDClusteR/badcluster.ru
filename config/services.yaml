@@ -1,0 +1,17 @@
+services:
+  BC\Controller\Index: ~
+
+  BC\Core\Provider\IPathsProvider:
+    class: BC\Core\Provider\PathsProvider
+
+  BC\Core\Scanner\IWidgetClassScanner:
+    class: BC\Core\Scanner\WidgetClassScanner
+
+  BC\Core\Asset\IAssetBundler:
+    class: BC\Core\Asset\AssetBundler
+
+  BC\Core\Config\IWebsiteSettings:
+    class: BC\Core\Config\WebsiteSettings
+
+  BC\Core\Provider\IMenuItemsProvider:
+    class: BC\Core\Provider\MenuItemsProvider

@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Runway\Console\IApplication;
+use Runway\Singleton\Container;
+
+/** @var IApplication $app */
+$app = Container::getInstance()->getService(IApplication::class);
+exit($app->run());

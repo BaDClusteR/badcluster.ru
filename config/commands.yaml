@@ -1,0 +1,4 @@
+services:
+  BC\Core\Command\AssetsBuildCommand:
+    tags:
+      - name: console.command

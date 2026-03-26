@@ -5,3 +5,7 @@ uploads/*
 theme/static
 .idea
 new
+.env.local
+vendor
+log
+static

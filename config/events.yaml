@@ -1,0 +1,5 @@
+services:
+  BC\Core\Event\DebugMode:
+    events:
+      - event: 'kernel.init'
+        method: onInit
