@@ -2,7 +2,7 @@
 
 namespace BC\Core\Event;
 
-use BC\Core\Asset\IAssetBundler;
+use BC\Core\Asset\IAssetBuilder;
 use Runway\Singleton\Container;
 use Runway\Singleton\IKernel;
 
@@ -15,8 +15,8 @@ class DebugMode
 
     public function onInit(): void {
         if ($this->kernel->isDebugMode()) {
-            $bundler = Container::getInstance()->getService(IAssetBundler::class);
-            $bundler->buildBundles();
+            $bundler = Container::getInstance()->getService(IAssetBuilder::class);
+            $bundler->buildAssets();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace BC\Widget\Head;
 
-use BC\Core\Asset\IAssetBundler;
+use BC\Core\Asset\IAssetBuilder;
 use BC\Widget\Attribute\WidgetList;
 use BC\Widget\AWidget;
 use Runway\Singleton\Container;
@@ -23,7 +23,7 @@ class Bundles extends AWidget
         return ['core'];
     }
 
-    public function getBundler(): IAssetBundler {
-        return Container::getInstance()->getService(IAssetBundler::class);
+    public function getBundler(): IAssetBuilder {
+        return Container::getInstance()->getService(IAssetBuilder::class);
     }
 }

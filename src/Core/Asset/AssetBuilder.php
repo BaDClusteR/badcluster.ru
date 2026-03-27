@@ -3,22 +3,22 @@
 namespace BC\Core\Asset;
 
 use BC\Core\Asset\DTO\BundleFileDTO;
+use BC\Core\Asset\Minifier\IMinifier;
 use BC\Core\Provider\IPathsProvider;
 use BC\Core\Scanner\IWidgetClassScanner;
 use BC\Model\Config;
 use BC\Widget\IAssetProvider;
-use MatthiasMullie\Minify\CSS as CssMinifier;
-use MatthiasMullie\Minify\JS as JsMinifier;
 use ReflectionClass;
 use ReflectionException;
 use Runway\Exception\Exception;
 use Runway\FileSystem\Exception\CannotCreateDirectoryException;
 use Runway\FileSystem\Exception\CannotDeleteFileException;
+use Runway\FileSystem\Exception\FileSystemException;
 use Runway\FileSystem\IFileSystem;
 use Runway\Logger\ILogger;
 use Runway\Singleton\Container;
 
-class AssetBundler implements IAssetBundler
+class AssetBuilder implements IAssetBuilder
 {
     private const string CONFIG_NAME = 'asset_bundles';
 
@@ -29,6 +29,7 @@ class AssetBundler implements IAssetBundler
         private readonly IPathsProvider $pathsProvider,
         private readonly IFileSystem $fileSystem,
         private readonly IWidgetClassScanner $scanner,
+        private readonly IMinifier $minifier,
         private readonly ILogger $logger
     ) {
     }
@@ -84,7 +85,7 @@ class AssetBundler implements IAssetBundler
                     $combined .= file_get_contents($file->absolutePath) . "\n";
                 }
 
-                $minified = $this->minify($combined, $type);
+                $minified = $this->minifier->minify($combined, $type);
                 $hash = md5($minified);
                 $key = "$bundleName.$type";
 
@@ -98,11 +99,21 @@ class AssetBundler implements IAssetBundler
                     }
                 }
 
+                $typeDir = "$staticDir/$type";
+
+                if (!is_dir($typeDir)) {
+                    try {
+                        $this->fileSystem->mkdir($typeDir);
+                    } catch (CannotCreateDirectoryException $e) {
+                        throw new Exception($e->getMessage(), $e->getCode(), $e);
+                    }
+                }
+
                 $fileName = "$bundleName.v$version.min.$type";
-                file_put_contents("$staticDir/$fileName", $minified);
+                file_put_contents("$typeDir/$fileName", $minified);
 
                 $storedBundles[$key] = [
-                    'path' => $fileName,
+                    'path' => "$type/$fileName",
                     'hash' => $hash,
                     'version' => $version,
                 ];
@@ -115,6 +126,15 @@ class AssetBundler implements IAssetBundler
     protected function collectAssets(): void {
         $this->collectAssetsFromProviders();
         $this->collectAssetsFromTags();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function buildAssets(): void
+    {
+        $this->buildBundles();
+        $this->copyStaticAssets();
     }
 
     public function getBundleFileName(string $bundleName, string $type): ?string {
@@ -181,6 +201,82 @@ class AssetBundler implements IAssetBundler
         }
     }
 
+    /**
+     * @throws Exception
+     */
+    private function copyStaticAssets(): void
+    {
+        $staticDir = $this->pathsProvider->getStaticPath();
+        $excludeDirs = ['js', 'css'];
+
+        foreach ($this->pathsProvider->getAssetPaths() as $assetPath) {
+            if (!is_dir($assetPath)) {
+                continue;
+            }
+
+            $entries = scandir($assetPath);
+
+            if ($entries === false) {
+                continue;
+            }
+
+            foreach ($entries as $entry) {
+                if ($entry === '.' || $entry === '..') {
+                    continue;
+                }
+
+                if (!is_dir("$assetPath/$entry")) {
+                    continue;
+                }
+
+                if (in_array($entry, $excludeDirs, true)) {
+                    continue;
+                }
+
+                $this->copyDirectory("$assetPath/$entry", "$staticDir/$entry");
+            }
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function copyDirectory(string $src, string $dst): void
+    {
+        if (!is_dir($dst)) {
+            try {
+                $this->fileSystem->mkdir($dst);
+            } catch (CannotCreateDirectoryException $e) {
+                throw new Exception($e->getMessage(), $e->getCode(), $e);
+            }
+        }
+
+        $entries = scandir($src);
+
+        if ($entries === false) {
+            return;
+        }
+
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+
+            $srcPath = "$src/$entry";
+            $dstPath = "$dst/$entry";
+
+            if (is_dir($srcPath)) {
+                $this->copyDirectory($srcPath, $dstPath);
+            } else {
+                try {
+                    $this->fileSystem->copy($srcPath, $dstPath, isOverwrite: true);
+                } catch (FileSystemException $e) {
+                    $this->logger->warning("Failed to copy $srcPath to $dstPath: " . $e->getMessage());
+                }
+            }
+        }
+    }
+
     private function resolveAssetPath(string $relativePath): ?string
     {
         foreach ($this->pathsProvider->getAssetPaths() as $path) {
@@ -192,15 +288,6 @@ class AssetBundler implements IAssetBundler
         }
 
         return null;
-    }
-
-    private function minify(string $content, string $type): string
-    {
-        return match ($type) {
-            'js' => new JsMinifier($content)->minify(),
-            'css' => new CssMinifier($content)->minify(),
-            default => $content,
-        };
     }
 
     /**

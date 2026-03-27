@@ -59,9 +59,9 @@ namespace PHPSTORM_META
         'BC\Controller\Index' => \BC\Controller\Index::class,
         'BC\Core\Provider\IPathsProvider' => \BC\Core\Provider\PathsProvider::class,
         'BC\Core\Scanner\IWidgetClassScanner' => \BC\Core\Scanner\WidgetClassScanner::class,
-        'BC\Core\Asset\IAssetBundler' => \BC\Core\Asset\AssetBundler::class,
+        'BC\Core\Asset\IAssetBuilder' => \BC\Core\Asset\AssetBuilder::class,
         'BC\Core\Config\IWebsiteSettings' => \BC\Core\Config\WebsiteSettings::class,
-        'BC\Core\DTO\MenuItemDTO\IMenuItemsProvider' => \BC\Core\DTO\MenuItemDTO\MenuItemsProvider::class,
+        'BC\Core\Provider\IMenuItemsProvider' => \BC\Core\Provider\MenuItemsProvider::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,
@@ -128,9 +128,9 @@ namespace PHPSTORM_META
         'BC\Controller\Index' => \BC\Controller\Index::class,
         'BC\Core\Provider\IPathsProvider' => \BC\Core\Provider\PathsProvider::class,
         'BC\Core\Scanner\IWidgetClassScanner' => \BC\Core\Scanner\WidgetClassScanner::class,
-        'BC\Core\Asset\IAssetBundler' => \BC\Core\Asset\AssetBundler::class,
+        'BC\Core\Asset\IAssetBuilder' => \BC\Core\Asset\AssetBuilder::class,
         'BC\Core\Config\IWebsiteSettings' => \BC\Core\Config\WebsiteSettings::class,
-        'BC\Core\DTO\MenuItemDTO\IMenuItemsProvider' => \BC\Core\DTO\MenuItemDTO\MenuItemsProvider::class,
+        'BC\Core\Provider\IMenuItemsProvider' => \BC\Core\Provider\MenuItemsProvider::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,

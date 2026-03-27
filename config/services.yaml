@@ -7,8 +7,11 @@ services:
   BC\Core\Scanner\IWidgetClassScanner:
     class: BC\Core\Scanner\WidgetClassScanner
 
-  BC\Core\Asset\IAssetBundler:
-    class: BC\Core\Asset\AssetBundler
+  BC\Core\Asset\Minifier\IMinifier:
+    class: BC\Core\Asset\Minifier\MinifierFactory
+
+  BC\Core\Asset\IAssetBuilder:
+    class: BC\Core\Asset\AssetBuilder
 
   BC\Core\Config\IWebsiteSettings:
     class: BC\Core\Config\WebsiteSettings
