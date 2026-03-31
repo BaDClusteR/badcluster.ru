@@ -11,7 +11,11 @@ $projectRoot = dirname(__DIR__);
 $yamlDirs = [
     'vendor/bad_cluster/runway/config',
     'config',
-    'vendor/bad_cluster/runway-console-app/config'
+    'vendor/bad_cluster/runway-console-app/config',
+    ...array_map(
+        fn(string $path) => str_replace($projectRoot . '/', '', $path),
+        glob($projectRoot . '/modules/*/config', GLOB_ONLYDIR) ?: []
+    )
 ];
 
 $services = [];
