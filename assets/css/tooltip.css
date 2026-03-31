@@ -1,0 +1,52 @@
+:root, [data-theme="light"] {
+  --tooltip-bg: var(--color-bg);
+  --tooltip-color: var(--color-text);
+  --tooltip-font-size: .75rem;
+  --tooltip-shadow: 0 5px 15px rgba(0, 0, 0, .2);
+}
+
+[data-theme="dark"] {
+  --tooltip-bg: var(--color-surface);
+  --tooltip-color: var(--color-text);
+}
+
+.tooltip {
+  position: absolute;
+  background: var(--tooltip-bg);
+  color: var(--tooltip-color);
+  padding: calc(.5 * var(--rhythmic-unit)) calc(.75 * var(--rhythmic-unit));
+  border-radius: var(--border-radius);
+  font-size: var(--tooltip-font-size);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: var(--transition) opacity, var(--transition) transform, var(--transition) visibility;
+  z-index: 100;
+  box-shadow: var(--tooltip-shadow);
+  display: none;
+
+  position-area: top;
+  margin-bottom: calc(.5 * var(--rhythmic-unit));
+
+  position-anchor: --tooltip;
+}
+
+.tooltip-container {
+  anchor-name: --tooltip;
+}
+
+.tooltip-container:hover ~ .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+div:has(> .tooltip-container) {
+  anchor-scope: --tooltip;
+}
+
+@supports (anchor-name: --test) {
+  .tooltip {
+    display: block;
+  }
+}

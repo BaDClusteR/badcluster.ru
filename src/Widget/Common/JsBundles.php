@@ -17,7 +17,7 @@ class JsBundles extends AWidget
     }
 
     protected function getJsBundles(): array {
-        return ['theme-switcher'];
+        return ['scripts'];
     }
 
     public function getBundler(): IAssetBuilder {

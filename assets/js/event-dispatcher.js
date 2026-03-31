@@ -41,5 +41,3 @@ class EventDispatcher extends Singleton {
         }
     }
 }
-
-EventDispatcher.getInstance()

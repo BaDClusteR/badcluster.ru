@@ -6,12 +6,12 @@ use Runway\DataStorage\Attribute as DS;
 use Runway\Model\AEntity;
 
 /**
- * @method int getId
+ * @method int getId()
  * @method self setId(int $id)
- * @method string getName
+ * @method string getName()
  * @method self setName(string $name)
- * @method string|null getValue
- * @method self setValue(string $value)
+ * @method string|null getValue()
+ * @method self setValue(string|null $value)
  */
 #[DS\Table("config")]
 class Config extends AEntity

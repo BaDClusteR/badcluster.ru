@@ -1,1 +1,15 @@
-Here will be a pulse.
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Page\Home\Pulse $this */
+$items = $this->getItems();
+?>
+<?php if ($items) :?>
+    <h2>Пульс</h2>
+    <p>Обновления, релизы, случайные артефакты из архива.</p>
+    <link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('grid', 'css')?>" />
+    <div class="grid">
+        <?php foreach ($items as $item): ?>
+            <?=new \BC\Widget\Page\Home\PulseItem(['item' => $item])->render()?>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

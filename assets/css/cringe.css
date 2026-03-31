@@ -1,0 +1,187 @@
+@property --color-warning {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --color-warning-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --color-warning-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --cringe-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --cringe-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+:root, [data-theme="light"] {
+  --color-warning: #F59E0B;
+  --color-warning--no-animation: #F59E0B;
+  --color-warning-hover: #D97706;
+  --color-warning-bg: color-mix(in srgb, var(--color-warning), transparent 90%);
+  --color-warning-border: color-mix(in srgb, var(--color-warning), transparent 60%);
+
+  --cringe-bg: #F8FAFC;
+  --cringe-surface: #FFF;
+}
+
+[data-theme='dark'] {
+  --color-warning: #FBBF24;
+  --color-warning--no-animation: #FBBF24;
+  --color-warning-hover: #FCD34D;
+  --color-warning-bg: color-mix(in srgb, var(--color-warning), transparent 90%);
+  --color-warning-border: color-mix(in srgb, var(--color-warning), transparent 70%);
+
+  --cringe-bg: #09090B;
+  --cringe-surface: #18181B;
+}
+
+.cringe__warning {
+  display: inline-flex;
+  gap: var(--rhythmic-unit);
+  padding: var(--rhythmic-unit);
+  background: var(--color-warning-bg);
+  border-radius: var(--border-radius);
+  border: var(--border-width) dashed var(--color-warning);
+  align-items: center;
+  margin: 0;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--color-warning);
+  letter-spacing: 2px;
+
+  &:before {
+    content: '⚠️';
+    font-size: 1.6em;
+  }
+}
+
+.cringe__subtitle {
+  border-left: 4px solid var(--color-warning);
+  padding-inline-start: calc(1.5 * var(--rhythmic-unit));
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-big);
+  line-height: 1.6;
+}
+
+.cringe__exhibition {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.5 * var(--rhythmic-unit));
+  margin-top: calc(2.5 * var(--rhythmic-unit));
+}
+
+.cringe__exhibit {
+  padding: calc(1.5 * var(--rhythmic-unit));
+  border-radius: var(--border-radius);
+  border: var(--border);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: var(--transition) border-color, var(--transition) box-shadow;
+
+  &:hover,
+  &:has(:focus-visible) {
+    border-color: var(--color-warning);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--color-warning), transparent 90%);
+  }
+}
+
+.cringe__type {
+  text-transform: uppercase;
+  color: var(--color-warning);
+  font-weight: bold;
+  font-size: var(--font-size-smaller);
+  letter-spacing: 1px;
+  margin-bottom: calc(.25 * var(--rhythmic-unit));
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cringe__title {
+  border-bottom: var(--border-width) dashed var(--color-border);
+  padding-bottom: calc(.5 * var(--rhythmic-unit));
+}
+
+.cringe__description {
+  margin-top: var(--rhythmic-unit);
+}
+
+.cringe__status {
+  margin: calc(1.25 * var(--rhythmic-unit)) 0;
+  padding: var(--rhythmic-unit);
+  color: var(--color-text-secondary);
+  font-weight: 440;
+  font-variation-settings: 'wdth' 100;
+  border: var(--border);
+  border-radius: var(--border-radius-small);
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: calc(.25 * var(--rhythmic-unit)) var(--rhythmic-unit);
+  font-size: var(--font-size-small);
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--color-surface), transparent);
+}
+
+.cringe__status-name {
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--color-contrast);
+  white-space: nowrap;
+}
+
+.cringe__download {
+  margin-inline-start: auto;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: var(--font-size-small);
+  transition: var(--transition-mode) color, var(--transition) border-color, var(--transition) background-color;
+  display: flex;
+  gap: calc(.5 * var(--rhythmic-unit));
+
+  &,
+  &:visited {
+    background: transparent;
+    color: var(--color-warning--no-animation);
+    border-color: var(--color-warning--no-animation);
+  }
+
+  &:before {
+    content: '↓';
+  }
+
+  &:not([disabled]) {
+    &:hover,
+    &:focus-visible,
+    &:active {
+      border-color: var(--color-warning--no-animation);
+      color: var(--color-bg--no-animation);
+      background-color: var(--color-warning--no-animation);
+    }
+  }
+}
+
+@media (width < 500px) {
+  .cringe__status {
+    grid-template-columns: 1fr;
+  }
+
+  .cringe__status-name:not(:first-of-type) {
+    margin-top: calc(.5 * var(--rhythmic-unit));
+  }
+}

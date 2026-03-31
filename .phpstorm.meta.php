@@ -56,12 +56,16 @@ namespace PHPSTORM_META
         'Runway\Controller\IExceptionController' => \Runway\Controller\ExceptionController::class,
 
         // config/services.yaml
-        'BC\Controller\Index' => \BC\Controller\Index::class,
-        'BC\Core\Provider\IPathsProvider' => \BC\Core\Provider\PathsProvider::class,
         'BC\Core\Scanner\IWidgetClassScanner' => \BC\Core\Scanner\WidgetClassScanner::class,
+        'BC\Core\Asset\Minifier\IMinifier' => \BC\Core\Asset\Minifier\MinifierFactory::class,
         'BC\Core\Asset\IAssetBuilder' => \BC\Core\Asset\AssetBuilder::class,
         'BC\Core\Config\IWebsiteSettings' => \BC\Core\Config\WebsiteSettings::class,
-        'BC\Core\Provider\IMenuItemsProvider' => \BC\Core\Provider\MenuItemsProvider::class,
+        'BC\Core\Media\IThumbnailGenerator' => \BC\Core\Media\ThumbnailGenerator::class,
+        'BC\Provider\IMenuItemsProvider' => \BC\Provider\MenuItemsProvider::class,
+        'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
+        'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
+        'BC\Generator\IThumbnailsGenerator' => \BC\Generator\ThumbnailsGenerator::class,
+        'BC\Controller\Index' => \BC\Controller\Index::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,
@@ -125,12 +129,16 @@ namespace PHPSTORM_META
         'Runway\Controller\IExceptionController' => \Runway\Controller\ExceptionController::class,
 
         // config/services.yaml
-        'BC\Controller\Index' => \BC\Controller\Index::class,
-        'BC\Core\Provider\IPathsProvider' => \BC\Core\Provider\PathsProvider::class,
         'BC\Core\Scanner\IWidgetClassScanner' => \BC\Core\Scanner\WidgetClassScanner::class,
+        'BC\Core\Asset\Minifier\IMinifier' => \BC\Core\Asset\Minifier\MinifierFactory::class,
         'BC\Core\Asset\IAssetBuilder' => \BC\Core\Asset\AssetBuilder::class,
         'BC\Core\Config\IWebsiteSettings' => \BC\Core\Config\WebsiteSettings::class,
-        'BC\Core\Provider\IMenuItemsProvider' => \BC\Core\Provider\MenuItemsProvider::class,
+        'BC\Core\Media\IThumbnailGenerator' => \BC\Core\Media\ThumbnailGenerator::class,
+        'BC\Provider\IMenuItemsProvider' => \BC\Provider\MenuItemsProvider::class,
+        'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
+        'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
+        'BC\Generator\IThumbnailsGenerator' => \BC\Generator\ThumbnailsGenerator::class,
+        'BC\Controller\Index' => \BC\Controller\Index::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,

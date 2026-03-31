@@ -4,9 +4,9 @@ namespace BC\Core\Asset;
 
 use BC\Core\Asset\DTO\BundleFileDTO;
 use BC\Core\Asset\Minifier\IMinifier;
-use BC\Core\Provider\IPathsProvider;
 use BC\Core\Scanner\IWidgetClassScanner;
 use BC\Model\Config;
+use BC\Provider\IPathsProvider;
 use BC\Widget\IAssetProvider;
 use ReflectionClass;
 use ReflectionException;

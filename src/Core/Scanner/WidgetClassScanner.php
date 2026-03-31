@@ -2,7 +2,7 @@
 
 namespace BC\Core\Scanner;
 
-use BC\Core\Provider\IPathsProvider;
+use BC\Provider\IPathsProvider;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

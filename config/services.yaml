@@ -1,9 +1,4 @@
 services:
-  BC\Controller\Index: ~
-
-  BC\Core\Provider\IPathsProvider:
-    class: BC\Core\Provider\PathsProvider
-
   BC\Core\Scanner\IWidgetClassScanner:
     class: BC\Core\Scanner\WidgetClassScanner
 
@@ -16,5 +11,37 @@ services:
   BC\Core\Config\IWebsiteSettings:
     class: BC\Core\Config\WebsiteSettings
 
-  BC\Core\Provider\IMenuItemsProvider:
-    class: BC\Core\Provider\MenuItemsProvider
+  BC\Core\Media\Processor\ImageProcessorAvif:
+    tags:
+      - name: image.processor
+
+  BC\Core\Media\Processor\ImageProcessorWebp:
+    tags:
+      - name: image.processor
+
+  BC\Core\Media\PostProcessor\ImagePostprocessor:
+    arguments:
+      significantSizeDifferenceBytes: 1024
+    tags:
+      - name: image.postprocessor
+
+  BC\Core\Media\IThumbnailGenerator:
+    class: BC\Core\Media\ThumbnailGenerator
+
+
+# Website-specific services
+  BC\Provider\IMenuItemsProvider:
+    class: BC\Provider\MenuItemsProvider
+
+  BC\Provider\IPulseItemsProvider:
+    class: BC\Provider\PulseItemsProvider
+
+  BC\Provider\IPathsProvider:
+    class: BC\Provider\PathsProvider
+
+  BC\Generator\IThumbnailsGenerator:
+    class: BC\Generator\ThumbnailsGenerator
+
+
+# Controllers
+  BC\Controller\Index: ~

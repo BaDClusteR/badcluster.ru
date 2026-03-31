@@ -1,0 +1,214 @@
+.comments {
+  font-size: var(--font-size-small);
+  container-type: inline-size;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.comments__title {
+  margin: 0;
+}
+
+.comments__empty {
+  margin: var(--rhythmic-unit) 0 0 0;
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+}
+
+.comments__list {
+  display: flex;
+  flex-direction: column;
+  row-gap: calc(2 * var(--rhythmic-unit));
+  margin: calc(2 * var(--rhythmic-unit)) 0 0 0;
+}
+
+.comment {
+  display: flex;
+  flex-direction: column;
+  row-gap: calc(.25 * var(--rhythmic-unit));
+}
+
+.comment__meta {
+  display: flex;
+  align-items: center;
+  gap: calc(.5 * var(--rhythmic-unit));
+}
+
+.comment__author {
+  font-weight: 650;
+}
+
+.comment__author--anonymous {
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+  font-style: italic;
+}
+
+.comment__date {
+  font-size: var(--font-size-smaller);
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+
+  &:before {
+    content: '•';
+    padding-right: calc(.5 * var(--rhythmic-unit));
+  }
+}
+
+.comment__text {
+  margin: 0;
+  padding: var(--rhythmic-unit);
+  background: var(--color-surface);
+  border-radius: 0 var(--border-radius) var(--border-radius) var(--border-radius);
+
+  & > p:first-child {
+    margin-top: 0;
+  }
+}
+
+.comment--level-1,
+.comment--level-2,
+.comment--level-3,
+.comment--level-4,
+.comment--level-5,
+.comment--level-6 {
+  margin-inline-start: calc(2 * var(--rhythmic-unit));
+}
+
+.comments__form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: calc(3 * var(--rhythmic-unit)) 0 0 0;
+  row-gap: var(--rhythmic-unit);
+  width: 100%;
+  max-width: 600px;
+
+  .btn {
+    width: 100%;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.comment__field {
+  --field-bg: var(--color-bg);
+
+  width: 100%;
+  padding: calc(.75 * var(--rhythmic-unit));
+  margin: 0;
+  border: var(--border);
+  border-radius: var(--border-radius);
+  outline: none;
+  transition: var(--transition) border-color, var(--transition) opacity;
+  background: var(--field-bg);
+  color: inherit;
+
+  &:autofill {
+    box-shadow: 0 0 0 1000px var(--field-bg) inset;
+  }
+
+  &:not([disabled]) {
+    &:hover,
+    &:focus {
+      border-color: var(--color-accent);
+    }
+  }
+
+  &::placeholder {
+    color: color-mix(in srgb, var(--color-text-secondary), var(--color-bg) 50%);
+  }
+
+  &:focus {
+    --field-bg: color-mix(in srgb, var(--color-surface), var(--color-bg) 20%);
+  }
+
+  &[disabled] {
+    --field-bg: var(--color-surface);
+    opacity: .6;
+    cursor: not-allowed;
+  }
+
+  &:user-invalid,
+  &.comment__field--invalid {
+    &,
+    &:hover,
+    &:focus {
+      border-color: var(--color-error);
+    }
+  }
+}
+
+.comment__field-error {
+  font-size: var(--font-size-smaller);
+  line-height: var(--rhythmic-unit);
+  color: var(--color-error);
+  min-height: var(--rhythmic-unit);
+  display: block;
+  transition: var(--transition) opacity;
+
+  &:empty {
+    opacity: 0;
+  }
+}
+
+.comments__alert {
+  display: none;
+}
+
+.comment__field--textarea {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 130px;
+}
+
+[data-theme="dark"] .comment__field {
+  --field-bg: color-mix(in srgb, var(--color-contrast), var(--color-bg) 97%);
+
+  &:focus {
+    --field-bg: var(--color-surface);
+  }
+
+  &[disabled] {
+    opacity: .3;
+  }
+}
+
+@container (min-width: 370px) {
+  .comment--level-2,
+  .comment--level-3,
+  .comment--level-4,
+  .comment--level-5,
+  .comment--level-6 {
+    margin-inline-start: calc(4 * var(--rhythmic-unit));
+  }
+}
+
+@container (min-width: 420px) {
+  .comment--level-3 {
+    margin-inline-start: calc(6 * var(--rhythmic-unit));
+  }
+
+  .comment--level-4 {
+    margin-inline-start: calc(8 * var(--rhythmic-unit));
+  }
+
+  .comment--level-5 {
+    margin-inline-start: calc(10 * var(--rhythmic-unit));
+  }
+
+  .comment--level-6 {
+    margin-inline-start: calc(12 * var(--rhythmic-unit));
+  }
+}
+
+@media (min-width: 450px) {
+  .comments__form .btn {
+    width: auto;
+  }
+}

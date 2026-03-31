@@ -31,6 +31,10 @@ abstract class APage extends AWidget implements IAssetProvider
             new AssetDTO('critical', 'js/event-dispatcher.js', -50),
             new AssetDTO('critical', 'js/theme.js'),
 
+            new AssetDTO('scripts', 'js/theme-switcher.js'),
+            new AssetDTO('scripts', 'js/header.js'),
+            new AssetDTO('scripts', 'js/scripts.js'),
+
             new AssetDTO('core', 'css/reset.css', -100),
             new AssetDTO('core', 'css/font.css', -50),
             new AssetDTO('core', 'css/style.css', 0)

@@ -1,6 +1,6 @@
 <?php
 
-namespace BC\Core\Provider;
+namespace BC\Provider;
 
 use BC\Core\DTO\MenuItemDTO;
 

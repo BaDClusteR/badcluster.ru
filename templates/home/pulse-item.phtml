@@ -1,0 +1,28 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Page\Home\PulseItem $this */
+
+$tag = $this->getTag();
+$title = $this->getTitle();
+$text = $this->getText();
+$status = $this->getStatus();
+$icon = $this->getIcon();
+?><a href="<?=$this->getUrl()?>" class="<?=$this->getCssClass()?>">
+    <div class="grid__item-content">
+        <?php if ($tag) :?>
+            <span class="grid__tag"><?=$tag?></span>
+        <?php endif; ?>
+        <?php if ($title) :?>
+            <h3 class="grid__title"><?=$title?></h3>
+        <?php endif; ?>
+        <?php if ($text) :?>
+            <span class="grid__text"><?=$text?></span>
+        <?php endif; ?>
+        <?php if ($status) :?>
+            <span class="grid__status"><?=$status?></span>
+        <?php endif; ?>
+        <?php if ($icon) :?>
+            <span class="grid__icon" aria-hidden="true"><?=$icon?></span>
+        <?php endif; ?>
+    </div>
+</a>

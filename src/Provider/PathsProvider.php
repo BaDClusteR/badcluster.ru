@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BC\Core\Provider;
+namespace BC\Provider;
 
 use BC\Core\Config\IWebsiteSettings;
 use Runway\Module\DTO\ModuleDTO;
@@ -65,5 +65,9 @@ class PathsProvider implements IPathsProvider
     public function getStaticWebPath(): string
     {
         return $this->websiteSettings->getWebRoot() . '/static';
+    }
+
+    public function getImagesPath(): string {
+        return $this->getStaticPath() . '/images';
     }
 }

@@ -327,11 +327,6 @@ a {
   }
 }
 
-a:focus-visible,
-button:focus-visible {
-  animation: var(--transition-fast) outline-animation;
-}
-
 @keyframes outline-animation {
   from {
     outline-offset: 6px;
@@ -343,10 +338,10 @@ button:focus-visible {
 a,
 button {
   -webkit-tap-highlight-color: transparent;
-}
 
-.a--no-underline {
-  text-decoration: none;
+  &:focus-visible {
+    animation: var(--transition-fast) outline-animation;
+  }
 }
 
 b,

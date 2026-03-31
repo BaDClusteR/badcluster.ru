@@ -1,0 +1,193 @@
+.book-header {
+  display: flex;
+  gap: calc(1.5 * var(--rhythmic-unit));
+  margin-bottom: var(--rhythmic-unit);
+  align-items: flex-start;
+}
+
+.book-header__cover {
+  flex-shrink: 0;
+  width: 130px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  background: var(--color-surface);
+}
+
+.book-header__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rhythmic-unit);
+}
+
+.book-header h1 {
+  line-height: 1.1;
+}
+
+.book__participants {
+  display: flex;
+  flex-direction: column;
+  gap: calc(.25 * var(--rhythmic-unit));
+  font-size: var(--font-size-medium);
+}
+
+.book__participant-role {
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+  margin-right: calc(.25 * var(--rhythmic-unit));
+}
+
+.book__participant-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.file__info {
+  display: flex;
+  gap: calc(.25 * var(--rhythmic-unit));
+  align-items: flex-start;
+
+  .file__name {
+    font-family: var(--font-family), serif;
+    font-size: var(--font-size-bigger);
+  }
+}
+
+.file__size {
+  font-size: var(--font-size-tiny);
+  font-family: var(--font-family-mono), monospace;
+  white-space: nowrap;
+  align-self: flex-end;
+  transition: var(--transition) color;
+}
+
+.file__ext {
+  font-weight: 550;
+  line-height: 1;
+}
+
+.file__action {
+  gap: calc(.75 * var(--rhythmic-unit));
+
+  svg {
+    width: calc(2 * var(--rhythmic-unit));
+    height: auto;
+    transition: var(--transition) color;
+  }
+}
+
+.chapter__link {
+  display: flex;
+  align-items: baseline;
+  padding: calc(.625 * var(--rhythmic-unit)) 0;
+  text-decoration: none;
+  border-bottom: var(--border--no-animation);
+  transition: var(--transition-mode) color, var(--transition-mode) border-color, var(--transition) padding-left, var(--transition) padding-right, var(--transition-slow) opacity;
+  padding-left: var(--rhythmic-unit);
+  justify-content: space-between;
+  font-style: italic;
+  font-weight: 450;
+
+  &,
+  &:visited {
+    color: var(--color-text-secondary);
+  }
+
+  &:after {
+    content: '→';
+    transition: var(--transition) opacity, var(--transition) transform;
+    transform: translateX(-16px);
+    opacity: 0;
+  }
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    color: var(--color-link);
+    padding-inline-start: calc(1.5 * var(--rhythmic-unit));
+
+    &:after {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+.chapters {
+  &:has(.chapter__link:hover),
+  &:has(.chapter__link:focus-visible) {
+    .chapter__link:not(:hover):not(:focus-visible) {
+      color: color-mix(in srgb, var(--color-text-secondary), transparent 60%);
+      transition: var(--transition-mode) color, var(--transition) padding-left, var(--transition) padding-right;
+    }
+  }
+}
+
+.chapter__section {
+  margin-top: calc(2 * var(--rhythmic-unit));
+  margin-bottom: calc(.5 * var(--rhythmic-unit));
+  padding-bottom: calc(.25 * var(--rhythmic-unit));
+  border-bottom: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(.375 * var(--rhythmic-unit));
+  color: var(--color-text);
+  transition: var(--transition-slow) opacity;
+  font-style: italic;
+  font-size: 1.4rem;
+}
+
+.chapters__list {
+  margin-top: calc(1.5 * var(--rhythmic-unit));
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border);
+}
+
+.text-faded {
+  margin-top: calc(.5 * var(--rhythmic-unit));
+}
+
+.chapters {
+  --chapters-inactive-link-transperency: 60%;
+
+  &:has(.chapters__list-item--has-children) {
+    --chapters-inactive-link-transperency: 80%;
+  }
+
+  .chapter__section {
+    padding-top: calc(2 * var(--rhythmic-unit));
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.comments__area {
+  margin-top: calc(2 * var(--rhythmic-unit));
+}
+
+:dir(rtl) {
+  .chapter__link {
+    &:after {
+      transform: scaleX(-1) translateX(-32px);
+    }
+
+    &:hover,
+    &:focus-visible,
+    &:active {
+      &:after {
+        transform: scaleX(-1);
+      }
+    }
+  }
+}
+
+@media (width < 370px) {
+  .book-header {
+    flex-direction: column;
+  }
+
+  .book-header__cover {
+    margin-inline: auto;
+  }
+}

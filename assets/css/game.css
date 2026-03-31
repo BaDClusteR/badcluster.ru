@@ -1,0 +1,115 @@
+.content-area .text-block {
+  h2,
+  h3,
+  h4 {
+    margin-top: calc(.5 * var(--rhythmic-unit));
+  }
+
+  code {
+    background: var(--color-surface);
+    padding: calc(.125 * var(--rhythmic-unit)) calc(.375 * var(--rhythmic-unit));
+    border-radius: var(--border-radius-small);
+    word-break: break-word;
+  }
+
+  h2.visually-hidden {
+    position: relative;
+    margin-top: calc(-1.5 * var(--rhythmic-unit));
+  }
+}
+
+.game__hero {
+  --game-hero-miniature-brightness: .8;
+
+  position: relative;
+  background: var(--color-bg);
+  min-height: 240px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+  display: flex;
+  align-items: center;
+  padding: calc(2 * var(--rhythmic-unit));
+  color: var(--color-text);
+
+  margin-inline: calc(-1  *var(--gutter-size));
+  padding-inline: var(--gutter-size);
+
+  &.game__hero--dark-miniature {
+    --game-hero-miniature-brightness: 1;
+  }
+
+  &.game__hero--darker-miniature {
+    --game-hero-miniature-brightness: 1.3;
+  }
+
+  @media (min-width: 420px) {
+    margin-inline: 0;
+    padding-inline: calc(2 * var(--rhythmic-unit));
+    margin-top: 0;
+    border-radius: var(--border-radius-big);
+  }
+}
+
+.game__hero-picture {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  user-select: none;
+  filter: blur(25px) brightness(var(--game-hero-miniature-brightness, 1));
+
+  &:before {
+    background: var(--color-bg);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+.game__hero-content {
+  position: relative;
+  z-index: 2;
+
+  h1 {
+    margin-bottom: calc(.5 * var(--rhythmic-unit));
+  }
+}
+
+.game__hero-game-name {
+  font-family: var(--font-family-mono), monospace;
+  font-size: var(--font-size-small);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+  display: block;
+  transition: var(--transition-mode) color;
+}
+
+.game__hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(.5 * var(--rhythmic-unit));
+  font-size: var(--font-size-smaller);
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+}
+
+.game__hero-tag {
+  background: rgba(255, 255, 255, .15);
+  backdrop-filter: blur(5px);
+  border: var(--border-width) solid rgba(255, 255, 255, .1);
+  border-radius: var(--border-radius);
+  padding: calc(.25 * var(--rhythmic-unit)) calc(.5 * var(--rhythmic-unit));
+  display: flex;
+  align-items: center;
+  gap: calc(.375 * var(--rhythmic-unit));
+  white-space: nowrap;
+}

@@ -1,0 +1,22 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Content $this */
+
+$page = $this->getPage();
+$header = $page?->getHeader();
+$description = $page?->getDescription();
+$mainWidget = $page?->getMainWidget();
+?>
+<main class="content-area">
+    <div class="content-container">
+        <?php if ($header): ?>
+            <h1><?=$header?></h1>
+        <?php endif; ?>
+        <?php if ($description): ?>
+            <?php foreach ($description as $p) :?>
+                <p><?=$p?></p>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        <?=$mainWidget?->render(['page' => $page])?>
+    </div>
+</main>

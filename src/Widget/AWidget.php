@@ -2,14 +2,15 @@
 
 namespace BC\Widget;
 
-use BC\Core\Provider\IPathsProvider;
 use BC\Core\Scanner\IWidgetClassScanner;
 use BC\Core\Trait\LoggerTrait;
+use BC\Provider\IPathsProvider;
 use BC\Widget\Attribute\WidgetList;
 use ReflectionClass;
 use ReflectionException;
 use Runway\Exception\RuntimeException;
 use Runway\Singleton\Container;
+use Throwable;
 
 abstract class AWidget
 {
@@ -36,9 +37,13 @@ abstract class AWidget
 
         $fullPath = $this->getFullTemplatePath();
 
-        ob_start();
-        include $fullPath;
-        $result = ob_get_clean();
+        try {
+            ob_start();
+            include $fullPath;
+            $result = ob_get_clean();
+        } catch (Throwable $e) {
+            die($e->getMessage());
+        }
 
         if ($result === false) {
             throw new RuntimeException(
