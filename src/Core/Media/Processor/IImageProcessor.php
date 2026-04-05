@@ -10,7 +10,9 @@ interface IImageProcessor
     /**
      * @throws ImageException
      */
-    public function getThumbnail(string $path, int $width, int $height): ImageDTO;
+    public function getThumbnail(string $path, int $width, int $sourceWidth): ImageDTO;
 
     public function isApplicable(string $path): bool;
+
+    public function getGeneratedMimeType(): string;
 }

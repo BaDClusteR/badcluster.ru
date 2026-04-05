@@ -13,5 +13,5 @@ interface IThumbnailsGenerator
      *
      * @return Media[][]
      */
-    public function generateThumbnails(Media $image, array $widths): array;
+    public function generateThumbnails(Media $image, array $widths, bool $force): array;
 }

@@ -28,6 +28,9 @@ services:
   BC\Core\Media\IThumbnailGenerator:
     class: BC\Core\Media\ThumbnailGenerator
 
+  BC\Core\Helper\IAttributesHelper:
+    class: BC\Core\Helper\AttributesHelper
+
 
 # Website-specific services
   BC\Provider\IMenuItemsProvider:

@@ -10,11 +10,11 @@ class ResizeCommand extends ACommand
     use LoggerTrait;
 
     public function __construct(
-        private string $path,
-        private string $output,
-        private int $width,
-        private int $height,
-        private string $saveParameters = ''
+        private readonly string $path,
+        private readonly string $output,
+        private readonly int $width,
+        private readonly int $height,
+        private readonly string $saveParameters = ''
     ) {
     }
 

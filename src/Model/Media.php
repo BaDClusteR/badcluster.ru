@@ -6,6 +6,7 @@ use BC\Core\Media\IThumbnailGenerator;
 use BC\Core\Media\PostProcessor\IImagePostprocessor;
 use BC\Core\Trait\FileSystemTrait;
 use BC\Core\Trait\LoggerTrait;
+use BC\Core\Trait\PathsProviderTrait;
 use BC\Provider\IPathsProvider;
 use Runway\DataStorage\Attribute as DS;
 use Runway\Exception\Exception;
@@ -26,6 +27,8 @@ use Runway\Singleton\Container;
  * @method self setSize(int $size)
  * @method string getMime()
  * @method self setMime(string $mime)
+ * @method string getAlt()
+ * @method self setAlt(string $alt)
  * @method \BC\Model\Media|null getParent()
  * @method self setParent(\BC\Model\Media|null $parent)
  * @method string getMd5()
@@ -36,24 +39,28 @@ class Media extends AEntity
 {
     use LoggerTrait;
     use FileSystemTrait;
+    use PathsProviderTrait;
 
     #[DS\Id]
     protected int $id;
 
     #[DS\Column]
-    protected string $path;
+    protected string $path = '';
 
     #[DS\Column]
-    protected int $width;
+    protected int $width = 0;
 
     #[DS\Column]
-    protected int $height;
+    protected int $height = 0;
 
     #[DS\Column]
-    protected int $size;
+    protected int $size = 0;
 
     #[DS\Column]
-    protected string $mime;
+    protected string $mime = '';
+
+    #[DS\Column]
+    protected string $alt = '';
 
     #[DS\Column]
     protected ?Media $parent = null;
@@ -96,6 +103,13 @@ class Media extends AEntity
         }
     }
 
+    public function getThumbnail(int $width, string $mimeType): ?self {
+        return array_find(
+            $this->getThumbnails(),
+            static fn(self $image): bool => ($image->getWidth() === $width) && ($image->getMime() === $mimeType)
+        );
+    }
+
     public function remove(): void
     {
         foreach ($this->getThumbnails() as $thumbnail) {
@@ -109,6 +123,10 @@ class Media extends AEntity
         }
 
         parent::remove();
+    }
+
+    public function getWebPath(): string {
+        return $this->getPathsProvider()->getImagesWebPath() . '/' . $this->getPath();
     }
 
     protected function getPathsProvider(): IPathsProvider {

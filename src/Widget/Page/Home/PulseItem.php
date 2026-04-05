@@ -2,11 +2,18 @@
 
 namespace BC\Widget\Page\Home;
 
+use BC\Core\Trait\AttributesHelperTrait;
+use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\DTO\PulseItemDTO;
+use BC\Model\Media;
 use BC\Widget\AWidget;
+use BC\Widget\Common\Picture;
 
 class PulseItem extends AWidget
 {
+    use AttributesHelperTrait;
+    use WebsiteSettingsTrait;
+
     protected function getTemplatePath(): string
     {
         return 'home/pulse-item.phtml';
@@ -52,6 +59,10 @@ class PulseItem extends AWidget
         return (string)$this->getItem()?->icon;
     }
 
+    protected function getImage(): ?Media {
+        return $this->getItem()?->image;
+    }
+
     protected function getCssClass(): string {
         $classes = ['icon-button', 'grid__item'];
 
@@ -63,6 +74,45 @@ class PulseItem extends AWidget
             $classes[] = 'grid__item--surfaced';
         }
 
+        if ($this->getImage()) {
+            $classes[] = 'grid__item--gallery';
+        }
+
         return implode(' ', $classes);
+    }
+
+    protected function renderPicture(): string {
+        if ($image = $this->getImage()) {
+            return new Picture([
+                'image'        => $image,
+                'pictureClass' => 'grid__item-bg',
+                'lazyLoad'     => true,
+                'breakpoints'  => [
+                    500 => 500,
+                    700 => 1000,
+                    -1  => 500
+                ]
+            ])->render();
+        }
+
+        return '';
+    }
+
+    protected function getContentContainerAttributes(): array {
+        $result = [
+            'class' => "grid__item-content"
+        ];
+
+        if ($this->getImage()) {
+            $result['data-theme'] = 'dark';
+        }
+
+        return $result;
+    }
+
+    protected function getContainerAttributesAsString(): string {
+        return $this->getAttributesHelper()->getAttributesAsString(
+            $this->getContentContainerAttributes()
+        );
     }
 }

@@ -17,12 +17,12 @@ readonly class ThumbnailsGenerator implements IThumbnailsGenerator
     /**
      * @inheritDoc
      */
-    public function generateThumbnails(Media $image, array $widths): array
+    public function generateThumbnails(Media $image, array $widths, bool $force = false): array
     {
         $result = [];
 
         foreach ($widths as $width) {
-            $result[] = $this->thumbnailGenerator->generateThumbnails($image, $width);
+            $result[] = $this->thumbnailGenerator->generateThumbnails($image, $width, $force);
         }
 
         foreach ($this->getImagePostprocessors() as $postprocessor) {

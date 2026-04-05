@@ -1,0 +1,25 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Picture $this */
+
+$image = $this->getImage();
+$lastBreakpoint = 0;
+$tempLastBreakpoint = 0;
+$mimeTypes = $this->getAllowedMimeTypes();
+$pictureClass = $this->getPictureCssClass();
+$imgClass = $this->getImgCssClass();
+?><?php if ($image) :?>
+    <picture <?=$this->getPictureAttributesAsString()?>>
+        <?php foreach ($this->getBreakpoints() as $maxWidth => $imageWidth) :?>
+            <?php foreach ($mimeTypes as $mimeType) :?>
+                <?php if ($this->hasImages($imageWidth, $mimeType)):?>
+                    <?=$this->getSource($imageWidth, $mimeType, $lastBreakpoint, $maxWidth)?>
+                    <?php $tempLastBreakpoint = $maxWidth; ?>
+                <?php endif; ?>
+            <?php endforeach; ?>
+
+            <?php $lastBreakpoint = $tempLastBreakpoint; ?>
+        <?php endforeach; ?>
+        <img <?=$this->getImgAttributesAsString()?> />
+    </picture>
+<?php endif; ?>

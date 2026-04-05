@@ -22,4 +22,8 @@ interface IPathsProvider
     public function getStaticPath(): string;
 
     public function getStaticWebPath(): string;
+
+    public function getImagesPath(): string;
+
+    public function getImagesWebPath(): string;
 }

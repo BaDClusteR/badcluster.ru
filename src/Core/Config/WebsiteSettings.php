@@ -15,4 +15,11 @@ class WebsiteSettings implements IWebsiteSettings
     {
         return (string)$this->envVars->getEnvVariable('WEB_ROOT');
     }
+
+    public function getImageBreakpoints(): array {
+        return [
+            450 => 500,
+            -1  => 1000
+        ];
+    }
 }

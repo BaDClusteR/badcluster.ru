@@ -13,4 +13,9 @@ readonly class ImageProcessorWebp extends AImageProcessor
     {
         return "Q=85";
     }
+
+    public function getGeneratedMimeType(): string
+    {
+        return 'image/webp';
+    }
 }

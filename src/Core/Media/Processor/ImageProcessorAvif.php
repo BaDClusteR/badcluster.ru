@@ -13,4 +13,9 @@ readonly class ImageProcessorAvif extends AImageProcessor
     {
         return "Q=75,effort=6";
     }
+
+    public function getGeneratedMimeType(): string
+    {
+        return 'image/avif';
+    }
 }

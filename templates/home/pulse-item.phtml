@@ -8,7 +8,8 @@ $text = $this->getText();
 $status = $this->getStatus();
 $icon = $this->getIcon();
 ?><a href="<?=$this->getUrl()?>" class="<?=$this->getCssClass()?>">
-    <div class="grid__item-content">
+    <div <?=$this->getContainerAttributesAsString()?>>
+        <?=$this->renderPicture()?>
         <?php if ($tag) :?>
             <span class="grid__tag"><?=$tag?></span>
         <?php endif; ?>

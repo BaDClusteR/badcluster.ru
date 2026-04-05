@@ -16,7 +16,7 @@ abstract readonly class AImageProcessor implements IImageProcessor
     /**
      * @throws ImageException
      */
-    public function getThumbnail(string $path, int $width, int $height = 0): ImageDTO
+    public function getThumbnail(string $path, int $width, int $sourceWidth): ImageDTO
     {
         if (!file_exists($path)) {
             throw new ImageException("File $path does not exist");
@@ -28,16 +28,19 @@ abstract readonly class AImageProcessor implements IImageProcessor
 
         $pathInfo = pathinfo($path);
         $output = ($pathInfo['dirname'] ?? '') . '/' . ($pathInfo['filename'] ?? '');
-        if ($width && !$height) {
+        if ($width && $width !== $sourceWidth) {
             $output .= "-w$width";
-        } elseif (!$width && $height) {
-            $output .= "-h$height";
-        } else {
-            $output .= "-s{$width}x$height";
         }
+//        if ($width && !$height) {
+//            $output .= "-w$width";
+//        } elseif (!$width && $height) {
+//            $output .= "-h$height";
+//        } else {
+//            $output .= "-s{$width}x$height";
+//        }
         $output .= '.' . $this->getResultImageExtension();
 
-        new ResizeCommand($path, $output, $width, $height, $this->getSaveParameters())->execute();
+        new ResizeCommand($path, $output, $width, 0, $this->getSaveParameters())->execute();
 
         if (!file_exists($output)) {
             throw new ImageException("File $output does not exist");

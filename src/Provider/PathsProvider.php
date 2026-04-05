@@ -70,4 +70,8 @@ class PathsProvider implements IPathsProvider
     public function getImagesPath(): string {
         return $this->getStaticPath() . '/images';
     }
+
+    public function getImagesWebPath(): string {
+        return $this->getStaticWebPath() . '/images';
+    }
 }
