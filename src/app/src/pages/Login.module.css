@@ -1,0 +1,42 @@
+.screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mantine-color-dark-9);
+}
+
+.card {
+  width: 420px;
+  padding: var(--mantine-spacing-xl);
+  background: var(--mantine-color-dark-7);
+  border: 1px solid var(--mantine-color-dark-5);
+  border-radius: var(--mantine-radius-lg);
+  box-shadow: var(--mantine-shadow-xl);
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  border-radius: 16px;
+  background: var(--mantine-color-indigo-filled);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.title {
+  text-align: center;
+  font-size: var(--mantine-font-size-xl);
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+  margin-top: 4px;
+}

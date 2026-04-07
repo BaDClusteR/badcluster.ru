@@ -1,0 +1,98 @@
+.wrapper {
+  margin: 8px 0;
+}
+
+/* Empty state — clickable upload placeholder */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 48px 16px;
+  background: transparent;
+  border: 2px dashed var(--mantine-color-dark-4);
+  border-radius: var(--mantine-radius-md);
+  color: var(--mantine-color-dimmed);
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 120ms, color 120ms, background 120ms;
+}
+
+.placeholder:hover {
+  border-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-primary-color-filled);
+  background: var(--mantine-color-dark-7);
+}
+
+.placeholderIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--mantine-color-dark-6);
+}
+
+.placeholderIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.placeholderText {
+  font-size: var(--mantine-font-size-sm);
+}
+
+/* Uploading state */
+.uploading {
+  position: relative;
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+  filter: grayscale(1) brightness(0.7);
+  transition: filter 180ms;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.progressBar {
+  width: 0%;
+  height: 100%;
+  background: var(--mantine-primary-color-filled);
+  transition: width 120ms linear;
+}
+
+/* Uploaded state — the rendered <picture>/<video> */
+.media {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--mantine-radius-md);
+}
+
+.media img,
+.media video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 600px;
+  object-fit: contain;
+  border-radius: var(--mantine-radius-md);
+}

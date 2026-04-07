@@ -2,3 +2,19 @@ routes:
   index:
     path: /
     controller: BC\Controller\Index::test
+
+  admin_modules_api:
+    path: /api/admin/modules
+    controller: BC\Controller\Index::adminModules
+
+  admin_media_upload:
+    path: /api/admin/media/upload
+    controller: BC\Controller\Index::adminMediaUpload
+
+  admin:
+    path: /admin/.*
+    controller: BC\Controller\Index::adminTest
+
+  admin_index:
+    path: /admin
+    controller: BC\Controller\Index::adminTest

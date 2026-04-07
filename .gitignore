@@ -9,3 +9,5 @@ new
 vendor
 log
 static
+
+node_modules

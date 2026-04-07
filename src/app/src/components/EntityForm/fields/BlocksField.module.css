@@ -1,0 +1,25 @@
+/*
+ * Only style the outer wrapper. Editor.js 2.31 has its own theming
+ * system built on CSS variables — overriding individual internal
+ * classes breaks interactive elements (in particular the Toolbox
+ * popover that appears on the `+` button click).
+ *
+ * Dark theme for the editor UI itself can be added later by overriding
+ * Editor.js's documented CSS variables, not by targeting its classes
+ * directly: https://editorjs.io/styles
+ */
+.editor {
+  background: var(--mantine-color-body);
+  border: 1px solid var(--mantine-color-dark-5);
+  border-radius: var(--mantine-radius-md);
+  padding: 12px 48px;
+  min-height: 240px;
+  position: relative;
+}
+
+/* Give inner content area full width since we removed the max-width cap
+   Editor.js normally uses for narrow reading columns. */
+.editor :global(.ce-block__content),
+.editor :global(.ce-toolbar__content) {
+  max-width: none;
+}
