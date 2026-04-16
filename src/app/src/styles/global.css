@@ -8,17 +8,61 @@
  * Reference: https://mantine.dev/styles/css-variables-list/
  */
 
-:root {
-  --mantine-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', sans-serif;
+:root,
+:root[data-mantine-color-scheme="light"] {
+  --color-brand: #16A34A;
+  --color-text: #131415;
+  --color-accent: #589E64;
+  --color-link: #26914E;
+  --color-link-hover: #166534;
+
+  --color-surface: #FFF;
+  --color-bg: #F4F4F5;
+  --color-text-secondary: #71717A;
+  --color-border: #E4E4E7;
+  --color-contrast: #000;
+  --color-error: #EF4444;
+
+  --header-bg: var(--color-surface);
+
+  --mantine-font-family: 'IBM Plex Sans', 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
   --mantine-font-family-headings: var(--mantine-font-family);
-  --mantine-font-family-monospace: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --mantine-font-family-monospace: 'IBM Plex Mono', monospace;
+  --mantine-font-family-serif: 'IBM Plex Serif', "Merriweather", "Georgia", serif;
 
   --mantine-radius-default: var(--mantine-radius-md);
+
+  --border-width: 1px;
+  --border: var(--border-width) solid var(--color-border);
+
+  --transition-duration: .2s;
+  --transition-function: cubic-bezier(.4, 0, .2, 1);
+  --transition: var(--transition-duration) var(--transition-function);
+
+  --transition-slow-duration: .25s;
+  --transition-slow-function: var(--transition-function);
+  --transition-slow: var(--transition-slow-duration) var(--transition-slow-function);
+
+  --border-radius: 8px;
+  --border-radius-big: calc(2 * var(--border-radius));
+  --border-radius-small: calc(.5 * var(--border-radius));
+
+  --rhythmic-unit: 16px;
+
+  --mantine-primary-color-filled: var(--color-link);
+  --mantine-primary-color-filled-hover: var(--mantine-primary-color-filled);
+}
+
+@media (prefers-reduced-motion) {
+  :root {
+    --transition: none;
+    --transition-slow: none;
+  }
 }
 
 /* Dark scheme: override Mantine's default dark palette */
-[data-mantine-color-scheme='dark'] {
+[data-mantine-color-scheme='dark'],
+:root[data-mantine-color-scheme='dark'] {
   --mantine-color-dark-0: #c9c9c9;
   --mantine-color-dark-1: #b8b8b8;
   --mantine-color-dark-2: #828282;
@@ -30,7 +74,25 @@
   --mantine-color-dark-8: #1f1f1f;
   --mantine-color-dark-9: #141414;
 
+  --color-brand: #22C55E;
+
+  --color-bg: #111111;
+  --color-surface: #1C1C1C;
+  --color-text: #E5E5E5;
+  --color-text-secondary: #A1A1A1;
+  --color-border: #27272A;
+
+  --color-link: #4ADE80;
+  --color-link-hover: #86EFAC;
+  --color-contrast: #FFF;
+
+  --header-bg: var(--color-surface);
+
+  --border: var(--border-width) solid var(--color-border);
+
   --mantine-color-body: var(--mantine-color-dark-9);
+  --mantine-primary-color-filled: var(--color-link);
+  --mantine-primary-color-filled-hover: var(--mantine-primary-color-filled);
 }
 
 html,
@@ -40,7 +102,7 @@ body {
 }
 
 body {
-  font-family: var(--mantine-font-family);
+  font-family: var(--mantine-font-family), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

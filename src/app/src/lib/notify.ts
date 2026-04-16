@@ -1,5 +1,6 @@
 import { notifications } from '@mantine/notifications';
 import type { NotificationData } from '@mantine/notifications';
+import {ReactNode} from "react";
 
 /**
  * Thin typed wrapper around @mantine/notifications.
@@ -17,8 +18,8 @@ type NotifyOptions = Omit<NotificationData, 'message' | 'title' | 'color'>;
 
 function show(
   color: string,
-  title: string,
-  message?: string,
+  title: ReactNode,
+  message?: ReactNode,
   options?: NotifyOptions,
 ) {
   notifications.show({
@@ -30,12 +31,12 @@ function show(
 }
 
 export const notify = {
-  success: (title: string, message?: string, options?: NotifyOptions) =>
+  success: (title: ReactNode, message?: ReactNode, options?: NotifyOptions) =>
     show('teal', title, message, options),
-  error: (title: string, message?: string, options?: NotifyOptions) =>
+  error: (title: ReactNode, message?: ReactNode, options?: NotifyOptions) =>
     show('red', title, message, options),
-  info: (title: string, message?: string, options?: NotifyOptions) =>
+  info: (title: ReactNode, message?: ReactNode, options?: NotifyOptions) =>
     show('blue', title, message, options),
-  warning: (title: string, message?: string, options?: NotifyOptions) =>
+  warning: (title: ReactNode, message?: ReactNode, options?: NotifyOptions) =>
     show('yellow', title, message, options),
 };

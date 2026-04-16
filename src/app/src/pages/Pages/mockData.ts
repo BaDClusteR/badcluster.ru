@@ -1,11 +1,4 @@
-export interface PageRow {
-  id: number;
-  title: string;
-  slug: string;
-  status: 'draft' | 'published';
-  author: string;
-  updatedAt: string;
-}
+import {PageRow} from "@/pages/Blog/Posts/types.ts";
 
 const TITLES = [
   'Home', 'About', 'Contact', 'Pricing', 'Blog', 'Changelog',

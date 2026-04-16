@@ -31,6 +31,15 @@ services:
   BC\Core\Helper\IAttributesHelper:
     class: BC\Core\Helper\AttributesHelper
 
+  BC\Core\Auth\IAuth:
+    class: BC\Core\Auth\Auth
+
+  BC\Core\Auth\ApiAuth:
+    decorates: ApiPlatform\Core\Singleton\IAuth
+
+  BC\Core\Converter\IConverter:
+    class: BC\Core\Converter\ConverterFactory
+
 
 # Website-specific services
   BC\Provider\IMenuItemsProvider:

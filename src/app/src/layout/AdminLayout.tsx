@@ -1,25 +1,18 @@
 import { Suspense } from 'react';
-import { Outlet, NavLink as RouterNavLink, useLocation, useNavigate } from 'react-router';
-import { notify } from '@/lib/notify';
+import { Outlet, NavLink as RouterNavLink, useLocation} from 'react-router';
 import {
   AppShell,
   Box,
-  Burger,
-  Group,
   Loader,
   NavLink,
+  Overlay,
   ScrollArea,
   Text,
   Title,
-  useMantineColorScheme,
-  ActionIcon,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
   IconDashboard,
-  IconSun,
-  IconMoon,
-  IconLogout,
   IconChartBar,
   IconSettings,
   IconDatabase,
@@ -36,6 +29,10 @@ import {
 } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
 import type { ResolvedModule } from '@/modules/types';
+import classes from "./AdminLayout.module.css"
+import clsx from "clsx";
+import logoUrl from '@/static/img/logo.svg';
+import Header from "@/layout/Header.tsx";
 
 type TablerIcon = ComponentType<IconProps>;
 
@@ -73,20 +70,29 @@ const navStyles = {
   root: { borderRadius: 'var(--mantine-radius-md)', marginBottom: 4 },
 };
 
-function NavItemView({ item, pathname }: { item: NavItem; pathname: string }) {
+function NavItemView({ item, pathname, level = 1}: { item: NavItem; pathname: string, level?: number }) {
   const active = isItemActive(item, pathname);
 
   if (item.children?.length) {
     return (
       <NavLink
+        className={clsx(classes.navbarLink, classes[`navbarLinkLevel${level}`])}
+        classNames={{
+          collapse: classes.navbarLinkCollapse,
+          children: classes.navbarLinkChildren
+        }}
         label={item.label}
-        leftSection={<item.icon size={18} />}
+        leftSection={
+          <span className={classes.navbarLinkIcon}>
+            <item.icon size={16} />
+          </span>
+        }
         active={active}
         defaultOpened={active}
         styles={navStyles}
       >
         {item.children.map((child) => (
-          <NavItemView key={child.label} item={child} pathname={pathname} />
+          <NavItemView level={level + 1} key={child.label} item={child} pathname={pathname} />
         ))}
       </NavLink>
     );
@@ -95,10 +101,15 @@ function NavItemView({ item, pathname }: { item: NavItem; pathname: string }) {
   return (
     <NavLink
       component={RouterNavLink}
+      className={clsx(classes.navbarLink, classes[`navbarLinkLevel${level}`])}
       to={item.path!}
       end={item.path === '/admin'}
       label={item.label}
-      leftSection={<item.icon size={18} />}
+      leftSection={
+        <span className={classes.navbarLinkIcon}>
+          <item.icon size={16} />
+        </span>
+      }
       active={active}
       styles={navStyles}
     />
@@ -106,20 +117,9 @@ function NavItemView({ item, pathname }: { item: NavItem; pathname: string }) {
 }
 
 export function AdminLayout({ modules, loading }: AdminLayoutProps) {
-  const [opened, { toggle }] = useDisclosure();
+  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-
-  async function handleLogout() {
-    try {
-      await fetch('/api/admin/logout', { method: 'POST' });
-    } catch {
-      // Network error — still log out on the client
-    }
-    notify.success('Signed out');
-    navigate('/admin/login', { replace: true });
-  }
 
   const navItems: NavItem[] = [
     { label: 'Dashboard', path: '/admin', icon: IconDashboard },
@@ -151,62 +151,30 @@ export function AdminLayout({ modules, loading }: AdminLayoutProps) {
 
   return (
     <AppShell
+      layout="alt"
       header={{ height: 56 }}
       navbar={{
         width: 260,
         breakpoint: 'sm',
-        collapsed: { mobile: !opened },
+        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}
       padding="md"
-      styles={{
-        main: {
-          background: 'var(--mantine-color-dark-8)',
-          minHeight: '100vh',
-        },
-        header: {
-          background: 'var(--mantine-color-dark-7)',
-          borderBottom: '1px solid var(--mantine-color-dark-5)',
-        },
-        navbar: {
-          background: 'var(--mantine-color-dark-7)',
-          borderRight: '1px solid var(--mantine-color-dark-5)',
-        },
-      }}
     >
-      {/* Header */}
-      <AppShell.Header>
-        <Group h="100%" px="md" justify="space-between">
-          <Group>
-            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-            <Title order={4} style={{ letterSpacing: '-0.02em' }}>
-              BC Admin
-            </Title>
-          </Group>
-          <Group gap="xs">
-            <ActionIcon
-              variant="subtle"
-              size="lg"
-              onClick={toggleColorScheme}
-              aria-label="Toggle theme"
-            >
-              {colorScheme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
-            </ActionIcon>
-            <ActionIcon
-              variant="subtle"
-              size="lg"
-              color="red"
-              onClick={handleLogout}
-              aria-label="Logout"
-            >
-              <IconLogout size={18} />
-            </ActionIcon>
-          </Group>
-        </Group>
-      </AppShell.Header>
-
+      <Header
+        mobileOpened={mobileOpened}
+        desktopOpened={desktopOpened}
+        toggleMobile={toggleMobile}
+        toggleDesktop={toggleDesktop}
+      />
       {/* Sidebar */}
-      <AppShell.Navbar>
-        <ScrollArea p="xs" style={{ flex: 1 }}>
+      <AppShell.Navbar className={classes.navbar} zIndex={200} withBorder={false}>
+        <div className={classes.navbarTitleContainer}>
+          <img src={logoUrl} alt="BC Logo" />
+          <Title order={4} style={{ letterSpacing: '-0.02em' }}>
+            BC Admin
+          </Title>
+        </div>
+        <ScrollArea style={{ flex: 1 }} classNames={{content: classes.navbarScrollContent}}>
           {navItems.map((item) => (
             <NavItemView key={item.label} item={item} pathname={location.pathname} />
           ))}
@@ -223,7 +191,15 @@ export function AdminLayout({ modules, loading }: AdminLayoutProps) {
       </AppShell.Navbar>
 
       {/* Content */}
-      <AppShell.Main>
+      <AppShell.Main className={classes.main}>
+        <Overlay
+          color="#000"
+          backgroundOpacity={0.5}
+          zIndex={199}
+          fixed
+          onClick={toggleMobile}
+          className={clsx(classes.navbarOverlay, mobileOpened && classes.navbarOverlayVisible)}
+        />
         <Suspense
           fallback={
             <Box

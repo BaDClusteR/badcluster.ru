@@ -1,0 +1,4 @@
+routes:
+  admin_api:
+    path: /admin/api/{section}
+    controller: ApiPlatform\Controller\IApiRouter::route

@@ -2,54 +2,71 @@
   display: flex;
   flex-direction: column;
   gap: var(--mantine-spacing-md);
+  background: var(--color-surface);
+  padding: 0 var(--rhythmic-unit) var(--rhythmic-unit) var(--rhythmic-unit);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+
+  &.loading {
+    table {
+      pointer-events: none;
+    }
+  }
+
+  &:not(.error) table tr:hover td {
+    background: var(--table-tr-hover);
+  }
 }
 
 .tableCard {
-  background: var(--mantine-color-dark-7);
-  border: 1px solid var(--mantine-color-dark-5);
-  border-radius: var(--mantine-radius-md);
+  border-block-end: var(--border);
   overflow: hidden;
   position: relative;
+  margin-left: calc(-1 * var(--rhythmic-unit));
+  margin-right: calc(-1 * var(--rhythmic-unit));
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+
+  --table-tr-hover: #F5F5F5;
 }
 
-.table th,
-.table td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--mantine-color-dark-5);
-  font-size: var(--mantine-font-size-sm);
+[data-mantine-color-scheme="dark"] .table {
+  --table-tr-hover: #151515;
 }
 
-.table th {
-  background: var(--mantine-color-dark-8);
-  color: var(--mantine-color-dimmed);
-  font-weight: 600;
-  font-size: var(--mantine-font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  user-select: none;
-  white-space: nowrap;
-}
+.table {
+  th,
+  td {
+    padding: calc(.75 * var(--rhythmic-unit)) var(--rhythmic-unit);
+    text-align: left;
+    border-bottom: var(--border);
+    font-size: var(--mantine-font-size-sm);
+  }
 
-.table tbody tr:hover {
-  background: var(--mantine-color-dark-6);
-}
+  th {
+    color: var(--mantine-color-dimmed);
+    font-weight: 600;
+    font-size: var(--mantine-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    user-select: none;
+    white-space: nowrap;
+  }
 
-.table tbody tr:last-child td {
-  border-bottom: none;
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
 }
 
 .sortable {
   cursor: pointer;
-}
 
-.sortable:hover {
-  color: var(--mantine-color-text);
+  &:hover {
+    color: var(--mantine-color-text);
+  }
 }
 
 .sortIcon {
@@ -68,10 +85,10 @@
   color: var(--mantine-primary-color-filled);
   text-decoration: none;
   font-weight: 500;
-}
 
-.cellLink:hover {
-  text-decoration: underline;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .actionsCell {
@@ -81,6 +98,12 @@
 }
 
 .empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--mantine-color-dimmed);
+}
+
+.errorContainer {
   padding: 48px 24px;
   text-align: center;
   color: var(--mantine-color-dimmed);
@@ -107,4 +130,8 @@
   align-items: center;
   justify-content: center;
   z-index: 1;
+}
+
+.skeletonPagination {
+  width: auto;
 }

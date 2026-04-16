@@ -9,7 +9,11 @@ use Runway\Singleton\Container;
 
 trait LoggerTrait
 {
-    public function getLogger(): ILogger {
+    protected function getLogger(): ILogger {
+        return static::getLoggerStatic();
+    }
+
+    protected static function getLoggerStatic(): ILogger {
         return Container::getInstance()->getService(ILogger::class);
     }
 }

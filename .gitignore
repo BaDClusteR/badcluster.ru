@@ -8,6 +8,6 @@ new
 .env.local
 vendor
 log
-static
+/static
 
 node_modules

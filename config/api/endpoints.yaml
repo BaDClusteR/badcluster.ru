@@ -1,0 +1,4 @@
+services:
+  BC\Api\Endpoint\BlogPost:
+    tags:
+      - name: api_endpoint_collection

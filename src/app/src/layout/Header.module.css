@@ -1,0 +1,13 @@
+.header {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.header-burger[data-opened] {
+  background: var(--burger-color);
+
+  &:before,
+  &:after {
+    transform: none;
+  }
+}

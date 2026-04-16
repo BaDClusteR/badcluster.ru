@@ -1,62 +1,88 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router';
 import {
   Group,
-  Loader,
   Pagination,
   Select,
-  TextInput,
+  Skeleton,
 } from '@mantine/core';
-import { IconChevronUp, IconChevronDown, IconSelector, IconSearch } from '@tabler/icons-react';
-import type { ColumnDef, DataTableProps } from './types';
+import { IconChevronUp, IconChevronDown, IconSelector} from '@tabler/icons-react';
+import type {ColumnDef, DataTableProps, TableSort, TableState} from "./types";
 import classes from './DataTable.module.css';
+import deepMerge from "@/utils/deepMerge";
+import clsx from "clsx";
 
 const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 100];
+
+function TableSkeleton() {
+  return <Skeleton height={10} mt={6} mb={6} radius="xl" width="70%" />;
+}
 
 export function DataTable<T>({
   columns,
   rows,
   total,
-  state: manager,
   rowKey,
+  state,
   actions,
   loading = false,
-  filterable = false,
   perPageOptions = DEFAULT_PER_PAGE_OPTIONS,
   emptyMessage = 'No data',
-}: DataTableProps<T>) {
-  const { state, setState } = manager;
-
-  // Local filter input, debounced into the state manager.
-  const [filterInput, setFilterInput] = useState(state.filter);
-
-  useEffect(() => {
-    setFilterInput(state.filter);
-  }, [state.filter]);
-
-  useEffect(() => {
-    if (filterInput === state.filter) return;
-    const t = setTimeout(() => setState({ filter: filterInput }), 300);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterInput]);
-
+  onStateChange,
+  error,
+  errorContent
+}: DataTableProps<T>
+) {
   const totalPages = Math.max(1, Math.ceil(total / state.perPage));
   const from = total === 0 ? 0 : (state.page - 1) * state.perPage + 1;
   const to = Math.min(total, state.page * state.perPage);
 
-  function handleSort(col: ColumnDef<T>) {
-    if (!col.sortable) return;
-    if (state.sortBy !== col.key) {
-      setState({ sortBy: col.key, sortDir: 'asc' });
-    } else if (state.sortDir === 'asc') {
-      setState({ sortDir: 'desc' });
-    } else {
-      setState({ sortBy: null, sortDir: 'asc' });
+  if (!rows.length && loading) {
+    // @ts-expect-error
+    rows = [[], [], [], [], []];
+  }
+
+  function handleStateChange(newState: Partial<TableState>) {
+    if (!onStateChange) {
+      return;
     }
+
+    onStateChange(
+      deepMerge(
+        state,
+        newState
+      ) as TableState
+    );
+  }
+
+  function handleSort(col: ColumnDef<T>) {
+    if (!col.sortable) {
+      return;
+    }
+
+    const newSort: TableSort = {
+      sortBy: null,
+      sortDir: 'asc'
+    };
+
+    if (state.sortBy !== col.key) {
+      newSort.sortBy = col.key;
+    } else if (state.sortDir === 'asc') {
+      newSort.sortBy = state.sortBy;
+      newSort.sortDir = 'desc';
+    }
+
+    handleStateChange({
+      sortBy: newSort.sortBy,
+      sortDir: newSort.sortDir,
+    })
   }
 
   function renderCell(col: ColumnDef<T>, row: T) {
+    if (loading) {
+      return <TableSkeleton />;
+    }
+
     const content = col.render
       ? col.render(row)
       : col.accessor
@@ -74,26 +100,15 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={classes.wrapper}>
-      {filterable && (
-        <TextInput
-          placeholder="Search..."
-          value={filterInput}
-          onChange={(e) => setFilterInput(e.currentTarget.value)}
-          leftSection={<IconSearch size={16} />}
-          style={{ maxWidth: 320 }}
-        />
-      )}
-
-      <div className={classes.tableCard}>
-        {loading && (
-          <div className={classes.loadingOverlay}>
-            <Loader />
-          </div>
-        )}
-
-        <table className={classes.table}>
-          <thead>
+    <>
+      <div className={clsx(
+        classes.wrapper,
+        loading && classes.loading,
+        error && classes.error
+      )}>
+        <div className={classes.tableCard}>
+          <table className={classes.table}>
+            <thead>
             <tr>
               {columns.map((col) => {
                 const isSorted = state.sortBy === col.key;
@@ -120,11 +135,22 @@ export function DataTable<T>({
                   </th>
                 );
               })}
-              {actions && <th className={classes.actionsCell}>Actions</th>}
+              {actions && <th className={classes.actionsCell}> </th>}
             </tr>
-          </thead>
-          <tbody>
-            {rows.length === 0 && !loading && (
+            </thead>
+            <tbody>
+            {
+              error &&
+              <tr>
+                <td
+                  colSpan={columns.length + (actions ? 1 : 0)}
+                  className={classes.errorContainer}
+                >
+                  {errorContent}
+                </td>
+              </tr>
+            }
+            {!error && rows.length === 0 && !loading && (
               <tr>
                 <td
                   colSpan={columns.length + (actions ? 1 : 0)}
@@ -134,49 +160,57 @@ export function DataTable<T>({
                 </td>
               </tr>
             )}
-            {rows.map((row) => (
+            {!error && rows.map((row, rowIndex) => (
               <tr key={rowKey(row)}>
-                {columns.map((col) => (
-                  <td key={col.key} style={{ textAlign: col.align ?? 'left' }}>
+                {columns.map((col, colIndex) => (
+                  <td key={col.key ?? `${rowIndex}-${colIndex}`} style={{ textAlign: col.align ?? 'left' }}>
                     {renderCell(col, row)}
                   </td>
                 ))}
                 {actions && (
                   <td className={classes.actionsCell}>
                     <Group gap="xs" justify="flex-end" wrap="nowrap">
-                      {actions(row)}
+                      {loading ? <TableSkeleton /> : actions(row)}
                     </Group>
                   </td>
                 )}
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+        </div>
 
-      <div className={classes.footer}>
-        <Group gap="sm">
-          <span className={classes.footerInfo}>
-            {from}–{to} of {total}
-          </span>
-          <Select
-            size="xs"
-            value={String(state.perPage)}
-            onChange={(v) => v && setState({ perPage: Number(v), page: 1 })}
-            data={perPageOptions.map((n) => ({ value: String(n), label: `${n} / page` }))}
-            w={110}
-            allowDeselect={false}
-          />
-        </Group>
+        <div className={classes.footer}>
+          <Group gap="sm">
+            <span className={classes.footerInfo}>
+              <Skeleton visible={loading}>
+                {from}–{to} of {total}
+              </Skeleton>
+            </span>
+            <Select
+              size="xs"
+              value={String(state.perPage)}
+              onChange={(v) => v && handleStateChange({ perPage: Number(v), page: 1 })}
+              data={perPageOptions.map((n) => ({ value: String(n), label: `${n} / page` }))}
+              w={110}
+              allowDeselect={false}
+              disabled={loading || error}
+            />
+          </Group>
 
-        <Pagination
-          value={state.page}
-          onChange={(page) => setState({ page })}
-          total={totalPages}
-          siblings={1}
-          size="sm"
-        />
+          {
+            !error && <Skeleton visible={loading} className={classes.skeletonPagination}>
+              <Pagination
+                value={state.page}
+                onChange={(page) => handleStateChange({ page })}
+                total={totalPages}
+                siblings={1}
+                size="sm"
+              />
+            </Skeleton>
+          }
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import { Anchor, Breadcrumbs, Title } from '@mantine/core';
 import { EntityForm, type FieldDef } from '@/components/EntityForm';
 import { notify } from '@/lib/notify';
-import { MOCK_PAGES } from './mockData';
+import { MOCK_PAGES } from '@/pages/Pages/mockData.ts';
 
 const FIELDS: FieldDef[] = [
   {

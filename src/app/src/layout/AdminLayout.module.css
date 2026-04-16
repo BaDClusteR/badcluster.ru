@@ -1,0 +1,111 @@
+:root {
+  --navbar-icon-size: 32px;
+  --navbar-subsection-bg: #21252D;
+  --navbar-bg: #2B303B;
+  --navbar-color: #788195;
+  --navbar-hover-color: #FFF;
+  --navbar-width: 260px;
+}
+
+.navbar {
+  background: var(--navbar-bg);
+  color: var(--navbar-color);
+  width: calc(100% - 60px);
+  max-width: var(--navbar-width);
+  top: 0;
+  height: 100dvh;
+}
+
+.navbar-overlay {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+
+  @media (min-width: 48em) {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion) {
+    transition: none;
+  }
+}
+
+.navbar-overlay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.navbar-link {
+  --nl-bg: transparent;
+  --nl-hover: transparent;
+  --nl-color: var(--navbar-hover-color);
+
+  transition: var(--transition) color;
+  padding-inline: calc(var(--mantine-spacing-sm) + var(--mantine-spacing-xs));
+
+  &[data-active],
+  &[data-current="page"] {
+    background-color: transparent;
+    color: var(--nl-color);
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: transparent;
+    color: var(--nl-color);
+  }
+}
+
+.navbar-link--level-2 {
+  .navbar-link__icon {
+    background: var(--navbar-bg);
+  }
+}
+
+.scrollArea {
+  padding: var(--mantine-spacing-xs) 0;
+}
+
+.navbar-link__icon {
+  width: var(--navbar-icon-size);
+  height: var(--navbar-icon-size);
+  background: var(--navbar-subsection-bg);
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-link__collapse {
+  background: var(--navbar-subsection-bg);
+  position: relative;
+  padding-block: var(--mantine-spacing-xs);
+}
+
+.navbar-link__children {
+  padding-inline-start: 0;
+}
+
+.navbar-title__container {
+  height: 64px;
+  padding: calc(.5 * var(--rhythmic-unit));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(.5 * var(--rhythmic-unit));
+  color: #FFF;
+
+  img {
+    width: calc(2 * var(--rhythmic-unit));
+    height: auto;
+  }
+}
+
+.navbar-scroll-content {
+  padding-top: var(--rhythmic-unit);
+}
+
+.main {
+  background: var(--color-bg);
+}
