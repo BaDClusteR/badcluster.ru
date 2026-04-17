@@ -1,16 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router';
 import {
+  Checkbox,
   Group,
-  Pagination,
+  Pagination, PaginationFirst,
   Select,
-  Skeleton,
-} from '@mantine/core';
+  Skeleton
+} from "@mantine/core";
 import { IconChevronUp, IconChevronDown, IconSelector} from '@tabler/icons-react';
 import type {ColumnDef, DataTableProps, TableSort, TableState} from "./types";
 import classes from './DataTable.module.css';
 import deepMerge from "@/utils/deepMerge";
 import clsx from "clsx";
+import {EntityRow} from "@/components/List/types.ts";
+import buttonClasses from "../Button/Button.module.css";
 
 const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
@@ -18,7 +21,7 @@ function TableSkeleton() {
   return <Skeleton height={10} mt={6} mb={6} radius="xl" width="70%" />;
 }
 
-export function DataTable<T>({
+export function DataTable<T extends EntityRow>({
   columns,
   rows,
   total,
@@ -30,12 +33,21 @@ export function DataTable<T>({
   emptyMessage = 'No data',
   onStateChange,
   error,
-  errorContent
+  errorContent,
+  selectable,
+  selectedRows,
+  onSelectionChange
 }: DataTableProps<T>
 ) {
   const totalPages = Math.max(1, Math.ceil(total / state.perPage));
   const from = total === 0 ? 0 : (state.page - 1) * state.perPage + 1;
   const to = Math.min(total, state.page * state.perPage);
+  let isSelectedAll = true;
+  rows.forEach((_row, i) => {
+    if (isSelectedAll && !selectedRows?.[i]) {
+      isSelectedAll = false;
+    }
+  });
 
   if (!rows.length && loading) {
     // @ts-expect-error
@@ -99,6 +111,18 @@ export function DataTable<T>({
     return content;
   }
 
+  const getFullWidthColSpan = () => {
+    let result = columns.length;
+    if (actions) {
+      result++;
+    }
+    if (selectable) {
+      result++;
+    }
+
+    return result;
+  }
+
   return (
     <>
       <div className={clsx(
@@ -110,6 +134,27 @@ export function DataTable<T>({
           <table className={classes.table}>
             <thead>
             <tr>
+              {
+                selectable &&
+                <th key="select-th">
+                  <Checkbox
+                    checked={isSelectedAll}
+                    onChange={
+                      (event) => {
+                        if (onSelectionChange) {
+                          const isSelectRow = !!event?.currentTarget?.checked;
+                          const newSelectedRows: boolean[] = [];
+                          rows.forEach((_row, i) => {
+                            newSelectedRows[i] = isSelectRow;
+                          });
+
+                          onSelectionChange(newSelectedRows);
+                        }
+                      }
+                    }
+                  />
+                </th>
+              }
               {columns.map((col) => {
                 const isSorted = state.sortBy === col.key;
                 return (
@@ -143,7 +188,7 @@ export function DataTable<T>({
               error &&
               <tr>
                 <td
-                  colSpan={columns.length + (actions ? 1 : 0)}
+                  colSpan={getFullWidthColSpan()}
                   className={classes.errorContainer}
                 >
                   {errorContent}
@@ -153,29 +198,52 @@ export function DataTable<T>({
             {!error && rows.length === 0 && !loading && (
               <tr>
                 <td
-                  colSpan={columns.length + (actions ? 1 : 0)}
+                  colSpan={getFullWidthColSpan()}
                   className={classes.empty}
                 >
                   {emptyMessage}
                 </td>
               </tr>
             )}
-            {!error && rows.map((row, rowIndex) => (
-              <tr key={rowKey(row)}>
-                {columns.map((col, colIndex) => (
-                  <td key={col.key ?? `${rowIndex}-${colIndex}`} style={{ textAlign: col.align ?? 'left' }}>
-                    {renderCell(col, row)}
-                  </td>
-                ))}
-                {actions && (
-                  <td className={classes.actionsCell}>
-                    <Group gap="xs" justify="flex-end" wrap="nowrap">
-                      {loading ? <TableSkeleton /> : actions(row)}
-                    </Group>
-                  </td>
-                )}
-              </tr>
-            ))}
+            {
+              !error &&
+              rows.map(
+                (row, rowIndex) => (
+                  <tr key={rowKey(row)}>
+                    {
+                      selectable &&
+                      <td key={`${rowIndex}-select`}>
+                        <Checkbox
+                          checked={!!selectedRows?.[rowIndex]}
+                          onChange={
+                            (event) => {
+                              if (onSelectionChange) {
+                                let newSelectedRows = selectedRows ?? [];
+                                newSelectedRows[rowIndex] = !!event?.currentTarget?.checked;
+
+                                onSelectionChange(newSelectedRows);
+                              }
+                            }
+                          }
+                        />
+                      </td>
+                    }
+                    {columns.map((col, colIndex) => (
+                      <td key={col.key ?? `${rowIndex}-${colIndex}`} style={{ textAlign: col.align ?? 'left' }}>
+                        {renderCell(col, row)}
+                      </td>
+                    ))}
+                    {actions && (
+                      <td className={classes.actionsCell}>
+                        <Group gap="xs" justify="flex-end" wrap="nowrap">
+                          {loading ? <TableSkeleton /> : actions(row)}
+                        </Group>
+                      </td>
+                    )}
+                  </tr>
+                )
+              )
+            }
             </tbody>
           </table>
         </div>
@@ -200,13 +268,24 @@ export function DataTable<T>({
 
           {
             !error && <Skeleton visible={loading} className={classes.skeletonPagination}>
-              <Pagination
+              <Pagination.Root
+                classNames={{
+                  control: clsx(buttonClasses.button, classes.paginationButton)
+                }}
                 value={state.page}
                 onChange={(page) => handleStateChange({ page })}
                 total={totalPages}
                 siblings={1}
                 size="sm"
-              />
+              >
+                <Group gap={5} justify="center">
+                  <Pagination.First className={classes.paginationButton} />
+                  <Pagination.Previous className={classes.paginationButton} />
+                  <Pagination.Items />
+                  <Pagination.Next className={classes.paginationButton} />
+                  <Pagination.Last className={classes.paginationButton} />
+                </Group>
+              </Pagination.Root>
             </Skeleton>
           }
         </div>

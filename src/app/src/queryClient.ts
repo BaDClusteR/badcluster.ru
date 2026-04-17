@@ -3,7 +3,6 @@ import { notify } from '@/lib/notify';
 import { HttpError } from '@/utils/errors';
 
 const globalErrorHandler = (error: any) => {
-    // Проверяем, наша ли это ошибка
     if (error instanceof HttpError) {
         if (error.status === 503) {
             notify.error('Сервер недоступен. Попробуйте позже.');
@@ -15,11 +14,9 @@ const globalErrorHandler = (error: any) => {
 };
 
 export const queryClient = new QueryClient({
-    // Настраиваем кэш для useQuery (GET)
     queryCache: new QueryCache({
         onError: globalErrorHandler,
     }),
-    // Настраиваем кэш для useMutation (POST/PUT/DELETE)
     mutationCache: new MutationCache({
         onError: globalErrorHandler,
     }),

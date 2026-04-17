@@ -4,10 +4,11 @@ namespace BC\Api\Endpoint;
 
 use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
+use ApiPlatform\Exception\BadRequestException;
 use ApiPlatform\Exception\RuntimeInternalErrorException;
 use BC\Api\DTO\BlogPostDTO;
 use BC\Api\DTO\BlogPostsDTO;
-use BC\Api\DTO\BlogPostStatusEnum;
+use BC\Api\Enum\BlogPostStatusEnum;
 use BC\Core\Converter\IConverter;
 use BC\Model\Post;
 use Throwable;
@@ -20,6 +21,9 @@ readonly class BlogPost
     ) {
     }
 
+    /**
+     * @throws BadRequestException
+     */
     #[API\Endpoint(path: "posts", method: "GET")]
     #[Docs\Endpoint("Get the list of blog posts")]
     public function getList(
@@ -43,7 +47,6 @@ readonly class BlogPost
         #[Docs\Argument(example: 10, description: "Results count on the page")]
         int $perPage = 25
     ): BlogPostsDTO {
-//        throw new RuntimeInternalErrorException('test');
         $filter = strtolower(trim($filter));
         $page = max(1, $page);
         $perPage = max(1, min(100, $perPage));
@@ -57,11 +60,13 @@ readonly class BlogPost
                 ->setVariable('filter', "%$filter%");
         }
 
-        if (in_array($sortBy, $this->getSortableColumns())) {
-//            if ($sortBy === 'status') {
-//                $sortBy = 'published';
-//            }
+        if ($sortBy && !in_array($sortBy, $this->getSortableColumns())) {
+            throw new BadRequestException(
+                sprintf("Не могу сортировать по '%s'.", $sortBy)
+            );
+        }
 
+        if (in_array($sortBy, $this->getSortableColumns())) {
             $qb = $qb->orderBy(
                 $sortBy,
                 $this->sanitizeSortDirection($sortDir)
@@ -83,12 +88,12 @@ readonly class BlogPost
             id: $post->getId(),
             title: $post->getTitle(),
             slug: $post->getSlug(),
-            status: $post->getPublished()
-                ? BlogPostStatusEnum::PUBLISHED->value
-                : BlogPostStatusEnum::DRAFT->value,
-            publishDate: $this->converter->convertTimestampToDateTimeString(
-                $post->getPublishDate()->getTimestamp()
-            ),
+            published: $post->getPublished(),
+            publishDate: $post->getPublished()
+                ? $this->converter->convertTimestampToDateTimeString(
+                    $post->getPublishDate()->getTimestamp()
+                )
+                : "—"
         );
     }
 
@@ -96,7 +101,7 @@ readonly class BlogPost
      * @return string[]
      */
     private function getSortableColumns(): array {
-        return ['title', 'slug', 'status', 'publishDate'];
+        return ['title', 'slug', 'published', 'publishDate'];
     }
 
     private function sanitizeSortDirection(string $sortDirection): string {

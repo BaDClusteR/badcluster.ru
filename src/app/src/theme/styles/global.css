@@ -18,10 +18,13 @@
 
   --color-surface: #FFF;
   --color-bg: #F4F4F5;
+  --color-lvl1: var(--color-bg);
   --color-text-secondary: #71717A;
   --color-border: #E4E4E7;
   --color-contrast: #000;
+  --color-anti-contrast: #FFF;
   --color-error: #EF4444;
+
 
   --header-bg: var(--color-surface);
 
@@ -78,13 +81,18 @@
 
   --color-bg: #111111;
   --color-surface: #1C1C1C;
+  --color-lvl1: #1C1C1C;
   --color-text: #E5E5E5;
   --color-text-secondary: #A1A1A1;
   --color-border: #27272A;
+  --color-button-text: var(--color-surface);
 
   --color-link: #4ADE80;
   --color-link-hover: #86EFAC;
   --color-contrast: #FFF;
+  --color-anti-contrast: #111;
+  --color-button: var(--color-accent);
+  --color-button-hover: var(--color-link-hover);
 
   --header-bg: var(--color-surface);
 
@@ -109,4 +117,15 @@ body {
 
 #root {
   min-height: 100vh;
+}
+
+a,
+a:visited {
+  color: var(--color-link);
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    color: var(--color-link-hover);
+  }
 }

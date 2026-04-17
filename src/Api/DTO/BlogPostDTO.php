@@ -8,7 +8,7 @@ class BlogPostDTO
         public int $id,
         public string $title,
         public string $slug,
-        public string $status,
+        public bool $published,
         public string $publishDate
     ) {
     }

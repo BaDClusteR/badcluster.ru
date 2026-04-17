@@ -57,4 +57,7 @@ export interface DataTableProps<T> {
     onStateChange: (state: TableState) => void,
     error?: boolean,
     errorContent?: ReactNode,
+    selectable?: boolean,
+    selectedRows?: boolean[],
+    onSelectionChange?: (selectedRows: boolean[]) => void,
 }

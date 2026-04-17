@@ -49,11 +49,16 @@
     color: var(--nl-color);
   }
 
-  &:hover,
-  &:focus,
-  &:active {
-    background: transparent;
-    color: var(--nl-color);
+  &,
+  &:visited {
+    color: var(--navbar-color);
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: transparent;
+      color: var(--nl-color);
+    }
   }
 }
 

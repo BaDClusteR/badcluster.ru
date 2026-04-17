@@ -1,4 +1,5 @@
 import {ColumnDef, TableState} from "@/components/DataTable";
+import {ReactNode} from "react";
 
 export interface ListState {
     table: TableState,
@@ -10,12 +11,16 @@ export interface PartialListState {
     filter?: string
 }
 
-export interface ListProps {
+export interface ListProps<T> {
     name: string,
+    title: ReactNode,
+    searchPlaceHolder?: string,
     permissions: ListPermissions,
     defaults?: PartialListState,
     dataProvider: ListDataProvider<any>,
-    columns: ColumnDef<any>[]
+    columns: ColumnDef<any>[],
+    getEditLink?: (row: T) => string,
+    getDeleteLink?: (row: T) => string,
 }
 
 export type ListDataProviderRequest<T> = (state: ListState, options: ListDataProviderRequestOptions) => Promise<ListDataResponse<T>>;

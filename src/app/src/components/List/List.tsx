@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {ActionIcon, Button, Group, TextInput, Title} from "@mantine/core";
+import {ActionIcon, Group, TextInput, Title} from "@mantine/core";
 import {IconPencil, IconTrash, IconPlus, IconSearch} from "@tabler/icons-react";
 import {
   DataTable,
@@ -13,9 +13,21 @@ import classes from "./List.module.css";
 import {useQuery} from "@tanstack/react-query";
 import {useDebouncedCallback} from "use-debounce";
 import showApiError from "@/utils/showApiError";
+import Button from "@/components/Button/Button.tsx";
+import clsx from "clsx";
 
 export function List<T extends EntityRow>(
-  {name, permissions, defaults, dataProvider, columns}: ListProps
+  {
+    name,
+    permissions,
+    defaults,
+    dataProvider,
+    columns,
+    title,
+    searchPlaceHolder,
+    getEditLink,
+    getDeleteLink
+  }: ListProps<T>
 ) {
   const listState = useUrlListState({defaults});
   const {state} = listState;
@@ -76,13 +88,51 @@ export function List<T extends EntityRow>(
       300
     );
 
+  const renderActions = (row: EntityRow) => {
+    const actions = [];
+    if (permissions.edit) {
+      actions.push(
+        <ActionIcon
+          component="a"
+          href={getEditLink?.(row as any)}
+          variant="subtle"
+          aria-label="Редактировать"
+          className={clsx(classes.action, classes.actionEdit)}
+        >
+          <IconPencil size={16} />
+        </ActionIcon>
+      )
+    }
+
+    if (permissions.delete) {
+      actions.push(
+        <ActionIcon
+          component="a"
+          href={getDeleteLink?.(row as any)}
+          variant="subtle"
+          color="red"
+          aria-label="Удалить"
+          className={clsx(classes.action, classes.actionDelete)}
+        >
+          <IconTrash size={16} />
+        </ActionIcon>
+      )
+    }
+
+    return actions.length
+      ? <>{actions}</>
+      : null;
+  }
+
+
+
   return (
     <>
-      <Title order={2}>Pages</Title>
+      <Title className={classes.title} order={2}>{title}</Title>
       <Group justify="space-between" mb="lg">
         {permissions.filter && (
           <TextInput
-            placeholder="Search..."
+            placeholder={searchPlaceHolder ?? "Search..."}
             value={filterText}
             onChange={(e) => {
               const value = String(e?.target?.value || '');
@@ -112,27 +162,7 @@ export function List<T extends EntityRow>(
         rowKey={(row) => row.id}
         error={!!err}
         errorContent={errorContent}
-        actions={(row) => (
-          <>
-            <ActionIcon
-              component="a"
-              href={`/admin/pages/${row.id}`}
-              variant="subtle"
-              aria-label="Edit"
-              className={classes.actionEdit}
-            >
-              <IconPencil size={16} />
-            </ActionIcon>
-            <ActionIcon
-              variant="subtle"
-              color="red"
-              aria-label="Delete"
-              className={classes.actionDelete}
-            >
-              <IconTrash size={16} />
-            </ActionIcon>
-          </>
-        )}
+        actions={(row) => renderActions(row)}
         onStateChange={(state: TableState) => {
           handleSetState({
             table: state

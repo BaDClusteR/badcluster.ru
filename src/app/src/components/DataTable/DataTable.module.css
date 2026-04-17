@@ -82,11 +82,12 @@
 }
 
 .cellLink {
-  color: var(--mantine-primary-color-filled);
   text-decoration: none;
   font-weight: 500;
 
-  &:hover {
+  &:hover,
+  &:focus-visible,
+  &:active {
     text-decoration: underline;
   }
 }
@@ -134,4 +135,35 @@
 
 .skeletonPagination {
   width: auto;
+}
+
+button.paginationButton {
+  background: transparent;
+  border: var(--border-width) solid var(--color-accent);
+  color: var(--color-accent);
+
+  &:not([disabled]) {
+    &:hover,
+    &:focus,
+    &:active {
+      border-color: var(--color-accent);
+      background-color: var(--color-accent);
+      color: var(--color-anti-contrast);
+    }
+  }
+
+  &[disabled] {
+    opacity: .2;
+  }
+
+  &[data-active="true"] {
+    &,
+    &:hover,
+    &:focus-visible,
+    &:active {
+      border-color: var(--color-accent);
+      background-color: var(--color-accent);
+      color: var(--color-button-text);
+    }
+  }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace BC\Api\DTO;
+namespace BC\Api\Enum;
 
 enum BlogPostStatusEnum: string {
     case PUBLISHED = 'published';

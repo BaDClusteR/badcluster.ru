@@ -1,3 +1,12 @@
+.action {
+  &,
+  &:visited,
+  &:hover,
+  &:focus,
+  &:active {
+    color: var(--ai-color);
+  }
+}
 .actionEdit {
   --ai-color: var(--color-link) !important;
   --ai-hover: color-mix(in srgb, var(--color-link), transparent 80%) !important;
@@ -6,4 +15,8 @@
 .actionDelete {
   --ai-color: var(--color-error) !important;
   --ai-hover: color-mix(in srgb, var(--color-error), transparent 80%) !important;
+}
+
+.title {
+  margin-block-end: var(--mantine-spacing-lg);
 }

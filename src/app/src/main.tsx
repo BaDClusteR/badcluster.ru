@@ -10,8 +10,8 @@ import {queryClient} from "./queryClient";
 
 import '@mantine/core/styles.layer.css';
 import '@mantine/notifications/styles.css';
-import './styles/font.css';
-import './styles/global.css';
+import './theme/styles/font.css';
+import './theme/styles/global.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
