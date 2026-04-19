@@ -1,0 +1,9 @@
+.header {
+  border-bottom: var(--border-width) solid color-mix(in srgb, var(--color-border), transparent 50%);
+  padding-block: calc(.5 * var(--rhythmic-unit));
+  min-height: calc(2.75 * var(--rhythmic-unit));
+}
+
+.title {
+  font-weight: 600;
+}

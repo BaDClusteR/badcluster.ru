@@ -6,7 +6,7 @@ export default async function apiCall(
     method: ApiCallMethod,
     endpoint: string,
     data: StringKeyObject,
-    options: ApiCallOptions
+    options?: ApiCallOptions
 ): Promise<StringKeyObject> {
     const headers: {[key: string]: string} = {};
     let fetchUrl = `/admin/api/${endpoint}`;
@@ -25,7 +25,7 @@ export default async function apiCall(
     } else {
         headers['Content-Type'] = 'application/json';
         fetchParams.body = JSON.stringify(data);
-        if (options.signal) {
+        if (options?.signal) {
             fetchParams.signal = options.signal;
         }
     }

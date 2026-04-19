@@ -1,4 +1,6 @@
 .wrapper {
+  --selected-row-bg: color-mix(in srgb, var(--color-accent), transparent 90%);
+
   display: flex;
   flex-direction: column;
   gap: var(--mantine-spacing-md);
@@ -6,6 +8,7 @@
   padding: 0 var(--rhythmic-unit) var(--rhythmic-unit) var(--rhythmic-unit);
   border-radius: var(--border-radius);
   overflow: hidden;
+  transition: var(--transition) background-color;
 
   &.loading {
     table {
@@ -20,10 +23,12 @@
 
 .tableCard {
   border-block-end: var(--border);
-  overflow: hidden;
+  transition: var(--transition) border-color;
   position: relative;
   margin-left: calc(-1 * var(--rhythmic-unit));
   margin-right: calc(-1 * var(--rhythmic-unit));
+  overflow: auto;
+  scrollbar-width: thin;
 }
 
 .table {
@@ -31,6 +36,10 @@
   border-collapse: collapse;
 
   --table-tr-hover: #F5F5F5;
+
+  tr.selectedRow {
+    --table-tr-hover: color-mix(in srgb, var(--selected-row-bg), transparent 50%);
+  }
 }
 
 [data-mantine-color-scheme="dark"] .table {
@@ -44,6 +53,7 @@
     text-align: left;
     border-bottom: var(--border);
     font-size: var(--mantine-font-size-sm);
+    transition: var(--transition) border-bottom-color, var(--transition) color;
   }
 
   th {
@@ -61,11 +71,23 @@
   }
 }
 
+.selectedRow {
+  background: var(--selected-row-bg);
+}
+
 .sortable {
   cursor: pointer;
 
   &:hover {
-    color: var(--mantine-color-text);
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
+}
+
+th.sortableActive {
+  &,
+  &:hover {
+    color: var(--color-contrast);
   }
 }
 
@@ -74,11 +96,15 @@
   vertical-align: middle;
   margin-left: 6px;
   opacity: 0.6;
+
+  svg {
+    transform: translate(-1px, -1px);
+  }
 }
 
 .sortActive {
   opacity: 1;
-  color: var(--mantine-primary-color-filled);
+  color: var(--color-contrast);
 }
 
 .cellLink {
@@ -116,6 +142,7 @@
   justify-content: space-between;
   gap: var(--mantine-spacing-md);
   flex-wrap: wrap;
+  min-height: calc(2.25 * var(--rhythmic-unit));
 }
 
 .footerInfo {
@@ -166,4 +193,18 @@ button.paginationButton {
       color: var(--color-button-text);
     }
   }
+}
+
+.actionPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--rhythmic-unit);
+}
+
+.subContent {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  opacity: .7;
 }

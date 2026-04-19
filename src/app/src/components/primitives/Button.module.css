@@ -1,0 +1,57 @@
+.button {
+  --color-button-text: var(--color-anti-contrast);
+  --color-button: var(--color-accent);
+  --color-button-hover: color-mix(in srgb, var(--color-button), var(--color-contrast) 25%);
+
+  color: var(--color-button-text);
+  background: var(--color-button);
+  border: none;
+  transition: var(--transition) color, var(--transition) background-color, var(--transition) border-color, var(--transition) opacity;
+
+  &:not([disabled]) {
+    &:hover,
+    &:focus-visible,
+    &:active {
+      background: var(--color-button-hover);
+    }
+  }
+
+  &[data-variant="default"] {
+    color: var(--color-text);
+    background: transparent;
+    border: var(--border);
+
+    &:not([disabled]) {
+      &:hover,
+      &:focus-visible,
+      &:active {
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+        background: transparent;
+      }
+    }
+
+    &[disabled] {
+      opacity: .2;
+    }
+  }
+}
+
+.colorred {
+  --color-button: var(--color-error);
+
+  &[data-variant="default"] {
+    border-color: var(--color-error);
+    color: var(--color-error);
+
+    &:not([disabled]) {
+      &:hover,
+      &:focus-visible,
+      &:active {
+        border-color: var(--color-error);
+        background: color-mix(in srgb, var(--color-error), transparent 80%);
+        color: var(--color-error);
+      }
+    }
+  }
+}

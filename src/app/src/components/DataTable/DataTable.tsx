@@ -1,19 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router';
 import {
-  Checkbox,
   Group,
-  Pagination, PaginationFirst,
+  Pagination,
   Select,
   Skeleton
 } from "@mantine/core";
+import Checkbox from "@/components/primitives/Checkbox";
 import { IconChevronUp, IconChevronDown, IconSelector} from '@tabler/icons-react';
 import type {ColumnDef, DataTableProps, TableSort, TableState} from "./types";
 import classes from './DataTable.module.css';
 import deepMerge from "@/utils/deepMerge";
 import clsx from "clsx";
 import {EntityRow} from "@/components/List/types.ts";
-import buttonClasses from "../Button/Button.module.css";
+import buttonClasses from "../primitives/Button.module.css";
 
 const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
@@ -25,7 +25,6 @@ export function DataTable<T extends EntityRow>({
   columns,
   rows,
   total,
-  rowKey,
   state,
   actions,
   loading = false,
@@ -36,13 +35,14 @@ export function DataTable<T extends EntityRow>({
   errorContent,
   selectable,
   selectedRows,
-  onSelectionChange
+  onSelectionChange,
+  bulkActions
 }: DataTableProps<T>
 ) {
   const totalPages = Math.max(1, Math.ceil(total / state.perPage));
   const from = total === 0 ? 0 : (state.page - 1) * state.perPage + 1;
   const to = Math.min(total, state.page * state.perPage);
-  let isSelectedAll = true;
+  let isSelectedAll = rows.length > 0;
   rows.forEach((_row, i) => {
     if (isSelectedAll && !selectedRows?.[i]) {
       isSelectedAll = false;
@@ -95,20 +95,36 @@ export function DataTable<T extends EntityRow>({
       return <TableSkeleton />;
     }
 
-    const content = col.render
+    let content = col.render
       ? col.render(row)
       : col.accessor
       ? col.accessor(row)
       : (row as Record<string, unknown>)[col.key] as React.ReactNode;
 
+    let subContent = col.subRender
+      ? col.subRender(row)
+      : col.subKey
+      ? (row as Record<string, unknown>)[col.subKey] as React.ReactNode
+      : null;
+
+    if (subContent) {
+      subContent = <span className={classes.subContent}>
+        {subContent}
+      </span>
+    }
+
     if (col.link) {
-      return (
+      content = (
         <Link to={col.link(row)} className={classes.cellLink}>
           {content}
         </Link>
       );
     }
-    return content;
+
+    return <>
+      {content}
+      {subContent}
+    </>;
   }
 
   const getFullWidthColSpan = () => {
@@ -140,12 +156,11 @@ export function DataTable<T extends EntityRow>({
                   <Checkbox
                     checked={isSelectedAll}
                     onChange={
-                      (event) => {
+                      (value) => {
                         if (onSelectionChange) {
-                          const isSelectRow = !!event?.currentTarget?.checked;
                           const newSelectedRows: boolean[] = [];
                           rows.forEach((_row, i) => {
-                            newSelectedRows[i] = isSelectRow;
+                            newSelectedRows[i] = value;
                           });
 
                           onSelectionChange(newSelectedRows);
@@ -164,7 +179,12 @@ export function DataTable<T extends EntityRow>({
                       width: col.width,
                       textAlign: col.align ?? 'left',
                     }}
-                    className={col.sortable ? classes.sortable : undefined}
+                    className={
+                      clsx(
+                        col.sortable && classes.sortable,
+                        isSorted && classes.sortableActive
+                      )
+                    }
                     onClick={() => handleSort(col)}
                   >
                     {col.header}
@@ -209,17 +229,20 @@ export function DataTable<T extends EntityRow>({
               !error &&
               rows.map(
                 (row, rowIndex) => (
-                  <tr key={rowKey(row)}>
+                  <tr
+                    key={`${row.id}-${rowIndex}-${!!selectedRows?.[rowIndex]}`}
+                    className={clsx(!!selectedRows?.[rowIndex] && classes.selectedRow)}
+                  >
                     {
                       selectable &&
                       <td key={`${rowIndex}-select`}>
                         <Checkbox
                           checked={!!selectedRows?.[rowIndex]}
                           onChange={
-                            (event) => {
+                            (value) => {
                               if (onSelectionChange) {
-                                let newSelectedRows = selectedRows ?? [];
-                                newSelectedRows[rowIndex] = !!event?.currentTarget?.checked;
+                                let newSelectedRows = Array.from(selectedRows ?? []);
+                                newSelectedRows[rowIndex] = value;
 
                                 onSelectionChange(newSelectedRows);
                               }
@@ -265,7 +288,14 @@ export function DataTable<T extends EntityRow>({
               disabled={loading || error}
             />
           </Group>
-
+          {
+            selectable
+            && ((selectedRows ?? []).filter(Boolean).length > 0)
+            && bulkActions
+            && <Group key={`panel-${selectable}-${selectedRows?.length}`} className={classes.actionPanel}>
+              {bulkActions}
+            </Group>
+          }
           {
             !error && <Skeleton visible={loading} className={classes.skeletonPagination}>
               <Pagination.Root

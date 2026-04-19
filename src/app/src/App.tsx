@@ -14,8 +14,8 @@ export function App() {
       <Route path="/admin/login" element={<LoginPage />} />
       <Route path="/admin" element={<AdminLayout modules={modules} loading={loading} />}>
         <Route index element={<DashboardPage />} />
-        <Route path="pages" element={<BlogPosts />} />
-        <Route path="pages/:id" element={<PageEdit />} />
+        <Route path="posts" element={<BlogPosts />} />
+        <Route path="posts/:id" element={<PageEdit />} />
         {modules.map((mod) => (
           <Route key={mod.path} path={mod.path} element={<mod.component />} />
         ))}

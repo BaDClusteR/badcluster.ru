@@ -40,6 +40,11 @@ readonly class Converter implements IConverter
         return $this->convertTimestampToString($timestamp, $this->dateFormat);
     }
 
+    public function convertTimestampToTimeString(int $timestamp): string
+    {
+        return $this->convertTimestampToString($timestamp, "H:i");
+    }
+
     public function convertTimestampToDateTimeString(int $timestamp): string
     {
         return $this->convertTimestampToString($timestamp, $this->dateTimeFormat);

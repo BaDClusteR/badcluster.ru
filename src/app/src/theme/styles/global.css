@@ -8,6 +8,7 @@
  * Reference: https://mantine.dev/styles/css-variables-list/
  */
 
+
 :root,
 :root[data-mantine-color-scheme="light"] {
   --color-brand: #16A34A;
@@ -38,7 +39,7 @@
   --border-width: 1px;
   --border: var(--border-width) solid var(--color-border);
 
-  --transition-duration: .2s;
+  --transition-duration: .3s;
   --transition-function: cubic-bezier(.4, 0, .2, 1);
   --transition: var(--transition-duration) var(--transition-function);
 
@@ -127,5 +128,37 @@ a:visited {
   &:focus-visible,
   &:active {
     color: var(--color-link-hover);
+    outline-color: currentColor;
   }
+}
+
+@keyframes outline-animation {
+  from {
+    outline-offset: 8px;
+  } to {
+    outline-offset: 2px;
+  }
+}
+
+a,
+button,
+input[type="checkbox"] {
+  -webkit-tap-highlight-color: transparent;
+  outline-color: currentColor;
+
+  &:focus-visible {
+    animation: var(--transition) outline-animation;
+  }
+}
+
+.mantine-Input-input {
+  transition: var(--transition) border-color, var(--transition) color, var(--transition) background-color;
+
+  &::placeholder {
+    transition: calc(.5 * var(--transition-duration)) var(--transition-function) color;
+  }
+}
+
+.mantine-Notification-root {
+  border: var(--border);
 }

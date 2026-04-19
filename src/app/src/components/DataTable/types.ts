@@ -27,17 +27,19 @@ export interface TableStateManager {
 
 export interface ColumnDef<T> {
     /** Unique column key. Used as React key and matches state.sortBy when sortable. */
-    key: string;
-    header: ReactNode;
-    sortable?: boolean;
-    width?: number | string;
-    align?: "left" | "right" | "center";
+    key: string,
+    subKey?: string,
+    header: ReactNode,
+    sortable?: boolean,
+    width?: number | string,
+    align?: "left" | "right" | "center",
     /** Custom cell renderer — takes precedence over accessor. */
-    render?: (row: T) => ReactNode;
+    render?: (row: T) => ReactNode,
+    subRender?: (row: T) => ReactNode,
     /** Simple value extractor used when `render` is not provided. */
-    accessor?: (row: T) => ReactNode;
+    accessor?: (row: T) => ReactNode,
     /** If set, cell is rendered as an SPA link to the returned path. */
-    link?: (row: T) => string;
+    link?: (row: T) => string,
 }
 
 export interface DataTableProps<T> {
@@ -46,8 +48,6 @@ export interface DataTableProps<T> {
     /** Total number of rows across all pages (for pagination). */
     total: number,
     state: TableState,
-    /** Stable key extractor for each row. */
-    rowKey: (row: T) => string | number,
     /** Action buttons rendered in the last column. */
     actions?: (row: T) => ReactNode,
     loading?: boolean,
@@ -60,4 +60,5 @@ export interface DataTableProps<T> {
     selectable?: boolean,
     selectedRows?: boolean[],
     onSelectionChange?: (selectedRows: boolean[]) => void,
+    bulkActions?: ReactNode
 }

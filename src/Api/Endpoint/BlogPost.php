@@ -90,10 +90,15 @@ readonly class BlogPost
             slug: $post->getSlug(),
             published: $post->getPublished(),
             publishDate: $post->getPublished()
-                ? $this->converter->convertTimestampToDateTimeString(
+                ? $this->converter->convertTimestampToDateString(
                     $post->getPublishDate()->getTimestamp()
                 )
-                : "—"
+                : "—",
+            publishTime: $post->getPublished()
+                ? $this->converter->convertTimestampToTimeString(
+                    $post->getPublishDate()->getTimestamp()
+                )
+                : ""
         );
     }
 

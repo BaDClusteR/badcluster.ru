@@ -18,5 +18,7 @@ interface IConverter
 
     public function convertTimestampToDateString(int $timestamp): string;
 
+    public function convertTimestampToTimeString(int $timestamp): string;
+
     public function convertTimestampToDateTimeString(int $timestamp): string;
 }

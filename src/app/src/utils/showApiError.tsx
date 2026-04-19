@@ -2,9 +2,9 @@ import {ApiErrorContext} from "@/utils/types.ts";
 import {Optional} from "@/types.ts";
 import {notify} from "@/lib/notify.ts";
 
-export default function showApiError(payload: Optional<ApiErrorContext>) {
+export default function showApiError(payload: Optional<ApiErrorContext>, code?: number) {
     console.error('API Error', payload);
-    const errCode = payload?.errors?.[0]?.code;
+    const errCode = code ?? payload?.errors?.[0]?.code;
     const errMessage = payload?.errors?.[0]?.message;
     let place = payload?.file
         ? `${payload.file}:${payload.line}`

@@ -1,6 +1,7 @@
 .header {
   background: var(--color-surface);
   color: var(--color-text);
+  transition: var(--transition) background-color, var(--transition) color, var(--transition) border-bottom-color;
 }
 
 .header-burger[data-opened] {

@@ -1,11 +1,10 @@
-import {useEffect, useState} from "react";
+import {ReactNode, useEffect, useState} from "react";
 import {ActionIcon, Group, TextInput, Title} from "@mantine/core";
 import {IconPencil, IconTrash, IconPlus, IconSearch} from "@tabler/icons-react";
 import {
   DataTable,
   TableState
 } from "@/components/DataTable";
-import { notify } from '@/lib/notify';
 import {EntityRow, ListDataResponse, ListProps, ListState, PartialListState} from "@/components/List/types";
 import {useUrlListState} from "./useUrlListState";
 import {Nullable} from "@/types.ts";
@@ -13,8 +12,10 @@ import classes from "./List.module.css";
 import {useQuery} from "@tanstack/react-query";
 import {useDebouncedCallback} from "use-debounce";
 import showApiError from "@/utils/showApiError";
-import Button from "@/components/Button/Button.tsx";
+import Button from "@/components/primitives/Button";
 import clsx from "clsx";
+import {useDisclosure} from "@mantine/hooks";
+import Modal from "@/components/primitives/Modal";
 
 export function List<T extends EntityRow>(
   {
@@ -26,7 +27,11 @@ export function List<T extends EntityRow>(
     title,
     searchPlaceHolder,
     getEditLink,
-    getDeleteLink
+    onAdd,
+    onDelete,
+    addButtonTitle,
+    getDeleteConfirmationTitle,
+    getDeleteConfirmationText
   }: ListProps<T>
 ) {
   const listState = useUrlListState({defaults});
@@ -36,9 +41,18 @@ export function List<T extends EntityRow>(
   const [filterText, setFilterText] = useState(state.filter);
   const [tableData, setTableData] = useState({rows: [], total: 0} as ListDataResponse<any>);
   const [prevState, setPrevState] = useState<Nullable<ListState>>(null);
+  const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
+
+  const [isConfirmDeletion, { close: closeDeletionConfirmation, open: openDeletionConfirmation }] = useDisclosure();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const [deleteConfirmationTitle, setDeleteConfirmationTitle] = useState<ReactNode>("Подтверждение");
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState<ReactNode>("Действительно удалить?");
+  const [rowsToDelete, setRowsToDelete] = useState<EntityRow[]>([]);
 
   const handleSetState = (newState: PartialListState) => {
     setPrevState(state);
+    setSelectedRows([]);
     listState.setState(newState);
   }
 
@@ -73,6 +87,37 @@ export function List<T extends EntityRow>(
     }
   }
 
+  const renderBulkActions = (): ReactNode => {
+    return permissions.delete
+      ? <Button variant="default" color="red" onClick={
+        (e) => {
+          e.preventDefault();
+          const rowsToDelete: T|T[] = [];
+          selectedRows?.forEach((selected, rowIndex) => {
+            if (selected && data?.rows[rowIndex]) {
+              rowsToDelete.push(data?.rows[rowIndex]);
+            }
+          });
+
+          confirmDeletion(rowsToDelete);
+        }
+      }>
+        Удалить
+      </Button>
+      : null;
+  }
+
+  const confirmDeletion = (rows: T|T[]) => {
+    setDeleteConfirmationTitle(
+      getDeleteConfirmationTitle?.(rows as any[]) ?? "Действительно удалить?"
+    );
+    setDeleteConfirmationText(
+      getDeleteConfirmationText?.(rows as any[]) ?? "Подтверждение"
+    );
+    setRowsToDelete(rows as EntityRow[]);
+    openDeletionConfirmation();
+  }
+
   const errorContent = error
     ? <span>
         Ошибка!
@@ -94,6 +139,7 @@ export function List<T extends EntityRow>(
       actions.push(
         <ActionIcon
           component="a"
+          key={`row-${row.id}-edit`}
           href={getEditLink?.(row as any)}
           variant="subtle"
           aria-label="Редактировать"
@@ -107,12 +153,15 @@ export function List<T extends EntityRow>(
     if (permissions.delete) {
       actions.push(
         <ActionIcon
-          component="a"
-          href={getDeleteLink?.(row as any)}
+          key={`row-${row.id}-delete`}
           variant="subtle"
           color="red"
           aria-label="Удалить"
           className={clsx(classes.action, classes.actionDelete)}
+          onClick={(e) => {
+            e.preventDefault();
+            confirmDeletion([row as any]);
+          }}
         >
           <IconTrash size={16} />
         </ActionIcon>
@@ -124,15 +173,47 @@ export function List<T extends EntityRow>(
       : null;
   }
 
+  const renderDeleteConfirmationModal = () => {
+    return <Modal
+      opened={isConfirmDeletion}
+      onClose={isDeleting ? () => {} : closeDeletionConfirmation}
+      withCloseButton={!isDeleting}
+      title={deleteConfirmationTitle}
+    >
+      <p>{deleteConfirmationText}</p>
+      <Group justify="flex-end" className={classes.modalButtonsGroup}>
+        <Button disabled={isDeleting} onClick={closeDeletionConfirmation} variant="default">
+          Отмена
+        </Button>
+        <Button loading={isDeleting} onClick={async () => {
+          if (onDelete) {
+            setIsDeleting(true);
 
+            try {
+              await onDelete(rowsToDelete as any[]);
+              setIsDeleting(false);
+              closeDeletionConfirmation();
+              setSelectedRows([]);
+              await refetch();
+            } catch (error) {
+              setIsDeleting(false);
+            }
+          }
+        }}>
+          Удалить
+        </Button>
+      </Group>
+    </Modal>;
+  }
 
   return (
     <>
+      {renderDeleteConfirmationModal()}
       <Title className={classes.title} order={2}>{title}</Title>
       <Group justify="space-between" mb="lg">
         {permissions.filter && (
           <TextInput
-            placeholder={searchPlaceHolder ?? "Search..."}
+            placeholder={searchPlaceHolder ?? "Поиск..."}
             value={filterText}
             onChange={(e) => {
               const value = String(e?.target?.value || '');
@@ -146,9 +227,9 @@ export function List<T extends EntityRow>(
         {
           permissions.add && <Button
             leftSection={<IconPlus size={16} />}
-            onClick={() => notify.info('Not implemented', 'Create page coming soon')}
+            onClick={() => onAdd?.()}
           >
-            New page
+            {addButtonTitle ?? "Добавить"}
           </Button>
         }
       </Group>
@@ -159,15 +240,20 @@ export function List<T extends EntityRow>(
         loading={isFetching}
         total={tableData.total}
         state={state.table}
-        rowKey={(row) => row.id}
         error={!!err}
         errorContent={errorContent}
         actions={(row) => renderActions(row)}
+        selectable={permissions.select}
+        selectedRows={selectedRows}
         onStateChange={(state: TableState) => {
           handleSetState({
             table: state
           });
         }}
+        onSelectionChange={(rows) => {
+          setSelectedRows(rows);
+        }}
+        bulkActions={renderBulkActions()}
       />
     </>
   );

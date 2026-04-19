@@ -40,6 +40,11 @@ class ConverterFactory extends Singleton implements IConverter
         return $this->converter->convertTimestampToDateString($timestamp);
     }
 
+    public function convertTimestampToTimeString(int $timestamp): string
+    {
+        return $this->converter->convertTimestampToTimeString($timestamp);
+    }
+
     public function convertTimestampToDateTimeString(int $timestamp): string
     {
         return $this->converter->convertTimestampToDateTimeString($timestamp);

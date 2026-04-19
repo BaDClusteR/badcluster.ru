@@ -123,7 +123,7 @@ export function AdminLayout({ modules, loading }: AdminLayoutProps) {
 
   const navItems: NavItem[] = [
     { label: 'Dashboard', path: '/admin', icon: IconDashboard },
-    { label: 'Pages', path: '/admin/pages', icon: IconFile },
+    { label: 'Блогпосты', path: '/admin/posts', icon: IconFile },
     ...modules.map<NavItem>((m) => ({
       label: m.label,
       path: `/admin/${m.path}`,

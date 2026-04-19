@@ -1,4 +1,12 @@
 routes:
-  admin_api:
+  site_api_simple_action:
     path: /admin/api/{section}
+    controller: ApiPlatform\Controller\IApiRouter::route
+
+  site_api_action:
+    path: /admin/api/{section}/{identifier}
+    controller: ApiPlatform\Controller\IApiRouter::route
+
+  site_api_action_entity:
+    path: /admin/api/{section}/{identifier}/{subSection}
     controller: ApiPlatform\Controller\IApiRouter::route

@@ -5,4 +5,5 @@ export interface PageRow extends EntityRow {
     slug: string,
     published: boolean,
     publishDate: string,
+    publishTime: string
 }

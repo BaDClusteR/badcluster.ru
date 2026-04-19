@@ -1,0 +1,14 @@
+.checkbox {
+  cursor: pointer;
+  transition: var(--transition) background-color, var(--transition) color, var(--transition) border-color;
+  color: var(--color-link-hover);
+
+  &:checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+}
+
+.inner {
+  --checkbox-icon-color: var(--color-anti-contrast);
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import {Badge as MantineBadge} from "@mantine/core";
-import clsx from "clsx";
 import classes from "./Badge.module.css";
+import clsx from "clsx";
 
 export default function Badge(
   {
@@ -14,10 +14,13 @@ export default function Badge(
     children?: React.ReactNode
   }
 ): React.JSX.Element {
+  const color = type === 'success' ? 'teal' : 'gray';
+
   return <MantineBadge
-    className={clsx(className, classes.badge)}
-    color={type === 'success' ? 'teal' : 'gray'}
+    className={clsx(className, classes.badgeContainer, classes[`color${color}`])}
+    color={color}
     variant="light"
+    classNames={{label: classes.badge}}
   >
     {children}
   </MantineBadge>

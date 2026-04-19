@@ -17,7 +17,9 @@ export default function Header(
     toggleDesktop: () => void,
   }
 ) {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme({
+    keepTransitions: true
+  });
   const navigate = useNavigate();
 
   async function handleLogout() {

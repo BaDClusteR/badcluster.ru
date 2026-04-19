@@ -1,5 +1,6 @@
 import {ColumnDef, TableState} from "@/components/DataTable";
 import {ReactNode} from "react";
+import {Optional} from "@/types.ts";
 
 export interface ListState {
     table: TableState,
@@ -11,7 +12,7 @@ export interface PartialListState {
     filter?: string
 }
 
-export interface ListProps<T> {
+export interface ListProps<T extends EntityRow> {
     name: string,
     title: ReactNode,
     searchPlaceHolder?: string,
@@ -20,7 +21,11 @@ export interface ListProps<T> {
     dataProvider: ListDataProvider<any>,
     columns: ColumnDef<any>[],
     getEditLink?: (row: T) => string,
-    getDeleteLink?: (row: T) => string,
+    getDeleteConfirmationTitle?: (row: T|T[]) => Optional<ReactNode>,
+    getDeleteConfirmationText?: (row: T|T[]) => Optional<ReactNode>,
+    onAdd?: () => void,
+    onDelete?: (rows: T[]) => Promise<void>,
+    addButtonTitle?: string
 }
 
 export type ListDataProviderRequest<T> = (state: ListState, options: ListDataProviderRequestOptions) => Promise<ListDataResponse<T>>;
