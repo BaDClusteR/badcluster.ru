@@ -14,6 +14,7 @@ import deepMerge from "@/utils/deepMerge";
 import clsx from "clsx";
 import {EntityRow} from "@/components/List/types.ts";
 import buttonClasses from "../primitives/Button.module.css";
+import {IconEmpty} from "@/components/List/components/Icons.tsx";
 
 const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
@@ -29,7 +30,7 @@ export function DataTable<T extends EntityRow>({
   actions,
   loading = false,
   perPageOptions = DEFAULT_PER_PAGE_OPTIONS,
-  emptyMessage = 'No data',
+  emptyMessage,
   onStateChange,
   error,
   errorContent,
@@ -151,8 +152,8 @@ export function DataTable<T extends EntityRow>({
             <thead>
             <tr>
               {
-                selectable &&
-                <th key="select-th">
+                selectable
+                && <th key="select-th" className={classes.selectAll}>
                   <Checkbox
                     checked={isSelectedAll}
                     onChange={
@@ -221,7 +222,7 @@ export function DataTable<T extends EntityRow>({
                   colSpan={getFullWidthColSpan()}
                   className={classes.empty}
                 >
-                  {emptyMessage}
+                  {emptyMessage ?? <span className={classes.emptyInner}><IconEmpty /> Ничего не найдено</span>}
                 </td>
               </tr>
             )}

@@ -29,8 +29,8 @@ use Runway\Singleton\Container;
  * @method self setMime(string $mime)
  * @method string getAlt()
  * @method self setAlt(string $alt)
- * @method \BC\Model\Media|null getParent()
- * @method self setParent(\BC\Model\Media|null $parent)
+ * @method self|null getParent()
+ * @method self setParent(self|null $parent)
  * @method string getMd5()
  * @method self setMd5(string $md5)
  */
@@ -40,6 +40,14 @@ class Media extends AEntity
     use LoggerTrait;
     use FileSystemTrait;
     use PathsProviderTrait;
+
+    public const array ALLOWED_IMAGE_MIME_TYPES = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/webp',
+        'image/avif'
+    ];
 
     #[DS\Id]
     protected int $id;

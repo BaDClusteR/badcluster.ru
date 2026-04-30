@@ -1,17 +1,23 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Box, Text } from '@mantine/core';
 import EditorJS, { type OutputData, type ToolConstructable } from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Quote from '@editorjs/quote';
 import { MediaBlock } from './mediaBlock/MediaBlock';
+import { GalleryBlock } from './mediaBlock/GalleryBlock';
 import classes from './BlocksField.module.css';
+import "./editorjs.css";
+import {Optional} from "@/types.ts";
+import clsx from "clsx";
 
 interface BlocksFieldProps {
-  label: string;
-  description?: React.ReactNode;
-  value: OutputData | undefined;
-  onChange: (data: OutputData) => void;
+  label?: string,
+  description?: React.ReactNode,
+  placeholder?: string,
+  value: Optional<OutputData>,
+  onChange: (data: OutputData) => void,
+  className?: string,
 }
 
 /**
@@ -23,7 +29,7 @@ interface BlocksFieldProps {
  *   1. npm install @editorjs/<plugin>
  *   2. Import it here and add to the `tools` map.
  */
-export function BlocksField({ label, description, value, onChange }: BlocksFieldProps) {
+export function BlocksField({ label, description, placeholder, value, onChange, className }: BlocksFieldProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
@@ -42,8 +48,8 @@ export function BlocksField({ label, description, value, onChange }: BlocksField
 
     const editor = new EditorJS({
       holder,
-      data: value,
-      placeholder: 'Start writing...',
+      data: value ?? undefined,
+      placeholder: placeholder ?? false,
       tools: {
         header: {
           class: Header as unknown as ToolConstructable,
@@ -55,6 +61,7 @@ export function BlocksField({ label, description, value, onChange }: BlocksField
         },
         quote: Quote as unknown as ToolConstructable,
         media: MediaBlock as unknown as ToolConstructable,
+        gallery: GalleryBlock as unknown as ToolConstructable,
       },
       async onChange(api) {
         const saved = await api.saver.save();
@@ -86,7 +93,7 @@ export function BlocksField({ label, description, value, onChange }: BlocksField
           {description}
         </Text>
       )}
-      <div ref={wrapperRef} className={classes.editor} />
+      <div ref={wrapperRef} className={clsx(classes.editor, className)} />
     </Box>
   );
 }

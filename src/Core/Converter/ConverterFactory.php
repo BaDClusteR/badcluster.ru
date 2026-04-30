@@ -49,4 +49,9 @@ class ConverterFactory extends Singleton implements IConverter
     {
         return $this->converter->convertTimestampToDateTimeString($timestamp);
     }
+
+    public function convertTimestampToHumanReadableDate(int $timestamp): string
+    {
+        return $this->converter->convertTimestampToHumanReadableDate($timestamp);
+    }
 }

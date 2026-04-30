@@ -16,7 +16,7 @@
     }
   }
 
-  &:not(.error) table tr:hover td {
+  &:not(.error) table tr:not(:has(> .empty)):hover td {
     background: var(--table-tr-hover);
   }
 }
@@ -124,16 +124,24 @@ th.sortableActive {
   width: 1px;
 }
 
-.empty {
+td.errorContainer {
   padding: 48px 24px;
-  text-align: center;
-  color: var(--mantine-color-dimmed);
+  text-align: left;
+  color: var(--color-text);
+  transition: var(--transition) color;
 }
 
-.errorContainer {
-  padding: 48px 24px;
-  text-align: center;
-  color: var(--mantine-color-dimmed);
+td.empty {
+  padding: 24px;
+  text-align: left;
+  color: var(--color-text-secondary);
+}
+
+.wrapper.error,
+table:has(.emptyInner) {
+  .selectAll {
+    visibility: hidden;
+  }
 }
 
 .footer {
@@ -204,7 +212,23 @@ button.paginationButton {
 
 .subContent {
   display: block;
-  font-size: 12px;
+  font-size: var(--font-size-tiny);
   color: var(--color-text-secondary);
   opacity: .7;
+  transition: var(--transition) color;
+}
+
+.emptyInner {
+  display: inline-grid;
+  font-size: var(--font-size-base);
+  gap: var(--rhythmic-unit);
+  grid-template-columns: min-content 1fr;
+  align-items: center;
+}
+
+@media (min-width: 650px) {
+  td.errorContainer,
+  td.empty {
+    text-align: center;
+  }
 }

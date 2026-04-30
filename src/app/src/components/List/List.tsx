@@ -11,11 +11,12 @@ import {Nullable} from "@/types.ts";
 import classes from "./List.module.css";
 import {useQuery} from "@tanstack/react-query";
 import {useDebouncedCallback} from "use-debounce";
-import showApiError from "@/utils/showApiError";
 import Button from "@/components/primitives/Button";
 import clsx from "clsx";
 import {useDisclosure} from "@mantine/hooks";
 import Modal from "@/components/primitives/Modal";
+import {IconError} from "@/components/List/components/Icons.tsx";
+import {useNavigate} from "react-router";
 
 export function List<T extends EntityRow>(
   {
@@ -37,6 +38,7 @@ export function List<T extends EntityRow>(
   const listState = useUrlListState({defaults});
   const {state} = listState;
   const {getData} = dataProvider;
+  const navigate = useNavigate();
 
   const [filterText, setFilterText] = useState(state.filter);
   const [tableData, setTableData] = useState({rows: [], total: 0} as ListDataResponse<any>);
@@ -63,12 +65,6 @@ export function List<T extends EntityRow>(
   });
 
   const error: any = err;
-
-  useEffect(() => {
-    if (error && !error.isHandled) {
-      showApiError(error?.payload);
-    }
-  }, [error]);
 
   useEffect(() => {
     if (!isFetching && data) {
@@ -119,10 +115,20 @@ export function List<T extends EntityRow>(
   }
 
   const errorContent = error
-    ? <span>
-        Ошибка!
-        <button onClick={() => refetch()}>Попытаться еще раз</button>
-        {prevState && <button onClick={() => rollbackState()}>На шаг назад</button> }
+    ? <span className={classes.error}>
+        <IconError />
+        <span><strong>Упс!</strong> Что-то пошло не так.</span>
+        <Group gap="sm" className={classes.errorButtons}>
+          {
+            prevState
+            && <Button onClick={rollbackState} variant="default">
+              На шаг назад
+            </Button>
+          }
+          <Button onClick={() => refetch()}>
+            Попытаться еще раз
+          </Button>
+        </Group>
       </span>
     : null;
 
@@ -136,11 +142,17 @@ export function List<T extends EntityRow>(
   const renderActions = (row: EntityRow) => {
     const actions = [];
     if (permissions.edit) {
+      const url = String(getEditLink?.(row as any) || '');
+
       actions.push(
         <ActionIcon
           component="a"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(url);
+          }}
           key={`row-${row.id}-edit`}
-          href={getEditLink?.(row as any)}
+          href={url}
           variant="subtle"
           aria-label="Редактировать"
           className={clsx(classes.action, classes.actionEdit)}

@@ -5,19 +5,18 @@ namespace BC\Api\Endpoint;
 use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use ApiPlatform\Exception\BadRequestException;
-use ApiPlatform\Exception\RuntimeInternalErrorException;
+use BC\Api\DTO\BlogPostDetailedDTO;
 use BC\Api\DTO\BlogPostDTO;
 use BC\Api\DTO\BlogPostsDTO;
-use BC\Api\Enum\BlogPostStatusEnum;
+use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IConverter;
 use BC\Model\Post;
-use Throwable;
 
 #[Docs\Group("Blog posts")]
-readonly class BlogPost
+class BlogPost extends AEndpoint
 {
     public function __construct(
-        private IConverter $converter,
+        private readonly IConverter $converter
     ) {
     }
 
@@ -83,6 +82,44 @@ readonly class BlogPost
         );
     }
 
+    /**
+     * @throws NotFoundException
+     */
+    #[API\Endpoint(path: "post", method: "GET")]
+    public function getOne(
+        #[API\Parameter(source: "path", name: "identifier")]
+        int $id
+    ): BlogPostDetailedDTO {
+        $post = $this->handleWithException(
+            static fn() => Post::findByUniqueIdentifier($id)
+        );
+
+        if (!$post) {
+            throw new NotFoundException("Post #$id not found");
+        }
+
+        return $this->convertDetailedModel($post);
+    }
+
+    private function convertDetailedModel(Post $post): BlogPostDetailedDTO {
+        return new BlogPostDetailedDTO(
+            id: $post->getId(),
+            title: $post->getTitle(),
+            createdDate: $this->converter->convertTimestampToDateTimeString(
+                $post->getCreatedDate()->getTimestamp()
+            ),
+            publishDate: $this->converter->convertTimestampToDateTimeString(
+                $post->getPublishDate()->getTimestamp()
+            ),
+            updateDate: $this->converter->convertTimestampToDateTimeString(
+                $post->getUpdateDate()->getTimestamp()
+            ),
+            content: $post->getContent(),
+            published: $post->getPublished(),
+            slug: $post->getSlug()
+        );
+    }
+
     private function convertModel(Post $post): BlogPostDTO {
         return new BlogPostDTO(
             id: $post->getId(),
@@ -90,7 +127,7 @@ readonly class BlogPost
             slug: $post->getSlug(),
             published: $post->getPublished(),
             publishDate: $post->getPublished()
-                ? $this->converter->convertTimestampToDateString(
+                ? $this->converter->convertTimestampToHumanReadableDate(
                     $post->getPublishDate()->getTimestamp()
                 )
                 : "—",
@@ -119,13 +156,5 @@ readonly class BlogPost
 
     private function getDefaultSortDirection(): string {
         return "ASC";
-    }
-
-    private function handleWithException(callable $handler): mixed {
-        try {
-            return $handler();
-        } catch (Throwable $e) {
-            throw new RuntimeInternalErrorException($e->getMessage(), $e);
-        }
     }
 }

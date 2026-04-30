@@ -35,3 +35,29 @@ button.actionDelete {
 .modalButtonsGroup {
   margin-block-start: calc(2 * var(--rhythmic-unit));
 }
+
+.error {
+  display: inline-grid;
+  grid-template-columns: min-content 1fr;
+  gap: var(--rhythmic-unit);
+  text-align: left;
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  transition: var(--transition) color;
+
+  svg {
+    color: var(--color-error);
+    transition: var(--transition) color;
+  }
+
+  strong {
+    display: block;
+    font-size: var(--mantine-h3-font-size);
+    line-height: var(--mantine-h3-line-height);
+    margin-bottom: calc(.5 * var(--rhythmic-unit));
+  }
+}
+
+.errorButtons {
+  grid-column: 1 / 3;
+}

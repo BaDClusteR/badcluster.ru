@@ -36,7 +36,8 @@ export default function showApiError(payload: Optional<ApiErrorContext>, code?: 
     const paragraphs = [
         errMessage,
         place,
-        requestId
+        requestId,
+        "Подробности в консоли"
     ].filter(Boolean);
 
     return notify.error(

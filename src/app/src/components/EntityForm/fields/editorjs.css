@@ -1,0 +1,34 @@
+.codex-editor {
+  font-weight: 440;
+  font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
+  font-variation-settings: 'wdth' 95;
+  line-height: 1.5;
+
+  strong,
+  b {
+    color: var(--color-contrast);
+    transition: var(--transition) color;
+  }
+
+  .ce-paragraph {
+    line-height: 1.5;
+    padding: 0;
+  }
+
+  .ce-header {
+    padding: 0;
+    text-wrap: balance;
+  }
+
+  .ce-block:has(.ce-header) {
+    margin-top: calc(1.5 * var(--rhythmic-unit));
+  }
+}
+
+.codex-editor__redactor {
+  display: flex;
+  flex-direction: column;
+  row-gap: calc(1.5 * var(--rhythmic-unit));
+}

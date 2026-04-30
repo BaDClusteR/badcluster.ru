@@ -8,13 +8,22 @@
  * Editor.js's documented CSS variables, not by targeting its classes
  * directly: https://editorjs.io/styles
  */
+
 .editor {
   background: var(--mantine-color-body);
-  border: 1px solid var(--mantine-color-dark-5);
-  border-radius: var(--mantine-radius-md);
-  padding: 12px 48px;
+  border: var(--border);
+  border-radius: 0;
+  padding: 12px 80px;
   min-height: 240px;
   position: relative;
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: var(--transition) color, var(--transition) background-color;
+
+  > div {
+    max-width: 720px;
+    margin-inline: auto;
+  }
 }
 
 /* Give inner content area full width since we removed the max-width cap

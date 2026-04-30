@@ -3,6 +3,10 @@ import type { MediaBlockData, MediaData } from './types';
 import { uploadMedia, type UploadHandle } from './uploadMedia';
 import { renderPicture } from './renderPicture';
 import classes from './MediaBlock.module.css';
+import TextField from "@/components/EntityForm/fields/mediaBlock/settings/textfield.ts";
+import separator from "@/components/EntityForm/fields/mediaBlock/settings/separator.ts";
+import Toggle from "@/components/EntityForm/fields/mediaBlock/settings/toggle.ts";
+import {Nullable, Optional, StringKeyObject} from "@/types.ts";
 
 const ICON_MEDIA = `<svg width="17" height="15" viewBox="0 0 17 15" xmlns="http://www.w3.org/2000/svg"><path d="M2 1h13a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1Zm0 1v11h13V2H2Zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm8 5H4l3-4 2 2 3-4 4 6h-3Z" fill="currentColor"/></svg>`;
 
@@ -22,7 +26,7 @@ const ICON_MEDIA = `<svg width="17" height="15" viewBox="0 0 17 15" xmlns="http:
 export class MediaBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
-      title: 'Image / Video',
+      title: 'Медиа',
       icon: ICON_MEDIA,
     };
   }
@@ -33,9 +37,10 @@ export class MediaBlock implements BlockTool {
   }
 
   private api: API;
-  private data: MediaBlockData;
+  private readonly data: MediaBlockData;
   private wrapper!: HTMLDivElement;
   private upload: UploadHandle | null = null;
+  private imageId: Nullable<number> = null;
 
   constructor({ data, api }: { data: BlockToolData<MediaBlockData>; api: API }) {
     this.api = api;
@@ -71,44 +76,95 @@ export class MediaBlock implements BlockTool {
    * The "Lazy load" item is a toggle.
    */
   renderSettings() {
-    return [
-      {
-        icon: `<svg width="17" height="14" viewBox="0 0 17 14" xmlns="http://www.w3.org/2000/svg"><path d="M8.5 1.5C4.5 1.5 1.2 4 .5 7c.7 3 4 5.5 8 5.5s7.3-2.5 8-5.5c-.7-3-4-5.5-8-5.5Zm0 9A3.5 3.5 0 1 1 12 7a3.5 3.5 0 0 1-3.5 3.5Zm0-5.5A2 2 0 1 0 10.5 7a2 2 0 0 0-2-2Z" fill="currentColor"/></svg>`,
-        label: 'Lazy load',
-        toggle: true,
-        isActive: () => this.data.lazy,
-        onActivate: () => {
-          this.data.lazy = !this.data.lazy;
-          this.paint();
-        },
-      },
-    ];
+      const wrapper = document.createElement('div');
+      wrapper.classList.add(classes.mediaSettingsWrapper);
+
+      wrapper.appendChild(
+          separator()
+      );
+
+      wrapper.appendChild(
+          TextField({
+              placeholder: 'Альт текст',
+              onChange: (value: string) => {
+                  if (this.data.media) {
+                      this.data.media.alt = value;
+                      this.quickUpdate();
+                  }
+              },
+              value: String(this.data.media?.alt || '')
+          })
+      );
+
+      wrapper.appendChild(
+          Toggle({
+              value: this.data.lazy,
+              onChange: (checked: boolean): void => {
+                  this.data.lazy = checked;
+
+                  this.quickUpdate();
+              },
+              icon: `<svg width="17" height="14" viewBox="0 0 17 14" xmlns="http://www.w3.org/2000/svg"><path d="M8.5 1.5C4.5 1.5 1.2 4 .5 7c.7 3 4 5.5 8 5.5s7.3-2.5 8-5.5c-.7-3-4-5.5-8-5.5Zm0 9A3.5 3.5 0 1 1 12 7a3.5 3.5 0 0 1-3.5 3.5Zm0-5.5A2 2 0 1 0 10.5 7a2 2 0 0 0-2-2Z" fill="currentColor"/></svg>`,
+              label: "Lazy load"
+          })
+      );
+
+      return wrapper;
   }
 
   /** Rebuilds the block's inner DOM based on current state. */
   private paint() {
-    this.wrapper.innerHTML = '';
-
-    // Uploaded state → native <picture> / <video>
-    if (this.data.media) {
-      const el = renderPicture(this.data.media, {
-        lazy: this.data.lazy,
-        className: classes.media,
+      console.log({
+          old: this.data.media?.id,
+          new: this.imageId
       });
-      this.wrapper.appendChild(el);
-      return;
-    }
+      if (this.data.media?.id === this.imageId) {
+          this.quickUpdate();
+      } else {
+          this.fullRepaint();
+      }
+  }
 
-    // Empty state → clickable placeholder
-    const placeholder = document.createElement('button');
-    placeholder.type = 'button';
-    placeholder.className = classes.placeholder;
-    placeholder.innerHTML = `
+  private fullRepaint() {
+      this.wrapper.innerHTML = '';
+
+      // Uploaded state → native <picture> / <video>
+      if (this.data.media) {
+          const el = renderPicture(this.data.media, {
+              lazy: this.data.lazy,
+              className: classes.media,
+          });
+          this.wrapper.appendChild(el);
+
+          this.imageId = this.data.media.id;
+          console.log(this.imageId);
+          return;
+      }
+
+      // Empty state → clickable placeholder
+      const placeholder = document.createElement('button');
+      placeholder.type = 'button';
+      placeholder.className = classes.placeholder;
+      placeholder.innerHTML = `
       <div class="${classes.placeholderIcon}">${ICON_MEDIA}</div>
       <div class="${classes.placeholderText}">Click to upload an image or video</div>
     `;
-    placeholder.addEventListener('click', () => this.openPicker());
-    this.wrapper.appendChild(placeholder);
+      placeholder.addEventListener('click', () => this.openPicker());
+      this.wrapper.appendChild(placeholder);
+
+      this.imageId = null;
+  }
+
+  private quickUpdate() {
+      const img = this.wrapper.querySelector('img');
+      if (img) {
+          img.alt = this.data.media?.alt ?? '';
+          if (this.data.lazy) {
+              img.loading = "lazy";
+          } else {
+              img.removeAttribute("loading")
+          }
+      }
   }
 
   /** Opens a native file picker, then kicks off the upload if a file was chosen. */
@@ -173,13 +229,10 @@ export class MediaBlock implements BlockTool {
   }
 
   private notify(message: string, type: 'success' | 'error') {
-    // Editor.js ships with its own notifier; use it so toasts appear
-    // even if the block is used outside our Mantine Notifications host.
-    try {
-      this.api.notifier.show({ message, style: type });
-    } catch {
-      /* ignore */
-    }
+    this.api.notifier.show({
+      message,
+      style: type === 'success' ? 'confirmation' : 'alert',
+    });
   }
 
   destroy() {

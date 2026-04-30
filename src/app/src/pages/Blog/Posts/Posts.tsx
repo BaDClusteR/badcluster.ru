@@ -5,10 +5,6 @@ import {PageRow} from "./types";
 import {BadgeGray, BadgeGreen} from "@/components/primitives/Badge";
 import {notify} from "@/lib/notify.ts";
 import apiCall from "@/utils/apiCall.ts";
-import {HttpError} from "@/utils/errors.ts";
-import showApiError from "@/utils/showApiError.tsx";
-import {ApiErrorContext} from "@/utils/types.ts";
-import {Optional} from "@/types.ts";
 
 const columns: ColumnDef<PageRow>[] = [
   {
@@ -62,24 +58,15 @@ export default function BlogPosts() {
     }}
     getDeleteConfirmationTitle={(_row: PageRow|PageRow[]) => "Удаление постов"}
     onDelete={async (rows: PageRow[]) => {
-      try {
-        await apiCall(
-          "POST",
-          "posts/delete",
-          {rows: rows.map((row) => row.id)}
-        );
-      } catch (error) {
-        if (error instanceof HttpError && !error.isHandled) {
-          showApiError(
-            error?.payload as Optional<ApiErrorContext>,
-            error?.status
-          );
-
-          error.isHandled = true;
+      await apiCall(
+        "POST",
+        "posts/delete",
+        {
+          rows: rows.map(
+            (row) => row.id
+          )
         }
-
-        throw error;
-      }
+      );
     }}
   />
 }

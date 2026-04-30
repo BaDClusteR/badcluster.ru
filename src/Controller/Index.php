@@ -120,10 +120,14 @@ class Index extends AController
         $filename = "$slug.$ext";
         $target = "$yearDir/$filename";
         $i = 1;
-        while (file_exists($target)) {
+        while (file_exists($target) && $i < 10000) {
             $filename = "$slug-$i.$ext";
             $target = "$yearDir/$filename";
             $i++;
+        }
+
+        if (file_exists($target)) {
+            return $this->jsonResponse(500, ['error' => 'Failed to save upload']);
         }
 
         if (!@copy($file->getTmpName(), $target)) {

@@ -113,5 +113,4 @@
 
 .main {
   background: var(--color-bg);
-  transition: var(--transition) background-color;
 }

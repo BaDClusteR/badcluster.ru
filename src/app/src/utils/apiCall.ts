@@ -1,6 +1,7 @@
 import {StringKeyObject} from "@/types";
 import {ApiCallMethod, ApiCallOptions} from "./types";
 import {HttpError} from "@/utils/errors.ts";
+import showApiError from "@/utils/showApiError.tsx";
 
 export default async function apiCall(
     method: ApiCallMethod,
@@ -33,8 +34,15 @@ export default async function apiCall(
     const response = await fetch(fetchUrl, fetchParams);
 
     if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new HttpError(response.status, errorData);
+        const errorPayload = await response.json().catch(() => null);
+        const error = new HttpError(response.status, errorPayload);
+
+        if (errorPayload) {
+            showApiError(errorPayload);
+            error.isHandled = true;
+        }
+
+        throw error;
     }
 
     try {

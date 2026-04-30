@@ -1,0 +1,7 @@
+.wrapper {
+  grid-template-columns: 1fr;
+}
+
+.textField {
+  padding: calc(.125 * var(--rhythmic-unit)) calc(.5 * var(--rhythmic-unit));
+}

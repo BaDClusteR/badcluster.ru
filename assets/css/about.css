@@ -1,0 +1,31 @@
+.about__me {
+  --me-photo-margin: calc(1.5 * var(--rhythmic-unit));
+
+  float: right;
+  margin: var(--me-photo-margin) 0 var(--me-photo-margin) var(--me-photo-margin);
+  border-radius: var(--border-radius);
+  max-width: 45%;
+  height: auto;
+
+  @media (width < 540px) {
+    display: none;
+  }
+}
+
+.post__image-figure {
+  margin-block-start: calc(1.5 * var(--rhythmic-unit));
+}
+
+.about__book {
+  width: 140px;
+  height: auto;
+  border-radius: var(--border-radius);
+  margin: calc(1.5 * var(--rhythmic-unit)) auto var(--rhythmic-unit) auto;
+}
+
+@media (min-width: 470px) {
+  .about__book--mind {
+    float: right;
+    margin: 0 0 calc(.5 * var(--rhythmic-unit)) calc(1.5 * var(--rhythmic-unit));
+  }
+}

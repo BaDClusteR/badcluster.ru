@@ -25,7 +25,7 @@ export function uploadMedia(
   const xhr = new XMLHttpRequest();
 
   const promise = new Promise<MediaData>((resolve, reject) => {
-    xhr.open('POST', '/api/admin/media/upload');
+    xhr.open('POST', '/admin/api/upload');
     xhr.responseType = 'json';
 
     xhr.upload.addEventListener('progress', (event) => {

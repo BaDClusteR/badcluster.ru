@@ -24,3 +24,9 @@ export interface MediaBlockData {
   media?: MediaData;
   lazy: boolean;
 }
+
+/** Saved Editor.js block payload for gallery/slideshow. */
+export interface GalleryBlockData {
+  slides: MediaData[];
+  lazy: boolean;
+}
