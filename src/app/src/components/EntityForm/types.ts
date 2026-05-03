@@ -1,54 +1,85 @@
 import type {ReactNode} from "react";
 import {FormErrors, UseFormReturnType} from "@mantine/form";
 
-export type FieldType =
+export type CommonFieldType =
     | "text"
     | "textarea"
     | "number"
-    | "select"
     | "switch"
-    | "blocks"
+    | "blocks";
+
+export type FieldType =
+    | CommonFieldType
+    | "select"
     | "heading"
-    | "group";
+    | "datetime"
+    | "group"
+    | "slug";
 
 export interface SelectOption {
     value: string;
     label: string;
 }
 
-export interface EntityFormRenderOptions {
-    loading?: boolean
+export interface EntityFormRenderOptions<C = unknown> {
+    loading?: boolean,
+    context?: C
 }
 
-export interface BaseFieldDef<T> {
-    /** Layout hint: `full` (default) or `half` width. */
+export interface FieldDefBase {
     span?: "full" | "half",
-    /** Group consecutive fields with the same fieldset value into a `<Fieldset>`. */
     fieldset?: string,
-    /** Visual role: `primary` fields blend with background, `secondary` are shown in a card. */
     role?: "primary" | "secondary",
     required?: boolean,
-    /** For `group` type. Second arg provides loading state when data is being fetched. */
-    render?: (
-        form: UseFormReturnType<T, T, (values: T) => FormErrors>,
-        options?: EntityFormRenderOptions
-    ) => ReactNode,
     hint?: ReactNode
 }
 
-export interface FieldDef<T> {
-    /** Field key in form values. Optional for `heading` and `group` types. */
-    name?: keyof T;
-    /** Field label. Optional for `group` type. */
-    label?: string;
-    type: FieldType;
+export interface FieldDefCommon<T> extends FieldDefBase, FieldDefNamed<T> {
+    type: CommonFieldType;
     placeholder?: string;
-    /** For `select` type. */
-    options?: SelectOption[];
 }
 
-export interface FieldGroupDef<T> extends BaseFieldDef<T> {
-    type: "group"
+export interface FieldDefNamed<T> {
+    name: keyof T,
+    label: string
+}
+
+export type FieldDef<T, C = unknown> = FieldDefCommon<T>
+    | FieldDefGroup<T, C>
+    | FieldDefSelect<T>
+    | FieldDefHeading
+    | FieldDefDateTime<T>
+    | FieldDefSlug<T>;
+
+export interface FieldDefGroup<T, C = unknown> extends FieldDefBase {
+    type: "group",
+    render?: (
+        form: UseFormReturnType<T, T, (values: T) => FormErrors>,
+        options?: EntityFormRenderOptions<C>
+    ) => ReactNode
+}
+
+export interface FieldDefSelect<T> extends FieldDefBase, FieldDefNamed<T> {
+    type: "select",
+    placeholder?: string,
+    options?: SelectOption[]
+}
+
+export interface FieldDefHeading extends FieldDefBase {
+    type: "heading",
+    label: string
+}
+
+export interface FieldDefDateTime<T> extends FieldDefBase, FieldDefNamed<T> {
+    type: "datetime",
+    valueFormat?: string,
+    clearable?: boolean
+}
+
+export interface FieldDefSlug<T> extends FieldDefBase, FieldDefNamed<T> {
+    type: "slug",
+    placeholder?: string,
+    url: (slug: string) => string
 }
 
 /** Async data provider for EntityForm — fetches entity data via React Query. */
@@ -57,9 +88,10 @@ export interface EntityFormDataProvider<T> {
     getData: (signal?: AbortSignal) => Promise<T>
 }
 
-export interface EntityFormProps<T extends Record<string, unknown>> {
-    fields: FieldDef<T>[],
+export interface EntityFormProps<T, C = unknown> {
+    fields: FieldDef<T, C>[],
     dataProvider: EntityFormDataProvider<T>,
+    context?: C,
     onSubmit: (values: T) => Promise<void> | void,
     submitLabel?: string,
     onCancel?: () => void,

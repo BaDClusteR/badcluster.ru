@@ -7,37 +7,27 @@ import TextField from './settings/textfield';
 import separator from './settings/separator';
 import Toggle from './settings/toggle';
 import {notify} from "@/lib/notify.ts";
-
-const ICON_GALLERY = `<svg width="17" height="15" viewBox="0 0 17 15" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h11a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm0 1v9h11V4H3Zm2.5 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm7 4H4l2.5-3.5L8 10l2.5-3.5L13.5 12H10.5Z" fill="currentColor"/><rect x="0" y="1" width="2" height="10" rx=".5" fill="currentColor" opacity=".35"/><rect x="15" y="1" width="2" height="10" rx=".5" fill="currentColor" opacity=".35"/></svg>`;
+import {iconLazyLoad, iconSlideMoveLeft, iconSlideMoveRight, iconSlideshow} from "./icons.ts";
 
 const ICON_PREV = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>`;
 const ICON_NEXT = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>`;
 const ICON_ADD = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2H9v5a1 1 0 1 1-2 0V9H2a1 1 0 0 1 0-2h5V2a1 1 0 0 1 1-1Z"/></svg>`;
 const ICON_DELETE = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118Z"/></svg>`;
-const ICON_LAZY = `<svg width="17" height="14" viewBox="0 0 17 14" xmlns="http://www.w3.org/2000/svg"><path d="M8.5 1.5C4.5 1.5 1.2 4 .5 7c.7 3 4 5.5 8 5.5s7.3-2.5 8-5.5c-.7-3-4-5.5-8-5.5Zm0 9A3.5 3.5 0 1 1 12 7a3.5 3.5 0 0 1-3.5 3.5Zm0-5.5A2 2 0 1 0 10.5 7a2 2 0 0 0-2-2Z" fill="currentColor"/></svg>`;
-const ICON_MOVE_LEFT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M10 3L5 8l5 5V3Z"/></svg>`;
-const ICON_MOVE_RIGHT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6 3l5 5-5 5V3Z"/></svg>`;
 
-/**
- * Editor.js block: image slideshow / gallery.
- *
- * Stores an ordered list of MediaData items and exposes prev/next navigation,
- * add / remove buttons, and per-slide alt text + global lazy-load toggle in
- * the block settings popover.
- */
 export class GalleryBlock implements BlockTool {
-  static get toolbox(): ToolboxConfig {
+  // noinspection JSUnusedGlobalSymbols
+    static get toolbox(): ToolboxConfig {
     return {
       title: 'Галерея',
-      icon: ICON_GALLERY,
+      icon: iconSlideshow,
     };
   }
 
-  static get isReadOnlySupported(): boolean {
+  // noinspection JSUnusedGlobalSymbols
+    static get isReadOnlySupported(): boolean {
     return false;
   }
 
-  private api: API;
   private data: GalleryBlockData;
   private wrapper!: HTMLDivElement;
   private scroller!: HTMLElement;
@@ -56,9 +46,9 @@ export class GalleryBlock implements BlockTool {
   private batchIndicatorEl!: HTMLElement;
 
   constructor({ data, api }: { data: BlockToolData<GalleryBlockData>; api: API }) {
-    this.api = api;
     this.data = {
       slides: Array.isArray(data?.slides) ? data.slides : [],
+      captions: Array.isArray(data?.captions) ? data.captions : [],
       lazy: data?.lazy ?? true,
     };
     if (this.data.slides.length > 0) {
@@ -81,6 +71,7 @@ export class GalleryBlock implements BlockTool {
   save(): GalleryBlockData {
     return {
       slides: this.data.slides,
+      captions: this.data.captions,
       lazy: this.data.lazy,
     };
   }
@@ -128,7 +119,7 @@ export class GalleryBlock implements BlockTool {
           this.data.lazy = checked;
           this.updateLazy();
         },
-        icon: ICON_LAZY,
+        icon: iconLazyLoad,
         label: 'Lazy load',
       }),
     );
@@ -173,15 +164,14 @@ export class GalleryBlock implements BlockTool {
   private buildSlide(index: number): HTMLElement {
     const slide = document.createElement('li');
     slide.className = classes.slide;
-    if (index === this.currentIndex) {
-      slide.classList.add(classes.slideActive);
-    }
 
     const pictureEl = renderPicture(this.data.slides[index], {
       lazy: this.data.lazy,
       className: classes.media,
     });
     slide.appendChild(pictureEl);
+    slide.appendChild(this.buildCaptionInput(index));
+
     return slide;
   }
 
@@ -192,14 +182,14 @@ export class GalleryBlock implements BlockTool {
     this.moveLeftBtn = document.createElement('button');
     this.moveLeftBtn.type = 'button';
     this.moveLeftBtn.className = classes.slideToolbarBtn;
-    this.moveLeftBtn.innerHTML = ICON_MOVE_LEFT;
+    this.moveLeftBtn.innerHTML = iconSlideMoveLeft;
     this.moveLeftBtn.title = 'Переместить влево';
     this.moveLeftBtn.addEventListener('click', () => this.moveSlide(-1));
 
     this.moveRightBtn = document.createElement('button');
     this.moveRightBtn.type = 'button';
     this.moveRightBtn.className = classes.slideToolbarBtn;
-    this.moveRightBtn.innerHTML = ICON_MOVE_RIGHT;
+    this.moveRightBtn.innerHTML = iconSlideMoveRight;
     this.moveRightBtn.title = 'Переместить вправо';
     this.moveRightBtn.addEventListener('click', () => this.moveSlide(1));
 
@@ -261,7 +251,7 @@ export class GalleryBlock implements BlockTool {
     const idx = this.currentIndex;
 
     // Counter
-    this.counterEl.textContent = `${idx + 1} / ${total}`;
+    this.counterEl.innerHTML = `<strong>${idx + 1}</strong> <span>/</span> ${total}`;
 
     // Nav buttons
     this.prevBtn.disabled = idx === 0;
@@ -271,11 +261,8 @@ export class GalleryBlock implements BlockTool {
     this.moveLeftBtn.disabled = idx === 0;
     this.moveRightBtn.disabled = idx === total - 1;
 
-    // Active slide class
-    const slideEls = this.scroller.children;
-    for (let i = 0; i < slideEls.length; i++) {
-      slideEls[i].classList.toggle(classes.slideActive, i === idx);
-    }
+    // Scroll to active slide
+    this.scroller.style.setProperty('--active-slide', String(idx));
   }
 
   private buildPlaceholder(): HTMLElement {
@@ -283,7 +270,7 @@ export class GalleryBlock implements BlockTool {
     placeholder.type = 'button';
     placeholder.className = classes.placeholder;
     placeholder.innerHTML = `
-      <div class="${classes.placeholderIcon}">${ICON_GALLERY}</div>
+      <div class="${classes.placeholderIcon}">${iconSlideshow}</div>
       <div class="${classes.placeholderText}">Нажмите, чтобы добавить изображения</div>
     `;
     placeholder.addEventListener('click', () => this.openPicker());
@@ -303,6 +290,8 @@ export class GalleryBlock implements BlockTool {
     // Swap data
     const slides = this.data.slides;
     [slides[this.currentIndex], slides[target]] = [slides[target], slides[this.currentIndex]];
+    const captions = this.data.captions;
+    [captions[this.currentIndex], captions[target]] = [captions[target], captions[this.currentIndex]];
 
     // Swap DOM nodes
     const currentEl = this.scroller.children[this.currentIndex];
@@ -324,6 +313,7 @@ export class GalleryBlock implements BlockTool {
 
     // Remove data
     this.data.slides.splice(this.currentIndex, 1);
+    this.data.captions.splice(this.currentIndex, 1);
     this.clampIndex();
 
     if (this.data.slides.length === 0) {
@@ -368,6 +358,29 @@ export class GalleryBlock implements BlockTool {
         img.removeAttribute('loading');
       }
     }
+  }
+
+  private buildCaptionInput(index: number): HTMLElement {
+    const figcaption = document.createElement('figcaption');
+    figcaption.className = classes.caption;
+
+    const textarea = document.createElement('textarea');
+    textarea.className = classes.captionInput;
+    textarea.placeholder = 'Подпись';
+    textarea.value = this.data.captions[index] ?? '';
+    textarea.rows = 1;
+    const autoResize = () => {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    };
+    textarea.addEventListener('input', () => {
+      this.data.captions[index] = textarea.value;
+      autoResize();
+    });
+    figcaption.appendChild(textarea);
+    requestAnimationFrame(autoResize);
+
+    return figcaption;
   }
 
   private openPicker() {

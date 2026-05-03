@@ -15,8 +15,8 @@ use Runway\Model\AEntity;
  * @method self setCreatedDate(DateTime $createdDate)
  * @method DateTime getPublishDate()
  * @method self setPublishDate(DateTime $publishDate)
- * @method DateTime getUpdateDate()
- * @method self setUpdateDate(DateTime $updateDate)
+ * @method DateTime|null getUpdateDate()
+ * @method self setUpdateDate(DateTime|null $updateDate)
  * @method array getContent()
  * @method self setContent(array $content)
  * @method bool getPublished()
@@ -41,7 +41,7 @@ class Post extends AEntity
     protected DateTime $publishDate;
 
     #[DS\Column]
-    protected DateTime $updateDate;
+    protected ?DateTime $updateDate = null;
 
     #[DS\Column]
     protected array $content;

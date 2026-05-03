@@ -53,3 +53,23 @@
   --form-max-content-width: 720px;
   --form-padding: 40px;
 }
+
+.switchBody {
+  display: flex;
+  flex-direction: column;
+  gap: calc(.25 * var(--rhythmic-unit));
+}
+
+.switchLabelWrapper {
+  order: -1;
+  font-weight: bold;
+}
+
+.switchLabel {
+  padding: 0;
+}
+
+.switchTrack {
+  margin-top: 8px;
+  cursor: pointer;
+}

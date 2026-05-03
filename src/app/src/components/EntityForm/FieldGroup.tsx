@@ -1,7 +1,10 @@
 import {useState, ReactNode, useEffect} from "react";
 import classes from "./FieldGroup.module.css";
 import clsx from "clsx";
-import {IconPencil} from "@tabler/icons-react";
+import {
+  IconArrowsDiagonal,
+  IconArrowsDiagonalMinimize2
+} from "@tabler/icons-react";
 import {ActionIcon} from "@mantine/core";
 
 export default function FieldGroup({children}: {children: ReactNode}) {
@@ -37,7 +40,11 @@ export default function FieldGroup({children}: {children: ReactNode}) {
       aria-label="Переключить полноэкранный режим"
       className={classes.fullscreenAction}
     >
-      <IconPencil size={16} />
+      {
+        fullscreen
+          ? <IconArrowsDiagonalMinimize2 size={18} />
+          : <IconArrowsDiagonal size={18} />
+      }
     </ActionIcon>
   </div>
 }

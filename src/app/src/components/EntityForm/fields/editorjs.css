@@ -25,6 +25,56 @@
   .ce-block:has(.ce-header) {
     margin-top: calc(1.5 * var(--rhythmic-unit));
   }
+
+  .ce-toolbar__plus,
+  .ce-toolbar__settings-btn {
+    color: var(--color-text);
+
+    &:hover,
+    &:focus-visible,
+    &:active {
+      background: var(--color-surface);
+    }
+  }
+
+  .cdx-search-field {
+    background: var(--color-surface);
+  }
+
+  .cdx-search-field__icon svg,
+  .cdx-search-field__input::placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  .ce-popover {
+    --color-background: var(--color-bg);
+    --color-border: #E4E4E7;
+    --color-text-primary: var(--color-text);
+    --color-text-icon-active: var(--color-link);
+    --color-background-item-hover: var(--color-surface);
+  }
+
+  .cdx-settings-button--active {
+    color: var(--color-link);
+  }
+
+  .cdx-settings-button--active .ce-block__content {
+    background: var(--color-surface);
+  }
+
+  .cdx-settings-button:hover,
+  .cdx-settings-button:focus-visible,
+  .cdx-settings-button:active {
+    background: var(--color-surface);
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-link), transparent 60%);
+  }
+}
+
+[data-mantine-color-scheme="dark"] .codex-editor .ce-popover {
+  --color-border: #27272A;
 }
 
 .codex-editor__redactor {

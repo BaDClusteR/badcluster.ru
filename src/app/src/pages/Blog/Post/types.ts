@@ -10,3 +10,12 @@ export interface PostDetailed {
     published: boolean,
     slug: string
 }
+
+export interface TagApi {
+    id: number,
+    title: string
+}
+
+export interface TagsApiCallResult {
+    tags: TagApi[]
+}

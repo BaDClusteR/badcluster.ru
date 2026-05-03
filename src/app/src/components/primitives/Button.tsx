@@ -15,6 +15,7 @@ export default function Button(
     variant,
     disabled,
     color,
+    type,
     ...props
   }: {
     leftSection?: React.ReactNode,
@@ -27,7 +28,8 @@ export default function Button(
     disabled?: boolean,
     variant?: "default" | "filled" | "subtle" | "outline" | "light" | "gradient" | "transparent" | "white",
     color?: string,
-    props?: any
+    props?: any,
+    type?: "button" | "submit" | "reset",
   }
 ) {
   return <MantineButton
@@ -40,6 +42,7 @@ export default function Button(
     loading={loading}
     fullWidth={fullWidth}
     color={color}
+    type={type}
     {...props}
   >
     {children}

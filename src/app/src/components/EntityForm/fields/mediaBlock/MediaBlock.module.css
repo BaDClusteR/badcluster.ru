@@ -1,5 +1,5 @@
 .wrapper {
-  margin: 8px 0;
+  margin: calc(.5 * var(--rhythmic-unit)) 0;
 }
 
 /* Empty state — clickable upload placeholder */
@@ -8,37 +8,38 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: calc(.5 * var(--rhythmic-unit));
   width: 100%;
-  padding: 48px 16px;
+  padding: calc(2 * var(--rhythmic-unit)) var(--rhythmic-unit);
   background: transparent;
-  border: 2px dashed var(--mantine-color-dark-4);
-  border-radius: var(--mantine-radius-md);
-  color: var(--mantine-color-dimmed);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--color-text-secondary);
   cursor: pointer;
   font: inherit;
-  transition: border-color 120ms, color 120ms, background 120ms;
 }
 
-.placeholder:hover {
-  border-color: var(--mantine-primary-color-filled);
-  color: var(--mantine-primary-color-filled);
-  background: var(--mantine-color-dark-7);
+.placeholder:hover,
+.placeholder:focus-visible,
+.placeholder:active {
+  border-color: var(--color-link);
+  color: var(--color-link);
+  background: var(--color-surface);
 }
 
 .placeholderIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: var(--mantine-color-dark-6);
+  background: var(--color-surface);
 }
 
 .placeholderIcon svg {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
 }
 
 .placeholderText {
@@ -69,7 +70,7 @@
   right: 0;
   bottom: 0;
   height: 4px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, .35);
 }
 
 .progressBar {
@@ -84,7 +85,7 @@
   display: block;
   max-width: 100%;
   height: auto;
-  border-radius: var(--mantine-radius-md);
+  border-radius: var(--border-radius);
 }
 
 .media img,
@@ -94,7 +95,31 @@
   height: auto;
   max-height: 600px;
   object-fit: contain;
-  border-radius: var(--mantine-radius-md);
+  border-radius: var(--border-radius);
+}
+
+.caption {
+  margin-top: calc(0.25 * var(--rhythmic-unit));
+  text-align: center;
+}
+
+.captionInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: 1.5;
+  resize: none;
+  overflow: hidden;
+}
+
+.captionInput::placeholder {
+  color: var(--color-text-secondary);
+  opacity: .35;
 }
 
 .mediaSettingsWrapper {
@@ -105,7 +130,7 @@
   .cdx-search-field {
     grid-template-columns: 1fr;
     padding: calc(.25 * var(--rhythmic-unit));
-    background: #FAFAFA;
+    background: var(--color-surface);
   }
 }
 

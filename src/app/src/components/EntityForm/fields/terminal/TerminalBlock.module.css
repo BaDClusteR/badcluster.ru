@@ -1,0 +1,208 @@
+.terminal {
+  margin: 0;
+  background: var(--color-bg);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  font-family: var(--font-family-mono), monospace;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border);
+  gap: calc(0.5 * var(--rhythmic-unit));
+  background: #27272A;
+  padding: calc(.5 * var(--rhythmic-unit)) var(--rhythmic-unit);
+  font-size: var(--font-size-small);
+}
+
+.titleInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-small);
+  text-transform: uppercase;
+  padding: 2px 0;
+  color: var(--color-text-secondary);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: calc(.5 * var(--rhythmic-unit));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: var(--transition-mode) color;
+}
+
+.titleInput::placeholder {
+  color: #444;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: calc(.5 * var(--rhythmic-unit));
+  flex-shrink: 0;
+  background: var(--color-bg);
+  padding: calc(.25 * var(--rhythmic-unit));
+  border-radius: var(--border-radius);
+
+  &:first-child {
+    margin-inline-start: auto;
+  }
+}
+
+.tabBtn {
+  padding: calc(.25 * var(--rhythmic-unit)) calc(.75 * var(--rhythmic-unit));
+  border: none;
+  border-radius: var(--border-radius-small);
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: var(--transition) background-color, var(--transition) box-shadow, var(--transition) color;
+  color: var(--color-text-secondary);
+  font-weight: bold;
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    color: var(--color-text);
+  }
+}
+
+.tabBtnActive {
+  &,
+  &:hover,
+  &:focus-visible,
+  &:active {
+    color: var(--color-brand);
+    background: var(--color-surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+  }
+}
+
+.tabDivider {
+  color: #333;
+  font-size: var(--font-size-small);
+  user-select: none;
+}
+
+/* Body */
+.body {
+  padding: calc(1 * var(--rhythmic-unit));
+  min-height: calc(3 * var(--rhythmic-unit));
+}
+
+/* Tab content visibility */
+.tabContent {
+  display: none;
+}
+
+.tabContentActive {
+  display: block;
+}
+
+/* Content — shared */
+.content {
+  outline: none;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.content:empty::before {
+  content: attr(data-placeholder);
+  color: #444;
+  pointer-events: none;
+}
+
+/* Cipher content — green monospace */
+.contentCipher {
+  color: #4ade80;
+  font-size: var(--font-size-base);
+}
+
+/* Text content — white monospace */
+.contentText {
+  color: #e5e5e5;
+  font-size: var(--font-size-base);
+}
+
+.contentText > p,
+.contentText > div {
+  margin-bottom: calc(0.5 * var(--rhythmic-unit));
+}
+
+.contentText > p:last-child,
+.contentText > div:last-child {
+  margin-bottom: 0;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  padding: calc(.5 * var(--rhythmic-unit)) var(--rhythmic-unit);
+  border-top: var(--border);
+  flex-direction: column;
+  gap: calc(.25 * var(--rhythmic-unit));
+}
+
+.footerRow {
+  color: color-mix(in srgb, var(--color-text-secondary), transparent 30%);
+  text-transform: uppercase;
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.footerLabel {
+  color: #555;
+  font-weight: bold;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.footerInput {
+  outline: none;
+  color: currentColor;
+  display: inline;
+  min-width: 2em;
+}
+
+.footerInput:empty {
+  display: inline-block;
+}
+
+.footerInput:empty::before {
+  content: attr(data-placeholder);
+  opacity: .5;
+}
+
+/* Settings */
+.settingsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.25 * var(--rhythmic-unit));
+
+  .cdx-search-field {
+    grid-template-columns: 1fr;
+    padding: calc(0.25 * var(--rhythmic-unit));
+    background: var(--color-surface);
+  }
+}
+
+.settingsLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  padding: 4px 4px 0;
+}

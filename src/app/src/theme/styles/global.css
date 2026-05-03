@@ -25,6 +25,7 @@
   --color-anti-contrast: #FFF;
   --color-error: #EF4444;
 
+  --font-size-big: 20px;
   --font-size-root: 18px;
   --font-size-base: 16px;
   --font-size-small: 14px;
@@ -36,6 +37,10 @@
   --mantine-font-family-headings: var(--mantine-font-family);
   --mantine-font-family-monospace: 'IBM Plex Mono', monospace;
   --mantine-font-family-serif: 'IBM Plex Serif', "Merriweather", "Georgia", serif;
+
+  --font-family: var(--mantine-font-family);
+  --font-family-mono: var(--mantine-font-family-monospace);
+  --font-family-serif: var(--mantine-font-family-serif);
 
   --mantine-radius-default: var(--mantine-radius-md);
 

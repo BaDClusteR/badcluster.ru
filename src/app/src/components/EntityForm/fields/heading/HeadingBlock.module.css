@@ -1,0 +1,48 @@
+.heading {
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+
+.heading[data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+/* Settings */
+.settingsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: calc(.25 * var(--rhythmic-unit));
+}
+
+.levelsRow {
+  display: flex;
+  gap: calc(.5 * var(--rhythmic-unit));
+  padding: calc(.25 * var(--rhythmic-unit));
+}
+
+.levelBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--border-radius);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.levelBtn:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.levelBtnActive {
+  background: var(--color-surface);
+  color: var(--color-link);
+}

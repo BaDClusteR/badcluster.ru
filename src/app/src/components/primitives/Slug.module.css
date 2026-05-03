@@ -1,0 +1,8 @@
+.url {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-small);
+  line-height: 20px;
+  margin-block-start: calc(.25 * var(--rhythmic-unit));
+  min-height: 20px;
+  display: block;
+}

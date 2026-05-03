@@ -1,44 +1,45 @@
 .wrapper {
-  margin: 8px 0;
+  margin: calc(.5 * var(--rhythmic-unit)) 0;
 }
 
-/* Empty state */
+/* Empty state — clickable upload placeholder */
 .placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: calc(.5 * var(--rhythmic-unit));
   width: 100%;
-  padding: 48px 16px;
+  padding: calc(2 * var(--rhythmic-unit)) var(--rhythmic-unit);
   background: transparent;
-  border: 2px dashed var(--mantine-color-dark-4);
-  border-radius: var(--mantine-radius-md);
-  color: var(--mantine-color-dimmed);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--color-text-secondary);
   cursor: pointer;
   font: inherit;
-  transition: border-color 120ms, color 120ms, background 120ms;
 }
 
-.placeholder:hover {
-  border-color: var(--mantine-primary-color-filled);
-  color: var(--mantine-primary-color-filled);
-  background: var(--mantine-color-dark-7);
+.placeholder:hover,
+.placeholder:focus-visible,
+.placeholder:active {
+  border-color: var(--color-link);
+  color: var(--color-link);
+  background: var(--color-surface);
 }
 
 .placeholderIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: var(--mantine-color-dark-6);
+  background: var(--color-surface);
 }
 
 .placeholderIcon svg {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
 }
 
 .placeholderText {
@@ -56,21 +57,21 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  transform: translateX(calc(-100% * var(--active-slide, 0)));
+  transition: transform 250ms ease;
 }
 
 .slide {
-  display: none;
-}
-
-.slideActive {
-  display: block;
+  flex: 0 0 100%;
+  min-width: 0;
 }
 
 .media {
   display: block;
   max-width: 100%;
   height: auto;
-  border-radius: var(--mantine-radius-md);
+  border-radius: var(--border-radius);
 }
 
 .media img {
@@ -79,7 +80,32 @@
   height: auto;
   max-height: 600px;
   object-fit: contain;
-  border-radius: var(--mantine-radius-md);
+  border-radius: var(--border-radius);
+}
+
+.caption {
+  margin-top: var(--rhythmic-unit);
+  text-align: center;
+}
+
+.captionInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: 1.5;
+  text-wrap-style: pretty;
+  resize: none;
+  overflow: hidden;
+}
+
+.captionInput::placeholder {
+  color: var(--color-text-secondary);
+  opacity: .35;
 }
 
 /* Slide toolbar overlay */
@@ -104,12 +130,21 @@
   width: 32px;
   height: 32px;
   padding: 0;
-  border: none;
-  border-radius: var(--mantine-radius-sm);
+  border-radius: var(--border-radius-small);
   background: rgba(0, 0, 0, 0.55);
-  color: var(--mantine-color-gray-2);
+  color: var(--color-text-secondary);
   cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--color-border), transparent 80%);
   transition: background 150ms, color 150ms;
+
+  &:not(:disabled) {
+    &:hover,
+    &:focus-visible,
+    &:active {
+      color: color-mix(in srgb, var(--color-link), var(--color-text-secondary) 30%);
+      border-color: color-mix(in srgb, var(--color-link), var(--color-border) 30%);
+    }
+  }
 }
 
 .slideToolbarBtn:hover:not(:disabled) {
@@ -117,12 +152,21 @@
 }
 
 .slideToolbarBtn:disabled {
-  opacity: 0.3;
+  opacity: .3;
   cursor: default;
 }
 
 .slideToolbarBtnDanger {
   color: var(--mantine-color-red-4);
+
+  &:not(:disabled) {
+    &:hover,
+    &:focus-visible,
+    &:active {
+      color: var(--mantine-color-red-4);
+      border-color: currentColor;
+    }
+  }
 }
 
 /* Controls bar */
@@ -138,25 +182,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
   padding: 0;
   border: none;
-  border-radius: var(--mantine-radius-sm);
   background: transparent;
-  color: var(--mantine-color-dimmed);
+  color: var(--color-text-secondary);
   cursor: pointer;
-  transition: color 120ms, background 120ms;
-}
+  width: 40px;
+  height: 40px;
+  border: var(--border);
+  border-radius: var(--border-radius);
 
-.navBtn:hover:not(:disabled) {
-  color: var(--mantine-color-text);
-  background: var(--mantine-color-dark-6);
-}
+  &:not(:disabled) {
+    &:hover,
+    &:focus-visible,
+    &:active {
+      border-color: var(--color-link);
+      color: var(--color-link);
+    }
+  }
 
-.navBtn:disabled {
-  opacity: 0.3;
-  cursor: default;
+  &:disabled {
+    opacity: .3;
+    cursor: default;
+    pointer-events: none;
+    border-color: transparent;
+    box-shadow: none;
+  }
 }
 
 .navBtn svg {
@@ -165,11 +216,20 @@
 }
 
 .counter {
-  font-size: var(--mantine-font-size-sm);
-  color: var(--mantine-color-dimmed);
   min-width: 48px;
   text-align: center;
   user-select: none;
+  font-family: var(--font-family-mono), monospace;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  padding: calc(.25 * var(--rhythmic-unit)) calc(.75 * var(--rhythmic-unit));
+  border-radius: var(--border-radius);
+  letter-spacing: 1px;
+
+  span {
+    opacity: .5;
+  }
 }
 
 .addBtn {
@@ -180,18 +240,20 @@
   height: 32px;
   padding: 0;
   margin-left: 4px;
-  border: 1px dashed var(--mantine-color-dark-4);
-  border-radius: var(--mantine-radius-sm);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--border-radius-small);
   background: transparent;
-  color: var(--mantine-color-dimmed);
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: color 120ms, border-color 120ms, background 120ms;
-}
 
-.addBtn:hover {
-  color: var(--mantine-primary-color-filled);
-  border-color: var(--mantine-primary-color-filled);
-  background: var(--mantine-color-dark-7);
+  &:hover,
+  &:focus-visible,
+  &:active {
+    color: var(--color-link);
+    border-color: var(--color-link);
+    background: var(--color-surface);
+  }
 }
 
 .addBtn svg {

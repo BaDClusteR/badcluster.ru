@@ -11,7 +11,7 @@ readonly class BlogPostDetailedDTO
         public string $title,
         public string $createdDate,
         public string $publishDate,
-        public string $updateDate,
+        public ?string $updateDate,
         public array $content,
         public bool $published,
         public string $slug

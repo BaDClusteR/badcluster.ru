@@ -1,4 +1,4 @@
-import {lazy, type ReactNode, useEffect, useState} from "react";
+import {lazy, type ReactNode, useEffect} from "react";
 import {
   Grid,
   Group,
@@ -20,9 +20,11 @@ import { useForm } from '@mantine/form';
 import { useQuery } from '@tanstack/react-query';
 import { HttpError } from '@/utils/errors';
 import { IconError, IconEmpty } from '@/components/List/components/Icons';
-import type { EntityFormProps, FieldDef } from './types';
+import type {EntityFormProps, FieldDef, FieldDefNamed} from "./types";
 import classes from "./EntityForm.module.css";
 import Button from "@/components/primitives/Button.tsx";
+import Slug from "@/components/primitives/Slug.tsx";
+import dtClasses from "./fields/DateTimePicker.module.css";
 
 const BlocksField = lazy(() =>
   import('./fields/BlocksField').then((m) => ({ default: m.BlocksField })),
@@ -52,15 +54,16 @@ function chunkFields<T>(fields: FieldDef<T>[]): FieldChunk<T>[] {
   return chunks;
 }
 
-export function EntityForm<T extends Record<string, unknown>>({
+export function EntityForm<T extends Record<string, unknown>, C = unknown>({
   fields,
   dataProvider,
+  context,
   onSubmit,
   submitLabel = 'Save',
   onCancel,
   notFoundText,
   notFoundBtnCaption
-}: EntityFormProps<T>) {
+}: EntityFormProps<T, C>) {
   const { data, error, isLoading, refetch } = useQuery<T>({
     queryKey: dataProvider?.queryKey ?? ['__entity-form-disabled__'],
     queryFn: ({ signal }) => dataProvider!.getData(signal),
@@ -73,13 +76,13 @@ export function EntityForm<T extends Record<string, unknown>>({
     initialValues: {} as T,
     validate: Object.fromEntries(
       fields
-        .filter((f) => f.required && f.name)
+        .filter((f) => f.required && ('name' in f))
         .map((f) => [
-          f.name,
+          (f as FieldDefNamed<T>).name,
           (value: unknown) => {
-            if (value == null) return `${f.label} is required`;
+            if (value == null) return `${(f as FieldDefNamed<T>).label} is required`;
             if (typeof value === 'string' && value.trim() === '') {
-              return `${f.label} is required`;
+              return `${(f as FieldDefNamed<T>).label} is required`;
             }
             return null;
           },
@@ -137,61 +140,92 @@ export function EntityForm<T extends Record<string, unknown>>({
 
   function renderField(field: FieldDef<T>) {
     const common = {
-      label: field.label,
-      description: field.description,
-      placeholder: field.placeholder,
+      label: 'label' in field ?
+        field.label
+        : undefined,
+      description: field.hint,
+      placeholder: ('placeholder' in field) ?
+        field.placeholder
+        : undefined,
       required: field.required,
     };
 
     switch (field.type) {
       case 'text':
-        return <TextInput {...common} {...form.getInputProps(field.name)} />;
+        return <TextInput
+          {...common}
+          {...form.getInputProps(field.name as string)}
+        />;
+      case 'slug':
+        return <Slug
+          url={field.url}
+          {...common}
+          {...form.getInputProps(field.name as string)}
+        />
+
       case 'textarea':
         return (
           <Textarea
             {...common}
             autosize
             minRows={3}
-            {...form.getInputProps(field.name)}
+            {...form.getInputProps(field.name as string)}
           />
         );
       case 'number':
-        return <NumberInput {...common} {...form.getInputProps(field.name)} />;
+        return <NumberInput
+          {...common}
+          {...form.getInputProps(field.name as string)}
+        />;
       case 'select':
         return (
           <Select
             {...common}
             data={field.options ?? []}
-            {...form.getInputProps(field.name)}
+            {...form.getInputProps(field.name as string)}
           />
         );
       case 'switch':
         return (
           <Switch
+            classNames={{
+              body: classes.switchBody,
+              labelWrapper: classes.switchLabelWrapper,
+              label: classes.switchLabel,
+              track: classes.switchTrack
+            }}
             label={field.label}
-            description={field.description}
-            {...form.getInputProps(field.name, { type: 'checkbox' })}
+            description={field.hint}
+            {...form.getInputProps(field.name as string, { type: 'checkbox' })}
           />
         );
       case 'blocks':
         return (
           <BlocksField
             {...common}
-            description={field.description}
+            description={field.hint}
             value={form.values[field.name] as never}
-            onChange={(data) => form.setFieldValue(field.name, data as never)}
+            onChange={(data) => form.setFieldValue(field.name as string, data as never)}
           />
         );
       case "datetime":
         return (
           <DateTimePicker
+            withAsterisk={field.required}
+            classNames={{
+              day: dtClasses.day,
+              // @ts-expect-error presetButton does exist in classNames, but TS for some reason doesn't see it
+              presetButton: dtClasses.presetButton,
+            }}
             label={field.label}
             value={form.values[field.name] as DateTimeStringValue}
             onChange={
-              (value) => form.setFieldValue(field.name, value as never)
+              (value) => form.setFieldValue(field.name as string, value as never)
             }
+            clearable={field.clearable}
+            valueFormat={field.valueFormat}
             presets={[
-              {value: new Date().toISOString(), label: 'Now'}
+              {value: new Date().toISOString(), label: 'Сейчас'}
             ]}
           />
         );
@@ -203,7 +237,7 @@ export function EntityForm<T extends Record<string, unknown>>({
         );
       case 'group':
         return field.render
-          ? field.render(form, { loading: false })
+          ? field.render(form, { loading: false, context })
           : null;
     }
   }
@@ -229,7 +263,13 @@ export function EntityForm<T extends Record<string, unknown>>({
   function renderChunks(chunks: FieldChunk<T>[], renderFn: (field: FieldDef<T>) => ReactNode) {
     return chunks.map((chunk, ci) => {
       if (chunk.type === 'single') {
-        const key = (chunk.field.name as string) ?? chunk.field.label ?? `chunk-${ci}`;
+        const key = 'name' in chunk.field
+          ? (chunk.field.name as string)
+          : (
+            ('label' in chunk.field)
+              ? chunk.field.label
+              : `chunk-${ci}`
+          );
         return (
           <Grid.Col
             key={key}
@@ -246,7 +286,11 @@ export function EntityForm<T extends Record<string, unknown>>({
             <Grid>
               {chunk.fields.map((field, fi) => (
                 <Grid.Col
-                  key={(field.name as string) ?? `${chunk.legend}-${fi}`}
+                  key={
+                    ('name' in field)
+                      ? (field.name as string)
+                      : `${chunk.legend}-${fi}`
+                  }
                   span={{ base: 12, md: field.span === 'half' ? 6 : 12 }}
                 >
                   {renderFn(field)}
@@ -261,7 +305,7 @@ export function EntityForm<T extends Record<string, unknown>>({
 
   function renderSkeleton(field: FieldDef<T>) {
     if (field.type === 'group') {
-      return field.render ? field.render(form, { loading: true }) : <Skeleton height={100} />;
+      return field.render ? field.render(form, { loading: true, context }) : <Skeleton height={100} />;
     }
 
     if (field.type === 'heading') {

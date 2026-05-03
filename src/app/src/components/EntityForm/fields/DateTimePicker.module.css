@@ -1,0 +1,24 @@
+.day {
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background: var(--color-surface);
+
+    &[data-selected] {
+      background: var(--color-link);
+      color: var(--color-bg);
+    }
+  }
+}
+
+.presetButton {
+  font-size: var(--font-size-small);
+  padding: calc(.25 * var(--rhythmic-unit)) calc(.5 * var(--rhythmic-unit));
+  font-weight: 600;
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background: var(--color-surface);
+  }
+}

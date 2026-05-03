@@ -8,9 +8,12 @@ use ApiPlatform\Exception\BadRequestException;
 use BC\Api\DTO\BlogPostDetailedDTO;
 use BC\Api\DTO\BlogPostDTO;
 use BC\Api\DTO\BlogPostsDTO;
+use BC\Api\DTO\BlogPostTagDTO;
+use BC\Api\DTO\BlogPostTagsDTO;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IConverter;
 use BC\Model\Post;
+use BC\Model\Tag;
 
 #[Docs\Group("Blog posts")]
 class BlogPost extends AEndpoint
@@ -101,7 +104,38 @@ class BlogPost extends AEndpoint
         return $this->convertDetailedModel($post);
     }
 
+    #[API\Endpoint(path: "tags", method: "GET")]
+    public function getTags(): BlogPostTagsDTO {
+        /** @var Tag[] $tags */
+        $tags = $this->handleWithException(
+            static fn() => Tag::find()
+        );
+
+        return $this->convertTags($tags);
+    }
+
+    /**
+     * @param Tag[] $tags
+     */
+    private function convertTags(array $tags): BlogPostTagsDTO {
+        return new BlogPostTagsDTO(
+            tags: array_map(
+                fn (Tag $tag): BlogPostTagDTO => $this->convertTag($tag),
+                $tags
+            )
+        );
+    }
+
+    private function convertTag(Tag $tag): BlogPostTagDTO {
+        return new BlogPostTagDTO(
+            id: $tag->getId(),
+            title: $tag->getTitle()
+        );
+    }
+
     private function convertDetailedModel(Post $post): BlogPostDetailedDTO {
+        $updateDate = $post->getUpdateDate()?->getTimestamp();
+
         return new BlogPostDetailedDTO(
             id: $post->getId(),
             title: $post->getTitle(),
@@ -111,9 +145,11 @@ class BlogPost extends AEndpoint
             publishDate: $this->converter->convertTimestampToDateTimeString(
                 $post->getPublishDate()->getTimestamp()
             ),
-            updateDate: $this->converter->convertTimestampToDateTimeString(
-                $post->getUpdateDate()->getTimestamp()
-            ),
+            updateDate: $updateDate
+                ? $this->converter->convertTimestampToDateTimeString(
+                    $updateDate
+                )
+                : null,
             content: $post->getContent(),
             published: $post->getPublished(),
             slug: $post->getSlug()
