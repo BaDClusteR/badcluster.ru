@@ -11,3 +11,7 @@ log
 /static
 
 node_modules
+
+# Module federation junk
+.__mf__temp
+.mf

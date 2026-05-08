@@ -1,0 +1,1 @@
+export { BlogRoutes as default } from './routes';

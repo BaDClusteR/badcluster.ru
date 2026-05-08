@@ -15,7 +15,8 @@
   },
   "autoload": {
     "psr-4": {
-      "BC\\": "src/"
+      "BC\\": "src/",
+      "BC\\Modules\\Blog\\": "modules/Blog/src/"
     },
     "files": [
       "bootstrap.php"

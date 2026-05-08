@@ -1,0 +1,38 @@
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+}
+
+.urlInput {
+  width: 100%;
+  min-width: 220px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: inherit;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--color-border, #ddd);
+}
+
+.urlInput::placeholder {
+  opacity: 0.4;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary, #999);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox {
+  margin: 0;
+  cursor: pointer;
+}

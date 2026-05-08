@@ -9,12 +9,12 @@ routes:
 
   admin_media_upload:
     path: /api/admin/media/upload
-    controller: BC\Controller\Index::adminMediaUpload
+    controller: BC\Controller\Admin::mediaUpload
 
   admin:
     path: /admin/.*
-    controller: BC\Controller\Index::adminTest
+    controller: BC\Controller\Admin::index
 
   admin_index:
     path: /admin
-    controller: BC\Controller\Index::adminTest
+    controller: BC\Controller\Admin::index

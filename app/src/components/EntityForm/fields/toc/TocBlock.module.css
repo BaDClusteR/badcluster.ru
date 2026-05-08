@@ -1,0 +1,118 @@
+.toc {
+  margin: 0;
+  padding: var(--rhythmic-unit);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  background: var(--color-surface);
+}
+
+/* Summary / header */
+.summary {
+  display: flex;
+  align-items: center;
+  gap: calc(0.5 * var(--rhythmic-unit));
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary::marker {
+  content: '';
+}
+
+.labelInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  font-size: var(--font-size-big);
+  color: var(--color-text);
+  padding: 0;
+}
+
+.labelInput::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+.refreshBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: var(--border);
+  border-radius: var(--border-radius-small);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+
+.refreshBtn:hover {
+  color: var(--color-link);
+  border-color: var(--color-link);
+}
+
+/* Nav */
+.nav {
+  margin-top: calc(0.75 * var(--rhythmic-unit));
+}
+
+/* Lists */
+.list {
+  margin: 0;
+  padding: 0;
+  padding-inline-start: calc(1.25 * var(--rhythmic-unit));
+}
+
+.sublist {
+  margin: 0;
+  padding: 0;
+  padding-inline-start: calc(1.25 * var(--rhythmic-unit));
+}
+
+/* Items */
+.item {
+  padding: calc(0.15 * var(--rhythmic-unit)) 0;
+  line-height: 1.5;
+}
+
+/* Editable link text */
+.link {
+  outline: none;
+  color: var(--color-link);
+  cursor: text;
+}
+
+.linkNoAnchor {
+  outline: none;
+  color: var(--color-text-secondary);
+  cursor: text;
+  font-style: italic;
+}
+
+/* Anchor badge */
+.anchorBadge {
+  margin-left: calc(0.5 * var(--rhythmic-unit));
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  opacity: 0.4;
+  user-select: none;
+}
+
+/* Empty state */
+.emptyMessage {
+  list-style: none;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  font-style: italic;
+  padding: calc(0.5 * var(--rhythmic-unit)) 0;
+}

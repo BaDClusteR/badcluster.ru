@@ -1,0 +1,6 @@
+services:
+  BC\Modules\Blog\Provider\MenuItemsProvider:
+    decorates: BC\Provider\IMenuItemsProvider
+
+  BC\Modules\Blog\Provider\Admin\AppSettingsProvider:
+    decorates: BC\Provider\Admin\IAppSettingsProvider

@@ -63,11 +63,14 @@ namespace PHPSTORM_META
         'BC\Core\Media\IThumbnailGenerator' => \BC\Core\Media\ThumbnailGenerator::class,
         'BC\Core\Helper\IAttributesHelper' => \BC\Core\Helper\AttributesHelper::class,
         'BC\Core\Auth\IAuth' => \BC\Core\Auth\Auth::class,
+        'BC\Core\Converter\IConverter' => \BC\Core\Converter\ConverterFactory::class,
+        'BC\Provider\Admin\IAppSettingsProvider' => \BC\Provider\Admin\AppSettingsProvider::class,
         'BC\Provider\IMenuItemsProvider' => \BC\Provider\MenuItemsProvider::class,
         'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
         'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
         'BC\Generator\IThumbnailsGenerator' => \BC\Generator\ThumbnailsGenerator::class,
         'BC\Controller\Index' => \BC\Controller\Index::class,
+        'BC\Controller\Admin' => \BC\Controller\Admin::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,
@@ -138,11 +141,14 @@ namespace PHPSTORM_META
         'BC\Core\Media\IThumbnailGenerator' => \BC\Core\Media\ThumbnailGenerator::class,
         'BC\Core\Helper\IAttributesHelper' => \BC\Core\Helper\AttributesHelper::class,
         'BC\Core\Auth\IAuth' => \BC\Core\Auth\Auth::class,
+        'BC\Core\Converter\IConverter' => \BC\Core\Converter\ConverterFactory::class,
+        'BC\Provider\Admin\IAppSettingsProvider' => \BC\Provider\Admin\AppSettingsProvider::class,
         'BC\Provider\IMenuItemsProvider' => \BC\Provider\MenuItemsProvider::class,
         'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
         'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
         'BC\Generator\IThumbnailsGenerator' => \BC\Generator\ThumbnailsGenerator::class,
         'BC\Controller\Index' => \BC\Controller\Index::class,
+        'BC\Controller\Admin' => \BC\Controller\Admin::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,

@@ -40,6 +40,9 @@ services:
   BC\Core\Converter\IConverter:
     class: BC\Core\Converter\ConverterFactory
 
+  BC\Provider\Admin\IAppSettingsProvider:
+    class: BC\Provider\Admin\AppSettingsProvider
+
 
 # Website-specific services
   BC\Provider\IMenuItemsProvider:
@@ -57,3 +60,4 @@ services:
 
 # Controllers
   BC\Controller\Index: ~
+  BC\Controller\Admin: ~

@@ -1,8 +1,4 @@
 services:
-  BC\Api\Endpoint\BlogPost:
-    tags:
-      - name: api_endpoint_collection
-
   BC\Api\Endpoint\Upload:
     tags:
       - name: api_endpoint_collection

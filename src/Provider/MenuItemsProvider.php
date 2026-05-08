@@ -3,18 +3,15 @@
 namespace BC\Provider;
 
 use BC\Core\DTO\MenuItemDTO;
-use BC\Core\Trait\WebsiteSettingsTrait;
 
 class MenuItemsProvider implements IMenuItemsProvider
 {
-    use WebsiteSettingsTrait;
-
     /**
      * @return MenuItemDTO[]
      */
     public function getMenuItems(): array
     {
-        return $this->sortMeuItems(
+        return $this->sortMenuItems(
             $this->collectMenuItems()
         );
     }
@@ -24,7 +21,7 @@ class MenuItemsProvider implements IMenuItemsProvider
      *
      * @return MenuItemDTO[]
      */
-    protected function sortMeuItems(array $items): array {
+    protected function sortMenuItems(array $items): array {
         usort(
             $items,
             static fn(MenuItemDTO $a, MenuItemDTO $b): int => $a->priority <=> $b->priority
@@ -37,11 +34,6 @@ class MenuItemsProvider implements IMenuItemsProvider
      * @return MenuItemDTO[]
      */
     protected function collectMenuItems(): array {
-        return [
-            new MenuItemDTO(
-                title: 'Блог',
-                url: $this->getWebsiteSettings()->getWebRoot() . '/blog'
-            )
-        ];
+        return [];
     }
 }

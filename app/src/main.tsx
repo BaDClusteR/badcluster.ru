@@ -1,0 +1,35 @@
+import { init } from '@module-federation/runtime';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router';
+import { MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
+import {QueryClientProvider} from "@tanstack/react-query";
+import { App } from './App';
+import { theme } from './theme';
+import {queryClient} from "./queryClient";
+
+// Initialize Module Federation runtime before anything else.
+// This must happen before any remote module calls loadRemote().
+init({ name: 'admin_host', remotes: [] });
+
+import '@mantine/core/styles.layer.css';
+import '@mantine/notifications/styles.css';
+import './theme/styles/font.css';
+import './theme/styles/global.css';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <MantineProvider theme={theme} defaultColorScheme='auto' cssVariablesSelector=":root">
+        <QueryClientProvider client={queryClient}>
+          <ModalsProvider>
+            <Notifications position="top-right" />
+            <App />
+          </ModalsProvider>
+        </QueryClientProvider>
+      </MantineProvider>
+    </BrowserRouter>
+  </StrictMode>
+);

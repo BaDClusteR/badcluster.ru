@@ -1,0 +1,1 @@
+{"root":["./src/env.d.ts","./src/index.ts","./src/routes.tsx","./src/post/post.tsx","./src/post/types.ts","./src/posts/posts.tsx","./src/posts/dataprovider.ts","./src/posts/types.ts"],"errors":true,"version":"5.9.3"}

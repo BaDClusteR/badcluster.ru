@@ -1,0 +1,22 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Admin $this */
+$manifestAssets = $this->getManifestImports();
+?>
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Badcluster.ru - Админка</title>
+        <?php foreach ($manifestAssets['css'] as $css): ?>
+            <link rel="stylesheet" href="<?=$css?>" />
+        <?php endforeach; ?>
+        <?php foreach ($manifestAssets['js'] as $js): ?>
+            <script type="module" src="<?=$js?>"></script>
+        <?php endforeach; ?>
+    </head>
+    <body>
+        <div id="root"></div>
+    </body>
+</html>
