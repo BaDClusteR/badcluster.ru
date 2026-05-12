@@ -37,7 +37,9 @@ export default async function apiCall(
         const errorPayload = await response.json().catch(() => null);
         const error = new HttpError(response.status, errorPayload);
 
-        if (errorPayload) {
+        // 422 = validation errors — don't show generic toast,
+        // let the caller (e.g. EntityForm) handle field-level errors.
+        if (response.status !== 422 && errorPayload) {
             showApiError(errorPayload);
             error.isHandled = true;
         }

@@ -5,16 +5,28 @@ namespace BC\Modules\Blog\Api\Endpoint;
 use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use ApiPlatform\Exception\BadRequestException;
-use BC\Api\DTO\BlogPostDetailedDTO;
-use BC\Api\DTO\BlogPostDTO;
-use BC\Api\DTO\BlogPostsDTO;
-use BC\Api\DTO\BlogPostTagDTO;
-use BC\Api\DTO\BlogPostTagsDTO;
+use ApiPlatform\Exception\RuntimeInternalErrorException;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IConverter;
-use BC\Model\Post;
-use BC\Model\Tag;
+use BC\Exception\UnprocessableEntityException;
+use BC\Model\Media;
+use BC\Modules\Blog\Api\DTO\BlogPostCreatedDTO;
+use BC\Modules\Blog\Api\DTO\BlogPostDetailedDTO;
+use BC\Modules\Blog\Api\DTO\BlogPostDTO;
+use BC\Modules\Blog\Api\DTO\BlogPostsDTO;
+use BC\Modules\Blog\Api\DTO\BlogPostTagDTO;
+use BC\Modules\Blog\Api\DTO\BlogPostTagsDTO;
+use BC\Modules\Blog\Api\DTO\SuccessfulResultDTO;
+use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
+use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
+use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
+use BC\Modules\Blog\Core\Action\Post\ICreatePostAction;
+use BC\Modules\Blog\Core\Action\Post\ISavePostAction;
+use BC\Modules\Blog\Model\Post;
+use BC\Modules\Blog\Model\Tag;
+use Runway\Exception\Exception;
+use Runway\Singleton\Container;
 
 #[Docs\Group("Blog posts")]
 class BlogPost extends AEndpoint
@@ -116,6 +128,168 @@ class BlogPost extends AEndpoint
     }
 
     /**
+     * @throws UnprocessableEntityException
+     */
+    #[API\Endpoint(path: "post", method: "POST")]
+    public function createPost(
+        #[API\Parameter(source: "body", name: "title")]
+        string $title,
+
+        #[API\Parameter(source: "body", name: "shortTitle")]
+        string $shortTitle,
+
+        #[API\Parameter(source: "body", name: "annotation")]
+        string $annotation,
+
+        #[API\Parameter(source: "body", name: "content")]
+        array $content,
+
+        #[API\Parameter(source: "body", name: "coverImage")]
+        ?array $coverImage,
+
+        #[API\Parameter(source: "body", name: "publishDate")]
+        string $publishDate,
+
+        #[API\Parameter(source: "body", name: "updateDate")]
+        ?string $updateDate,
+
+        #[API\Parameter(source: "body", name: "published")]
+        bool $published,
+
+        #[API\Parameter(source: "body", name: "slug")]
+        string $slug,
+
+        #[API\Parameter(source: "body", name: "metaDescription")]
+        string $metaDescription,
+
+        #[API\Parameter(source: "body", name: "tags")]
+        array $tags
+    ): BlogPostCreatedDTO {
+        $action = Container::getInstance()->getService(ICreatePostAction::class);
+
+        try {
+            $response = $action->run(
+                new CreatePostRequest(
+                    title: $title,
+                    shortTitle: $shortTitle,
+                    annotation: $annotation,
+                    content: $content,
+                    slug: $slug,
+                    metaDescription: $metaDescription,
+                    published: $published,
+                    publishDate: $this->converter->convertDateTimeStringToDateTime($publishDate),
+                    updateDate: $updateDate
+                        ? $this->converter->convertDateTimeStringToDateTime($updateDate)
+                        : null,
+                    coverImage: $this->getCover($coverImage),
+                    coverImageAltText: (string)($coverImage['alt'] ?? ""),
+                    tags: Tag::find([
+                        'id' => $tags
+                    ])
+                )
+            );
+        } catch (ActionValidationException $e) {
+            throw new UnprocessableEntityException(
+                $e->getErrors(),
+                "Ошибки при создании поста"
+            );
+        } catch (Exception $e) {
+            throw new RuntimeInternalErrorException($e->getMessage(), $e);
+        }
+
+        return new BlogPostCreatedDTO(
+            id: $response->post->getId()
+        );
+    }
+
+    /**
+     * @throws UnprocessableEntityException
+     */
+    #[API\Endpoint(path: "post", method: "PUT")]
+    public function savePost(
+        #[API\Parameter(source: "body", name: "title")]
+        string $title,
+
+        #[API\Parameter(source: "body", name: "shortTitle")]
+        string $shortTitle,
+
+        #[API\Parameter(source: "body", name: "annotation")]
+        string $annotation,
+
+        #[API\Parameter(source: "body", name: "content")]
+        array $content,
+
+        #[API\Parameter(source: "body", name: "coverImage")]
+        ?array $coverImage,
+
+        #[API\Parameter(source: "body", name: "publishDate")]
+        string $publishDate,
+
+        #[API\Parameter(source: "body", name: "updateDate")]
+        ?string $updateDate,
+
+        #[API\Parameter(source: "body", name: "published")]
+        bool $published,
+
+        #[API\Parameter(source: "body", name: "slug")]
+        string $slug,
+
+        #[API\Parameter(source: "body", name: "metaDescription")]
+        string $metaDescription,
+
+        #[API\Parameter(source: "body", name: "tags")]
+        array $tags,
+
+        #[API\Parameter(source: "path", name: "identifier")]
+        int $id
+    ): SuccessfulResultDTO {
+        $action = Container::getInstance()->getService(ISavePostAction::class);
+
+        try {
+            $action->run(
+                new SavePostRequest(
+                    id: $id,
+                    title: $title,
+                    shortTitle: $shortTitle,
+                    annotation: $annotation,
+                    content: $content,
+                    slug: $slug,
+                    metaDescription: $metaDescription,
+                    published: $published,
+                    publishDate: $this->converter->convertDateTimeStringToDateTime($publishDate),
+                    updateDate: $updateDate
+                        ? $this->converter->convertDateTimeStringToDateTime($updateDate)
+                        : null,
+                    coverImage: $this->getCover($coverImage),
+                    coverImageAltText: (string)($coverImage['alt'] ?? ""),
+                    tags: Tag::find([
+                        'id' => $tags
+                    ])
+                )
+            );
+        } catch (ActionValidationException $e) {
+            throw new UnprocessableEntityException(
+                $e->getErrors(),
+                "Ошибки при сохранении поста"
+            );
+        } catch (Exception $e) {
+            throw new RuntimeInternalErrorException($e->getMessage(), $e);
+        }
+
+        return new SuccessfulResultDTO();
+    }
+
+    private function getCover(?array $coverImage): ?Media {
+        return $coverImage === null
+            ? null
+            : $this->handleWithException(
+            fn() => Media::findByUniqueIdentifier(
+                (int)($coverImage['id'] ?? 0)
+            )
+        );
+    }
+
+    /**
      * @param Tag[] $tags
      */
     private function convertTags(array $tags): BlogPostTagsDTO {
@@ -140,6 +314,11 @@ class BlogPost extends AEndpoint
         return new BlogPostDetailedDTO(
             id: $post->getId(),
             title: $post->getTitle(),
+            shortTitle: $post->getShortTitle(),
+            annotation: $post->getAnnotation(),
+            coverImage: $this->convertMediaModel(
+                $post->getCover()
+            )?->toArray(),
             createdDate: $this->converter->convertTimestampToDateTimeString(
                 $post->getCreatedDate()->getTimestamp()
             ),
@@ -153,7 +332,11 @@ class BlogPost extends AEndpoint
                 : null,
             content: $post->getContent(),
             published: $post->getPublished(),
-            slug: $post->getSlug()
+            slug: $post->getSlug(),
+            tags: array_map(
+                static fn(Tag $tag): string => (string)$tag->getId(),
+                $post->getTags()
+            )
         );
     }
 

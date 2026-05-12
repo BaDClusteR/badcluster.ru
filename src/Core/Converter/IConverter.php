@@ -23,4 +23,6 @@ interface IConverter
     public function convertTimestampToDateTimeString(int $timestamp): string;
 
     public function convertTimestampToHumanReadableDate(int $timestamp): string;
+
+    public function convertDateTimeStringToDateTime(string $dtString): DateTime;
 }

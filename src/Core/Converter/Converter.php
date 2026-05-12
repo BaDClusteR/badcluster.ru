@@ -96,4 +96,13 @@ readonly class Converter implements IConverter
             default => ""
         };
     }
+
+    public function convertDateTimeStringToDateTime(string $dtString): DateTime
+    {
+        try {
+            return new DateTime($dtString);
+        } catch (DateMalformedStringException) {
+            return new DateTime("now");
+        }
+    }
 }

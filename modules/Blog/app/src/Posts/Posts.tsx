@@ -1,5 +1,5 @@
 import { useAdminCore } from "../admin/useAdminCore";
-import type { ColumnDef, ListDataProvider, ListDataProviderRequestOptions, ListState } from "../admin/types";
+import type { ColumnDef, ListDataProvider, ListDataProviderRequestOptions, ListState } from "@admin/types";
 import { PageRow } from "./types";
 
 const columns: ColumnDef<PageRow>[] = [

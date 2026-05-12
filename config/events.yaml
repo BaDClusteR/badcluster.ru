@@ -3,3 +3,8 @@ services:
     events:
       - event: 'kernel.init'
         method: onInit
+
+  BC\Core\Event\Kernel:
+    events:
+      - event: 'kernel.init'
+        method: onInit

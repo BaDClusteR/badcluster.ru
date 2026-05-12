@@ -16,9 +16,14 @@
   overscroll-behavior: none;
 
   .fullscreenAction {
-    top: 24px;
+    position: fixed;
+    top: calc(1.5 * var(--rhythmic-unit));
     left: auto;
-    right: 24px;
+    right: calc(2 * var(--rhythmic-unit));
+  }
+
+  .loader {
+    display: block;
   }
 }
 
@@ -46,4 +51,14 @@
   &:has(.fullscreen) {
     overflow: hidden;
   }
+}
+
+.loader {
+  --loader-size: 18px;
+  --loader-color: var(--color-text-secondary);
+  top: calc(1.75 * var(--rhythmic-unit));
+  position: fixed;
+  right: calc(4.5 * var(--rhythmic-unit));
+  opacity: .3;
+  display: none;
 }

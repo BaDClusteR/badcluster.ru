@@ -1,4 +1,4 @@
-import {lazy, type ReactNode, useEffect} from "react";
+import {lazy, type ReactNode, useCallback, useEffect, useRef, useState} from "react";
 import {
   Grid,
   Group,
@@ -19,18 +19,61 @@ import "@mantine/dates/styles.layer.css";
 import { useForm } from '@mantine/form';
 import { useQuery } from '@tanstack/react-query';
 import { HttpError } from '@/utils/errors';
+import { notify } from '@/lib/notify';
 import { IconError, IconEmpty } from '@/components/List/components/Icons';
 import type {EntityFormProps, FieldDef, FieldDefNamed} from "./types";
 import classes from "./EntityForm.module.css";
 import Button from "@/components/primitives/Button.tsx";
 import Slug from "@/components/primitives/Slug.tsx";
+import { ImageField } from "./fields/ImageField";
 import FieldGroup from "./FieldGroup";
 import type {EntityFormComponents} from "./types";
 import dtClasses from "./fields/DateTimePicker.module.css";
+import clsx from "clsx";
 
 const BlocksField = lazy(() =>
   import('./fields/BlocksField').then((m) => ({ default: m.BlocksField })),
 );
+
+/** Tracks character count via DOM input events (works with uncontrolled forms). */
+function CharCounter({ maxLength, initial = '' }: { maxLength: number; initial?: string }) {
+  const [len, setLen] = useState(String(initial ?? '').length);
+  const ref = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+
+  // Attach input listener on mount
+  useEffect(() => {
+    const wrapper = ref.current?.parentElement;
+    if (!wrapper) return;
+    const input = wrapper.querySelector('input, textarea') as HTMLInputElement | HTMLTextAreaElement | null;
+    if (!input) return;
+    inputRef.current = input;
+
+    setLen(input.value.length);
+    const handler = () => setLen(input.value.length);
+    input.addEventListener('input', handler);
+    return () => input.removeEventListener('input', handler);
+  }, []);
+
+  // Sync when form data arrives (initial prop changes from form.values)
+  useEffect(() => {
+    // Re-read DOM value — form.initialize() updates it without firing 'input' event
+    requestAnimationFrame(() => {
+      if (inputRef.current) {
+        setLen(inputRef.current.value.length);
+      }
+    });
+  }, [initial]);
+
+  const over = len > maxLength;
+  return (
+    <div ref={ref}>
+      <Text size="xs" ta="right" mt={4} c={over ? 'yellow' : 'dimmed'}>
+        {len} / {maxLength}
+      </Text>
+    </div>
+  );
+}
 
 /** Components bag passed to group render functions so modules don't need direct imports. */
 const formComponents: EntityFormComponents = {
@@ -65,13 +108,17 @@ function chunkFields<T>(fields: FieldDef<T>[]): FieldChunk<T>[] {
 export function EntityForm<T extends Record<string, unknown>, C = unknown>({
   fields,
   dataProvider,
+  initialValues,
   context,
   onSubmit,
+  onCreated,
   submitLabel = 'Save',
   onCancel,
   notFoundText,
   notFoundBtnCaption
 }: EntityFormProps<T, C>) {
+  const isCreateMode = !dataProvider;
+
   const { data, error, isLoading, refetch } = useQuery<T>({
     queryKey: dataProvider?.queryKey ?? ['__entity-form-disabled__'],
     queryFn: ({ signal }) => dataProvider!.getData(signal),
@@ -81,20 +128,28 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
 
   const form = useForm<T>({
     mode: 'uncontrolled',
-    initialValues: {} as T,
+    initialValues: (initialValues ?? {}) as T,
     validate: Object.fromEntries(
       fields
-        .filter((f) => f.required && ('name' in f))
-        .map((f) => [
-          (f as FieldDefNamed<T>).name,
-          (value: unknown) => {
-            if (value == null) return `${(f as FieldDefNamed<T>).label} is required`;
-            if (typeof value === 'string' && value.trim() === '') {
-              return `${(f as FieldDefNamed<T>).label} is required`;
-            }
-            return null;
-          },
-        ]),
+        .filter((f) => ('name' in f) && (f.required || f.validate))
+        .map((f) => {
+          const named = f as FieldDefNamed<T>;
+          return [
+            named.name,
+            (value: unknown) => {
+              // Required check
+              if (f.required) {
+                if (value == null) return `Обязательное поле`;
+                if (typeof value === 'string' && value.trim() === '') return `Обязательное поле`;
+              }
+              // Custom validator
+              if (f.validate) {
+                return f.validate(value);
+              }
+              return null;
+            },
+          ];
+        }),
     ) as never,
   });
 
@@ -103,6 +158,20 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
       form.initialize(data);
     }
   }, [data]);
+
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Ctrl+S / Cmd+S → submit
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        formRef.current?.requestSubmit();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, []);
 
   // --- State branches ---
 
@@ -155,15 +224,31 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
       placeholder: ('placeholder' in field) ?
         field.placeholder
         : undefined,
-      required: field.required,
+      withAsterisk: field.required,
     };
+
+    function withCounter(input: ReactNode, fieldDef: typeof field) {
+      if (!('softMaxLength' in fieldDef) || !fieldDef.softMaxLength) return input;
+      return (
+        <div>
+          {input}
+          <CharCounter
+            maxLength={fieldDef.softMaxLength}
+            initial={String(form.values[fieldDef.name] ?? '')}
+          />
+        </div>
+      );
+    }
 
     switch (field.type) {
       case 'text':
-        return <TextInput
-          {...common}
-          {...form.getInputProps(field.name as string)}
-        />;
+        return withCounter(
+          <TextInput
+            {...common}
+            {...form.getInputProps(field.name as string)}
+          />,
+          field,
+        );
       case 'slug':
         return <Slug
           url={field.url}
@@ -172,13 +257,14 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
         />
 
       case 'textarea':
-        return (
+        return withCounter(
           <Textarea
             {...common}
             autosize
             minRows={3}
             {...form.getInputProps(field.name as string)}
-          />
+          />,
+          field,
         );
       case 'number':
         return <NumberInput
@@ -230,11 +316,26 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
             onChange={
               (value) => form.setFieldValue(field.name as string, value as never)
             }
+            error={form.errors[field.name as string]}
             clearable={field.clearable}
             valueFormat={field.valueFormat}
             presets={[
               {value: new Date().toISOString(), label: 'Сейчас'}
             ]}
+          />
+        );
+      case 'image':
+        return (
+          <ImageField
+            label={field.label}
+            description={field.hint}
+            withAsterisk={field.required}
+            error={form.errors[field.name as string]}
+            value={form.values[field.name] as any}
+            onChange={(media) => form.setFieldValue(field.name as string, media as never)}
+            previewWidth={field.previewWidth}
+            thumbnailWidth={field.thumbnailWidth}
+            uploadPurpose={field.uploadPurpose}
           />
         );
       case 'heading':
@@ -245,7 +346,7 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
         );
       case 'group':
         return field.render
-          ? field.render(form, { loading: false, context, components: formComponents })
+          ? field.render(form, { loading: false, submitting: form.submitting, context, components: formComponents })
           : null;
     }
   }
@@ -262,7 +363,7 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
     if (!asCard) return content;
 
     return (
-      <Paper className={classes.card}>
+      <Paper className={clsx(classes.card, isLoading && classes.cardLoading)}>
         {content}
       </Paper>
     );
@@ -281,7 +382,7 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
         return (
           <Grid.Col
             key={key}
-            span={{ base: 12, md: chunk.field.span === 'half' ? 6 : 12 }}
+            span={{ base: 12, md: chunk.field.span === 'full' ? 12 : 6 }}
           >
             {renderFn(chunk.field)}
           </Grid.Col>
@@ -299,7 +400,7 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
                       ? (field.name as string)
                       : `${chunk.legend}-${fi}`
                   }
-                  span={{ base: 12, md: field.span === 'half' ? 6 : 12 }}
+                  span={{ base: 12, md: field.span === 'full' ? 12 : 6 }}
                 >
                   {renderFn(field)}
                 </Grid.Col>
@@ -313,7 +414,7 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
 
   function renderSkeleton(field: FieldDef<T>) {
     if (field.type === 'group') {
-      return field.render ? field.render(form, { loading: true, context, components: formComponents }) : <Skeleton height={100} />;
+      return field.render ? field.render(form, { loading: true, submitting: false, context, components: formComponents }) : <Skeleton height={100} />;
     }
 
     if (field.type === 'heading') {
@@ -328,6 +429,7 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
       switch: 24,
       blocks: 200,
       datetime: 36,
+      image: 120,
     };
 
     return (
@@ -339,7 +441,23 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
   }
 
   return (
-    <form className="entity-form" onSubmit={form.onSubmit(async (values) => { await onSubmit(values); })}>
+    <form ref={formRef} className="entity-form" onSubmit={form.onSubmit(async (values) => {
+      try {
+        const result = await onSubmit(values);
+        if (isCreateMode && onCreated) {
+          onCreated(result);
+        }
+      } catch (err) {
+        if (err instanceof HttpError && err.status === 422 && err.payload?.errors) {
+          form.setErrors(err.payload.errors as Record<string, string>);
+          if (err.payload.message) {
+            notify.error(String(err.payload.message));
+          }
+        } else {
+          throw err;
+        }
+      }
+    })}>
       <Stack gap="lg">
         {renderSection(primaryFields, renderField, false)}
         {secondaryFields.length > 0 && renderSection(secondaryFields, renderField, true)}

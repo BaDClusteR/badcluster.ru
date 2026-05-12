@@ -1,0 +1,39 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Admin $this */
+$webRoot = $this->webRoot;
+$appSettings = $this->appSettings;
+?>
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Badcluster.ru - Админка</title>
+        <script type="application/ld+json" id="app-settings">
+          <?=$appSettings->toJsonString()?>
+        </script>
+        <?php if ($this->isDevMode): ?>
+            <script type="module">
+                import RefreshRuntime from "<?=$webRoot?>/@react-refresh";
+                RefreshRuntime.injectIntoGlobalHook(window);
+                window.$RefreshReg$ = () => {};
+                window.$RefreshSig$ = () => (type) => type;
+                window.__vite_plugin_react_preamble_installed__ = true;
+            </script>
+            <script type="module" src="<?=$webRoot?>/@vite/client"></script>
+            <script type="module" src="<?=$webRoot?>/src/main.tsx"></script>
+        <?php else :?>
+            <?php $manifestAssets = $this->getManifestImports(); ?>
+            <?php foreach ($manifestAssets['css'] as $css): ?>
+                <link rel="stylesheet" href="<?=$css?>" />
+            <?php endforeach; ?>
+            <?php foreach ($manifestAssets['js'] as $js): ?>
+                <script type="module" src="<?=$js?>"></script>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </head>
+    <body>
+        <div id="root"></div>
+    </body>
+</html>

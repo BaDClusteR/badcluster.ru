@@ -4,13 +4,16 @@ namespace BC\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
 use BC\Widget\AWidget;
+use BC\Widget\DTO\BackLinkDTO;
 use BC\Widget\IAssetProvider;
 
 abstract class APage extends AWidget implements IAssetProvider
 {
     abstract public function getHeader(): string;
 
-    abstract public function getTitle(): string;
+    public function getTitle(): string {
+        return "BaD ClusteR";
+    }
 
     /**
      * @return string[]
@@ -22,6 +25,10 @@ abstract class APage extends AWidget implements IAssetProvider
     protected function getTemplatePath(): string
     {
         return 'page.phtml';
+    }
+
+    public function getBackLink(): ?BackLinkDTO {
+        return null;
     }
 
     public static function getAssets(): array
@@ -39,5 +46,13 @@ abstract class APage extends AWidget implements IAssetProvider
             new AssetDTO('core', 'css/font.css', -50),
             new AssetDTO('core', 'css/style.css', 0)
         ];
+    }
+
+    public function getCssBundles(): array {
+        return ['core'];
+    }
+
+    public function getJsBundles(): array {
+        return ['critical'];
     }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "@admin/types",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./entity-form": "./src/entity-form.ts",
+    "./list": "./src/list.ts",
+    "./data-table": "./src/data-table.ts",
+    "./modules": "./src/modules.ts"
+  },
+  "peerDependencies": {
+    "@mantine/form": "^9.0.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@mantine/form": "^9.2.0",
+    "@types/react": "^19.2.14",
+    "react": "^19.2.6"
+  }
+}

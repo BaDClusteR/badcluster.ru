@@ -81,4 +81,11 @@
   display: flex;
   flex-direction: column;
   row-gap: calc(1.5 * var(--rhythmic-unit));
+  padding-bottom: 0 !important;
+}
+
+@media (min-width: 651px) {
+  body .codex-editor--narrow .ce-toolbar__actions {
+    right: -20px;
+  }
 }

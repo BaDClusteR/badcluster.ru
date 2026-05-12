@@ -5,9 +5,9 @@ import {
   IconArrowsDiagonal,
   IconArrowsDiagonalMinimize2
 } from "@tabler/icons-react";
-import {ActionIcon} from "@mantine/core";
+import {ActionIcon, Loader} from "@mantine/core";
 
-export default function FieldGroup({children}: {children: ReactNode}) {
+export default function FieldGroup({children, isSubmitting}: {children: ReactNode, isSubmitting?: boolean}) {
   const [fullscreen, setFullscreen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -32,6 +32,7 @@ export default function FieldGroup({children}: {children: ReactNode}) {
       {children}
     </div>
 
+    {isSubmitting && <Loader className={classes.loader} />}
     <ActionIcon
       onClick={() => {
         setFullscreen(!fullscreen);

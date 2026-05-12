@@ -17,10 +17,14 @@ export interface UploadHandle {
 /**
  * Uploads a single file via XHR so we get upload-progress events,
  * which fetch() still doesn't expose reliably across browsers.
+ *
+ * @param purpose — tells the backend what thumbnail sizes to generate
+ *   (e.g. 'content' for post images, 'cover' for cover images).
  */
 export function uploadMedia(
   file: File,
   onProgress?: (progress: UploadProgress) => void,
+  purpose?: string,
 ): UploadHandle {
   const xhr = new XMLHttpRequest();
 
@@ -52,6 +56,7 @@ export function uploadMedia(
 
     const form = new FormData();
     form.append('file', file);
+    if (purpose) form.append('purpose', purpose);
     xhr.send(form);
   });
 

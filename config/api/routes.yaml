@@ -10,3 +10,7 @@ routes:
   site_api_action_entity:
     path: /admin/api/{section}/{identifier}/{subSection}
     controller: ApiPlatform\Controller\IApiRouter::route
+
+  admin_media_upload:
+    path: /api/admin/media/upload
+    controller: BC\Controller\Admin::mediaUpload

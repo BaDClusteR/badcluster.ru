@@ -13,7 +13,11 @@ class Admin extends AWidget
     use PathsProviderTrait;
     use LoggerTrait;
 
-    private bool $isDevMode = false;
+    protected bool $isDevMode = false {
+        get {
+            return $this->isDevMode;
+        }
+    }
 
     protected string $webRoot = "" {
         get {
@@ -45,9 +49,7 @@ class Admin extends AWidget
 
     protected function getTemplatePath(): string
     {
-        return $this->isDevMode
-            ? "admin/dev.phtml"
-            : "admin/index.phtml";
+        return "admin.phtml";
     }
 
     /**

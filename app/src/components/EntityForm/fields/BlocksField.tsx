@@ -8,7 +8,6 @@ import { GalleryBlock } from './mediaBlock/GalleryBlock';
 import { TerminalBlock } from './terminal/TerminalBlock';
 import { TocBlock } from './toc/TocBlock';
 import { KbdInlineTool } from './inlineTools/KbdInlineTool';
-// import { LinkInlineTool } from './inlineTools/LinkInlineTool';
 import classes from './BlocksField.module.css';
 import "./editorjs.css";
 import {Optional} from "@/types.ts";
@@ -38,14 +37,20 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
   onChangeRef.current = onChange;
   const editorRef = useRef<EditorJS | null>(null);
   const isInternalChange = useRef(false);
+  const lastValueJson = useRef<string>('');
 
-  // When value changes externally (e.g. form.initialize()), re-render the editor
+  // When value changes externally (e.g. form.initialize()), re-render the editor.
+  // Compare by JSON to avoid re-rendering on every keystroke in other form fields
+  // (which creates new object references but identical content).
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor || !value || isInternalChange.current) {
       isInternalChange.current = false;
       return;
     }
+    const json = JSON.stringify(value);
+    if (json === lastValueJson.current) return;
+    lastValueJson.current = json;
     editor.isReady.then(() => {
       editor.render(value);
     });
@@ -169,6 +174,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
       async onChange(api) {
         const saved = await api.saver.save();
         isInternalChange.current = true;
+        lastValueJson.current = JSON.stringify(saved);
         onChangeRef.current(saved);
       },
     });

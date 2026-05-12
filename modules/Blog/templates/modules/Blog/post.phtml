@@ -1,0 +1,36 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Blog\Widget\Post $this */
+$post = $this->post;
+$blocks = (array)($post->getContent()['blocks'] ?? []);
+?>
+<article class="post text-block">
+    <header class="post__header">
+        <?php if ($publishDate = $post->getPublishDate()) :?>
+            <time class="post__date" datetime="<?=$this->getDateTime($publishDate)?>">
+                <?=$this->getHumanReadableDateTime($publishDate)?>
+            </time>
+        <?php endif; ?>
+        <?php if ($updateDate = $post->getUpdateDate()) :?>
+            <time class="post__date post__date--updated" datetime="<?=$this->getDateTime($updateDate)?>">
+                <?=$this->getHumanReadableDateTime($updateDate)?>
+            </time>
+        <?php endif; ?>
+        <h1 class="post__title"><?=$post->getTitle()?></h1>
+        <?php if ($tags = $post->getTags()) :?>
+            <ul class="list--block tags post__tags">
+                <?php foreach ($tags as $tag) : ?>
+                    <li class="tag post__tag"><?=$tag->getTitle()?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </header>
+    <div class="post__body text-block">
+        <?php foreach ($blocks as $block) : ?>
+            <?=$this->renderBlock(
+                (string)($block['type'] ?? ''),
+                (array)($block['data'] ?? '')
+            )?>
+        <?php endforeach; ?>
+    </div>
+</article>

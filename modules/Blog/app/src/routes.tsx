@@ -6,7 +6,8 @@ export function BlogRoutes() {
   return (
     <Routes>
       <Route index element={<BlogPosts />} />
-      <Route path=":id" element={<BlogPost />} />
+      <Route path="new" element={<BlogPost key="new" />} />
+      <Route path=":id" element={<BlogPost key="edit" />} />
     </Routes>
   );
 }

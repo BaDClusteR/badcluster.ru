@@ -20,11 +20,6 @@ class ConverterFactory extends Singleton implements IConverter
         );
     }
 
-    public function convertTimestampToDate(int $timestamp): DateTime
-    {
-        return $this->converter->convertTimestampToDate($timestamp);
-    }
-
     public function convertTimestampToDateTime(int $timestamp): DateTime
     {
         return $this->converter->convertTimestampToDateTime($timestamp);
@@ -53,5 +48,10 @@ class ConverterFactory extends Singleton implements IConverter
     public function convertTimestampToHumanReadableDate(int $timestamp): string
     {
         return $this->converter->convertTimestampToHumanReadableDate($timestamp);
+    }
+
+    public function convertDateTimeStringToDateTime(string $dtString): DateTime
+    {
+        return $this->converter->convertDateTimeStringToDateTime($dtString);
     }
 }

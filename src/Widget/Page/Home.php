@@ -13,11 +13,6 @@ class Home extends APage
         return 'Привет!';
     }
 
-    public function getTitle(): string
-    {
-        return 'BaD ClusteR';
-    }
-
     public function getDescription(): array
     {
         return [

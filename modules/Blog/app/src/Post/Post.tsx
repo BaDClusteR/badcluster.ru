@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { MultiSelect, Skeleton, Textarea } from "@mantine/core";
 import { useQuery } from '@tanstack/react-query';
 import { useAdminCore } from '../admin/useAdminCore';
-import type { EntityFormDataProvider, FieldDef } from '../admin/types';
+import type { EntityFormDataProvider, FieldDef } from "@admin/types";
 import classes from "./styles.module.css";
 import { PostDetailed, TagApi, TagsApiCallResult } from "./types";
 
@@ -14,12 +14,13 @@ const FIELDS: FieldDef<PostDetailed, BlogPostContext>[] = [
   {
     type: 'group',
     role: 'primary',
+    span: "full",
     render: (form, options) => {
       const tags = options?.context?.tags;
       const { BlocksField, FieldGroup } = options!.components;
       const titleProps = form.getInputProps('title');
       return <>
-        <FieldGroup>
+        <FieldGroup isSubmitting={form.submitting}>
           <Skeleton visible={options?.loading}>
             <Textarea
               autosize
@@ -50,8 +51,11 @@ const FIELDS: FieldDef<PostDetailed, BlogPostContext>[] = [
                 pill: classes.tagListPill
               }}
               placeholder="Тэги"
-              data={tags}
-              loading={Array.isArray(tags)}
+              data={tags ?? []}
+              value={tags?.length ? (form.values.tags as string[] ?? []) : []}
+              onChange={(values: string[]) => {
+                form.setFieldValue("tags", values as never);
+              }}
             />
           </Skeleton>
           <Skeleton visible={options?.loading}>
@@ -75,27 +79,58 @@ const FIELDS: FieldDef<PostDetailed, BlogPostContext>[] = [
     required: true,
     placeholder: 'url-friendly-name',
     url: (slug: string) => `http://bc.local/blog/${slug}`,
-    span: 'half',
+    validate: (v) => /^[a-z0-9-]+$/.test(v as string)
+      ? null
+      : 'Только латиница, цифры и дефис',
   },
   {
     name: 'published',
     label: 'Опубликован',
-    type: 'switch',
-    span: 'half',
+    type: 'switch'
   },
   {
     name: 'publishDate',
     label: 'Дата публикации',
     type: 'datetime',
-    required: true,
-    span: 'half'
+    required: true
   },
   {
     name: 'updateDate',
     label: 'Дата обновления',
     type: 'datetime',
-    span: 'half',
     clearable: true
+  },
+  {
+    name: 'shortTitle',
+    label: 'Краткий заголовок',
+    hint: 'Для списка постов и meta title',
+    type: "text",
+    span: "full"
+  },
+  {
+    name: "annotation",
+    label: "Аннотация",
+    hint: "Для списка постов",
+    type: "text",
+    span: "full",
+    softMaxLength: 125
+  },
+  {
+    name: 'coverImage',
+    label: 'Обложка',
+    type: 'image',
+    previewWidth: 400,
+    thumbnailWidth: 100,
+    uploadPurpose: 'cover',
+    span: 'full',
+  },
+  {
+    name: "metaDescription",
+    label: "Meta description",
+    type: "text",
+    span: "full",
+    hint: "Краткое описание для поисковых систем",
+    softMaxLength: 160,
   }
 ];
 
@@ -103,6 +138,8 @@ export function BlogPost() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { EntityForm, apiCall, notify } = useAdminCore();
+
+  const isCreateMode = !id;
 
   const { data } = useQuery({
     queryKey: ['tags'],
@@ -122,26 +159,43 @@ export function BlogPost() {
       : [],
   };
 
-  const dataProvider: EntityFormDataProvider<PostDetailed> = {
-    queryKey: ['post', id],
-    getData: async (signal) => {
-      return await apiCall('GET', `post/${id}`, {}, { signal }) as PostDetailed;
-    }
-  };
+  const dataProvider: EntityFormDataProvider<PostDetailed> | undefined = isCreateMode
+    ? undefined
+    : {
+        queryKey: ['post', id],
+        getData: async (signal) => {
+          return await apiCall('GET', `post/${id}`, {}, { signal }) as PostDetailed;
+        }
+      };
 
   return (
     <EntityForm
       fields={FIELDS}
       dataProvider={dataProvider}
+      initialValues={isCreateMode ? { published: false } : undefined}
       context={context}
       onSubmit={async (values: any) => {
-        console.log('Submitting', values);
-        await new Promise((r) => setTimeout(r, 500));
-        notify.success('Saved', `"${values.title}" updated`);
+        if (isCreateMode) {
+          const result = await apiCall('POST', 'post', values);
+          notify.success('Создано', `"${values.title}" создан`);
+          return result;
+        } else {
+          await apiCall('PUT', `post/${id}`, values);
+          notify.success('Сохранено', `Пост обновлён.`);
+        }
       }}
-      onCancel={() => navigate('/admin/blog')}
+      onCreated={(result: any) => {
+        if (result?.id) {
+          navigate(`/admin/blog/${result.id}`, { replace: true });
+        }
+      }}
       notFoundText="Пост не найден"
       notFoundBtnCaption="Назад к постам"
+      submitLabel={
+        isCreateMode
+          ? "Создать пост"
+          : "Сохранить"
+      }
     />
   );
 }

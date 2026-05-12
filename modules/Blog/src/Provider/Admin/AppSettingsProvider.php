@@ -23,8 +23,22 @@ readonly class AppSettingsProvider implements IAppSettingsProvider
         $settings->addNavItem(
             new NavigationDTO(
                 label: "Блог",
-                path: "/admin/blog",
                 icon: file_get_contents(__DIR__ . "/../../../app/assets/icon.svg"),
+                position: 100,
+                children: [
+                    new NavigationDTO(
+                        label: "Посты",
+                        path: "/admin/blog",
+                        icon: file_get_contents(__DIR__ . "/../../../app/assets/icon.svg"),
+                        position: 100
+                    ),
+                    new NavigationDTO(
+                        label: "Новый пост",
+                        path: "/admin/blog/new",
+                        icon: file_get_contents(__DIR__ . "/../../../app/assets/icon.svg"),
+                        position: 200
+                    )
+                ]
             )
         );
 

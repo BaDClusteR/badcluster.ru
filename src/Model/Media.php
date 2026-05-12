@@ -7,6 +7,7 @@ use BC\Core\Media\PostProcessor\IImagePostprocessor;
 use BC\Core\Trait\FileSystemTrait;
 use BC\Core\Trait\LoggerTrait;
 use BC\Core\Trait\PathsProviderTrait;
+use BC\Generator\IThumbnailsGenerator;
 use BC\Provider\IPathsProvider;
 use Runway\DataStorage\Attribute as DS;
 use Runway\Exception\Exception;
@@ -82,10 +83,14 @@ class Media extends AEntity
     protected static ?string $imagesPath = null;
 
     /**
-     * @return self[]
+     * @return self[][]
      */
-    public function generateThumbnails(int $width): array {
-        return $this->getThumbnailGenerator()->generateThumbnails($this, $width);
+    public function generateThumbnails(array $widths, bool $force = false): array {
+        return $this->getThumbnailsGenerator()->generateThumbnails($this, $widths, $force);
+    }
+
+    public function generateThumbnail(int $width, bool $force = false): array {
+        return $this->getThumbnailGenerator()->generateThumbnails($this, $width, $force);
     }
 
     protected function getImagesPath(): string {
@@ -139,6 +144,10 @@ class Media extends AEntity
 
     protected function getPathsProvider(): IPathsProvider {
         return Container::getInstance()->getService(IPathsProvider::class);
+    }
+
+    protected function getThumbnailsGenerator(): IThumbnailsGenerator {
+        return Container::getInstance()->getService(IThumbnailsGenerator::class);
     }
 
     protected function getThumbnailGenerator(): IThumbnailGenerator {

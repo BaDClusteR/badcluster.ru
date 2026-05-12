@@ -18,4 +18,19 @@ readonly class MediaDTO
         public array $thumbs
     ) {
     }
+
+    public function toArray(): array {
+        return [
+            'id' => $this->id,
+            'url' => $this->url,
+            'width' => $this->width,
+            'height' => $this->height,
+            'mime' => $this->mime,
+            'alt' => $this->alt,
+            'thumbs' => array_map(
+                static fn (MediaThumbnailDTO $thumbnailDTO) => $thumbnailDTO->toArray(),
+                $this->thumbs
+            )
+        ];
+    }
 }

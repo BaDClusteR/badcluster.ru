@@ -16,14 +16,13 @@ use Runway\Request\Response;
 use Runway\Singleton\Container;
 use Throwable;
 
-class Admin extends AController
+readonly class Admin
 {
     public function __construct(
-        IRequest $request,
-        ILogger $logger,
-        private readonly IAppSettingsProvider $appSettingsProvider,
+        private IRequest $request,
+        private ILogger $logger,
+        private IAppSettingsProvider $appSettingsProvider,
     ) {
-        parent::__construct($request, $logger);
     }
 
     public function index(): Response
@@ -129,12 +128,10 @@ class Admin extends AController
         // Generate thumbnails for images at standard widths.
         // generateThumbnails(width) is idempotent per (width, mime) pair.
         if ($isImage && $width > 0) {
-            foreach ([500, 1000] as $thumbWidth) {
-                try {
-                    $media->generateThumbnails($thumbWidth);
-                } catch (Throwable $e) {
-                    $this->logger->warning("Thumbnail generation failed for width $thumbWidth: {$e->getMessage()}");
-                }
+            try {
+                $media->generateThumbnails([500, 1000]);
+            } catch (Throwable $e) {
+                $this->logger->warning("Thumbnail generation failed for {$media->getPath()}: {$e->getMessage()}");
             }
         }
 

@@ -4,3 +4,6 @@ services:
 
   BC\Modules\Blog\Provider\Admin\AppSettingsProvider:
     decorates: BC\Provider\Admin\IAppSettingsProvider
+
+  BC\Modules\Blog\Controller\System\APIExceptionResponseController:
+    decorates: ApiPlatform\Controller\System\IApiExceptionResponseController

@@ -1,0 +1,49 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Blog\Widget\Posts $this */
+?>
+<ul class="posts list--block">
+    <?php foreach ($this->getPosts() as $post): ?>
+        <li class="post">
+            <a href="<?= $post->getUrl() ?>" class="post__link">
+                <div class="post__date">
+                    <?php
+                        $publishDate = $post->getPublishDate();
+                        $updateDate = $post->getUpdateDate();
+                    ?>
+                    <time
+                        class="post__date-time post__date-time--publish"
+                        datetime="<?=$this->getDateValue($publishDate)?>"
+                    >
+                        <?=$this->getHumanReadableDate($publishDate)?>
+                    </time>
+                    <?php if ($updateDate): ?>
+                        <time
+                            class="post__date-time post__date-time--updated"
+                            datetime="<?=$this->getDateValue($updateDate)?>"
+                        >
+                            <?=$this->getHumanReadableDate($updateDate)?>
+                        </time>
+                    <?php endif; ?>
+                </div>
+                <h2 class="post__title">
+                    <?php if (!$post->getPublished()) :?>
+                        [Черновик]
+                    <?php endif; ?>
+                    <?=$post->getShortTitle() ?: $post->getTitle()?>
+                </h2>
+                <?php if ($annotation = $post->getAnnotation()): ?>
+                    <p class="post__annotation"><?=$annotation?></p>
+                <?php endif; ?>
+                <?php if ($tags = $post->getTags()): ?>
+                    <ul class="list--block tags post__tags">
+                        <?php foreach ($tags as $tag): ?>
+                            <li class="tag post__tag"><?=$tag->getTitle()?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+                <?=$this->renderMiniature($post)?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+</ul>

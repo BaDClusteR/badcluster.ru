@@ -11,10 +11,9 @@
 
 .editor {
   background: var(--mantine-color-body);
-  border: var(--border);
   border-radius: 0;
-  padding: 12px 80px;
-  min-height: 240px;
+  padding: 0;
+  min-height: 300px;
   position: relative;
   color: var(--color-text);
   background: var(--color-bg);

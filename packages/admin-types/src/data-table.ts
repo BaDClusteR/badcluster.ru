@@ -1,0 +1,14 @@
+import type { ReactNode } from "react";
+
+export interface ColumnDef<T> {
+  key: string;
+  subKey?: string;
+  header: ReactNode;
+  sortable?: boolean;
+  width?: number | string;
+  align?: "left" | "right" | "center";
+  render?: (row: T) => ReactNode;
+  subRender?: (row: T) => ReactNode;
+  accessor?: (row: T) => ReactNode;
+  link?: (row: T) => string;
+}

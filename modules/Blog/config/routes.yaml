@@ -1,0 +1,11 @@
+routes:
+  posts_list:
+    path: /blog
+    controller: BC\Modules\Blog\Controller\Blog::renderPostList
+
+  post:
+    path: /blog/{slug}
+    controller: BC\Modules\Blog\Controller\Blog::renderPost
+
+services:
+  BC\Modules\Blog\Controller\Blog: ~

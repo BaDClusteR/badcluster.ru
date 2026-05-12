@@ -9,25 +9,13 @@ use BC\Widget\Page\Home;
 use Runway\Request\Response;
 use Runway\Singleton\Container;
 
-class Index extends AController
+readonly class Index
 {
-    public function test(): Response
+    public function run(): Response
     {
         return new HtmlResponse(
             200,
             new Home()->render()
-        );
-    }
-
-    public function adminModules(): Response
-    {
-        // TODO: collect from registered modules in modules/*/
-        $modules = [];
-
-        return new HtmlResponse(
-            200,
-            json_encode(['modules' => $modules]),
-            ['Content-Type' => 'application/json']
         );
     }
 }

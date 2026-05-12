@@ -1,0 +1,10 @@
+services:
+  BC\Modules\Blog\Core\Action\Post\ISavePostAction:
+    class: BC\Modules\Blog\Core\Action\Post\SavePostAction
+
+  BC\Modules\Blog\Core\Action\Post\ICreatePostAction:
+    class: BC\Modules\Blog\Core\Action\Post\CreatePostAction
+
+  BC\Modules\Blog\Core\Action\Validator\IPostValidator:
+    class: BC\Modules\Blog\Core\Action\Validator\PostValidator
+

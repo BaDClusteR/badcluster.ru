@@ -6,23 +6,15 @@ use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use ApiPlatform\DTO\ApiEndpointArgumentFileDTO;
 use ApiPlatform\Exception\BadRequestException;
-use ApiPlatform\Exception\InternalErrorException;
-use ApiPlatform\Exception\RuntimeInternalErrorException;
-use BC\Api\DTO\BlogPostDTO;
-use BC\Api\DTO\BlogPostsDTO;
 use BC\Api\DTO\MediaDTO;
 use BC\Api\DTO\MediaThumbnailDTO;
-use BC\Api\Enum\BlogPostStatusEnum;
-use BC\Core\Converter\IConverter;
 use BC\Model\Media;
-use BC\Model\Post;
 use BC\Provider\IPathsProvider;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\FileSystem\IFileSystem;
 use Runway\Logger\ILogger;
 use Runway\Model\Exception\ModelException;
-use Runway\Singleton\Container;
 use Throwable;
 
 #[Docs\Group("Files upload")]
@@ -44,7 +36,10 @@ class Upload extends AEndpoint
     #[API\Endpoint(path: "upload", method: "POST")]
     public function uploadMedia(
         #[API\Parameter(source: "file", name: "file")]
-        ApiEndpointArgumentFileDTO $file
+        ApiEndpointArgumentFileDTO $file,
+
+        #[API\Parameter(source: "query", name: "purpose")]
+        ?string $purpose = null,
     ): MediaDTO {
         $mime = $file->mimeType;
 
@@ -62,41 +57,34 @@ class Upload extends AEndpoint
 
         $media = $this->createModel($imagePath, $mime);
 
-        if ($media->getWidth() > 0) {
-            foreach ([500, 1000, 2000] as $thumbWidth) {
-                try {
-                    $media->generateThumbnails($thumbWidth);
-                } catch (Throwable $e) {
-                    $this->logger->warning("Thumbnail generation failed for width $thumbWidth: {$e->getMessage()}");
-                }
-            }
+        return $this->convertMediaModel(
+            $this->doWithPurpose($media, $purpose),
+        );
+    }
+
+    protected function doWithPurpose(Media $media, ?string $purpose): Media {
+        if ($purpose === null && $media->getWidth() > 0) {
+            $this->tryGenerateThumbnails($media, [500, 1000, 2000]);
         }
 
-        return $this->convertModel($media);
+        return $media;
     }
 
-    private function convertModel(Media $media): MediaDTO {
-        return new MediaDTO(
-            id: $media->getId(),
-            url: $media->getWebPath(),
-            width: $media->getWidth(),
-            height: $media->getHeight(),
-            mime: $media->getMime(),
-            alt: $media->getAlt(),
-            thumbs: array_map(
-                fn (Media $thumbnail): MediaThumbnailDTO => $this->buildThumbnail($thumbnail),
-                $media->getThumbnails()
-            )
-        );
-    }
-
-    private function buildThumbnail(Media $thumbnail): MediaThumbnailDTO {
-        return new MediaThumbnailDTO(
-            width: $thumbnail->getWidth(),
-            height: $thumbnail->getHeight(),
-            mime: $thumbnail->getMime(),
-            url: $thumbnail->getWebPath()
-        );
+    /**
+     * @param int[] $widths
+     */
+    protected function tryGenerateThumbnails(Media $media, array $widths): void {
+        try {
+            $media->generateThumbnails($widths);
+        } catch (Throwable $e) {
+            $this->logger->warning(
+                "Thumbnail generation failed for media {$media->getPath()}: {$e->getMessage()}",
+                [
+                    'mediaPath' => $media->getPath(),
+                    'widths'    => $widths
+                ]
+            );
+        }
     }
 
     private function createModel(string $imagePath, string $mime): Media {
