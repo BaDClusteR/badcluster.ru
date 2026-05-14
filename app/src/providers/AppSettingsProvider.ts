@@ -32,3 +32,7 @@ export function getNavigation(): NavItemDescriptor[] {
 export function getModules(): ModuleDescriptor[] {
   return get<ModuleDescriptor[]>('modules') ?? [];
 }
+
+export function getWebRoot(): string {
+  return String(get('webRoot') || "");
+}

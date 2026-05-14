@@ -9,6 +9,8 @@ use ApiPlatform\Exception\RuntimeInternalErrorException;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IConverter;
+use BC\Core\Converter\Media\IMediaConverter;
+use BC\Core\Helper\IBlockHelper;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Modules\Blog\Api\DTO\BlogPostCreatedDTO;
@@ -19,9 +21,11 @@ use BC\Modules\Blog\Api\DTO\BlogPostTagDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostTagsDTO;
 use BC\Modules\Blog\Api\DTO\SuccessfulResultDTO;
 use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
+use BC\Modules\Blog\Core\Action\DTO\GetPostRequest;
 use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
 use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
 use BC\Modules\Blog\Core\Action\Post\ICreatePostAction;
+use BC\Modules\Blog\Core\Action\Post\IGetPostAction;
 use BC\Modules\Blog\Core\Action\Post\ISavePostAction;
 use BC\Modules\Blog\Model\Post;
 use BC\Modules\Blog\Model\Tag;
@@ -32,7 +36,9 @@ use Runway\Singleton\Container;
 class BlogPost extends AEndpoint
 {
     public function __construct(
-        private readonly IConverter $converter
+        private readonly IConverter $converter,
+        private readonly IMediaConverter $mediaConverter,
+        private readonly IBlockHelper $blockHelper
     ) {
     }
 
@@ -106,15 +112,17 @@ class BlogPost extends AEndpoint
         #[API\Parameter(source: "path", name: "identifier")]
         int $id
     ): BlogPostDetailedDTO {
+        $action = Container::getInstance()->getService(IGetPostAction::class);
+
         $post = $this->handleWithException(
-            static fn() => Post::findByUniqueIdentifier($id)
+            static fn() => $action->run(
+                new GetPostRequest($id)
+            )->post
         );
 
-        if (!$post) {
-            throw new NotFoundException("Post #$id not found");
-        }
-
-        return $this->convertDetailedModel($post);
+        return $this->handleWithException(
+            fn(): BlogPostDetailedDTO => $this->convertDetailedModel($post)
+        );
     }
 
     #[API\Endpoint(path: "tags", method: "GET")]
@@ -135,35 +143,35 @@ class BlogPost extends AEndpoint
         #[API\Parameter(source: "body", name: "title")]
         string $title,
 
-        #[API\Parameter(source: "body", name: "shortTitle")]
-        string $shortTitle,
-
-        #[API\Parameter(source: "body", name: "annotation")]
-        string $annotation,
-
         #[API\Parameter(source: "body", name: "content")]
         array $content,
-
-        #[API\Parameter(source: "body", name: "coverImage")]
-        ?array $coverImage,
 
         #[API\Parameter(source: "body", name: "publishDate")]
         string $publishDate,
 
-        #[API\Parameter(source: "body", name: "updateDate")]
-        ?string $updateDate,
-
-        #[API\Parameter(source: "body", name: "published")]
-        bool $published,
-
         #[API\Parameter(source: "body", name: "slug")]
         string $slug,
 
+        #[API\Parameter(source: "body", name: "shortTitle")]
+        string $shortTitle = '',
+
+        #[API\Parameter(source: "body", name: "annotation")]
+        string $annotation = '',
+
+        #[API\Parameter(source: "body", name: "published")]
+        bool $published = false,
+
         #[API\Parameter(source: "body", name: "metaDescription")]
-        string $metaDescription,
+        string $metaDescription = '',
 
         #[API\Parameter(source: "body", name: "tags")]
-        array $tags
+        array $tags = [],
+
+        #[API\Parameter(source: "body", name: "updateDate")]
+        ?string $updateDate = null,
+
+        #[API\Parameter(source: "body", name: "coverImage")]
+        ?array $coverImage = null,
     ): BlogPostCreatedDTO {
         $action = Container::getInstance()->getService(ICreatePostAction::class);
 
@@ -210,38 +218,38 @@ class BlogPost extends AEndpoint
         #[API\Parameter(source: "body", name: "title")]
         string $title,
 
-        #[API\Parameter(source: "body", name: "shortTitle")]
-        string $shortTitle,
-
-        #[API\Parameter(source: "body", name: "annotation")]
-        string $annotation,
-
         #[API\Parameter(source: "body", name: "content")]
         array $content,
-
-        #[API\Parameter(source: "body", name: "coverImage")]
-        ?array $coverImage,
 
         #[API\Parameter(source: "body", name: "publishDate")]
         string $publishDate,
 
-        #[API\Parameter(source: "body", name: "updateDate")]
-        ?string $updateDate,
-
-        #[API\Parameter(source: "body", name: "published")]
-        bool $published,
-
         #[API\Parameter(source: "body", name: "slug")]
         string $slug,
 
+        #[API\Parameter(source: "path", name: "identifier")]
+        int $id,
+
+        #[API\Parameter(source: "body", name: "shortTitle")]
+        string $shortTitle = '',
+
+        #[API\Parameter(source: "body", name: "annotation")]
+        string $annotation = '',
+
+        #[API\Parameter(source: "body", name: "published")]
+        bool $published = false,
+
         #[API\Parameter(source: "body", name: "metaDescription")]
-        string $metaDescription,
+        string $metaDescription = '',
 
         #[API\Parameter(source: "body", name: "tags")]
-        array $tags,
+        array $tags = [],
 
-        #[API\Parameter(source: "path", name: "identifier")]
-        int $id
+        #[API\Parameter(source: "body", name: "updateDate")]
+        ?string $updateDate = null,
+
+        #[API\Parameter(source: "body", name: "coverImage")]
+        ?array $coverImage = null,
     ): SuccessfulResultDTO {
         $action = Container::getInstance()->getService(ISavePostAction::class);
 
@@ -308,6 +316,9 @@ class BlogPost extends AEndpoint
         );
     }
 
+    /**
+     * @throws Exception
+     */
     private function convertDetailedModel(Post $post): BlogPostDetailedDTO {
         $updateDate = $post->getUpdateDate()?->getTimestamp();
 
@@ -315,8 +326,9 @@ class BlogPost extends AEndpoint
             id: $post->getId(),
             title: $post->getTitle(),
             shortTitle: $post->getShortTitle(),
+            metaDescription: $post->getMetaDescription(),
             annotation: $post->getAnnotation(),
-            coverImage: $this->convertMediaModel(
+            coverImage: $this->mediaConverter->convertMedia(
                 $post->getCover()
             )?->toArray(),
             createdDate: $this->converter->convertTimestampToDateTimeString(
@@ -330,7 +342,9 @@ class BlogPost extends AEndpoint
                     $updateDate
                 )
                 : null,
-            content: $post->getContent(),
+            content: $this->blockHelper->enrichBlocks(
+                $post->getContent()
+            ),
             published: $post->getPublished(),
             slug: $post->getSlug(),
             tags: array_map(
@@ -343,7 +357,7 @@ class BlogPost extends AEndpoint
     private function convertModel(Post $post): BlogPostDTO {
         return new BlogPostDTO(
             id: $post->getId(),
-            title: $post->getTitle(),
+            title: $post->getShortTitle() ?: $post->getTitle(),
             slug: $post->getSlug(),
             published: $post->getPublished(),
             publishDate: $post->getPublished()

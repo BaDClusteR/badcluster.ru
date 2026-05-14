@@ -1,13 +1,13 @@
 <?php
 
-namespace BC\Modules\Blog\Widget\Block;
+namespace BC\Widget\Common\Block;
 
 use BC\Widget\AWidget;
 
 class Paragraph extends AWidget
 {
     protected function getTemplatePath(): string {
-        return 'modules/Blog/Block/paragraph.phtml';
+        return 'common/block/paragraph.phtml';
     }
 
     protected function getContent(): string {

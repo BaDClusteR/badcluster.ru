@@ -65,6 +65,7 @@ export class TerminalBlock implements BlockTool {
 
     static get sanitize() {
         return {
+            anchor: {},
             cipher: {br: true},
             en: {
                 p: true,
@@ -253,6 +254,7 @@ export class TerminalBlock implements BlockTool {
                 value: this.data.anchor,
                 onChange: (v) => {
                     this.data.anchor = v;
+                    this.syncAnchorId();
                 }
             })
         );
@@ -268,6 +270,14 @@ export class TerminalBlock implements BlockTool {
         if (this.data.tabEn) tabs.push("en");
         if (this.data.tabRu) tabs.push("ru");
         return tabs;
+    }
+
+    private syncAnchorId() {
+        if (this.data.anchor) {
+            this.wrapper.id = this.data.anchor;
+        } else {
+            this.wrapper.removeAttribute("id");
+        }
     }
 
     private buildContent() {
@@ -365,6 +375,8 @@ export class TerminalBlock implements BlockTool {
         footer.appendChild(keyRow);
 
         this.wrapper.appendChild(footer);
+
+        this.syncAnchorId();
     }
 
     private buildTabContent(tabKey: TabKey): HTMLElement {

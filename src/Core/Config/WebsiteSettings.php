@@ -2,18 +2,23 @@
 
 namespace BC\Core\Config;
 
+use BC\Core\DTO\AdminContactsDTO;
 use Runway\Env\Provider\IEnvVariablesProvider;
 
 class WebsiteSettings implements IWebsiteSettings
 {
     public function __construct(
-        protected IEnvVariablesProvider $envVars
+        private string $webRoot,
+        private string $adminEmail,
+        private string $adminTelegram,
+        private string $adminSteam,
+        private string $adminGithub
     ) {
     }
 
     public function getWebRoot(): string
     {
-        return (string)$this->envVars->getEnvVariable('WEB_ROOT');
+        return $this->webRoot;
     }
 
     public function getImageBreakpoints(): array {
@@ -21,5 +26,14 @@ class WebsiteSettings implements IWebsiteSettings
             450 => 500,
             -1  => 1000
         ];
+    }
+
+    public function getAdminContacts(): AdminContactsDTO {
+        return new AdminContactsDTO(
+            email: $this->adminEmail,
+            telegram: $this->adminTelegram,
+            steam: $this->adminSteam,
+            github: $this->adminGithub
+        );
     }
 }

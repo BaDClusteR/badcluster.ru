@@ -5,7 +5,16 @@
 $bundler = $this->getBundler();
 ?>
 <?php foreach ($this->getJsBundles() as $bundle) :?>
-    <script src="<?=$bundler->getBundleWebPath($bundle, 'js')?>"></script>
+    <?php if (is_array($bundle)) :?>
+        <script
+            src="<?=$bundler->getBundleWebPath((string)($bundle['src'] ?? ""), 'js')?>"
+            <?php if (!empty($bundle['type'])) :?>
+                type="<?=$bundle['type']?>"
+            <?php endif; ?>
+        ></script>
+    <?php else :?>
+        <script src="<?=$bundler->getBundleWebPath($bundle, 'js')?>"></script>
+    <?php endif; ?>
 <?php endforeach; ?>
 <?php foreach ($this->getCssBundles() as $bundle) :?>
     <link href="<?=$bundler->getBundleWebPath($bundle, 'css')?>" rel="stylesheet" />

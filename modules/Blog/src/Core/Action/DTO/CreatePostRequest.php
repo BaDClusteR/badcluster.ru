@@ -20,7 +20,7 @@ readonly class CreatePostRequest
         public string $metaDescription,
         public bool $published,
         public DateTime $publishDate,
-        public DateTime $updateDate,
+        public ?DateTime $updateDate,
         public ?Media $coverImage,
         public string $coverImageAltText,
         public array $tags

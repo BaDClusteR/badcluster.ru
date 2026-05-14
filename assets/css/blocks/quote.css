@@ -1,0 +1,94 @@
+@keyframes quoteFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.post__quote {
+  margin: 0;
+  border-inline-start: 4px solid var(--color-accent);
+  padding: calc(1.5 * var(--rhythmic-unit));
+  background: var(--color-surface);
+  border-radius: 0 var(--border-radius-big) var(--border-radius-big) 0;
+  font-size: var(--font-size-big);
+  font-style: italic;
+  background: color-mix(in srgb, var(--color-surface), transparent 15%);
+  position: relative;
+
+  p {
+    font-weight: 480;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.post__quote--switchable {
+  padding-block: calc(2 * var(--rhythmic-unit));
+  padding-inline-end: calc(2 * var(--rhythmic-unit));
+}
+
+.post__quote-controls {
+  position: absolute;
+  top: calc(.75 * var(--rhythmic-unit));
+  right: calc(1.5 * var(--rhythmic-unit));
+  display: flex;
+  align-items: center;
+  gap: calc(.5 * var(--rhythmic-unit));
+  font-size: var(--font-size-smaller);
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+  user-select: none;
+  font-style: normal;
+}
+
+.post__quote-control {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-weight: 500;
+  transition: var(--transition-mode) color;
+  opacity: .5;
+
+  &:not([aria-selected="true"]) {
+    &:hover,
+    &:focus-visible,
+    &:active {
+      color: var(--color-text);
+    }
+  }
+
+  &[aria-selected="true"] {
+    opacity: 1;
+    color: var(--color-brand);
+    font-weight: 500;
+    cursor: default;
+  }
+}
+
+.post__quote-control-divider {
+  opacity: .3;
+}
+
+.post__quote--switchable .post__quote-content {
+  display: none;
+
+  &:not([hidden]) {
+    display: block;
+    animation: var(--transition-slow) quoteFadeIn;
+  }
+}
+
+:dir(rtl) {
+  .post__quote {
+    border-radius: var(--border-radius-big) 0 0 var(--border-radius-big);
+  }
+
+  .post__quote-controls {
+    right: auto;
+    left: calc(1.5 * var(--rhythmic-unit));
+  }
+}

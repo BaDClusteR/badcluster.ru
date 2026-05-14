@@ -12,53 +12,68 @@ class Picture extends AWidget
     use PathsProviderTrait;
     use AttributesHelperTrait;
 
-    private ?Media $image = null;
+    protected ?Media $image = null {
+        get {
+            return $this->image;
+        }
+    }
 
     /**
      * @var array<int, int> Min media width => image width
      */
-    private array $breakpoints = [];
+    protected array $breakpoints = [] {
+        get {
+            return $this->breakpoints;
+        }
+    }
 
     private bool $isLazyLoad = false;
 
-    private string $pictureCssClass = '';
+    protected string $pictureCssClass = '' {
+        get {
+            return $this->pictureCssClass;
+        }
+    }
 
-    private string $imgCssClass = '';
+    protected string $imgCssClass = '' {
+        get {
+            return $this->imgCssClass;
+        }
+    }
+
+    protected string $caption = '' {
+        get {
+            return $this->caption;
+        }
+    }
 
     public function __construct(array $context = [])
     {
         parent::__construct($context);
 
-        if (($context['image'] ?? null) instanceof Media) {
-            $this->image = $context['image'];
+        if (($this->context['image'] ?? null) instanceof Media) {
+            $this->image = $this->context['image'];
         }
 
-        if (array_key_exists('lazyLoad', $context)) {
-            $this->isLazyLoad = (bool)$context['lazyLoad'];
+        if (array_key_exists('lazyLoad', $this->context)) {
+            $this->isLazyLoad = (bool)$this->context['lazyLoad'];
         }
 
-        if (is_array($context['breakpoints'] ?? null)) {
-            $this->breakpoints = $context['breakpoints'];
+        if (is_array($this->context['breakpoints'] ?? null)) {
+            $this->breakpoints = $this->context['breakpoints'];
         }
 
-        if (!empty($context['class'])) {
-            $this->imgCssClass = $context['class'];
+        if (!empty($this->context['class'])) {
+            $this->imgCssClass = $this->context['class'];
         }
 
-        if (!empty($context['pictureClass'])) {
-            $this->pictureCssClass = $context['pictureClass'];
+        if (!empty($this->context['pictureClass'])) {
+            $this->pictureCssClass = $this->context['pictureClass'];
         }
-    }
 
-    protected function getImage(): ?Media {
-        return $this->image;
-    }
-
-    /**
-     * @return array<int, int>
-     */
-    protected function getBreakpoints(): array {
-        return $this->breakpoints;
+        if (!empty($this->context['caption'])) {
+            $this->caption = $this->context['caption'];
+        }
     }
 
     protected function hasImages(int $width, string $mime): bool
@@ -122,18 +137,10 @@ class Picture extends AWidget
         return 'common/picture.phtml';
     }
 
-    protected function getPictureCssClass(): string {
-        return $this->pictureCssClass;
-    }
-
-    protected function getImgCssClass(): string {
-        return $this->imgCssClass;
-    }
-
     protected function getPictureAttributes(): array {
         $result = [];
 
-        if ($class = $this->getPictureCssClass()) {
+        if ($class = $this->pictureCssClass) {
             $result['class'] = $class;
         }
 
@@ -147,7 +154,7 @@ class Picture extends AWidget
     }
 
     protected function getImgAttributes(): array {
-        $image = $this->getImage();
+        $image = $this->image;
         if (!$image) {
             return [];
         }
@@ -156,14 +163,14 @@ class Picture extends AWidget
             'src'    => $image->getWebPath(),
             'width'  => $image->getWidth(),
             'height' => $image->getHeight(),
-            'alt'    => $image->getAlt(),
+            'alt'    => $image->getAlt() ?: $this->caption,
         ];
 
         if ($this->isLazyLoad) {
             $result['loading'] = 'lazy';
         }
 
-        if ($class = $this->getImgCssClass()) {
+        if ($class = $this->imgCssClass) {
             $result['class'] = $class;
         }
 

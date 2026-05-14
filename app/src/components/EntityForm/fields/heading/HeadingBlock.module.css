@@ -1,7 +1,7 @@
 .heading {
   outline: none;
-  padding: 0;
   margin: 0;
+  padding: calc(1.5 * var(--rhythmic-unit)) 0 0 0;
 }
 
 .heading[data-placeholder]:empty::before {

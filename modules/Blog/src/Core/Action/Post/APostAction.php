@@ -2,6 +2,7 @@
 
 namespace BC\Modules\Blog\Core\Action\Post;
 
+use BC\Core\Trait\BlockHelperTrait;
 use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
 use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
 use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
@@ -14,6 +15,8 @@ use Runway\Singleton\Container;
 
 abstract class APostAction
 {
+    use BlockHelperTrait;
+
     /**
      * @throws DBException
      * @throws QueryBuilderException
@@ -23,14 +26,17 @@ abstract class APostAction
         $post->setTitle($request->title)
              ->setShortTitle($request->shortTitle)
              ->setAnnotation($request->annotation)
-             ->setContent($request->content)
+             ->setContent(
+                 $this->getBlockHelper()->cleanBlocks(
+                     $request->content
+                 )
+             )
              ->setSlug($request->slug)
              ->setPublished($request->published)
              ->setPublishDate($request->publishDate)
              ->setUpdateDate($request->updateDate)
              ->setCover($request->coverImage)
-             ->setMetaDescription($request->metaDescription)
-             ->syncTags($request->tags);
+             ->setMetaDescription($request->metaDescription);
 
         if ($request->coverImage) {
             $request->coverImage->setAlt($request->coverImageAltText);
@@ -38,6 +44,8 @@ abstract class APostAction
         }
 
         $post->persist();
+
+        $post->syncTags($request->tags);
     }
 
     protected function getValidator(): IPostValidator {

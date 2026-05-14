@@ -23,6 +23,11 @@ export const iconLazyLoad = `<svg width="17" height="14" viewBox="0 0 17 14" xml
     <path d="M8.5 1.5C4.5 1.5 1.2 4 .5 7c.7 3 4 5.5 8 5.5s7.3-2.5 8-5.5c-.7-3-4-5.5-8-5.5Zm0 9A3.5 3.5 0 1 1 12 7a3.5 3.5 0 0 1-3.5 3.5Zm0-5.5A2 2 0 1 0 10.5 7a2 2 0 0 0-2-2Z" fill="currentColor"/>
 </svg>`;
 
+export const iconGallerySearch = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M15 8h.01M11.5 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v5.5"/>
+    <path d="M15 18a3 3 0 1 0 6 0 3 3 0 1 0-6 0M20.2 20.2 22 22M3 16l5-5c.928-.893 2.072-.893 3 0l2 2"/>
+</svg>`;
+
 export const iconSlidePrev = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
     <path d="M15 18l-6-6 6-6"/>
 </svg>`;
@@ -42,6 +47,10 @@ export const iconBin = `<svg xmlns="http://www.w3.org/2000/svg" width="20" heigh
 export const iconExternal = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
     <path stroke="none" d="M0 0h24v24H0z"/>
     <path d="M12 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6M11 13l9-9M15 4h5v5"/>
+</svg>`;
+
+export const iconFullWidth = `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8V5a2 2 0 0 1 2-2h3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M21 16v3a2 2 0 0 1-2 2h-3"/>
 </svg>`;
 
 export const iconUpload = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">

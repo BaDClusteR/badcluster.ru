@@ -1,0 +1,24 @@
+.footer__tagline {
+  font-size: .8rem;
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+  flex: 0 0 auto;
+
+  strong {
+    font-size: 1rem;
+  }
+
+  a {
+    text-decoration: underline;
+
+    &:not(:hover):not(:focus-visible):not(:active) {
+      color: var(--color-text-secondary);
+    }
+  }
+
+  @media (width < 768px) {
+    flex: 0 0 100%;
+    text-align: center;
+    order: 1;
+  }
+}

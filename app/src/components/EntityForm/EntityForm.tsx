@@ -1,4 +1,4 @@
-import {lazy, type ReactNode, useCallback, useEffect, useRef, useState} from "react";
+import {lazy, type ReactNode, useEffect, useRef, useState} from "react";
 import {
   Grid,
   Group,
@@ -290,7 +290,8 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
             }}
             label={field.label}
             description={field.hint}
-            {...form.getInputProps(field.name as string, { type: 'checkbox' })}
+            checked={!!form.values[field.name]}
+            onChange={(e) => form.setFieldValue(field.name as string, e.currentTarget.checked as never)}
           />
         );
       case 'blocks':

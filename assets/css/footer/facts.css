@@ -1,0 +1,18 @@
+.fact__bulb {
+  font-size: 3rem;
+  display: block;
+  text-align: center;
+  padding: 0 calc(2 * var(--gutter-size));
+}
+
+.fact__title,
+.fact__text {
+  margin: 0;
+}
+
+.fact__next {
+  margin: var(--rhythmic-unit) 0 0 0;
+  width: auto;
+  padding: calc(.5 * var(--rhythmic-unit)) var(--rhythmic-unit);
+  color: var(--color-text);
+}

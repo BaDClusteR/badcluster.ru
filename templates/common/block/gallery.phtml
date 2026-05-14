@@ -1,0 +1,43 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Block\Gallery $this */
+
+use BC\Widget\Common\Picture;
+
+$slides = $this->getSlides();
+?><section class="post__gallery<?php if ($this->isFullWidth()) :?> post__gallery--full-width<?php endif;?>">
+    <ul class="post__gallery-scroller list--block">
+        <?php foreach ($slides as $i => $slide) :?>
+            <li class="post__gallery-slide<?php if ($i === 0) :?> post__gallery-slide--active<?php endif;?>">
+                <figure class="post__gallery-image">
+                    <?php if ($this->isLightbox()) :?>
+                        <a
+                            href="<?=$slide->getWebPath()?>"
+                            class="lightbox"
+                            data-pswp-width="<?=$slide->getWidth()?>"
+                            data-pswp-height="<?=$slide->getHeight()?>"
+                        >
+                    <?php endif; ?>
+                        <?=new Picture([
+                            'image'        => $slide,
+                            'class'        => null,
+                            'pictureClass' => "post__gallery-picture",
+                            'lazyLoad'     => $this->isLazy(),
+                            'caption'      => $this->getCaption($i),
+                            'breakpoints'  => [
+                                470 => 500,
+                                -1 => 1000
+                            ]
+                        ])->render()?>
+                <?php if ($this->isLightbox()) :?>
+                    </a>
+                <?php endif; ?>
+                <?php if ($this->getCaption($i)) :?>
+                    <figcaption class="post__image-text"><?=$this->getCaption($i)?></figcaption>
+                <?php endif; ?>
+                </figure>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</section>
+

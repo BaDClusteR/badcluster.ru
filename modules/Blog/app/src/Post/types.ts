@@ -9,7 +9,7 @@ export interface PostDetailed {
   published: boolean,
   slug: string,
   metaDescription: string,
-  coverImage?: MediaThumbnail | null,
+  coverImage?: Media | null,
   tags: string[]
 }
 

@@ -1,0 +1,50 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Block\Quote $this */
+$anchor = $this->getAnchor();
+?><blockquote
+    class="post__quote post__quote--switchable"
+    <?php if ($anchor = $this->getAnchor()) :?> id="<?=$anchor?>"<?php endif;?>
+    data-tabs
+>
+    <div class="post__quote-controls" role="tablist" aria-label="Варианты цитаты">
+        <button
+            class="post__quote-control"
+            id="<?=$anchor?>-source-switch"
+            role="tab"
+            aria-selected="true"
+            aria-controls="<?=$anchor?>-source"
+        >
+            <span class="visually-hidden">Оригинал</span>
+            <span aria-hidden="true"><?=$this->getLabelOriginal()?></span>
+        </button>
+        <span class="quote__divider">/</span>
+        <button
+            class="post__quote-control"
+            id="<?=$anchor?>-translation-switch"
+            role="tab"
+            aria-selected="false"
+            aria-controls="<?=$anchor?>-translation"
+        >
+            <span class="visually-hidden">Перевод</span>
+            <span aria-hidden="true"><?=$this->getLabelTranslation()?></span>
+        </button>
+    </div>
+    <div
+        class="post__quote-content"
+        role="tabpanel"
+        id="<?=$anchor?>-source"
+        aria-labelledby="<?=$anchor?>-source-switch"
+    >
+        <?=$this->sanitizeQuoteText($this->getText())?>
+    </div>
+    <div
+        class="post__quote-content"
+        role="tabpanel"
+        id="<?=$anchor?>-translation"
+        aria-labelledby="<?=$anchor?>-translation-switch"
+        hidden
+    >
+        <?=$this->sanitizeQuoteText($this->getTranslatedText())?>
+    </div>
+</blockquote>

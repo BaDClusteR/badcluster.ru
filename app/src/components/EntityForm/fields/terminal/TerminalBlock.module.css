@@ -128,13 +128,13 @@
 /* Cipher content — green monospace */
 .contentCipher {
   color: #4ade80;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-root);
 }
 
 /* Text content — white monospace */
 .contentText {
   color: #e5e5e5;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-root);
 }
 
 .contentText > p,

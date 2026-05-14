@@ -15,6 +15,7 @@ export interface QuoteBlockData {
   translatedText: string;
   labelOriginal: string;
   labelTranslation: string;
+  anchor: string;
 }
 
 export class QuoteBlock implements BlockTool {
@@ -31,6 +32,7 @@ export class QuoteBlock implements BlockTool {
 
   static get sanitize() {
     return {
+      anchor: {},
       text: {
         p: true,
         div: true,
@@ -77,6 +79,7 @@ export class QuoteBlock implements BlockTool {
       translatedText: data?.translatedText ?? '',
       labelOriginal: data?.labelOriginal ?? 'EN',
       labelTranslation: data?.labelTranslation ?? 'RU',
+      anchor: data?.anchor ?? '',
     };
   }
 
@@ -94,6 +97,7 @@ export class QuoteBlock implements BlockTool {
       translatedText: this.data.translated ? this.normalizeHtml(this.translationEl) : '',
       labelOriginal: this.data.labelOriginal,
       labelTranslation: this.data.labelTranslation,
+      anchor: this.data.anchor,
     };
   }
 
@@ -127,6 +131,19 @@ export class QuoteBlock implements BlockTool {
         },
         icon: ICON_TRANSLATE,
         label: 'Перевод',
+      }),
+    );
+
+    wrapper.appendChild(separator());
+
+    wrapper.appendChild(
+      TextField({
+        placeholder: 'Якорь (ID)',
+        value: this.data.anchor,
+        onChange: (value: string) => {
+          this.data.anchor = value;
+          this.syncAnchorId();
+        },
       }),
     );
 
@@ -173,6 +190,14 @@ export class QuoteBlock implements BlockTool {
   }
 
   // --- Private ---
+
+  private syncAnchorId() {
+    if (this.data.anchor) {
+      this.wrapper.id = this.data.anchor;
+    } else {
+      this.wrapper.removeAttribute('id');
+    }
+  }
 
   private buildContent() {
     // Save current content before rebuilding
@@ -234,6 +259,8 @@ export class QuoteBlock implements BlockTool {
       this.wrapper.classList.remove(classes.quoteSwitchable);
       this.wrapper.appendChild(this.originalEl);
     }
+
+    this.syncAnchorId();
   }
 
   private buildEditable(html: string, placeholder: string): HTMLDivElement {

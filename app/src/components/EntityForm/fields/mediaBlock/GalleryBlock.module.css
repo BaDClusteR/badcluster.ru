@@ -2,6 +2,11 @@
   margin: calc(.5 * var(--rhythmic-unit)) 0;
 }
 
+.fullWidth {
+  /* Marker class for full-width galleries — styling handled by the frontend */
+  width: 100%;
+}
+
 /* Empty state — clickable upload placeholder */
 .placeholder {
   display: flex;
@@ -76,11 +81,11 @@
 
 .media img {
   display: block;
-  width: 100%;
-  height: auto;
-  max-height: 600px;
   object-fit: contain;
   border-radius: var(--border-radius);
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
 }
 
 .caption {

@@ -2,17 +2,24 @@
 
 namespace BC\Provider\Admin;
 
+use BC\Core\Config\IWebsiteSettings;
 use BC\DTO\AppSettings\AppSettingsDTO;
 use BC\DTO\AppSettings\ModuleDTO;
 use BC\DTO\AppSettings\NavigationDTO;
 
-class AppSettingsProvider implements IAppSettingsProvider
+readonly class AppSettingsProvider implements IAppSettingsProvider
 {
+    public function __construct(
+        private IWebsiteSettings $websiteSettings
+    ) {
+    }
+
     public function getAppSettings(): AppSettingsDTO
     {
         return new AppSettingsDTO(
             nav: $this->getNav(),
             modules: $this->getModules(),
+            webRoot: $this->websiteSettings->getWebRoot()
         );
     }
 

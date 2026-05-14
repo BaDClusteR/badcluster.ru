@@ -1,0 +1,119 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Block\Terminal $this */
+$anchor = $this->getAnchor();
+$tabsCount = $this->getTabsCount();
+$showTitle = $this->isShowTitle();
+$showCipher = $this->isShowCipherTab();
+$showEn = $this->isShowEnTab();
+$showRu = $this->isShowRuTab();
+$activeTabRendered = false;
+$activeTabPanelRendered = false;
+$page = $this->getPage();
+$key = $this->getKey();
+?><section class="terminal" data-theme="dark" id="<?=$anchor?>" data-tabs>
+    <?php if ($tabsCount > 1 || $showTitle): ?>
+        <header class="terminal__header">
+            <?php if ($showTitle): ?>
+                <div class="terminal__title" aria-hidden="true">
+                    <span class="terminal__icon">📡</span>
+                    <?=$this->getTitle()?>
+                </div>
+            <?php endif; ?>
+            <?php if ($tabsCount > 1) : ?>
+                <div class="terminal__tabs" role="tablist" aria-label="Варианты текста">
+                    <?php if ($showCipher): ?>
+                        <button
+                            class="terminal__tab"
+                            id="<?=$anchor?>-cipher-switch"
+                            role="tab"
+                            aria-selected="true"
+                            aria-controls="<?=$anchor?>-cipher"
+                        >
+                            <?=$this->getCipherLabel()?>
+                        </button>
+                        <?php $activeTabRendered = true; ?>
+                    <?php endif; ?>
+
+                    <?php if ($showEn): ?>
+                        <button
+                            class="terminal__tab"
+                            id="<?=$anchor?>-en-switch"
+                            role="tab"
+                            aria-selected="<?=$activeTabRendered ? "false" : "true"?>"
+                            aria-controls="<?=$anchor?>-en"
+                        >
+                            <?=$this->getEnLabel()?>
+                        </button>
+                        <?php $activeTabRendered = true; ?>
+                    <?php endif; ?>
+
+                    <?php if ($showRu): ?>
+                        <button
+                            class="terminal__tab"
+                            id="<?=$anchor?>-ru-switch"
+                            role="tab"
+                            aria-selected="<?=$activeTabRendered ? "false" : "true"?>"
+                            aria-controls="<?=$anchor?>-ru"
+                        >
+                            <?=$this->getRuLabel()?>
+                        </button>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </header>
+        <div class="terminal__body">
+            <?php if ($showCipher): ?>
+                <div
+                    class="terminal__content"
+                    role="tabpanel"
+                    id="<?=$anchor?>-cipher"
+                    aria-labelledby="<?=$anchor?>-cipher-switch"
+                >
+                    <code><?=$this->sanitizeTabContent($this->getCipher())?></code>
+                </div>
+                <?php $activeTabPanelRendered = true; ?>
+             <?php endif; ?>
+             <?php if ($showEn): ?>
+                <div
+                    class="terminal__content"
+                    role="tabpanel"
+                    id="<?=$anchor?>-en"
+                    aria-labelledby="<?=$anchor?>-en-switch"
+                    <?php if ($activeTabPanelRendered) :?>hidden<?php endif;?>
+                >
+                    <p><?=$this->sanitizeTabContent($this->getEn())?></p>
+                </div>
+                <?php $activeTabPanelRendered = true; ?>
+             <?php endif; ?>
+             <?php if ($showRu): ?>
+                <div
+                    class="terminal__content"
+                    role="tabpanel"
+                    id="<?=$anchor?>-ru"
+                    aria-labelledby="<?=$anchor?>-ru-switch"
+                    <?php if ($activeTabPanelRendered) :?>hidden<?php endif;?>
+                >
+                    <p><?=$this->sanitizeTabContent($this->getRu())?></p>
+                </div>
+                <?php $activeTabPanelRendered = true; ?>
+             <?php endif; ?>
+        </div>
+        <?php if ($page || $key) :?>
+            <footer class="terminal__header">
+                <?php if ($page): ?>
+                    <span class="terminal__meta">
+                        <span class="terminal__label">PAGE: </span>
+                        <?=$page?>
+                    </span>
+                <?php endif; ?>
+                <?php if ($key): ?>
+                    <span class="terminal__meta">
+                        <span class="terminal__label">KEY: </span>
+                        <?=$key?>
+                    </span>
+                <?php endif; ?>
+            </footer>
+        <?php endif; ?>
+    <?php endif; ?>
+</section>

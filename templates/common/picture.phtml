@@ -2,15 +2,15 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Picture $this */
 
-$image = $this->getImage();
+$image = $this->image;
 $lastBreakpoint = 0;
 $tempLastBreakpoint = 0;
 $mimeTypes = $this->getAllowedMimeTypes();
-$pictureClass = $this->getPictureCssClass();
-$imgClass = $this->getImgCssClass();
+$pictureClass = $this->pictureCssClass;
+$imgClass = $this->imgCssClass;
 ?><?php if ($image) :?>
     <picture <?=$this->getPictureAttributesAsString()?>>
-        <?php foreach ($this->getBreakpoints() as $maxWidth => $imageWidth) :?>
+        <?php foreach ($this->breakpoints as $maxWidth => $imageWidth) :?>
             <?php foreach ($mimeTypes as $mimeType) :?>
                 <?php if ($this->hasImages($imageWidth, $mimeType)):?>
                     <?=$this->getSource($imageWidth, $mimeType, $lastBreakpoint, $maxWidth)?>

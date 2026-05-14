@@ -1,6 +1,9 @@
 <?php
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Modules\Blog\Widget\Post $this */
+
+use BC\Widget\Blocks;
+
 $post = $this->post;
 $blocks = (array)($post->getContent()['blocks'] ?? []);
 ?>
@@ -13,10 +16,15 @@ $blocks = (array)($post->getContent()['blocks'] ?? []);
         <?php endif; ?>
         <?php if ($updateDate = $post->getUpdateDate()) :?>
             <time class="post__date post__date--updated" datetime="<?=$this->getDateTime($updateDate)?>">
-                <?=$this->getHumanReadableDateTime($updateDate)?>
+                Upd: <?=$this->getHumanReadableDateTime($updateDate)?>
             </time>
         <?php endif; ?>
-        <h1 class="post__title"><?=$post->getTitle()?></h1>
+        <h1 class="post__title">
+            <?php if (!$post->getPublished()) :?>
+                [Черновик]
+            <?php endif; ?>
+            <?=$post->getTitle()?>
+        </h1>
         <?php if ($tags = $post->getTags()) :?>
             <ul class="list--block tags post__tags">
                 <?php foreach ($tags as $tag) : ?>
@@ -26,11 +34,6 @@ $blocks = (array)($post->getContent()['blocks'] ?? []);
         <?php endif; ?>
     </header>
     <div class="post__body text-block">
-        <?php foreach ($blocks as $block) : ?>
-            <?=$this->renderBlock(
-                (string)($block['type'] ?? ''),
-                (array)($block['data'] ?? '')
-            )?>
-        <?php endforeach; ?>
+        <?= new Blocks($post->getContent())->render() ?>
     </div>
 </article>

@@ -147,16 +147,11 @@ export class HeadingBlock implements BlockTool {
         value: this.data.anchor,
         onChange: (value: string) => {
           this.data.anchor = value;
-        },
-      }),
-    );
-
-    wrapper.appendChild(
-      TextField({
-        placeholder: 'Текст для оглавления',
-        value: this.data.tocText,
-        onChange: (value: string) => {
-          this.data.tocText = value;
+          if (value) {
+            this.element.id = value;
+          } else {
+            this.element.removeAttribute('id');
+          }
         },
       }),
     );

@@ -147,4 +147,16 @@ abstract class AWidget
 
         return $entries;
     }
+
+    protected function getSvgContent(string $relativePath): string {
+        $pathProvider = Container::getInstance()->getService(IPathsProvider::class);
+
+        foreach ($pathProvider->getAssetPaths() as $path) {
+            if (file_exists("$path/$relativePath")) {
+                return file_get_contents("$path/$relativePath");
+            }
+        }
+
+        return "";
+    }
 }

@@ -6,8 +6,8 @@ use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use ApiPlatform\DTO\ApiEndpointArgumentFileDTO;
 use ApiPlatform\Exception\BadRequestException;
-use BC\Api\DTO\MediaDTO;
-use BC\Api\DTO\MediaThumbnailDTO;
+use BC\Core\Converter\Media\IMediaConverter;
+use BC\Core\DTO\MediaDTO;
 use BC\Model\Media;
 use BC\Provider\IPathsProvider;
 use Runway\DataStorage\Exception\DBException;
@@ -23,7 +23,8 @@ class Upload extends AEndpoint
     public function __construct(
         private readonly IFileSystem $fileSystem,
         private readonly IPathsProvider $pathsProvider,
-        private readonly ILogger $logger
+        private readonly ILogger $logger,
+        private readonly IMediaConverter $mediaConverter
     ) {
     }
 
@@ -57,8 +58,8 @@ class Upload extends AEndpoint
 
         $media = $this->createModel($imagePath, $mime);
 
-        return $this->convertMediaModel(
-            $this->doWithPurpose($media, $purpose),
+        return $this->mediaConverter->convertMedia(
+            $this->doWithPurpose($media, $purpose)
         );
     }
 

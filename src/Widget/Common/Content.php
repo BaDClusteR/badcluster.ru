@@ -6,7 +6,6 @@ use BC\Core\Asset\DTO\AssetDTO;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Widget\Attribute\WidgetList;
 use BC\Widget\AWidget;
-use BC\Widget\IAssetProvider;
 use BC\Widget\Page\APage;
 
 #[WidgetList('body')]

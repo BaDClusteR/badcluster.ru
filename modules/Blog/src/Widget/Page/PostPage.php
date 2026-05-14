@@ -9,10 +9,10 @@ use BC\Modules\Blog\Model\Post as PostModel;
 use BC\Modules\Blog\Widget\Post as PostWidget;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\BackLinkDTO;
-use BC\Widget\Page\APage;
+use BC\Widget\Page\APageWithBlocks;
 use Runway\Exception\RuntimeException;
 
-class PostPage extends APage
+class PostPage extends APageWithBlocks
 {
     use WebsiteSettingsTrait;
 
@@ -25,8 +25,8 @@ class PostPage extends APage
     {
         return [
             new AssetDTO(
-                'post',
-                'css/modules/Blog/post.css'
+                "post",
+                "css/modules/Blog/post.css"
             )
         ];
     }
@@ -56,7 +56,7 @@ class PostPage extends APage
     public function getBackLink(): ?BackLinkDTO {
         return new BackLinkDTO(
             url: $this->getWebsiteSettings()->getWebRoot() . "/blog",
-            text: "К списку постов"
+            text: "Назад к постам"
         );
     }
 
@@ -66,4 +66,6 @@ class PostPage extends APage
 
         return $list;
     }
+
+
 }

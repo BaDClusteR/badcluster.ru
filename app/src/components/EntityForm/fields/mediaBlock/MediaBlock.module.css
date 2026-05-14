@@ -86,16 +86,20 @@
   max-width: 100%;
   height: auto;
   border-radius: var(--border-radius);
+
+  :global(.lightbox) {
+    cursor: zoom-in;
+  }
 }
 
 .media img,
 .media video {
   display: block;
-  width: 100%;
-  height: auto;
-  max-height: 600px;
   object-fit: contain;
   border-radius: var(--border-radius);
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
 }
 
 .caption {

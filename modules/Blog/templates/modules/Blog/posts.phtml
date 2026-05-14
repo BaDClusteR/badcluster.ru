@@ -1,6 +1,7 @@
 <?php
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Modules\Blog\Widget\Posts $this */
+$updateIcon = $this->getSvgContent("images/icons/update.svg");
 ?>
 <ul class="posts list--block">
     <?php foreach ($this->getPosts() as $post): ?>
@@ -22,6 +23,7 @@
                             class="post__date-time post__date-time--updated"
                             datetime="<?=$this->getDateValue($updateDate)?>"
                         >
+                            <?=$updateIcon?>
                             <?=$this->getHumanReadableDate($updateDate)?>
                         </time>
                     <?php endif; ?>

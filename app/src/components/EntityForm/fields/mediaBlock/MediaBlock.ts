@@ -7,7 +7,7 @@ import TextField from "./settings/textfield.ts";
 import separator from "./settings/separator.ts";
 import Toggle from "./settings/toggle.ts";
 import {Nullable} from "@/types.ts";
-import {iconLazyLoad, iconMedia} from "./icons.ts";
+import {iconGallerySearch, iconLazyLoad, iconMedia} from "./icons.ts";
 
 export class MediaBlock implements BlockTool {
     // noinspection JSUnusedGlobalSymbols
@@ -33,9 +33,10 @@ export class MediaBlock implements BlockTool {
     constructor({data, api}: { data: BlockToolData<MediaBlockData>; api: API }) {
         this.api = api;
         this.data = {
-            media: data?.media,
-            lazy: data?.lazy ?? true,
-            caption: data?.caption ?? '',
+          media: data?.media,
+          lazy: data?.lazy ?? true,
+          caption: data?.caption ?? '',
+          lightbox: data?.lightbox ?? true
         };
     }
 
@@ -55,9 +56,10 @@ export class MediaBlock implements BlockTool {
 
     save(): MediaBlockData {
         return {
-            media: this.data.media,
-            lazy: this.data.lazy,
-            caption: this.data.caption,
+          media: this.data.media,
+          lazy: this.data.lazy,
+          caption: this.data.caption,
+          lightbox: this.data.lightbox,
         };
     }
 
@@ -83,6 +85,32 @@ export class MediaBlock implements BlockTool {
         );
 
         wrapper.appendChild(
+            TextField({
+                placeholder: "Ширина (px)",
+                value: this.data.media?.width ? String(this.data.media.width) : "",
+                onChange: (value: string) => {
+                    if (this.data.media) {
+                        this.data.media.width = parseInt(value, 10) || 0;
+                        this.quickUpdate();
+                    }
+                },
+            })
+        );
+
+        wrapper.appendChild(
+            TextField({
+                placeholder: "Высота (px)",
+                value: this.data.media?.height ? String(this.data.media.height) : "",
+                onChange: (value: string) => {
+                    if (this.data.media) {
+                        this.data.media.height = parseInt(value, 10) || 0;
+                        this.quickUpdate();
+                    }
+                },
+            })
+        );
+
+        wrapper.appendChild(
             Toggle({
                 value: this.data.lazy,
                 onChange: (checked: boolean): void => {
@@ -94,6 +122,18 @@ export class MediaBlock implements BlockTool {
                 label: "Lazy load"
             })
         );
+
+      wrapper.appendChild(
+        Toggle({
+          value: this.data.lightbox ?? false,
+          onChange: (checked: boolean) => {
+            this.data.lightbox = checked;
+            this.quickUpdate();
+          },
+          icon: iconGallerySearch,
+          label: "Lightbox"
+        })
+      );
 
         return wrapper;
     }
@@ -112,8 +152,9 @@ export class MediaBlock implements BlockTool {
         // Uploaded state → native <picture> / <video>
         if (this.data.media) {
             const el = renderPicture(this.data.media, {
-                lazy: this.data.lazy,
-                className: classes.media
+              lazy: this.data.lazy,
+              className: classes.media,
+              lightbox: this.data.lightbox,
             });
             this.wrapper.appendChild(el);
             this.wrapper.appendChild(this.buildCaptionInput());
@@ -140,13 +181,25 @@ export class MediaBlock implements BlockTool {
         const img = this.wrapper.querySelector("img");
         if (img) {
             img.alt = this.data.media?.alt ?? "";
+            img.classList.toggle("lightbox", (this.data.lightbox ?? false));
+
+            if (this.data.media?.width) {
+                img.width = this.data.media.width;
+            } else {
+                img.removeAttribute("width");
+            }
+            if (this.data.media?.height) {
+                img.height = this.data.media.height;
+            } else {
+                img.removeAttribute("height");
+            }
+
             if (this.data.lazy) {
                 img.loading = "lazy";
             } else {
                 img.removeAttribute("loading")
             }
         }
-
     }
 
     private buildCaptionInput(): HTMLElement {

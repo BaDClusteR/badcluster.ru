@@ -8,6 +8,7 @@ use DateTime;
 use Runway\DataStorage\Attribute as DS;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
+use Runway\Exception\Exception;
 use Runway\Model\AEntity;
 use Runway\Model\Exception\ModelException;
 
@@ -26,7 +27,7 @@ use Runway\Model\Exception\ModelException;
  * @method self setPublishDate(DateTime $publishDate)
  * @method DateTime|null getUpdateDate()
  * @method self setUpdateDate(DateTime|null $updateDate)
- * @method array getContent()
+ * @method array getContent
  * @method self setContent(array $content)
  * @method bool getPublished()
  * @method self setPublished(bool $published)
@@ -108,15 +109,29 @@ class Post extends AEntity
 
         $qb = PostTag::getQueryBuilder();
         $qb->delete()
-            ->where('tag_id NOT IN (:tagIds)')
-            ->setVariable('tagIds', implode(", ", $tagIds))
-            ->execute();
+            ->where('post_id = :postId')
+            ->setVariable('postId', $this->id);
+
+        if (!empty($tagIds)) {
+            $qb->andWhere('tag_id NOT IN (:tagIds)')
+               ->setVariable('tagIds', implode(", ", $tagIds));
+        }
+
+        $qb->execute();
+
+        $qb = PostTag::getQueryBuilder()
+            ->where('post_id = :postId')
+            ->setVariable('postId', $this->id);
+
+        if (!empty($tagIds)) {
+            $qb->andWhere(
+                $qb->expr()->in('tag_id', $tagIds)
+            );
+        }
 
         $existingTagIds = array_map(
             static fn(PostTag $t): int => $t->getTag()->getId(),
-            PostTag::getQueryBuilder()
-                   ->where($qb->expr()->in('tag_id', $tagIds))
-                   ->getEntities()
+            $qb->getEntities()
         );
 
         foreach ($tagIds as $tagId) {

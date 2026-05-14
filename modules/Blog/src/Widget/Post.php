@@ -4,8 +4,10 @@ namespace BC\Modules\Blog\Widget;
 
 use BC\Core\Trait\ConverterTrait;
 use BC\Modules\Blog\Model\Post as PostModel;
-use BC\Modules\Blog\Widget\Block\Paragraph;
 use BC\Widget\AWidget;
+use BC\Widget\Common\Block\Header;
+use BC\Widget\Common\Block\Media;
+use BC\Widget\Common\Block\Paragraph;
 use DateTime;
 use Runway\Exception\RuntimeException;
 
@@ -46,14 +48,5 @@ class Post extends AWidget
         return $this->getConverter()->convertTimestampToHumanReadableDate(
             $dt->getTimestamp(),
         );
-    }
-
-    protected function renderBlock(string $type, array $data): string {
-        $widget = match($type) {
-            'paragraph' => new Paragraph($data),
-            default => null
-        };
-
-        return (string)$widget?->render();
     }
 }

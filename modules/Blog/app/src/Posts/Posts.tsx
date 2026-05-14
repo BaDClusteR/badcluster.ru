@@ -1,6 +1,7 @@
 import { useAdminCore } from "../admin/useAdminCore";
 import type { ColumnDef, ListDataProvider, ListDataProviderRequestOptions, ListState } from "@admin/types";
 import { PageRow } from "./types";
+import {useNavigate} from "react-router";
 
 const columns: ColumnDef<PageRow>[] = [
   {
@@ -47,6 +48,8 @@ export default function BlogPosts() {
     return col;
   });
 
+  const navigate = useNavigate();
+
   const dataProvider: ListDataProvider<PageRow> = {
     getData: async (state: ListState, options: ListDataProviderRequestOptions) => {
       const rows = await apiCall(
@@ -70,7 +73,7 @@ export default function BlogPosts() {
     permissions={{add: true, edit: true, delete: true, select: true, filter: true}}
     dataProvider={dataProvider}
     getEditLink={(row: PageRow) => `/admin/blog/${row.id}`}
-    onAdd={() => notify.info('Пока не сделано', 'Скоро доделаем добавление :-[')}
+    onAdd={() => navigate("/admin/blog/new")}
     addButtonTitle="Новый пост"
     getDeleteConfirmationText={(rows: PageRow|PageRow[]) => {
       if (Array.isArray(rows) && rows.length === 1) {

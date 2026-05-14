@@ -1,0 +1,36 @@
+<?php
+
+use BC\Widget\Common\Picture;
+
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Block\Media $this */
+?>
+<?php if ($this->isImage()) :?>
+    <figure class="post__image-figure">
+        <?php if ($this->lightbox) :?>
+            <a
+                href="<?=$this->media->getWebPath()?>"
+                class="lightbox"
+                data-pswp-width="<?=$this->media->getWidth()?>"
+                data-pswp-height="<?=$this->media->getHeight()?>"
+            >
+        <?php endif; ?>
+            <?=new Picture([
+                'image'        => $this->media,
+                'class'        => "post__image-img",
+                'pictureClass' => "post__image-picture",
+                'lazyLoad'     => $this->lazy,
+                'caption'      => $this->caption,
+                'breakpoints'  => [
+                    470 => 500,
+                    -1 => 1000
+                ]
+            ])->render()?>
+        <?php if ($this->lightbox) :?>
+            </a>
+        <?php endif; ?>
+        <?php if ($this->caption) :?>
+            <figcaption class="post__image-text"><?=$this->caption?></figcaption>
+        <?php endif; ?>
+    </figure>
+<?php endif; ?>

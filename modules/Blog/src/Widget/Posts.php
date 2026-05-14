@@ -30,7 +30,7 @@ class Posts extends AWidget
             $conditions = ['published' => true];
         }
 
-        return Post::iterate($conditions, ["publish_date", "DESC"]);
+        return Post::iterate($conditions, ["publishDate", "DESC"]);
     }
 
     protected function getTemplatePath(): string

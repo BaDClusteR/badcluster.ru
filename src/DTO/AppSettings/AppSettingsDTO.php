@@ -14,6 +14,7 @@ class AppSettingsDTO
     public function __construct(
         public array $nav,
         public array $modules,
+        public string $webRoot
     ) {
     }
 
@@ -38,7 +39,8 @@ class AppSettingsDTO
             'modules' => array_map(
                 static fn(ModuleDTO $item) => $item->toArray(),
                 $this->modules
-            )
+            ),
+            'webRoot' => $this->webRoot
         ];
     }
 

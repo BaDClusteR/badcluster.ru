@@ -1,6 +1,6 @@
 <?php
 
-namespace BC\Api\DTO;
+namespace BC\Core\DTO;
 
 use ApiPlatform\Attribute\Docs;
 

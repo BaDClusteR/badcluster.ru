@@ -18,9 +18,10 @@ export const DEFAULT_BREAKPOINTS: Record<number, number> = {
 export function renderPicture(
   media: MediaData,
   options: {
-    lazy?: boolean;
-    className?: string;
-    breakpoints?: Record<number, number>;
+    lazy?: boolean,
+    className?: string,
+    breakpoints?: Record<number, number>,
+    lightbox?: boolean
   } = {},
 ): HTMLElement {
   const { lazy = true, className = '', breakpoints = DEFAULT_BREAKPOINTS } = options;
@@ -84,6 +85,9 @@ export function renderPicture(
   if (media.height > 0) img.height = media.height;
   img.alt = media.alt ?? '';
   if (lazy) img.loading = 'lazy';
+  if (options.lightbox ?? true) {
+    img.classList.add('lightbox');
+  }
   picture.appendChild(img);
 
   return picture;

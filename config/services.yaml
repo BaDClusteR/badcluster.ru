@@ -10,6 +10,12 @@ services:
 
   BC\Core\Config\IWebsiteSettings:
     class: BC\Core\Config\WebsiteSettings
+    arguments:
+      webRoot: '#WEB_ROOT'
+      adminEmail: "admin@badcluster.ru"
+      adminTelegram: "https://t.me/bad_cluster"
+      adminSteam: "https://steamcommunity.com/id/bad_cluster"
+      adminGithub: "https://github.com/BaDClusteR"
 
   BC\Core\Media\Processor\ImageProcessorAvif:
     tags:
@@ -56,6 +62,12 @@ services:
 
   BC\Generator\IThumbnailsGenerator:
     class: BC\Generator\ThumbnailsGenerator
+
+  BC\Core\Converter\Media\IMediaConverter:
+    class: BC\Core\Converter\Media\MediaConverter
+
+  BC\Core\Helper\IBlockHelper:
+    class: BC\Core\Helper\BlockHelper
 
 
 # Controllers

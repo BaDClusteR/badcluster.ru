@@ -1,0 +1,10 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Footer $this */
+?>
+<link rel="stylesheet" href="<?=$this->getStyleUrl("footer")?>" as="style" />
+<footer class="footer">
+    <div class="content-container">
+        <?=$this->renderWidgetList("footer", ["page" => $this->getPage()])?>
+    </div>
+</footer>

@@ -1,0 +1,8 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Block\Header $this */
+$level = $this->getLevel();
+?>
+<h<?=$level?><?php if ($anchor = $this->getAnchor()) :?> id="<?=$anchor?>"<?php endif; ?>>
+    <?=$this->getText()?>
+</h<?=$level?>>

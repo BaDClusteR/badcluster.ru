@@ -1,0 +1,32 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Footer\Social $this */
+$contacts = $this->getContacts();
+?><div class="footer__buttons">
+    <ul class="footer__social">
+        <li class="footer__social-item">
+            <a href="mailto:<?= $contacts->email ?>" class="icon-button footer__social-link">
+                <span class="visually-hidden">Email</span>
+                <?=$this->getSvgContent("images/icons/email.svg")?>
+            </a>
+        </li>
+        <li class="footer__social-item">
+            <a href="<?= $contacts->telegram ?>" class="icon-button footer__social-link">
+                <span class="visually-hidden">Telegram</span>
+                <?=$this->getSvgContent("images/icons/tg.svg")?>
+            </a>
+        </li>
+        <li class="footer__social-item">
+            <a href="<?= $contacts->steam ?>" class="icon-button footer__social-link">
+                <span class="visually-hidden">Steam</span>
+                <?=$this->getSvgContent("images/icons/steam.svg")?>
+            </a>
+        </li>
+        <li class="footer__social-item">
+            <a href="<?= $contacts->github ?>" class="icon-button footer__social-link">
+                <span class="visually-hidden">GitHub</span>
+                <?=$this->getSvgContent("images/icons/github.svg")?>
+            </a>
+        </li>
+    </ul>
+</div>

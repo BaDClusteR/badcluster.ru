@@ -1,5 +1,9 @@
 /*! PhotoSwipe main CSS by Dmytro Semenov | photoswipe.com */
 
+.lightbox {
+  border-radius: var(--border-radius);
+}
+
 .pswp {
   --pswp-bg: #000;
   --pswp-placeholder-bg: #222;
@@ -31,17 +35,17 @@
 }
 
 .pswp {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: var(--pswp-root-z-index);
-	touch-action: none;
-	outline: 0;
-	opacity: 0.003;
-	contain: layout style size;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--pswp-root-z-index);
+  touch-action: none;
+  outline: 0;
+  opacity: 0.003;
+  contain: layout style size;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   display: block;
 
   &:focus {
@@ -61,7 +65,7 @@
 
 .pswp,
 .pswp__bg {
-	transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 @starting-style {
@@ -85,7 +89,7 @@
 
 .pswp,
 .pswp__scroll-wrap {
-	overflow: hidden;
+  overflow: hidden;
 }
 
 .pswp__scroll-wrap,
@@ -95,17 +99,17 @@
 .pswp__content,
 .pswp__img,
 .pswp__zoom-wrap {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .pswp__img,
 .pswp__zoom-wrap {
-	width: auto;
-	height: auto;
+  width: auto;
+  height: auto;
 }
 
 .pswp--click-to-zoom {
@@ -125,23 +129,23 @@
 .pswp--no-mouse-drag.pswp--zoomed-in .pswp__img,
 .pswp--no-mouse-drag.pswp--zoomed-in .pswp__img:active,
 .pswp__img {
-	cursor: zoom-out;
+  cursor: zoom-out;
 }
 
 .pswp__container,
 .pswp__img,
 .pswp__button,
 .pswp__counter {
-	user-select: none;
+  user-select: none;
 }
 
 .pswp__item {
-	z-index: 1;
-	overflow: hidden;
+  z-index: 1;
+  overflow: hidden;
 }
 
 .pswp__hidden {
-	display: none !important;
+  display: none !important;
 }
 
 .pswp__content {
@@ -157,34 +161,34 @@
 }
 
 .pswp__error-msg {
-	margin: auto;
-	font-size: 1em;
-	line-height: 1;
-	color: var(--pswp-error-text-color);
+  margin: auto;
+  font-size: 1em;
+  line-height: 1;
+  color: var(--pswp-error-text-color);
 }
 
 .pswp--ui-visible .pswp__hide-on-close {
-	opacity: 1;
-	pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .pswp__button {
-	position: relative;
-	display: flex;
+  position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-	width: 40px;
-	height: 40px;
-	margin: 0;
-	overflow: hidden;
-	cursor: pointer;
-	background: none;
-	border: 0;
-	box-shadow: none;
-	opacity: 0.85;
-	appearance: none;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  opacity: 0.85;
+  appearance: none;
   padding: 4px;
-	-webkit-touch-callout: none;
+  -webkit-touch-callout: none;
 
   &,
   &:visited {
@@ -242,20 +246,20 @@
 
 div.pswp__img--placeholder,
 .pswp__img--with-bg {
-	background: var(--pswp-placeholder-bg);
+  background: var(--pswp-placeholder-bg);
 }
 
 .pswp__top-bar {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 40px;
-	display: flex;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 40px;
+  display: flex;
   flex-direction: row;
   justify-content: flex-end;
-	z-index: 10;
-	pointer-events: none !important;
+  z-index: 10;
+  pointer-events: none !important;
   transition: var(--transition-mode) background-color;
   opacity: 1;
   padding: 0 var(--gutter-size);

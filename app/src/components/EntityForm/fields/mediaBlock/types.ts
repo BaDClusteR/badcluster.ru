@@ -21,14 +21,17 @@ export interface MediaData {
 
 /** Saved Editor.js block payload. */
 export interface MediaBlockData {
-  media?: MediaData;
-  lazy: boolean;
-  caption?: string;
+  media?: MediaData,
+  lazy: boolean,
+  caption?: string,
+  lightbox?: boolean
 }
 
 /** Saved Editor.js block payload for gallery/slideshow. */
 export interface GalleryBlockData {
-  slides: MediaData[];
-  captions: string[];
-  lazy: boolean;
+  slides: MediaData[],
+  captions: string[],
+  lazy: boolean,
+  lightbox?: boolean,
+  fullWidth?: boolean
 }
