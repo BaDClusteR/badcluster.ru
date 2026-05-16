@@ -127,14 +127,21 @@
 
 /* Cipher content — green monospace */
 .contentCipher {
-  color: #4ade80;
-  font-size: var(--font-size-root);
+  color: var(--color-brand);
+  font-size: var(--font-size-base);
+  opacity: .9;
 }
 
 /* Text content — white monospace */
 .contentText {
-  color: #e5e5e5;
+  color: var(--color-text);
   font-size: var(--font-size-root);
+
+  code {
+    color: var(--color-brand);
+    font-size: var(--font-size-base);
+    opacity: .9;
+  }
 }
 
 .contentText > p,

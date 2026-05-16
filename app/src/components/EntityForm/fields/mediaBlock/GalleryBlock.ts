@@ -3,9 +3,9 @@ import type {GalleryBlockData} from "./types";
 import {uploadMedia, type UploadHandle} from "./uploadMedia";
 import {renderPicture} from "./renderPicture";
 import classes from "./GalleryBlock.module.css";
-import TextField from "./settings/textfield";
-import separator from "./settings/separator";
-import Toggle from "./settings/toggle";
+import TextField from "./settings/TextField/TextField.ts";
+import separator from "./settings/Separator/Separator.ts";
+import Toggle from "./settings/Toggle/Toggle.ts";
 import {notify} from "@/lib/notify.ts";
 import {
   iconLazyLoad,
@@ -17,6 +17,8 @@ import {
   iconPlus,
   iconBin, iconGallerySearch, iconFullWidth
 } from "./icons.ts";
+import Heading from "@/components/EntityForm/fields/mediaBlock/settings/Heading/Heading.ts";
+import ImageSizes from "@/components/EntityForm/fields/mediaBlock/settings/ImageSizes/ImageSizes.ts";
 
 export class GalleryBlock implements BlockTool {
   // noinspection JSUnusedGlobalSymbols
@@ -92,15 +94,12 @@ export class GalleryBlock implements BlockTool {
     const currentSlide = this.data.slides[this.currentIndex];
 
     if (currentSlide) {
-      // -- Per-slide settings --
-      const slideLabel = document.createElement("div");
-      slideLabel.className = classes.settingsLabel;
-      slideLabel.textContent = `Слайд ${this.currentIndex + 1}`;
-      wrapper.appendChild(slideLabel);
+      wrapper.appendChild(Heading(`Слайд ${this.currentIndex + 1}`));
 
       wrapper.appendChild(
         TextField({
           placeholder: "Альт текст",
+          multiline: true,
           onChange: (value: string) => {
             if (this.data.slides[this.currentIndex]) {
               this.data.slides[this.currentIndex].alt = value;
@@ -111,39 +110,31 @@ export class GalleryBlock implements BlockTool {
         })
       );
 
+      wrapper.appendChild(Heading("Размеры"));
+
       wrapper.appendChild(
-        TextField({
-          placeholder: "Ширина (px)",
-          value: currentSlide.width ? String(currentSlide.width) : "",
-          onChange: (value: string) => {
+        ImageSizes({
+          width: currentSlide.width,
+          height: currentSlide.height,
+          onWidthChange: (width: number) => {
             if (this.data.slides[this.currentIndex]) {
-              this.data.slides[this.currentIndex].width = parseInt(value, 10) || 0;
+              this.data.slides[this.currentIndex].width = width;
               this.updateWidth();
             }
           },
-        })
-      );
-
-      wrapper.appendChild(
-        TextField({
-          placeholder: "Высота (px)",
-          value: currentSlide.height ? String(currentSlide.height) : "",
-          onChange: (value: string) => {
+          onHeightChange: (height: number) => {
             if (this.data.slides[this.currentIndex]) {
-              this.data.slides[this.currentIndex].height = parseInt(value, 10) || 0;
+              this.data.slides[this.currentIndex].height = height;
               this.updateHeight();
             }
-          },
+          }
         })
       );
 
       wrapper.appendChild(separator());
     }
 
-    const globalLabel = document.createElement("div");
-    globalLabel.className = classes.settingsLabel;
-    globalLabel.textContent = "Слайдшоу";
-    wrapper.appendChild(globalLabel);
+    wrapper.appendChild(Heading("Слайдшоу"));
 
     wrapper.appendChild(
       Toggle({

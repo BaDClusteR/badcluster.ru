@@ -8,6 +8,7 @@ import { GalleryBlock } from './mediaBlock/GalleryBlock';
 import { TerminalBlock } from './terminal/TerminalBlock';
 import { TocBlock } from './toc/TocBlock';
 import { KbdInlineTool } from './inlineTools/KbdInlineTool';
+import { CodeInlineTool } from './inlineTools/CodeInlineTool';
 import classes from './BlocksField.module.css';
 import "./editorjs.css";
 import {Optional} from "@/types.ts";
@@ -88,10 +89,11 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
         gallery: GalleryBlock as unknown as ToolConstructable,
         terminal: {
           class: TerminalBlock as unknown as ToolConstructable,
-          inlineToolbar: ['bold', 'italic', 'link', 'kbd'],
+          inlineToolbar: ['bold', 'italic', 'link', 'kbd', 'code'],
         },
         toc: TocBlock as unknown as ToolConstructable,
         kbd: KbdInlineTool as unknown as ToolConstructable,
+        code: CodeInlineTool as unknown as ToolConstructable,
         //link: LinkInlineTool as unknown as ToolConstructable,
       },
       i18n: {

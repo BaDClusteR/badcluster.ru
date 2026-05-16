@@ -39,5 +39,20 @@ $slides = $this->getSlides();
             </li>
         <?php endforeach; ?>
     </ul>
+    <div class="post__gallery-controls">
+        <button class="icon-button post__gallery-btn post__gallery-btn--prev" tabindex="-1" disabled>
+            <span class="visually-hidden">Назад</span>
+            <?=$this->getSvgContent("images/icons/arrow-left.svg")?>
+        </button>
+        <div class="post__gallery-counter">
+            <span class="post__gallery-counter-current">1</span>
+            <span class="post__gallery-counter-divider">/</span>
+            <span class="post__gallery-counter-total"><?=count($slides)?></span>
+        </div>
+        <button class="icon-button post__gallery-btn post__gallery-btn--next" tabindex="-1" disabled>
+            <span class="visually-hidden">Вперед</span>
+            <?=$this->getSvgContent("images/icons/arrow-right.svg")?>
+        </button>
+    </div>
 </section>
 

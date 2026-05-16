@@ -161,6 +161,17 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
 
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Warn before leaving with unsaved changes
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (form.isDirty()) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, []);
+
   // Ctrl+S / Cmd+S → submit
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -445,6 +456,7 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
     <form ref={formRef} className="entity-form" onSubmit={form.onSubmit(async (values) => {
       try {
         const result = await onSubmit(values);
+        form.resetDirty(values);
         if (isCreateMode && onCreated) {
           onCreated(result);
         }

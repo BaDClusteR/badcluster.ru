@@ -1,10 +1,11 @@
 // noinspection JSUnusedGlobalSymbols
 
 import type { API, BlockTool, BlockToolData, ToolboxConfig } from '@editorjs/editorjs';
-import Toggle from '../mediaBlock/settings/toggle';
-import TextField from '../mediaBlock/settings/textfield';
-import separator from '../mediaBlock/settings/separator';
+import Toggle from '../mediaBlock/settings/Toggle/Toggle';
+import TextField from '../mediaBlock/settings/TextField/TextField.ts';
+import Separator from '../mediaBlock/settings/Separator/Separator.ts';
 import classes from './QuoteBlock.module.css';
+import {iconAnchor} from "../mediaBlock/icons.ts";
 
 const ICON_QUOTE = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 8v5H6.83C7.44 11.15 8.6 9.7 10 8M4 14V8a8.1 8.1 0 0 1 6-7.76V3a5.07 5.07 0 0 0-4.47 5H8a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2m16-6v5h-3.17c.61-1.85 1.77-3.3 3.17-5M14 14V8a8.1 8.1 0 0 1 6-7.76V3a5.07 5.07 0 0 0-4.47 5H18a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2"/></svg>`;
 const ICON_TRANSLATE = `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>`;
@@ -43,6 +44,7 @@ export class QuoteBlock implements BlockTool {
         em: true,
         a: { href: true, target: true, rel: true },
         kbd: true,
+        code: true,
       },
       translatedText: {
         p: true,
@@ -54,6 +56,7 @@ export class QuoteBlock implements BlockTool {
         em: true,
         a: { href: true, target: true, rel: true },
         kbd: true,
+        code: true,
       },
     };
   }
@@ -64,7 +67,6 @@ export class QuoteBlock implements BlockTool {
     };
   }
 
-  private api: API;
   private data: QuoteBlockData;
   private wrapper!: HTMLElement;
   private originalEl!: HTMLDivElement;
@@ -72,7 +74,6 @@ export class QuoteBlock implements BlockTool {
   private activeTab: 'original' | 'translation' = 'original';
 
   constructor({ data, api }: { data: BlockToolData<QuoteBlockData>; api: API }) {
-    this.api = api;
     this.data = {
       text: data?.text ?? '',
       translated: data?.translated ?? false,
@@ -120,7 +121,19 @@ export class QuoteBlock implements BlockTool {
     const wrapper = document.createElement('div');
     wrapper.classList.add(classes.settingsWrapper);
 
-    wrapper.appendChild(separator());
+    wrapper.appendChild(Separator());
+
+    wrapper.appendChild(
+      TextField({
+        icon: iconAnchor,
+        placeholder: 'Якорь (ID)',
+        value: this.data.anchor,
+        onChange: (value: string) => {
+          this.data.anchor = value;
+          this.syncAnchorId();
+        },
+      }),
+    );
 
     wrapper.appendChild(
       Toggle({
@@ -133,50 +146,6 @@ export class QuoteBlock implements BlockTool {
         label: 'Перевод',
       }),
     );
-
-    wrapper.appendChild(separator());
-
-    wrapper.appendChild(
-      TextField({
-        placeholder: 'Якорь (ID)',
-        value: this.data.anchor,
-        onChange: (value: string) => {
-          this.data.anchor = value;
-          this.syncAnchorId();
-        },
-      }),
-    );
-
-    if (this.data.translated) {
-      wrapper.appendChild(separator());
-
-      const labelsLabel = document.createElement('div');
-      labelsLabel.className = classes.settingsLabel;
-      labelsLabel.textContent = 'Надписи на кнопках';
-      wrapper.appendChild(labelsLabel);
-
-      wrapper.appendChild(
-        TextField({
-          placeholder: 'Оригинал (напр. EN)',
-          value: this.data.labelOriginal,
-          onChange: (value: string) => {
-            this.data.labelOriginal = value;
-            this.updateSwitcherLabels();
-          },
-        }),
-      );
-
-      wrapper.appendChild(
-        TextField({
-          placeholder: 'Перевод (напр. RU)',
-          value: this.data.labelTranslation,
-          onChange: (value: string) => {
-            this.data.labelTranslation = value;
-            this.updateSwitcherLabels();
-          },
-        }),
-      );
-    }
 
     return wrapper;
   }

@@ -62,58 +62,58 @@ $key = $this->getKey();
                 </div>
             <?php endif; ?>
         </header>
-        <div class="terminal__body">
-            <?php if ($showCipher): ?>
-                <div
-                    class="terminal__content"
-                    role="tabpanel"
-                    id="<?=$anchor?>-cipher"
-                    aria-labelledby="<?=$anchor?>-cipher-switch"
-                >
-                    <code><?=$this->sanitizeTabContent($this->getCipher())?></code>
-                </div>
-                <?php $activeTabPanelRendered = true; ?>
-             <?php endif; ?>
-             <?php if ($showEn): ?>
-                <div
-                    class="terminal__content"
-                    role="tabpanel"
-                    id="<?=$anchor?>-en"
-                    aria-labelledby="<?=$anchor?>-en-switch"
-                    <?php if ($activeTabPanelRendered) :?>hidden<?php endif;?>
-                >
-                    <p><?=$this->sanitizeTabContent($this->getEn())?></p>
-                </div>
-                <?php $activeTabPanelRendered = true; ?>
-             <?php endif; ?>
-             <?php if ($showRu): ?>
-                <div
-                    class="terminal__content"
-                    role="tabpanel"
-                    id="<?=$anchor?>-ru"
-                    aria-labelledby="<?=$anchor?>-ru-switch"
-                    <?php if ($activeTabPanelRendered) :?>hidden<?php endif;?>
-                >
-                    <p><?=$this->sanitizeTabContent($this->getRu())?></p>
-                </div>
-                <?php $activeTabPanelRendered = true; ?>
-             <?php endif; ?>
-        </div>
-        <?php if ($page || $key) :?>
-            <footer class="terminal__header">
-                <?php if ($page): ?>
-                    <span class="terminal__meta">
-                        <span class="terminal__label">PAGE: </span>
-                        <?=$page?>
-                    </span>
-                <?php endif; ?>
-                <?php if ($key): ?>
-                    <span class="terminal__meta">
-                        <span class="terminal__label">KEY: </span>
-                        <?=$key?>
-                    </span>
-                <?php endif; ?>
-            </footer>
-        <?php endif; ?>
+    <?php endif; ?>
+    <div class="terminal__body">
+        <?php if ($showCipher): ?>
+            <div
+                class="terminal__content"
+                role="tabpanel"
+                id="<?=$anchor?>-cipher"
+                aria-labelledby="<?=$anchor?>-cipher-switch"
+            >
+                <code class="terminal__cipher"><?=$this->sanitizeTabContent($this->getCipher())?></code>
+            </div>
+            <?php $activeTabPanelRendered = true; ?>
+         <?php endif; ?>
+         <?php if ($showEn): ?>
+            <div
+                class="terminal__content"
+                role="tabpanel"
+                id="<?=$anchor?>-en"
+                aria-labelledby="<?=$anchor?>-en-switch"
+                <?php if ($activeTabPanelRendered) :?>hidden<?php endif;?>
+            >
+                <p><?=$this->sanitizeTabContent($this->getEn())?></p>
+            </div>
+            <?php $activeTabPanelRendered = true; ?>
+         <?php endif; ?>
+         <?php if ($showRu): ?>
+            <div
+                class="terminal__content"
+                role="tabpanel"
+                id="<?=$anchor?>-ru"
+                aria-labelledby="<?=$anchor?>-ru-switch"
+                <?php if ($activeTabPanelRendered) :?>hidden<?php endif;?>
+            >
+                <p><?=$this->sanitizeTabContent($this->getRu())?></p>
+            </div>
+            <?php $activeTabPanelRendered = true; ?>
+         <?php endif; ?>
+    </div>
+    <?php if ($page || $key) :?>
+        <footer class="terminal__footer">
+            <?php if ($page): ?>
+                <span class="terminal__meta">
+                    <span class="terminal__label">PAGE: </span>
+                    <?=$page?>
+                </span>
+            <?php endif; ?>
+            <?php if ($key): ?>
+                <span class="terminal__meta">
+                    <span class="terminal__label">KEY: </span>
+                    <?=$key?>
+                </span>
+            <?php endif; ?>
+        </footer>
     <?php endif; ?>
 </section>

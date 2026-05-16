@@ -10,7 +10,7 @@ const ICON_REFRESH = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height=
 export interface TocItem {
   text: string;
   anchor: string;
-  level: number;
+  children?: TocItem[];
 }
 
 export interface TocBlockData {
@@ -60,7 +60,6 @@ export class TocBlock implements BlockTool {
     labelInput.addEventListener('input', () => {
       this.data.label = labelInput.value;
     });
-    // Prevent details toggle when clicking the input
     labelInput.addEventListener('click', (e) => e.preventDefault());
 
     const refreshBtn = document.createElement('button');
@@ -89,7 +88,6 @@ export class TocBlock implements BlockTool {
     nav.appendChild(this.listEl);
     this.wrapper.appendChild(nav);
 
-    // If empty, auto-collect on first render
     if (this.data.items.length === 0) {
       queueMicrotask(() => this.collectFromHeadings());
     }
@@ -98,8 +96,7 @@ export class TocBlock implements BlockTool {
   }
 
   save(): TocBlockData {
-    // Collect edited texts from DOM
-    this.syncFromDom();
+    this.data.items = this.syncFromDom(this.listEl, this.data.items);
     return {
       items: this.data.items,
       label: this.data.label,
@@ -108,48 +105,17 @@ export class TocBlock implements BlockTool {
 
   // --- Private ---
 
-  /** Collect headings from the editor's blocks. */
+  /** Collect headings and build hierarchical tree. */
   private collectFromHeadings() {
-    const count = this.api.blocks.getBlocksCount();
-    const items: TocItem[] = [];
-    const minLevel = 2; // H2 is top-level in ToC
-
-    for (let i = 0; i < count; i++) {
-      const block = this.api.blocks.getBlockByIndex(i);
-      if (!block || block.name !== 'header') continue;
-
-      // Access saved data from the block
-      // Editor.js doesn't expose block data directly — we need to call save
-      const holder = block.holder;
-      const headingEl = holder?.querySelector('h2, h3, h4') as HTMLElement | null;
-      if (!headingEl) continue;
-
-      const text = headingEl.textContent?.trim() ?? '';
-      if (!text) continue;
-
-      // Try to get anchor and tocText from the block's internal state
-      // We access the block's saved data through the holder's data attributes
-      // or by reading the settings fields. For now, parse from the heading element.
-      const tag = headingEl.tagName; // H2, H3, H4
-      const level = parseInt(tag.replace('H', ''), 10);
-
-      // HeadingBlock stores anchor and tocText — we need to get them.
-      // The cleanest way is to call block.save() but it's async.
-      // Instead, let's do it async:
-      items.push({ text, anchor: '', level: level - minLevel });
-    }
-
-    // Now do an async pass to get anchors and tocText
-    this.collectHeadingDataAsync().then((enrichedItems) => {
-      this.data.items = enrichedItems.length > 0 ? enrichedItems : items;
+    this.collectHeadingDataAsync().then((flatItems) => {
+      this.data.items = this.buildTree(flatItems);
       this.buildList();
     });
   }
 
-  private async collectHeadingDataAsync(): Promise<TocItem[]> {
+  private async collectHeadingDataAsync(): Promise<{ text: string; anchor: string; level: number }[]> {
     const count = this.api.blocks.getBlocksCount();
-    const items: TocItem[] = [];
-    const minLevel = 2;
+    const items: { text: string; anchor: string; level: number }[] = [];
 
     for (let i = 0; i < count; i++) {
       const block = this.api.blocks.getBlockByIndex(i);
@@ -163,20 +129,56 @@ export class TocBlock implements BlockTool {
         const text = hData.tocText?.trim() || hData.text?.replace(/<[^>]*>/g, '').trim() || '';
         if (!text) continue;
 
-        const level = (hData.level ?? 2) - minLevel;
         items.push({
           text,
           anchor: hData.anchor ?? '',
-          level: Math.max(0, level),
+          level: hData.level ?? 2,
         });
       } catch {
-        // Block may not support save — skip
+        // skip
       }
     }
 
     return items;
   }
 
+  /** Convert flat list with levels into nested TocItem tree. */
+  private buildTree(flat: { text: string; anchor: string; level: number }[]): TocItem[] {
+    const root: TocItem[] = [];
+    const stack: { items: TocItem[]; level: number }[] = [{ items: root, level: 1 }];
+
+    for (const entry of flat) {
+      const item: TocItem = { text: entry.text, anchor: entry.anchor };
+
+      // Pop stack until we find a parent at a lower level
+      while (stack.length > 1 && stack[stack.length - 1].level >= entry.level) {
+        stack.pop();
+      }
+
+      const parent = stack[stack.length - 1].items;
+      parent.push(item);
+
+      // Push this item's children array as potential parent for deeper levels
+      item.children = [];
+      stack.push({ items: item.children, level: entry.level });
+    }
+
+    // Clean up empty children arrays
+    this.pruneEmptyChildren(root);
+    return root;
+  }
+
+  private pruneEmptyChildren(items: TocItem[]) {
+    for (const item of items) {
+      if (item.children && item.children.length === 0) {
+        delete item.children;
+      } else if (item.children) {
+        this.pruneEmptyChildren(item.children);
+      }
+    }
+  }
+
+  /** Render the nested list from this.data.items. */
   private buildList() {
     this.listEl.innerHTML = '';
 
@@ -188,50 +190,19 @@ export class TocBlock implements BlockTool {
       return;
     }
 
-    // Build nested structure: group items by level
-    // Level 0 = top, level 1 = sub, level 2 = sub-sub
-    let currentOl: HTMLElement = this.listEl;
-    let currentLevel = 0;
-    const olStack: HTMLElement[] = [this.listEl];
+    this.renderItems(this.listEl, this.data.items);
+  }
 
-    for (let i = 0; i < this.data.items.length; i++) {
-      const item = this.data.items[i];
-      const targetLevel = item.level;
-
-      // Go deeper
-      while (currentLevel < targetLevel) {
-        const subOl = document.createElement('ol');
-        subOl.className = classes.sublist;
-        // Attach to last li, or to current ol if no li yet
-        const lastLi = currentOl.querySelector(':scope > li:last-child');
-        if (lastLi) {
-          lastLi.appendChild(subOl);
-        } else {
-          currentOl.appendChild(subOl);
-        }
-        olStack.push(subOl);
-        currentOl = subOl;
-        currentLevel++;
-      }
-
-      // Go shallower
-      while (currentLevel > targetLevel && olStack.length > 1) {
-        olStack.pop();
-        currentOl = olStack[olStack.length - 1];
-        currentLevel--;
-      }
-
+  private renderItems(ol: HTMLElement, items: TocItem[]) {
+    for (const item of items) {
       const li = document.createElement('li');
       li.className = classes.item;
-      li.dataset.index = String(i);
 
       if (item.anchor) {
         const link = document.createElement('span');
         link.className = classes.link;
         link.contentEditable = 'true';
         link.textContent = item.text;
-        link.dataset.anchor = item.anchor;
-        // Prevent Enter
         link.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') e.preventDefault();
         });
@@ -242,7 +213,6 @@ export class TocBlock implements BlockTool {
         anchorBadge.textContent = `#${item.anchor}`;
         li.appendChild(anchorBadge);
       } else {
-        // No anchor — plain text, still editable
         const span = document.createElement('span');
         span.className = classes.linkNoAnchor;
         span.contentEditable = 'true';
@@ -253,21 +223,43 @@ export class TocBlock implements BlockTool {
         li.appendChild(span);
       }
 
-      currentOl.appendChild(li);
+      if (item.children && item.children.length > 0) {
+        const subOl = document.createElement('ol');
+        subOl.className = classes.sublist;
+        this.renderItems(subOl, item.children);
+        li.appendChild(subOl);
+      }
+
+      ol.appendChild(li);
     }
   }
 
-  /** Read edited texts back from the DOM into data. */
-  private syncFromDom() {
-    const items = this.listEl.querySelectorAll(`.${classes.item}`);
-    items.forEach((li) => {
-      const idx = parseInt((li as HTMLElement).dataset.index ?? '', 10);
-      if (isNaN(idx) || !this.data.items[idx]) return;
+  /** Read edited texts back from DOM into the hierarchical data. */
+  private syncFromDom(ol: HTMLElement, dataItems: TocItem[]): TocItem[] {
+    const liEls = ol.querySelectorAll(':scope > li');
+    const result: TocItem[] = [];
 
-      const editable = li.querySelector(`.${classes.link}, .${classes.linkNoAnchor}`);
-      if (editable) {
-        this.data.items[idx].text = editable.textContent?.trim() ?? '';
+    liEls.forEach((li, i) => {
+      const source = dataItems[i];
+      if (!source) return;
+
+      const editable = li.querySelector(`:scope > .${classes.link}, :scope > .${classes.linkNoAnchor}`);
+      const text = editable?.textContent?.trim() ?? source.text;
+
+      const item: TocItem = { text, anchor: source.anchor };
+
+      if (source.children && source.children.length > 0) {
+        const subOl = li.querySelector(`:scope > .${classes.sublist}`);
+        if (subOl) {
+          item.children = this.syncFromDom(subOl as HTMLElement, source.children);
+        } else {
+          item.children = source.children;
+        }
       }
+
+      result.push(item);
     });
+
+    return result;
   }
 }

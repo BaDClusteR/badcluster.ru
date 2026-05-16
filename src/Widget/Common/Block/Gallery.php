@@ -23,7 +23,7 @@ class Gallery extends AWidget
         );
 
         try {
-            return \BC\Model\Media::iterate([
+            return \BC\Model\Media::find([
                 'id' => $mediaIds
             ]);
         } catch (Exception) {

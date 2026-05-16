@@ -1,0 +1,12 @@
+.wrapper {
+  align-items: center;
+  gap: 4px;
+  grid-template-columns: 7ch min-content 7ch;
+  display: grid;
+  max-width: 100%;
+  margin-block-end: calc(.25 * var(--rhythmic-unit));
+}
+
+.divider {
+  background: transparent;
+}

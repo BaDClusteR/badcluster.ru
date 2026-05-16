@@ -40,12 +40,13 @@
   transition: var(--transition-slow) opacity;
 
   img {
-    width: 100%;
+    max-width: 100%;
     height: auto;
     border-radius: var(--border-radius);
     border: var(--border);
     user-select: none;
     border-color: color-mix(in srgb, var(--color-border), transparent 70%);
+    display: block;
   }
 }
 
@@ -62,6 +63,7 @@
 .post__gallery-picture {
   border-radius: var(--border-radius);
   overflow: hidden;
+  display: inline-block;
 }
 
 .post__gallery-controls {

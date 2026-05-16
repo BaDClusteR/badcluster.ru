@@ -104,6 +104,14 @@
     &:first-child {
       margin: 0;
     }
+
+    code {
+      display: block;
+      margin-top: calc(1.5 * var(--rhythmic-unit));
+      color: var(--color-brand);
+      word-break: break-all;
+      opacity: 0.9;
+    }
   }
 }
 

@@ -8,6 +8,7 @@ use BC\Widget\Common\Block\Header;
 use BC\Widget\Common\Block\Media;
 use BC\Widget\Common\Block\Paragraph;
 use BC\Widget\Common\Block\Quote;
+use BC\Widget\Common\Block\TableOfContents;
 use BC\Widget\Common\Block\Terminal;
 
 class Blocks extends AWidget implements IAssetProvider
@@ -68,6 +69,7 @@ class Blocks extends AWidget implements IAssetProvider
             'quote'     => new Quote($data),
             'terminal'  => new Terminal($data),
             'gallery'   => new Gallery($data),
+            'toc'       => new TableOfContents($data),
             default => null
         };
 

@@ -1,10 +1,11 @@
 // noinspection JSUnusedGlobalSymbols
 
 import type { API, BlockTool, BlockToolData, ToolboxConfig } from '@editorjs/editorjs';
-import TextField from '../mediaBlock/settings/textfield';
-import separator from '../mediaBlock/settings/separator';
+import TextField from '../mediaBlock/settings/TextField/TextField.ts';
+import separator from '../mediaBlock/settings/Separator/Separator.ts';
 import classes from './HeadingBlock.module.css';
 import {iconH2, iconH3, iconH4, iconHeader} from "./icons.ts";
+import {iconAnchor} from "@/components/EntityForm/fields/mediaBlock/icons.ts";
 
 interface HeadingLevel {
   number: number;
@@ -66,6 +67,7 @@ export class HeadingBlock implements BlockTool {
   static get sanitize() {
     return {
       level: false,
+      anchor: {},
       text: {},
     };
   }
@@ -143,6 +145,7 @@ export class HeadingBlock implements BlockTool {
 
     wrapper.appendChild(
       TextField({
+        icon: iconAnchor,
         placeholder: 'Анкор (ID)',
         value: this.data.anchor,
         onChange: (value: string) => {
@@ -167,6 +170,7 @@ export class HeadingBlock implements BlockTool {
     this.data = {
       ...this.data,
       text: event.detail.data.innerHTML,
+      anchor: event.detail.data.id ?? "",
       level: this.config.levels.includes(level) ? level : this.config.defaultLevel,
     };
 
@@ -198,6 +202,9 @@ export class HeadingBlock implements BlockTool {
     el.classList.add(classes.heading);
     el.contentEditable = 'true';
     el.dataset.placeholder = this.api.i18n.t(this.config.placeholder);
+    if (this.data.anchor) {
+      el.id = this.data.anchor;
+    }
     return el;
   }
 }

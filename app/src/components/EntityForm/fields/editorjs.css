@@ -54,6 +54,24 @@
     --color-background-item-hover: var(--color-surface);
   }
 
+  .ce-popover__items {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
+
+  .ce-popover-item-html {
+    padding-inline-end: calc(.5 * var(--rhythmic-unit));
+  }
+
+  .ce-popover-item__settings-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--mantine-color-dimmed);
+    padding: 4px 4px 0;
+  }
+
   .cdx-settings-button--active {
     color: var(--color-link);
   }

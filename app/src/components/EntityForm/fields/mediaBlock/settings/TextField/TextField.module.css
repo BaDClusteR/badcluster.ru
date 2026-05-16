@@ -1,0 +1,37 @@
+.wrapper {
+  grid-template-columns: 1fr;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  svg {
+    flex: 0 0 calc(1.25 * var(--rhythmic-unit));
+    height: auto;
+    color: var(--color-text-secondary);
+    margin-left: 3px;
+  }
+}
+
+.textField {
+  padding: 0;
+  line-height: 26px;
+
+  &:first-child {
+    padding-inline: calc(.5 * var(--rhythmic-unit));
+  }
+}
+
+.textFieldMultiline {
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: inherit;
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  line-height: 26px;
+}
