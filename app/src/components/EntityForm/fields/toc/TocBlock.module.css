@@ -1,6 +1,5 @@
 .toc {
   margin: 0;
-  padding: var(--rhythmic-unit);
   border: var(--border);
   border-radius: var(--border-radius);
   background: var(--color-surface);
@@ -10,10 +9,11 @@
 .summary {
   display: flex;
   align-items: center;
-  gap: calc(0.5 * var(--rhythmic-unit));
+  gap: calc(.5 * var(--rhythmic-unit));
   cursor: pointer;
   list-style: none;
   user-select: none;
+  padding: var(--rhythmic-unit) calc(1.5 * var(--rhythmic-unit));
 }
 
 .summary::-webkit-details-marker {
@@ -30,10 +30,13 @@
   outline: none;
   background: transparent;
   font: inherit;
-  font-weight: 600;
-  font-size: var(--font-size-big);
-  color: var(--color-text);
   padding: 0;
+  font-family: var(--font-family-mono), monospace;
+  font-size: var(--font-size-small);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+  color: var(--color-text-secondary);
 }
 
 .labelInput::placeholder {
@@ -63,26 +66,69 @@
 
 /* Nav */
 .nav {
-  margin-top: calc(0.75 * var(--rhythmic-unit));
+  border-top: var(--border);
+  margin: 0;
+  padding: 0 calc(1.5 * var(--rhythmic-unit)) calc(1.5 * var(--rhythmic-unit)) calc(1.5 * var(--rhythmic-unit));
+  font-weight: normal;
 }
 
 /* Lists */
 .list {
   margin: 0;
   padding: 0;
-  padding-inline-start: calc(1.25 * var(--rhythmic-unit));
+  font-size: var(--font-size-base);
+  flex-direction: column;
+  flex: 0 0 100%;
+  list-style: none;
+  display: flex;
+  counter-reset: item;
 }
 
 .sublist {
-  margin: 0;
+  list-style: none;
   padding: 0;
-  padding-inline-start: calc(1.25 * var(--rhythmic-unit));
+  margin: 0;
+  font-size: var(--font-size-base);
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: column;
+  padding-inline-start: calc(1.5 * var(--rhythmic-unit));
+  margin-block-start: calc(.25 * var(--rhythmic-unit));
+  border-inline-start: var(--border);
+  margin-inline-start: calc(.25 * var(--rhythmic-unit));
+  counter-reset: sub-item;
+  color: var(--color-text-secondary);
 }
 
 /* Items */
 .item {
   padding: calc(0.15 * var(--rhythmic-unit)) 0;
   line-height: 1.5;
+  margin-top: calc(.5 * var(--rhythmic-unit));
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: calc(.25 * var(--rhythmic-unit));
+  counter-increment: item;
+
+  &:before {
+    content: counter(item) ".";
+  }
+}
+
+.subItem {
+  padding: calc(0.15 * var(--rhythmic-unit)) 0;
+  line-height: 1.5;
+  margin-block-start: calc(.25 * var(--rhythmic-unit));
+  counter-increment: sub-item;
+
+  &:before {
+    content: counter(item) '.' counters(sub-item, '.') '. ';
+  }
+
+  > .link {
+    color: inherit;
+  }
 }
 
 /* Editable link text */

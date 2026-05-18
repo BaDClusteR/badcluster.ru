@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d136250a75b049a4ed176ca6fc30720d",
+    "content-hash": "0c1c50ea71bb1d4f3aca949b2c8e9f79",
     "packages": [
         {
             "name": "bad_cluster/runway",
@@ -224,6 +224,73 @@
                 }
             ],
             "time": "2026-02-10T14:33:43+00:00"
+        },
+        {
+            "name": "james-heinrich/getid3",
+            "version": "v1.9.25",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JamesHeinrich/getID3.git",
+                "reference": "fefffe762b02be155dcc32eec57feff8a49bc4b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JamesHeinrich/getID3/zipball/fefffe762b02be155dcc32eec57feff8a49bc4b5",
+                "reference": "fefffe762b02be155dcc32eec57feff8a49bc4b5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "php-parallel-lint/php-parallel-lint": "^1.0"
+            },
+            "suggest": {
+                "ext-SimpleXML": "SimpleXML extension is required to analyze RIFF/WAV/BWF audio files (also requires `ext-libxml`).",
+                "ext-com_dotnet": "COM extension is required when loading files larger than 2GB on Windows.",
+                "ext-ctype": "ctype extension is required when loading files larger than 2GB on 32-bit PHP (also on 64-bit PHP on Windows) or executing `getid3_lib::CopyTagsToComments`.",
+                "ext-dba": "DBA extension is required to use the DBA database as a cache storage.",
+                "ext-exif": "EXIF extension is required for graphic modules.",
+                "ext-iconv": "iconv extension is required to work with different character sets (when `ext-mbstring` is not available).",
+                "ext-json": "JSON extension is required to analyze Apple Quicktime videos.",
+                "ext-libxml": "libxml extension is required to analyze RIFF/WAV/BWF audio files.",
+                "ext-mbstring": "mbstring extension is required to work with different character sets.",
+                "ext-mysql": "MySQL extension is required to use the MySQL database as a cache storage (deprecated in PHP 5.5, removed in PHP >= 7.0, use `ext-mysqli` instead).",
+                "ext-mysqli": "MySQLi extension is required to use the MySQL database as a cache storage.",
+                "ext-rar": "RAR extension is required for RAR archive module.",
+                "ext-sqlite3": "SQLite3 extension is required to use the SQLite3 database as a cache storage.",
+                "ext-xml": "XML extension is required for graphic modules to analyze the XML metadata.",
+                "ext-zlib": "Zlib extension is required for archive modules and compressed metadata."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "getid3/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-1.0-or-later",
+                "LGPL-3.0-only",
+                "MPL-2.0"
+            ],
+            "description": "PHP script that extracts useful information from popular multimedia file formats",
+            "homepage": "https://www.getid3.org/",
+            "keywords": [
+                "codecs",
+                "php",
+                "tags"
+            ],
+            "support": {
+                "issues": "https://github.com/JamesHeinrich/getID3/issues",
+                "source": "https://github.com/JamesHeinrich/getID3/tree/v1.9.25"
+            },
+            "time": "2026-03-10T11:56:47+00:00"
         },
         {
             "name": "matthiasmullie/minify",
@@ -510,12 +577,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "5a7fa9fd3ce6eefbc9b982d6c78d0aa15d328d6c"
+                "reference": "80f4d3dbb1fc1ef5bb1eee68dbfb44060e1fb4e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/5a7fa9fd3ce6eefbc9b982d6c78d0aa15d328d6c",
-                "reference": "5a7fa9fd3ce6eefbc9b982d6c78d0aa15d328d6c",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/80f4d3dbb1fc1ef5bb1eee68dbfb44060e1fb4e8",
+                "reference": "80f4d3dbb1fc1ef5bb1eee68dbfb44060e1fb4e8",
                 "shasum": ""
             },
             "conflict": {
@@ -636,7 +703,7 @@
                 "clickstorm/cs-seo": ">=6,<6.8|>=7,<7.5|>=8,<8.4|>=9,<9.3",
                 "co-stack/fal_sftp": "<0.2.6",
                 "cockpit-hq/cockpit": "<2.14",
-                "code16/sharp": "<9.20",
+                "code16/sharp": "<9.22",
                 "codeception/codeception": "<3.1.3|>=4,<4.1.22",
                 "codeigniter/framework": "<3.1.10",
                 "codeigniter4/framework": "<4.6.2",
@@ -646,7 +713,7 @@
                 "codingms/modules": "<4.3.11|>=5,<5.7.4|>=6,<6.4.2|>=7,<7.5.5",
                 "commerceteam/commerce": ">=0.9.6,<0.9.9",
                 "components/jquery": ">=1.0.3,<3.5",
-                "composer/composer": "<2.2.27|>=2.3,<2.9.6",
+                "composer/composer": "<2.2.28|>=2.3,<2.9.8",
                 "concrete5/concrete5": "<9.4.8",
                 "concrete5/core": "<8.5.8|>=9,<9.1",
                 "contao-components/mediaelement": ">=2.14.2,<2.21.1",
@@ -656,7 +723,7 @@
                 "contao/core-bundle": "<4.13.57|>=5,<5.3.42|>=5.4,<5.6.5",
                 "contao/listing-bundle": ">=3,<=3.5.30|>=4,<4.4.8",
                 "contao/managed-edition": "<=1.5",
-                "coreshop/core-shop": "<4.1.9",
+                "coreshop/core-shop": "<4.1.9|==5",
                 "corveda/phpsandbox": "<1.3.5",
                 "cosenary/instagram": "<=2.3",
                 "couleurcitron/tarteaucitron-wp": "<0.3",
@@ -704,7 +771,7 @@
                 "doctrine/mongodb-odm": "<1.0.2",
                 "doctrine/mongodb-odm-bundle": "<3.0.1",
                 "doctrine/orm": ">=1,<1.2.4|>=2,<2.4.8|>=2.5,<2.5.1|>=2.8.3,<2.8.4",
-                "dolibarr/dolibarr": "<=22.0.4",
+                "dolibarr/dolibarr": "<=23.0.2",
                 "dompdf/dompdf": "<2.0.4",
                 "doublethreedigital/guest-entries": "<3.1.2",
                 "dreamfactory/df-core": "<1.0.4",
@@ -836,7 +903,7 @@
                 "georgringer/news": "<1.3.3",
                 "geshi/geshi": "<=1.0.9.1",
                 "getformwork/formwork": "<=2.3.3",
-                "getgrav/grav": "<2.0.0.0-beta4",
+                "getgrav/grav": "<=2.0.0.0-RC1",
                 "getgrav/grav-plugin-api": "<1.0.0.0-beta15",
                 "getgrav/grav-plugin-form": "<9.1",
                 "getkirby/cms": "<4.9|>=5,<5.4",
@@ -996,7 +1063,7 @@
                 "maikuolan/phpmussel": ">=1,<1.6",
                 "mainwp/mainwp": "<=4.4.3.3",
                 "manogi/nova-tiptap": "<=3.2.6",
-                "mantisbt/mantisbt": "<2.28.1",
+                "mantisbt/mantisbt": "<2.28.2",
                 "marcwillmann/turn": "<0.3.3",
                 "markhuot/craftql": "<=1.3.7",
                 "marshmallow/nova-tiptap": "<5.7",
@@ -1260,6 +1327,7 @@
                 "simplesamlphp/saml2": "<=4.16.15|>=5.0.0.0-alpha1,<=5.0.0.0-alpha19",
                 "simplesamlphp/saml2-legacy": "<=4.16.15",
                 "simplesamlphp/simplesamlphp": "<1.18.6",
+                "simplesamlphp/simplesamlphp-module-casserver": "<=7.0.2",
                 "simplesamlphp/simplesamlphp-module-infocard": "<1.0.1",
                 "simplesamlphp/simplesamlphp-module-openid": "<1",
                 "simplesamlphp/simplesamlphp-module-openidprovider": "<0.9",
@@ -1294,7 +1362,7 @@
                 "starcitizenwiki/embedvideo": "<=4",
                 "statamic/cms": "<5.73.21|>=6,<6.15",
                 "stormpath/sdk": "<9.9.99",
-                "studio-42/elfinder": "<2.1.67",
+                "studio-42/elfinder": "<=2.1.67",
                 "studiomitte/friendlycaptcha": "<0.1.4",
                 "subhh/libconnect": "<7.0.8|>=8,<8.1",
                 "sukohi/surpass": "<1",
@@ -1478,7 +1546,7 @@
                 "yidashi/yii2cmf": "<=2",
                 "yii2mod/yii2-cms": "<1.9.2",
                 "yiisoft/yii": "<1.1.31",
-                "yiisoft/yii2": "<2.0.52",
+                "yiisoft/yii2": "<2.0.55",
                 "yiisoft/yii2-authclient": "<2.2.15",
                 "yiisoft/yii2-bootstrap": "<2.0.4",
                 "yiisoft/yii2-dev": "<=2.0.45",
@@ -1568,7 +1636,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-08T23:22:52+00:00"
+            "time": "2026-05-15T18:36:41+00:00"
         }
     ],
     "aliases": [],
@@ -1587,6 +1655,6 @@
         "ext-yaml": "*",
         "ext-zip": "*"
     },
-    "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
 }

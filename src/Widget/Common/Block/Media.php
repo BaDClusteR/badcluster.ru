@@ -54,10 +54,10 @@ class Media extends AWidget
     }
 
     protected function isImage(): bool {
-        return str_starts_with(
-            (string)$this->media?->getMime(),
-            "image/"
-        );
+        return $this->media?->isImage() ?? false;
     }
 
+    protected function isVideo(): bool {
+        return $this->media?->isVideo() ?? false;
+    }
 }

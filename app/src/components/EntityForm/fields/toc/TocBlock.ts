@@ -196,7 +196,9 @@ export class TocBlock implements BlockTool {
   private renderItems(ol: HTMLElement, items: TocItem[]) {
     for (const item of items) {
       const li = document.createElement('li');
-      li.className = classes.item;
+      li.className = ol.classList.contains(classes.sublist)
+        ? classes.subItem
+        : classes.item;
 
       if (item.anchor) {
         const link = document.createElement('span');

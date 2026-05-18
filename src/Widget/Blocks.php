@@ -10,6 +10,7 @@ use BC\Widget\Common\Block\Paragraph;
 use BC\Widget\Common\Block\Quote;
 use BC\Widget\Common\Block\TableOfContents;
 use BC\Widget\Common\Block\Terminal;
+use BC\Widget\Common\Block\WList;
 
 class Blocks extends AWidget implements IAssetProvider
 {
@@ -70,6 +71,7 @@ class Blocks extends AWidget implements IAssetProvider
             'terminal'  => new Terminal($data),
             'gallery'   => new Gallery($data),
             'toc'       => new TableOfContents($data),
+            'list'      => new WList($data),
             default => null
         };
 

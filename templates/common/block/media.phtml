@@ -33,4 +33,28 @@ use BC\Widget\Common\Picture;
             <figcaption class="post__image-text"><?=$this->caption?></figcaption>
         <?php endif; ?>
     </figure>
+<?php elseif ($this->isVideo()) :?>
+    <?php
+        $width = $this->media->getWidth();
+        $height = $this->media->getHeight();
+    ?>
+    <figure class="post__image-figure figure--video<?php if ($this->lazy) :?>  figure--video-lazy<?php endif; ?>">
+        <video
+            class="post__image-video"
+            width="<?=$width?>"
+            height="<?=$height?>"
+            preload="<?=$this->lazy ? "none" : "auto"?>"
+            autoplay
+            muted
+            loop
+            playsinline
+        >
+            <source
+                type="<?=$this->media->getMime()?>"
+                width="<?=$width?>"
+                height="<?=$height?>"
+                <?=$this->lazy ? "data-src" : "src"?>="<?=$this->media->getWebPath()?>"
+            />
+        </video>
+    </figure>
 <?php endif; ?>

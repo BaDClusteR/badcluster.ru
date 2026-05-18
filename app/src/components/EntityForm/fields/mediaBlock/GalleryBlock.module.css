@@ -55,7 +55,8 @@
 .viewport {
   position: relative;
   border-radius: var(--mantine-radius-md);
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .scroller {

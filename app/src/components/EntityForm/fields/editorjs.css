@@ -6,6 +6,20 @@
   font-variation-settings: 'wdth' 95;
   line-height: 1.5;
 
+  .cdx-list {
+    margin: 0;
+    padding-inline-start: calc(2 * var(--rhythmic-unit));
+    display: flex;
+    flex-direction: column;
+    row-gap: calc(.5 * var(--rhythmic-unit));
+    font-weight: 440;
+  }
+
+  .cdx-list__item {
+    padding: 0;
+    line-height: 1.5;
+  }
+
   strong,
   b {
     color: var(--color-contrast);

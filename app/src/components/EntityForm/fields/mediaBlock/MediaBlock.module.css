@@ -1,5 +1,11 @@
 .wrapper {
   margin: calc(.5 * var(--rhythmic-unit)) 0;
+
+  video {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+  }
 }
 
 /* Empty state — clickable upload placeholder */

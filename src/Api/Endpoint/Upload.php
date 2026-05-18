@@ -10,6 +10,7 @@ use BC\Core\Converter\Media\IMediaConverter;
 use BC\Core\DTO\MediaDTO;
 use BC\Model\Media;
 use BC\Provider\IPathsProvider;
+use getID3;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\FileSystem\IFileSystem;
@@ -64,7 +65,11 @@ class Upload extends AEndpoint
     }
 
     protected function doWithPurpose(Media $media, ?string $purpose): Media {
-        if ($purpose === null && $media->getWidth() > 0) {
+        if (
+            $purpose === null
+            && $media->isImage()
+            && $media->getWidth() > 0
+        ) {
             $this->tryGenerateThumbnails($media, [500, 1000, 2000]);
         }
 
@@ -93,8 +98,14 @@ class Upload extends AEndpoint
         $size = filesize($imagePath) ?: 0;
         $md5 = md5_file($imagePath) ?: '';
         $info = @getimagesize($imagePath);
-        $width = (int)($info[0] ?? 0);
-        $height = (int)($info[1] ?? 0);
+        if ($this->isVideo($mime)) {
+            $info = new getID3()->analyze($imagePath);
+            $width = (int)($info['video']['resolution_x'] ?? 0);
+            $height = (int)($info['video']['resolution_y'] ?? 0);
+        } else {
+            $width = (int) ($info[0] ?? 0);
+            $height = (int) ($info[1] ?? 0);
+        }
 
         $media = new Media()
             ->setPath($relativePath)
@@ -110,6 +121,10 @@ class Upload extends AEndpoint
         );
 
         return $media;
+    }
+
+    private function isVideo(string $mime): bool {
+        return str_starts_with($mime, "video/");
     }
 
     private function sanitizeFilename(string $filename): string {

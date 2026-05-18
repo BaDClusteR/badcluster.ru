@@ -1,0 +1,9 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Block\WList $this */
+$tag = $this->getTag();
+?><<?=$tag?>>
+    <?php foreach ($this->getItems() as $item): ?>
+        <li><?=$item?></li>
+    <?php endforeach; ?>
+</<?=$tag?>>

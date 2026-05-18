@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, Text } from '@mantine/core';
 import EditorJS, { type OutputData, type ToolConstructable } from '@editorjs/editorjs';
+import List from '@editorjs/list';
 import { HeadingBlock } from './heading/HeadingBlock';
 import { QuoteBlock } from './quote/QuoteBlock';
 import { MediaBlock } from './mediaBlock/MediaBlock';
@@ -91,6 +92,10 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
           class: TerminalBlock as unknown as ToolConstructable,
           inlineToolbar: ['bold', 'italic', 'link', 'kbd', 'code'],
         },
+        list: {
+          class: List as unknown as ToolConstructable,
+          inlineToolbar: true,
+        },
         toc: TocBlock as unknown as ToolConstructable,
         kbd: KbdInlineTool as unknown as ToolConstructable,
         code: CodeInlineTool as unknown as ToolConstructable,
@@ -124,6 +129,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
           toolNames: {
             "Text": "Параграф",
             "Heading": "Заголовок",
+            "List": "Список",
             "Quote": "Цитата",
             "Link": "Ссылка",
             "Bold": "Полужирный",
@@ -154,6 +160,17 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
             },
             "paragraph": {
               "Enter something": "Введите текст"
+            },
+            "list": {
+              "Ordered": "Нумерованный",
+              "Unordered": "Маркированный",
+              "Start with": "Начать с",
+              "Counter type": "Тип маркеров",
+              "Numeric": "Числа",
+              "Lower Roman": "Римские цифры",
+              "Upper Roman": "Большие римские цифры",
+              "Lower Latin": "Латинские буквы",
+              "Upper Latin": "Большие латинские буквы"
             },
             "convertTo": {
               "Convert to": "Конвертировать в"

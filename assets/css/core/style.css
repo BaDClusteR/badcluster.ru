@@ -303,6 +303,13 @@ code {
     font-weight: 440;
   }
 
+  li {
+    > ul,
+    > ol {
+      margin-block-start: calc(.25 * var(--rhythmic-unit));
+    }
+  }
+
   > p {
     margin: 0;
   }

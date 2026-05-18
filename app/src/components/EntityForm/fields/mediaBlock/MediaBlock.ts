@@ -73,21 +73,23 @@ export class MediaBlock implements BlockTool {
       separator()
     );
 
-    wrapper.appendChild(heading("Альт. текст"))
+    if (this.isImage()) {
+      wrapper.appendChild(heading("Альт. текст"))
 
-    wrapper.appendChild(
-      TextField({
-        placeholder: "",
-        multiline: true,
-        onChange: (value: string) => {
-          if (this.data.media) {
-            this.data.media.alt = value;
-            this.quickUpdate();
-          }
-        },
-        value: String(this.data.media?.alt || "")
-      })
-    );
+      wrapper.appendChild(
+        TextField({
+          placeholder: "",
+          multiline: true,
+          onChange: (value: string) => {
+            if (this.data.media) {
+              this.data.media.alt = value;
+              this.quickUpdate();
+            }
+          },
+          value: String(this.data.media?.alt || "")
+        })
+      );
+    }
 
     wrapper.appendChild(
       Toggle({
@@ -102,17 +104,19 @@ export class MediaBlock implements BlockTool {
       })
     );
 
-    wrapper.appendChild(
-      Toggle({
-        value: this.data.lightbox ?? false,
-        onChange: (checked: boolean) => {
-          this.data.lightbox = checked;
-          this.quickUpdate();
-        },
-        icon: iconGallerySearch,
-        label: "Lightbox"
-      })
-    );
+    if (this.isImage()) {
+      wrapper.appendChild(
+        Toggle({
+          value: this.data.lightbox ?? false,
+          onChange: (checked: boolean) => {
+            this.data.lightbox = checked;
+            this.quickUpdate();
+          },
+          icon: iconGallerySearch,
+          label: "Lightbox"
+        })
+      );
+    }
 
     if (this.data.media) {
       wrapper.appendChild(separator());
@@ -154,13 +158,27 @@ export class MediaBlock implements BlockTool {
 
     // Uploaded state → native <picture> / <video>
     if (this.data.media) {
-      const el = renderPicture(this.data.media, {
-        lazy: this.data.lazy,
-        className: classes.media,
-        lightbox: this.data.lightbox
-      });
+      let el;
+      if (this.isImage()) {
+        el = renderPicture(this.data.media, {
+          lazy: this.data.lazy,
+          className: classes.media,
+          lightbox: this.data.lightbox
+        });
+      } else {
+        el = document.createElement("video");
+        el.src = this.data.media.url;
+        el.muted = true;
+        el.autoplay = true;
+        el.loop = true;
+        el.playsInline = true;
+      }
+
       this.wrapper.appendChild(el);
-      this.wrapper.appendChild(this.buildCaptionInput());
+
+      if (this.isImage()) {
+        this.wrapper.appendChild(this.buildCaptionInput());
+      }
 
       this.imageId = this.data.media.id;
       return;
@@ -181,28 +199,54 @@ export class MediaBlock implements BlockTool {
   }
 
   private quickUpdate() {
-    const img = this.wrapper.querySelector("img");
-    if (img) {
-      img.alt = this.data.media?.alt ?? "";
-      img.classList.toggle("lightbox", (this.data.lightbox ?? false));
+    if (this.isImage()) {
+      const img = this.wrapper.querySelector("img");
+      if (img) {
+        img.alt = this.data.media?.alt ?? "";
+        img.classList.toggle("lightbox", (this.data.lightbox ?? false));
 
-      if (this.data.media?.width) {
-        img.width = this.data.media.width;
-      } else {
-        img.removeAttribute("width");
-      }
-      if (this.data.media?.height) {
-        img.height = this.data.media.height;
-      } else {
-        img.removeAttribute("height");
-      }
+        if (this.data.media?.width) {
+          img.width = this.data.media.width;
+        } else {
+          img.removeAttribute("width");
+        }
+        if (this.data.media?.height) {
+          img.height = this.data.media.height;
+        } else {
+          img.removeAttribute("height");
+        }
 
-      if (this.data.lazy) {
-        img.loading = "lazy";
-      } else {
-        img.removeAttribute("loading")
+        if (this.data.lazy) {
+          img.loading = "lazy";
+        } else {
+          img.removeAttribute("loading")
+        }
+      }
+    } else if (this.isVideo()) {
+      const video = this.wrapper.querySelector("video");
+      if (video) {
+        if (this.data.media?.width) {
+          video.width = this.data.media.width;
+        } else {
+          video.removeAttribute("width");
+        }
+        if (this.data.media?.height) {
+          video.height = this.data.media.height;
+        } else {
+          video.removeAttribute("height");
+        }
+
+        video.classList.toggle("lazy", Boolean(this.data.lazy));
       }
     }
+  }
+
+  private isImage(): boolean {
+    return String(this.data.media?.mime || "").startsWith("image/");
+  }
+
+  private isVideo(): boolean {
+    return String(this.data.media?.mime || "").startsWith("video/");
   }
 
   private buildCaptionInput(): HTMLElement {
@@ -260,6 +304,8 @@ export class MediaBlock implements BlockTool {
     if (isVideo) {
       (previewEl as HTMLVideoElement).muted = true;
       (previewEl as HTMLVideoElement).autoplay = false;
+      (previewEl as HTMLVideoElement).loop = false;
+      (previewEl as HTMLVideoElement).playsInline = false;
     }
     previewBox.appendChild(previewEl);
 
@@ -287,7 +333,7 @@ export class MediaBlock implements BlockTool {
       .catch((err: Error) => {
         URL.revokeObjectURL(blobUrl);
         this.upload = null;
-        this.notify(err.message || `Не получилось загрузить ${file.name}.`, "error");
+        this.notify(err.message || `Не получилось загрузить ${file.name}: ${err.message}`, "error");
         this.paint();
       });
   }

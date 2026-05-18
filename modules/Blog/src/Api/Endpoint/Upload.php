@@ -8,7 +8,10 @@ class Upload extends \BC\Api\Endpoint\Upload
 {
     protected function doWithPurpose(Media $media, ?string $purpose): Media
     {
-        if ($purpose === 'cover') {
+        if (
+            $purpose === 'cover'
+            && $media->isImage()
+        ) {
             $this->tryGenerateThumbnails($media, [200]);
         }
 

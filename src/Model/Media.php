@@ -47,7 +47,9 @@ class Media extends AEntity
         'image/jpg',
         'image/png',
         'image/webp',
-        'image/avif'
+        'image/avif',
+        'video/mp4',
+        'video/webm'
     ];
 
     #[DS\Id]
@@ -136,6 +138,14 @@ class Media extends AEntity
         }
 
         parent::remove();
+    }
+
+    public function isVideo(): bool {
+        return str_starts_with($this->mime, 'video/');
+    }
+
+    public function isImage(): bool {
+        return str_starts_with($this->mime, 'image/');
     }
 
     public function getWebPath(): string {
