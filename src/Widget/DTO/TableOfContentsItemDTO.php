@@ -2,8 +2,7 @@
 
 namespace BC\Widget\DTO;
 
-readonly class TableOfContentsItemDTO
-{
+readonly class TableOfContentsItemDTO {
     /**
      * @param self[] $children
      */
@@ -28,8 +27,8 @@ readonly class TableOfContentsItemDTO
 
     public static function buildItem(array $item): self {
         return new self(
-            text: (string)($item['text'] ?? ""),
-            anchor: (string)($item['anchor'] ?? ""),
+            text: (string) ($item['text'] ?? ''),
+            anchor: (string) ($item['anchor'] ?? ''),
             children: static::buildItems($item['children'] ?? [])
         );
     }

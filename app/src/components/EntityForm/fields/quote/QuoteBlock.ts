@@ -24,6 +24,7 @@ export class QuoteBlock implements BlockTool {
     return {
       title: 'Цитата',
       icon: ICON_QUOTE,
+      keywords: ['quote', 'blockquote', 'cite'],
     };
   }
 

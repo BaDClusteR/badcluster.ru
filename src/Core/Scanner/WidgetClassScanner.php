@@ -7,15 +7,13 @@ use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-readonly class WidgetClassScanner implements IWidgetClassScanner
-{
+readonly class WidgetClassScanner implements IWidgetClassScanner {
     public function __construct(
         private IPathsProvider $pathsProvider,
     ) {
     }
 
-    public function getWidgetClasses(): array
-    {
+    public function getWidgetClasses(): array {
         $classes = [];
 
         foreach ($this->pathsProvider->getWidgetPaths() as $dir) {
@@ -43,8 +41,7 @@ readonly class WidgetClassScanner implements IWidgetClassScanner
         return $classes;
     }
 
-    private function extractClassName(string $filePath): ?string
-    {
+    private function extractClassName(string $filePath): ?string {
         $content = file_get_contents($filePath);
 
         $namespace = '';

@@ -5,8 +5,7 @@ namespace BC\Core\Media\Processor\Command;
 use BC\Core\Exception\ImageException;
 use BC\Core\Trait\LoggerTrait;
 
-class ResizeCommand extends ACommand
-{
+class ResizeCommand extends ACommand {
     use LoggerTrait;
 
     public function __construct(
@@ -21,8 +20,7 @@ class ResizeCommand extends ACommand
     /**
      * @throws ImageException
      */
-    public function execute(): void
-    {
+    public function execute(): void {
         $command = $this->getCommand();
 
         /** @var string[] $output */
@@ -51,7 +49,7 @@ class ResizeCommand extends ACommand
         $size = ($this->width ?: '') . 'x' . ($this->height ?: '');
         $saveParams = $this->saveParameters
             ? "[$this->saveParameters]"
-            : "";
+            : '';
 
         return $this->getVipsThumbnailPath() . " $this->path --size $size -o {$this->output}$saveParams";
     }

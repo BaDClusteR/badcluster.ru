@@ -5,8 +5,7 @@ namespace BC\Modules\Blog\Core\Action\Post;
 use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
 use Runway\Exception\Exception;
 
-interface ISavePostAction
-{
+interface ISavePostAction {
     /**
      * @throws Exception
      */

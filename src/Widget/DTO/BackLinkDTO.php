@@ -2,11 +2,10 @@
 
 namespace BC\Widget\DTO;
 
-readonly class BackLinkDTO
-{
+readonly class BackLinkDTO {
     public function __construct(
         public string $url,
-        public string $text = "Назад"
+        public string $text = 'Назад'
     ) {
     }
 }

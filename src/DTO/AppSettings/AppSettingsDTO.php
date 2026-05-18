@@ -5,8 +5,7 @@ namespace BC\DTO\AppSettings;
 use JsonException;
 use RuntimeException;
 
-class AppSettingsDTO
-{
+class AppSettingsDTO {
     /**
      * @param NavigationDTO[] $nav
      * @param ModuleDTO[] $modules
@@ -33,11 +32,11 @@ class AppSettingsDTO
     public function toArray(): array {
         return [
             'nav' => array_map(
-                static fn(NavigationDTO $item) => $item->toArray(),
+                static fn (NavigationDTO $item) => $item->toArray(),
                 $this->nav
             ),
             'modules' => array_map(
-                static fn(ModuleDTO $item) => $item->toArray(),
+                static fn (ModuleDTO $item) => $item->toArray(),
                 $this->modules
             ),
             'webRoot' => $this->webRoot

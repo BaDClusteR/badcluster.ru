@@ -57,7 +57,8 @@ export class TerminalBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
       title: "Терминал",
-      icon: ICON_TERMINAL
+      icon: ICON_TERMINAL,
+      keywords: ['terminal', 'console', 'cipher', 'code']
     };
   }
 

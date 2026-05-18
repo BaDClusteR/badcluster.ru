@@ -2,7 +2,6 @@
 
 namespace BC\Modules\Blog\Core\Action\Validator;
 
-use BC\Exception\UnprocessableEntityException;
 use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
 use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
 use BC\Modules\Blog\Core\Action\DTO\ValidatorResponse;
@@ -11,15 +10,13 @@ use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\Exception\ModelException;
 
-class PostValidator implements IPostValidator
-{
+class PostValidator implements IPostValidator {
     /**
      * @throws ModelException
      * @throws DBException
      * @throws QueryBuilderException
      */
-    public function validate(SavePostRequest|CreatePostRequest $request): ValidatorResponse
-    {
+    public function validate(SavePostRequest|CreatePostRequest $request): ValidatorResponse {
         if ($postWithTheSameSlug = $this->getPostWithTheSameSlug($request)) {
             return new ValidatorResponse(
                 successful: false,

@@ -7,3 +7,6 @@ services:
 
   BC\Modules\Blog\Controller\System\APIExceptionResponseController:
     decorates: ApiPlatform\Controller\System\IApiExceptionResponseController
+
+  BC\Modules\Blog\Provider\CommentsProvider:
+    decorates: BC\Provider\ICommentsProvider

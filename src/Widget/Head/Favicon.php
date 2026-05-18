@@ -7,12 +7,10 @@ use BC\Widget\Attribute\WidgetList;
 use BC\Widget\AWidget;
 
 #[WidgetList('head')]
-class Favicon extends AWidget
-{
+class Favicon extends AWidget {
     use WebsiteSettingsTrait;
 
-    protected function getTemplatePath(): string
-    {
+    protected function getTemplatePath(): string {
         return 'head/favicon.phtml';
     }
 

@@ -5,8 +5,7 @@ namespace BC\Api\Endpoint;
 use ApiPlatform\Exception\RuntimeInternalErrorException;
 use Throwable;
 
-abstract class AEndpoint
-{
+abstract class AEndpoint {
     protected function handleWithException(callable $handler): mixed {
         try {
             return $handler();

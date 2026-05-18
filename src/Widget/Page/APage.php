@@ -3,16 +3,39 @@
 namespace BC\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\DTO\PageImageDTO;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\BackLinkDTO;
+use BC\Widget\DTO\MetaTagDTO;
 use BC\Widget\IAssetProvider;
 
-abstract class APage extends AWidget implements IAssetProvider
-{
+abstract class APage extends AWidget implements IAssetProvider {
     abstract public function getHeader(): string;
 
+    abstract public function getMetaDescription(): string;
+
+    public function getPageImage(): ?PageImageDTO {
+        return null;
+    }
+
+    public function getOpenGraphType(): string {
+        return 'website';
+        //article, book, music.song, music.album
+    }
+
+    /**
+     * @return MetaTagDTO[]
+     */
+    public function getMetaTags(): array {
+        return [];
+    }
+
     public function getTitle(): string {
-        return "BaD ClusteR";
+        return 'BaD ClusteR home page';
+    }
+
+    public function getMetaTitle(): string {
+        return 'Цифровой архив BaD ClusteR\'а';
     }
 
     /**
@@ -22,8 +45,7 @@ abstract class APage extends AWidget implements IAssetProvider
 
     abstract public function getMainWidget(): AWidget;
 
-    protected function getTemplatePath(): string
-    {
+    protected function getTemplatePath(): string {
         return 'page.phtml';
     }
 
@@ -31,8 +53,7 @@ abstract class APage extends AWidget implements IAssetProvider
         return null;
     }
 
-    public static function getAssets(): array
-    {
+    public static function getAssets(): array {
         return [
             new AssetDTO('critical', 'js/critical/singleton.js', -100),
             new AssetDTO('critical', 'js/critical/event-dispatcher.js', -50),
@@ -55,7 +76,14 @@ abstract class APage extends AWidget implements IAssetProvider
         return ['core'];
     }
 
-    public function getJsBundles(): array {
+    public function getCriticalJsBundles(): array {
         return ['critical'];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getJsBundles(): array {
+        return [];
     }
 }

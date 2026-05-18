@@ -2,8 +2,7 @@
 
 namespace BC\Core\Helper;
 
-interface IAttributesHelper
-{
+interface IAttributesHelper {
     /**
      * @param array<string, mixed> $attributes
      */

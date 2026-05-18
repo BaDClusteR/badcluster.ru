@@ -2,8 +2,7 @@
 
 namespace BC\Modules\Blog\Api\DTO;
 
-readonly class BlogPostDetailedDTO
-{
+readonly class BlogPostDetailedDTO {
     /**
      * @param string[] $tags
      */

@@ -6,8 +6,7 @@ use BC\Core\Asset\IAssetBuilder;
 use Runway\Singleton\Container;
 use Runway\Singleton\IKernel;
 
-class DebugMode
-{
+class DebugMode {
     public function __construct(
         protected IKernel $kernel,
     ) {

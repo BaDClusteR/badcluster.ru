@@ -4,8 +4,7 @@ namespace BC\Core\DTO;
 
 use ApiPlatform\Attribute\Docs;
 
-readonly class MediaDTO
-{
+readonly class MediaDTO {
     public function __construct(
         public int $id,
         public string $url,
@@ -14,7 +13,7 @@ readonly class MediaDTO
         public string $mime,
         public string $alt,
         /** @var MediaThumbnailDTO[] */
-        #[Docs\Property(description: "Thumbnails", childrenType: MediaThumbnailDTO::class)]
+        #[Docs\Property(description: 'Thumbnails', childrenType: MediaThumbnailDTO::class)]
         public array $thumbs
     ) {
     }

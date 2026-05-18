@@ -2,8 +2,7 @@
 
 namespace BC\Core\Asset\Minifier;
 
-interface IMinifier
-{
+interface IMinifier {
     /**
      * @param string $type 'js' or 'css'.
      */

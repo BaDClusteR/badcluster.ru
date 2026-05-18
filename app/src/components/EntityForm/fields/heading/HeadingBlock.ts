@@ -48,6 +48,7 @@ export class HeadingBlock implements BlockTool {
     return {
       title: 'Заголовок',
       icon: iconHeader,
+      keywords: ['heading', 'header', 'title', 'h2', 'h3'],
     };
   }
 

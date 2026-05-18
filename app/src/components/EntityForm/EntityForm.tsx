@@ -347,7 +347,9 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
             onChange={(media) => form.setFieldValue(field.name as string, media as never)}
             previewWidth={field.previewWidth}
             thumbnailWidth={field.thumbnailWidth}
+            thumbnailHeight={field.thumbnailHeight}
             uploadPurpose={field.uploadPurpose}
+            showAlt={field.showAlt}
           />
         );
       case 'heading':

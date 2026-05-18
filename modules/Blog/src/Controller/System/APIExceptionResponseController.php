@@ -5,8 +5,7 @@ namespace BC\Modules\Blog\Controller\System;
 use BC\Exception\UnprocessableEntityException;
 use Throwable;
 
-class APIExceptionResponseController extends \ApiPlatform\Controller\System\APIExceptionResponseController
-{
+class APIExceptionResponseController extends \ApiPlatform\Controller\System\APIExceptionResponseController {
     protected function getExceptionJsonData(Throwable $exception, bool $isForLogs = false): array {
         if ($exception instanceof UnprocessableEntityException) {
             return [

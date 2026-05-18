@@ -2,8 +2,7 @@
 
 namespace BC\Core\DTO;
 
-readonly class MenuItemDTO
-{
+readonly class MenuItemDTO {
     public function __construct(
         public string $title,
         public string $url,

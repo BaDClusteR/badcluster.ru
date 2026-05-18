@@ -6,10 +6,10 @@ namespace BC\Modules\Blog\Api\DTO;
 
 use ApiPlatform\Attribute\Docs;
 
-class BlogPostsDTO
-{
+class BlogPostsDTO {
     public function __construct(
-        #[Docs\Property(description: "Blog posts", childrenType: BlogPostDTO::class)]
+        #[Docs\Property(description: 'Blog posts', childrenType: BlogPostDTO::class)]
         public array $posts
-    ) {}
+    ) {
+    }
 }

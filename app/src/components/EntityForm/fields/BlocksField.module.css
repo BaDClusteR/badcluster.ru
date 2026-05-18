@@ -31,3 +31,42 @@
 .editor :global(.ce-toolbar__content) {
   max-width: none;
 }
+
+.editorSettings {
+  max-width: 720px;
+  margin-inline: auto;
+  margin-bottom: calc(0.5 * var(--rhythmic-unit));
+}
+
+.editorSettingsSummary {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.5;
+  transition: opacity 150ms;
+  list-style: none;
+}
+
+.editorSettingsSummary::-webkit-details-marker {
+  display: none;
+}
+
+.editorSettingsSummary::marker {
+  content: '';
+}
+
+.editorSettingsSummary::before {
+  content: '⚙ ';
+}
+
+.editorSettingsSummary:hover {
+  opacity: 0.8;
+}
+
+.editorSettingsBody {
+  padding-top: calc(0.5 * var(--rhythmic-unit));
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5 * var(--rhythmic-unit));
+}

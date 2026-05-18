@@ -3,10 +3,8 @@
 namespace BC\Core\Config;
 
 use BC\Core\DTO\AdminContactsDTO;
-use Runway\Env\Provider\IEnvVariablesProvider;
 
-class WebsiteSettings implements IWebsiteSettings
-{
+class WebsiteSettings implements IWebsiteSettings {
     public function __construct(
         private string $webRoot,
         private string $adminEmail,
@@ -16,8 +14,7 @@ class WebsiteSettings implements IWebsiteSettings
     ) {
     }
 
-    public function getWebRoot(): string
-    {
+    public function getWebRoot(): string {
         return $this->webRoot;
     }
 

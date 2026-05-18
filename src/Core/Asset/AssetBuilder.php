@@ -18,8 +18,7 @@ use Runway\FileSystem\IFileSystem;
 use Runway\Logger\ILogger;
 use Runway\Singleton\Container;
 
-class AssetBuilder implements IAssetBuilder
-{
+class AssetBuilder implements IAssetBuilder {
     private const string CONFIG_NAME = 'asset_bundles';
 
     /** @var array<string, array<string, BundleFileDTO[]>> bundle => type => files */
@@ -34,8 +33,7 @@ class AssetBuilder implements IAssetBuilder
     ) {
     }
 
-    public function addFile(string $bundleName, string $relativePath, int $priority = 100): void
-    {
+    public function addFile(string $bundleName, string $relativePath, int $priority = 100): void {
         $type = pathinfo($relativePath, PATHINFO_EXTENSION);
         $absolutePath = $this->resolveAssetPath($relativePath);
 
@@ -77,7 +75,7 @@ class AssetBuilder implements IAssetBuilder
             foreach ($types as $type => $files) {
                 usort(
                     $files,
-                    static fn(BundleFileDTO $a, BundleFileDTO $b) => $a->priority <=> $b->priority
+                    static fn (BundleFileDTO $a, BundleFileDTO $b) => $a->priority <=> $b->priority
                 );
 
                 $combined = '';
@@ -131,8 +129,7 @@ class AssetBuilder implements IAssetBuilder
     /**
      * @throws Exception
      */
-    public function buildAssets(): void
-    {
+    public function buildAssets(): void {
         $this->buildBundles();
         $this->copyStaticAssets();
     }
@@ -152,8 +149,7 @@ class AssetBuilder implements IAssetBuilder
      * Scans widget directories for classes implementing IAssetProvider
      * and calls their static getAssets() method.
      */
-    private function collectAssetsFromProviders(): void
-    {
+    private function collectAssetsFromProviders(): void {
         /** @var class-string<IAssetProvider> $className */
         foreach ($this->scanner->getWidgetClasses() as $className) {
             try {
@@ -184,8 +180,7 @@ class AssetBuilder implements IAssetBuilder
      * Collects assets from services tagged with "asset-bundle".
      * Tag extra fields: bundle, path, priority.
      */
-    private function collectAssetsFromTags(): void
-    {
+    private function collectAssetsFromTags(): void {
         $container = Container::getInstance();
 
         foreach ($container->getServiceTagsByName('asset-bundle') as $tagInfo) {
@@ -193,9 +188,9 @@ class AssetBuilder implements IAssetBuilder
 
             if (!empty($extra['bundle']) && !empty($extra['path'])) {
                 $this->addFile(
-                    (string)$extra['bundle'],
-                    (string)$extra['path'],
-                    (int)($extra['priority'] ?? 100),
+                    (string) $extra['bundle'],
+                    (string) $extra['path'],
+                    (int) ($extra['priority'] ?? 100),
                 );
             }
         }
@@ -204,8 +199,7 @@ class AssetBuilder implements IAssetBuilder
     /**
      * @throws Exception
      */
-    private function copyStaticAssets(): void
-    {
+    private function copyStaticAssets(): void {
         $staticDir = $this->pathsProvider->getStaticPath();
         $excludeDirs = ['js', 'css'];
 
@@ -241,8 +235,7 @@ class AssetBuilder implements IAssetBuilder
     /**
      * @throws Exception
      */
-    private function copyDirectory(string $src, string $dst): void
-    {
+    private function copyDirectory(string $src, string $dst): void {
         if (!is_dir($dst)) {
             try {
                 $this->fileSystem->mkdir($dst);
@@ -277,8 +270,7 @@ class AssetBuilder implements IAssetBuilder
         }
     }
 
-    private function resolveAssetPath(string $relativePath): ?string
-    {
+    private function resolveAssetPath(string $relativePath): ?string {
         foreach ($this->pathsProvider->getAssetPaths() as $path) {
             $fullPath = "$path/$relativePath";
 
@@ -293,8 +285,7 @@ class AssetBuilder implements IAssetBuilder
     /**
      * @return array{path: string, hash: string, version: integer}[]
      */
-    private function loadStoredBundles(): array
-    {
+    private function loadStoredBundles(): array {
         try {
             $config = Config::findOne(['name' => self::CONFIG_NAME]);
 
@@ -317,8 +308,7 @@ class AssetBuilder implements IAssetBuilder
      *
      * @throws Exception
      */
-    private function saveStoredBundles(array $bundles): void
-    {
+    private function saveStoredBundles(array $bundles): void {
         try {
             $config = Config::findOne(['name' => self::CONFIG_NAME]);
 
@@ -334,14 +324,14 @@ class AssetBuilder implements IAssetBuilder
         }
     }
 
-    private function removeOldBundleFile(string $relativePath): void
-    {
+    private function removeOldBundleFile(string $relativePath): void {
         $fullPath = PROJECT_ROOT . '/static/' . $relativePath;
 
         if (file_exists($fullPath)) {
             try {
                 $this->fileSystem->remove($fullPath);
-            } catch (CannotDeleteFileException) {}
+            } catch (CannotDeleteFileException) {
+            }
         }
     }
 }

@@ -12,51 +12,49 @@ use BC\Widget\Common\Block\TableOfContents;
 use BC\Widget\Common\Block\Terminal;
 use BC\Widget\Common\Block\WList;
 
-class Blocks extends AWidget implements IAssetProvider
-{
+class Blocks extends AWidget implements IAssetProvider {
     protected function getTemplatePath(): string {
         return 'common/blocks.phtml';
     }
 
     protected function getBlocks(): array {
-        return (array)($this->context['blocks'] ?? []);
+        return (array) ($this->context['blocks'] ?? []);
     }
 
-    public static function getAssets(): array
-    {
+    public static function getAssets(): array {
         return [
             new AssetDTO(
-                "blocks",
-                "css/blocks/gallery.css"
+                'blocks',
+                'css/blocks/gallery.css'
             ),
             new AssetDTO(
-                "blocks",
-                "css/blocks/media.css"
+                'blocks',
+                'css/blocks/media.css'
             ),
             new AssetDTO(
-                "blocks",
-                "css/blocks/quote.css"
+                'blocks',
+                'css/blocks/quote.css'
             ),
             new AssetDTO(
-                "blocks",
-                "css/blocks/terminal.css"
+                'blocks',
+                'css/blocks/terminal.css'
             ),
             new AssetDTO(
-                "blocks",
-                "css/blocks/toc.css"
+                'blocks',
+                'css/blocks/toc.css'
             ),
             new AssetDTO(
-                "blocks",
-                "css/blocks/lightbox.css"
+                'blocks',
+                'css/blocks/lightbox.css'
             ),
 
             new AssetDTO(
-                "blocks",
-                "js/blocks.js"
+                'blocks',
+                'js/blocks.js'
             ),
             new AssetDTO(
-                "blocks",
-                "js/gallery.js",
+                'blocks',
+                'js/gallery.js',
                 0
             )
         ];
@@ -75,6 +73,6 @@ class Blocks extends AWidget implements IAssetProvider
             default => null
         };
 
-        return (string)$widget?->render();
+        return (string) $widget?->render();
     }
 }

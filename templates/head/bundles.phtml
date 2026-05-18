@@ -2,12 +2,12 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Head\Bundles $this */
 
-$bundler = $this->getBundler();
+$bundler = $this->getAssetBuilder();
 ?>
 <?php foreach ($this->getJsBundles() as $bundle) :?>
     <?php if (is_array($bundle)) :?>
         <script
-            src="<?=$bundler->getBundleWebPath((string)($bundle['src'] ?? ""), 'js')?>"
+            src="<?=$bundler->getBundleWebPath((string) ($bundle['src'] ?? ''), 'js')?>"
             <?php if (!empty($bundle['type'])) :?>
                 type="<?=$bundle['type']?>"
             <?php endif; ?>

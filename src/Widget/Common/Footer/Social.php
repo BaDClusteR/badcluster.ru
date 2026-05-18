@@ -9,13 +9,11 @@ use BC\Widget\Attribute\WidgetList;
 use BC\Widget\AWidget;
 use BC\Widget\IAssetProvider;
 
-#[WidgetList("footer", 200)]
-class Social extends AWidget implements IAssetProvider
-{
+#[WidgetList('footer', 200)]
+class Social extends AWidget implements IAssetProvider {
     use WebsiteSettingsTrait;
 
-    protected function getTemplatePath(): string
-    {
+    protected function getTemplatePath(): string {
         return 'common/footer/social.phtml';
     }
 
@@ -23,12 +21,11 @@ class Social extends AWidget implements IAssetProvider
         return $this->getWebsiteSettings()->getAdminContacts();
     }
 
-    public static function getAssets(): array
-    {
+    public static function getAssets(): array {
         return [
             new AssetDTO(
-                "footer",
-                "css/footer/social.css"
+                'footer',
+                'css/footer/social.css'
             )
         ];
     }

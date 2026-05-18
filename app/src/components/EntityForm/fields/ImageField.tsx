@@ -16,7 +16,9 @@ interface ImageFieldProps {
   onChange: (media: MediaData | null) => void;
   previewWidth?: number | string;
   thumbnailWidth?: number;
+  thumbnailHeight?: number;
   uploadPurpose?: string;
+  showAlt?: boolean;
 }
 
 export function ImageField({
@@ -28,6 +30,8 @@ export function ImageField({
   onChange,
   previewWidth = '100%',
   thumbnailWidth,
+  thumbnailHeight,
+  showAlt = false,
   uploadPurpose,
 }: ImageFieldProps) {
   const [uploading, setUploading] = useState(false);
@@ -168,7 +172,7 @@ export function ImageField({
             </div>
 
             {/* Alt text input */}
-            {!uploading && (
+            {showAlt && !uploading && (
               <input
                 type="text"
                 className={classes.altInput}
@@ -180,7 +184,7 @@ export function ImageField({
 
             {/* Thumbnail */}
             {thumbnailWidth && value && !uploading && (
-              <div className={classes.thumbnail} style={{ width: thumbnailWidth }}>
+              <div className={classes.thumbnail} style={{ width: thumbnailWidth, height: thumbnailHeight }}>
                 <img src={thumbSrc} alt={alt} className={classes.img} />
               </div>
             )}

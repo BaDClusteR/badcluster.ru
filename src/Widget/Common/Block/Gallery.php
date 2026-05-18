@@ -5,11 +5,8 @@ namespace BC\Widget\Common\Block;
 use BC\Widget\AWidget;
 use Runway\Exception\Exception;
 
-class Gallery extends AWidget
-{
-
-    protected function getTemplatePath(): string
-    {
+class Gallery extends AWidget {
+    protected function getTemplatePath(): string {
         return 'common/block/gallery.phtml';
     }
 
@@ -18,8 +15,8 @@ class Gallery extends AWidget
      */
     protected function getSlides(): iterable {
         $mediaIds = array_map(
-            static fn(array $media): int => (int)($media['id'] ?? 0),
-            (array)($this->context['slides'] ?? [])
+            static fn (array $media): int => (int) ($media['id'] ?? 0),
+            (array) ($this->context['slides'] ?? [])
         );
 
         try {
@@ -41,20 +38,19 @@ class Gallery extends AWidget
         }
     }
 
-
     protected function getCaption(int $index): string {
-        return (string)($this->context['captions'][$index] ?? "");
+        return (string) ($this->context['captions'][$index] ?? '');
     }
 
     protected function isFullWidth(): bool {
-        return (bool)($this->context['fullWidth'] ?? false);
+        return (bool) ($this->context['fullWidth'] ?? false);
     }
 
     protected function isLightbox(): bool {
-        return (bool)($this->context['lightbox'] ?? false);
+        return (bool) ($this->context['lightbox'] ?? true);
     }
 
     protected function isLazy(): bool {
-        return (bool)($this->context['lazy'] ?? false);
+        return (bool) ($this->context['lazy'] ?? false);
     }
 }

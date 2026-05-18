@@ -2,8 +2,7 @@
 
 namespace BC\Core\Asset;
 
-interface IAssetBuilder
-{
+interface IAssetBuilder {
     public function addFile(string $bundleName, string $relativePath, int $priority = 100): void;
 
     public function buildAssets(): void;

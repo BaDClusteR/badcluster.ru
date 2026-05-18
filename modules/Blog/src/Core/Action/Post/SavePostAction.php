@@ -9,8 +9,7 @@ use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Exception\Exception;
 use Runway\Model\Exception\ModelException;
 
-class SavePostAction extends APostAction implements ISavePostAction
-{
+class SavePostAction extends APostAction implements ISavePostAction {
     /**
      * @throws Exception
      */

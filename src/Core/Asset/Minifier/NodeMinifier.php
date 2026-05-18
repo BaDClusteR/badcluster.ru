@@ -4,16 +4,14 @@ namespace BC\Core\Asset\Minifier;
 
 use Runway\Logger\ILogger;
 
-readonly class NodeMinifier implements IMinifier
-{
+readonly class NodeMinifier implements IMinifier {
     public function __construct(
         private ILogger $logger,
         private string $nodePath = 'node'
     ) {
     }
 
-    public function minify(string $content, string $type): string
-    {
+    public function minify(string $content, string $type): string {
         $script = match ($type) {
             'js' => $this->getTerserScript(),
             'css' => $this->getLightningCssScript(),
@@ -34,8 +32,7 @@ readonly class NodeMinifier implements IMinifier
         return $result;
     }
 
-    private function getTerserScript(): string
-    {
+    private function getTerserScript(): string {
         return <<<'JS'
             const { minify } = require('terser');
 
@@ -54,8 +51,7 @@ readonly class NodeMinifier implements IMinifier
             JS;
     }
 
-    private function getLightningCssScript(): string
-    {
+    private function getLightningCssScript(): string {
         return <<<'JS'
             const { transform } = require('lightningcss');
 
@@ -78,8 +74,7 @@ readonly class NodeMinifier implements IMinifier
             JS;
     }
 
-    private function execute(string $script, string $input): ?string
-    {
+    private function execute(string $script, string $input): ?string {
         $process = proc_open(
             [$this->nodePath, '-e', $script],
             [

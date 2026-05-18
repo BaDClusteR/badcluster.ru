@@ -7,13 +7,11 @@ use BC\Modules\Blog\Widget\Posts;
 use BC\Widget\AWidget;
 use BC\Widget\Page\APage;
 
-class BlogPage extends APage
-{
+class BlogPage extends APage {
     /**
      * @inheritDoc
      */
-    public static function getAssets(): array
-    {
+    public static function getAssets(): array {
         return [
             new AssetDTO(
                 'posts',
@@ -22,25 +20,29 @@ class BlogPage extends APage
         ];
     }
 
-    public function getHeader(): string
-    {
-        return "Блог";
+    public function getHeader(): string {
+        return 'Блог';
     }
 
-    public function getTitle(): string
-    {
-        return $this->getHeader() . " :: " . parent::getTitle();
+    public function getTitle(): string {
+        return $this->getHeader() . ' :: ' . parent::getTitle();
     }
 
-    public function getDescription(): array
-    {
+    public function getMetaDescription(): string {
+        return 'Мысли о фильмах, играх и цифровая археология. Пишу о пройденном, копаюсь в игровом лоре, разбираю секреты, которые разработчики оставили за кадром.';
+    }
+
+    public function getDescription(): array {
         return [
-            "Мысли о фильмах, играх, и капля цифровой археологии. Пишу о пройденном и просмотренном, по настроению копаюсь в лоре, разбираю игровые секреты."
+            'Мысли о фильмах, играх, и капля цифровой археологии. Пишу о пройденном и просмотренном, по настроению копаюсь в лоре, разбираю игровые секреты.'
         ];
     }
 
-    public function getMainWidget(): AWidget
-    {
+    public function getMetaTitle(): string {
+        return 'Блог — ' . parent::getMetaTitle();
+    }
+
+    public function getMainWidget(): AWidget {
         return new Posts();
     }
 

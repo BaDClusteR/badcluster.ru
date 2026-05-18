@@ -4,8 +4,7 @@ namespace BC\Provider;
 
 use BC\DTO\PulseItemDTO;
 
-interface IPulseItemsProvider
-{
+interface IPulseItemsProvider {
     /**
      * @return PulseItemDTO[]
      */

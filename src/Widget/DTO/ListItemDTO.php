@@ -2,8 +2,7 @@
 
 namespace BC\Widget\DTO;
 
-readonly class ListItemDTO
-{
+readonly class ListItemDTO {
     /**
      * @param ListItemDTO[] $children
      */
@@ -18,16 +17,16 @@ readonly class ListItemDTO
      */
     public static function buildItems(array $items): array {
         return array_map(
-            static fn(array $item) => self::buildItem($item),
+            static fn (array $item) => self::buildItem($item),
             $items
         );
     }
 
     public static function buildItem(array $item): self {
         return new self(
-            content: (string)($item['content'] ?? ""),
+            content: (string) ($item['content'] ?? ''),
             children: static::buildItems(
-                (array)($item['items'] ?? [])
+                (array) ($item['items'] ?? [])
             )
         );
     }

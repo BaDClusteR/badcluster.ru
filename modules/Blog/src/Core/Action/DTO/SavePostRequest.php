@@ -6,8 +6,7 @@ use BC\Model\Media;
 use BC\Modules\Blog\Model\Tag;
 use DateTime;
 
-readonly class SavePostRequest
-{
+readonly class SavePostRequest {
     /**
      * @param Tag[] $tags
      */

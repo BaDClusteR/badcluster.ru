@@ -2,8 +2,7 @@
 
 namespace BC\DTO\AppSettings;
 
-readonly class NavigationDTO
-{
+readonly class NavigationDTO {
     /**
      * @param NavigationDTO[]|null $children
      */
@@ -23,7 +22,7 @@ readonly class NavigationDTO
             'icon'     => $this->icon,
             'position' => $this->position,
             'children' => array_map(
-                static fn(NavigationDTO $item) => $item->toArray(),
+                static fn (NavigationDTO $item) => $item->toArray(),
                 $this->children
             )
         ];

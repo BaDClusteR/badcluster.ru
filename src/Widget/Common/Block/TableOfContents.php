@@ -5,8 +5,7 @@ namespace BC\Widget\Common\Block;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\TableOfContentsItemDTO;
 
-class TableOfContents extends AWidget
-{
+class TableOfContents extends AWidget {
     protected function getTemplatePath(): string {
         return 'common/block/table_of_contents/widget.phtml';
     }
@@ -16,11 +15,11 @@ class TableOfContents extends AWidget
      */
     protected function getItems(): array {
         return TableOfContentsItemDTO::buildItems(
-            (array)($this->context['items'] ?? [])
+            (array) ($this->context['items'] ?? [])
         );
     }
 
     protected function getLabel(): string {
-        return (string)($this->context['label'] ?? "");
+        return (string) ($this->context['label'] ?? '');
     }
 }

@@ -60,11 +60,38 @@ class CommentController {
                 if (this.#validate()) {
                     this.#setLoadingState(true);
 
-                    setTimeout(() => {
+                    const data = new FormData(this.#form);
+                    data.set('nickname', this.#nickname.value);
+                    data.set('comment', this.#comment.value);
+
+                    fetch(
+                        this.#form.action,
+                        {
+                            method: "POST",
+                            body: data
+                        }
+                    ).then(response => response.json())
+                    .then(data => {
+                        if (data?.status !== 'success') {
+                            Toast.getInstance().error(
+                                "Ошибка отправки коммента",
+                                data?.message ?? ""
+                            );
+                        } else {
+                            Toast.getInstance().success(
+                                "Коммент отправлен",
+                                data?.message ?? "Спасибо за мысли!"
+                            );
+                            this.#form.reset();
+                        }
+                    }).catch(error => {
+                        Toast.getInstance().error(
+                            "Ошибка отправки коммента",
+                            error.message
+                        );
+                    }).finally(() => {
                         this.#setLoadingState(false);
-                        Toast.getInstance().success("Коммент отправлен", "Спасибо за мысли!");
-                        this.#form.reset();
-                    }, 1500);
+                    });
                 }
             }
         );

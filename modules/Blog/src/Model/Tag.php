@@ -11,10 +11,8 @@ use Runway\Model\AEntity;
  * @method string getTitle()
  * @method self setTitle(string $title)
  */
-
-#[DS\Table("tags")]
-class Tag extends AEntity
-{
+#[DS\Table('tags')]
+class Tag extends AEntity {
     #[DS\Id]
     protected int $id;
 

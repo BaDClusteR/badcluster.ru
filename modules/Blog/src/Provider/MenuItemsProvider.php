@@ -8,8 +8,7 @@ use BC\Core\DTO\MenuItemDTO;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Provider\IMenuItemsProvider;
 
-class MenuItemsProvider implements IMenuItemsProvider
-{
+class MenuItemsProvider implements IMenuItemsProvider {
     use WebsiteSettingsTrait;
 
     public function __construct(
@@ -17,13 +16,12 @@ class MenuItemsProvider implements IMenuItemsProvider
     ) {
     }
 
-    public function getMenuItems(): array
-    {
+    public function getMenuItems(): array {
         $items = $this->inner->getMenuItems();
 
         $items[] = new MenuItemDTO(
             title: 'Блог',
-            url: $this->getWebsiteSettings()->getWebRoot() . "/blog",
+            url: $this->getWebsiteSettings()->getWebRoot() . '/blog',
             priority: 0
         );
 

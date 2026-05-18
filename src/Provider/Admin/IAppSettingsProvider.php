@@ -4,7 +4,6 @@ namespace BC\Provider\Admin;
 
 use BC\DTO\AppSettings\AppSettingsDTO;
 
-interface IAppSettingsProvider
-{
+interface IAppSettingsProvider {
     public function getAppSettings(): AppSettingsDTO;
 }

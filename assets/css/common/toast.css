@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 1fr;
   row-gap: calc(.5 * var(--rhythmic-unit));
+  font-size: var(--font-size-small);
 
   &:has(.toast__close) {
     grid-template-columns: 1fr min-content;

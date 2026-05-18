@@ -4,8 +4,7 @@ namespace BC\Core\Media\PostProcessor;
 
 use BC\Model\Media;
 
-interface IImagePostprocessor
-{
+interface IImagePostprocessor {
     /**
      * @param Media[][] $thumbnailGroups
      *

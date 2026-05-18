@@ -9,17 +9,14 @@ use BC\Widget\AWidget;
 use BC\Widget\IAssetProvider;
 
 #[WidgetList('body', priority: 0)]
-class Header extends AWidget implements IAssetProvider
-{
+class Header extends AWidget implements IAssetProvider {
     use WebsiteSettingsTrait;
 
-    protected function getTemplatePath(): string
-    {
+    protected function getTemplatePath(): string {
         return 'common/header.phtml';
     }
 
-    public static function getAssets(): array
-    {
+    public static function getAssets(): array {
         return [
             new AssetDTO('core', 'css/header.css')
         ];

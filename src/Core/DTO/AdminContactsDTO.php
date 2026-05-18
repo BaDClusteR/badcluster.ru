@@ -2,8 +2,7 @@
 
 namespace BC\Core\DTO;
 
-readonly class AdminContactsDTO
-{
+readonly class AdminContactsDTO {
     public function __construct(
         public string $email,
         public string $telegram,

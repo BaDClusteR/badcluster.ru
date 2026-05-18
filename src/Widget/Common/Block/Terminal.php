@@ -4,67 +4,65 @@ namespace BC\Widget\Common\Block;
 
 use BC\Widget\AWidget;
 
-class Terminal extends AWidget
-{
-
+class Terminal extends AWidget {
     protected function getTemplatePath(): string {
         return 'common/block/terminal.phtml';
     }
 
     protected function getAnchor(): string {
-        return (string)($this->context['anchor'] ?? "");
+        return (string) ($this->context['anchor'] ?? '');
     }
 
     protected function getCipher(): string {
-        return (string)($this->context['cipher'] ?? "");
+        return (string) ($this->context['cipher'] ?? '');
     }
 
     protected function getEn(): string {
-        return (string)($this->context['en'] ?? "");
+        return (string) ($this->context['en'] ?? '');
     }
 
     protected function getRu(): string {
-        return (string)($this->context['ru'] ?? "");
+        return (string) ($this->context['ru'] ?? '');
     }
 
     protected function getTitle(): string {
-        return (string)($this->context['title'] ?? "");
+        return (string) ($this->context['title'] ?? '');
     }
 
     protected function getKey(): string {
-        return (string)($this->context['key'] ?? "");
+        return (string) ($this->context['key'] ?? '');
     }
 
     protected function getPage(): string {
-        return (string)($this->context['page'] ?? "");
+        return (string) ($this->context['page'] ?? '');
     }
 
     protected function getCipherLabel(): string {
-        return (string)($this->context['labelCipher'] ?? "");
+        return (string) ($this->context['labelCipher'] ?? '');
     }
 
     protected function getEnLabel(): string {
-        return (string)($this->context['labelEn'] ?? "");
+        return (string) ($this->context['labelEn'] ?? '');
     }
 
     protected function getRuLabel(): string {
-        return (string)($this->context['labelRu'] ?? "");
+        return (string) ($this->context['labelRu'] ?? '');
     }
 
     protected function isShowCipherTab(): bool {
-        return (bool)($this->context['tabCipher'] ?? false);
+        return (bool) ($this->context['tabCipher'] ?? false);
     }
 
     protected function isShowEnTab(): bool {
-        return (bool)($this->context['tabEn'] ?? false);
+        return (bool) ($this->context['tabEn'] ?? false);
     }
 
     protected function isShowRuTab(): bool {
-        return (bool)($this->context['tabRu'] ?? false);
+        return (bool) ($this->context['tabRu'] ?? false);
     }
 
     protected function isShowTitle(): bool {
-        return (bool)($this->context['showTitle'] ?? false);
+        return (bool) ($this->context['showTitle'] ?? false);
     }
 
     protected function getTabsCount(): int {
@@ -87,8 +85,8 @@ class Terminal extends AWidget
 
     protected function sanitizeTabContent(string $content): string {
         return str_replace(
-            ["<p>", "</p>"],
-            "",
+            ['<p>', '</p>'],
+            '',
             $content
         );
     }

@@ -7,26 +7,22 @@ use Runway\Console\Command\ACommand;
 use Runway\Console\Input\IInput;
 use Runway\Console\Output\IOutput;
 
-class AssetsBuildCommand extends ACommand
-{
+class AssetsBuildCommand extends ACommand {
     public function __construct(
         private readonly IAssetBuilder $assetBundler,
     ) {
         parent::__construct();
     }
 
-    public function getName(): string
-    {
+    public function getName(): string {
         return 'assets:build';
     }
 
-    public function getDescription(): string
-    {
+    public function getDescription(): string {
         return 'Build and minify assets';
     }
 
-    protected function execute(IInput $input, IOutput $output): int
-    {
+    protected function execute(IInput $input, IOutput $output): int {
         $output->info('Building assets...');
 
         $this->assetBundler->buildAssets();

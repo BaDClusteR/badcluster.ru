@@ -32,9 +32,8 @@ use BC\Modules\Blog\Model\Tag;
 use Runway\Exception\Exception;
 use Runway\Singleton\Container;
 
-#[Docs\Group("Blog posts")]
-class BlogPost extends AEndpoint
-{
+#[Docs\Group('Blog posts')]
+class BlogPost extends AEndpoint {
     public function __construct(
         private readonly IConverter $converter,
         private readonly IMediaConverter $mediaConverter,
@@ -45,27 +44,23 @@ class BlogPost extends AEndpoint
     /**
      * @throws BadRequestException
      */
-    #[API\Endpoint(path: "posts", method: "GET")]
-    #[Docs\Endpoint("Get the list of blog posts")]
+    #[API\Endpoint(path: 'posts', method: 'GET')]
+    #[Docs\Endpoint('Get the list of blog posts')]
     public function getList(
-        #[API\Parameter(source: "query")]
-        #[Docs\Argument(example: "contact", description: "Posts filter")]
+        #[API\Parameter(source: 'query')]
+        #[Docs\Argument(example: 'contact', description: 'Posts filter')]
         string $filter = '',
-
-        #[API\Parameter(source: "query")]
-        #[Docs\Argument(example: "title", description: "Column to sort for")]
+        #[API\Parameter(source: 'query')]
+        #[Docs\Argument(example: 'title', description: 'Column to sort for')]
         string $sortBy = '',
-
-        #[API\Parameter(source: "query")]
-        #[Docs\Argument(example: "DESC", description: "Sort direction")]
+        #[API\Parameter(source: 'query')]
+        #[Docs\Argument(example: 'DESC', description: 'Sort direction')]
         string $sortDir = '',
-
-        #[API\Parameter(source: "query")]
-        #[Docs\Argument(example: 2, description: "Results page")]
+        #[API\Parameter(source: 'query')]
+        #[Docs\Argument(example: 2, description: 'Results page')]
         int $page = 1,
-
-        #[API\Parameter(source: "query")]
-        #[Docs\Argument(example: 10, description: "Results count on the page")]
+        #[API\Parameter(source: 'query')]
+        #[Docs\Argument(example: 10, description: 'Results count on the page')]
         int $perPage = 25
     ): BlogPostsDTO {
         $filter = strtolower(trim($filter));
@@ -95,7 +90,7 @@ class BlogPost extends AEndpoint
         }
 
         return $this->handleWithException(
-            fn() => new BlogPostsDTO(
+            fn () => new BlogPostsDTO(
                 posts: array_map(
                     fn (Post $post): BlogPostDTO => $this->convertModel($post),
                     $qb->getEntities()
@@ -107,29 +102,29 @@ class BlogPost extends AEndpoint
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: "post", method: "GET")]
+    #[API\Endpoint(path: 'post', method: 'GET')]
     public function getOne(
-        #[API\Parameter(source: "path", name: "identifier")]
+        #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
     ): BlogPostDetailedDTO {
         $action = Container::getInstance()->getService(IGetPostAction::class);
 
         $post = $this->handleWithException(
-            static fn() => $action->run(
+            static fn () => $action->run(
                 new GetPostRequest($id)
             )->post
         );
 
         return $this->handleWithException(
-            fn(): BlogPostDetailedDTO => $this->convertDetailedModel($post)
+            fn (): BlogPostDetailedDTO => $this->convertDetailedModel($post)
         );
     }
 
-    #[API\Endpoint(path: "tags", method: "GET")]
+    #[API\Endpoint(path: 'tags', method: 'GET')]
     public function getTags(): BlogPostTagsDTO {
         /** @var Tag[] $tags */
         $tags = $this->handleWithException(
-            static fn() => Tag::find()
+            static fn () => Tag::find()
         );
 
         return $this->convertTags($tags);
@@ -138,39 +133,29 @@ class BlogPost extends AEndpoint
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: "post", method: "POST")]
+    #[API\Endpoint(path: 'post', method: 'POST')]
     public function createPost(
-        #[API\Parameter(source: "body", name: "title")]
+        #[API\Parameter(source: 'body', name: 'title')]
         string $title,
-
-        #[API\Parameter(source: "body", name: "content")]
+        #[API\Parameter(source: 'body', name: 'content')]
         array $content,
-
-        #[API\Parameter(source: "body", name: "publishDate")]
+        #[API\Parameter(source: 'body', name: 'publishDate')]
         string $publishDate,
-
-        #[API\Parameter(source: "body", name: "slug")]
+        #[API\Parameter(source: 'body', name: 'slug')]
         string $slug,
-
-        #[API\Parameter(source: "body", name: "shortTitle")]
+        #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle = '',
-
-        #[API\Parameter(source: "body", name: "annotation")]
+        #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation = '',
-
-        #[API\Parameter(source: "body", name: "published")]
+        #[API\Parameter(source: 'body', name: 'published')]
         bool $published = false,
-
-        #[API\Parameter(source: "body", name: "metaDescription")]
+        #[API\Parameter(source: 'body', name: 'metaDescription')]
         string $metaDescription = '',
-
-        #[API\Parameter(source: "body", name: "tags")]
+        #[API\Parameter(source: 'body', name: 'tags')]
         array $tags = [],
-
-        #[API\Parameter(source: "body", name: "updateDate")]
+        #[API\Parameter(source: 'body', name: 'updateDate')]
         ?string $updateDate = null,
-
-        #[API\Parameter(source: "body", name: "coverImage")]
+        #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): BlogPostCreatedDTO {
         $action = Container::getInstance()->getService(ICreatePostAction::class);
@@ -190,7 +175,7 @@ class BlogPost extends AEndpoint
                         ? $this->converter->convertDateTimeStringToDateTime($updateDate)
                         : null,
                     coverImage: $this->getCover($coverImage),
-                    coverImageAltText: (string)($coverImage['alt'] ?? ""),
+                    coverImageAltText: (string) ($coverImage['alt'] ?? ''),
                     tags: Tag::find([
                         'id' => $tags
                     ])
@@ -199,7 +184,7 @@ class BlogPost extends AEndpoint
         } catch (ActionValidationException $e) {
             throw new UnprocessableEntityException(
                 $e->getErrors(),
-                "Ошибки при создании поста"
+                'Ошибки при создании поста'
             );
         } catch (Exception $e) {
             throw new RuntimeInternalErrorException($e->getMessage(), $e);
@@ -213,42 +198,31 @@ class BlogPost extends AEndpoint
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: "post", method: "PUT")]
+    #[API\Endpoint(path: 'post', method: 'PUT')]
     public function savePost(
-        #[API\Parameter(source: "body", name: "title")]
+        #[API\Parameter(source: 'body', name: 'title')]
         string $title,
-
-        #[API\Parameter(source: "body", name: "content")]
+        #[API\Parameter(source: 'body', name: 'content')]
         array $content,
-
-        #[API\Parameter(source: "body", name: "publishDate")]
+        #[API\Parameter(source: 'body', name: 'publishDate')]
         string $publishDate,
-
-        #[API\Parameter(source: "body", name: "slug")]
+        #[API\Parameter(source: 'body', name: 'slug')]
         string $slug,
-
-        #[API\Parameter(source: "path", name: "identifier")]
+        #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,
-
-        #[API\Parameter(source: "body", name: "shortTitle")]
+        #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle = '',
-
-        #[API\Parameter(source: "body", name: "annotation")]
+        #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation = '',
-
-        #[API\Parameter(source: "body", name: "published")]
+        #[API\Parameter(source: 'body', name: 'published')]
         bool $published = false,
-
-        #[API\Parameter(source: "body", name: "metaDescription")]
+        #[API\Parameter(source: 'body', name: 'metaDescription')]
         string $metaDescription = '',
-
-        #[API\Parameter(source: "body", name: "tags")]
+        #[API\Parameter(source: 'body', name: 'tags')]
         array $tags = [],
-
-        #[API\Parameter(source: "body", name: "updateDate")]
+        #[API\Parameter(source: 'body', name: 'updateDate')]
         ?string $updateDate = null,
-
-        #[API\Parameter(source: "body", name: "coverImage")]
+        #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): SuccessfulResultDTO {
         $action = Container::getInstance()->getService(ISavePostAction::class);
@@ -269,7 +243,7 @@ class BlogPost extends AEndpoint
                         ? $this->converter->convertDateTimeStringToDateTime($updateDate)
                         : null,
                     coverImage: $this->getCover($coverImage),
-                    coverImageAltText: (string)($coverImage['alt'] ?? ""),
+                    coverImageAltText: (string) ($coverImage['alt'] ?? ''),
                     tags: Tag::find([
                         'id' => $tags
                     ])
@@ -278,7 +252,7 @@ class BlogPost extends AEndpoint
         } catch (ActionValidationException $e) {
             throw new UnprocessableEntityException(
                 $e->getErrors(),
-                "Ошибки при сохранении поста"
+                'Ошибки при сохранении поста'
             );
         } catch (Exception $e) {
             throw new RuntimeInternalErrorException($e->getMessage(), $e);
@@ -291,10 +265,10 @@ class BlogPost extends AEndpoint
         return $coverImage === null
             ? null
             : $this->handleWithException(
-            fn() => Media::findByUniqueIdentifier(
-                (int)($coverImage['id'] ?? 0)
-            )
-        );
+                fn () => Media::findByUniqueIdentifier(
+                    (int) ($coverImage['id'] ?? 0)
+                )
+            );
     }
 
     /**
@@ -348,7 +322,7 @@ class BlogPost extends AEndpoint
             published: $post->getPublished(),
             slug: $post->getSlug(),
             tags: array_map(
-                static fn(Tag $tag): string => (string)$tag->getId(),
+                static fn (Tag $tag): string => (string) $tag->getId(),
                 $post->getTags()
             )
         );
@@ -364,12 +338,12 @@ class BlogPost extends AEndpoint
                 ? $this->converter->convertTimestampToHumanReadableDate(
                     $post->getPublishDate()->getTimestamp()
                 )
-                : "—",
+                : '—',
             publishTime: $post->getPublished()
                 ? $this->converter->convertTimestampToTimeString(
                     $post->getPublishDate()->getTimestamp()
                 )
-                : ""
+                : ''
         );
     }
 
@@ -383,12 +357,12 @@ class BlogPost extends AEndpoint
     private function sanitizeSortDirection(string $sortDirection): string {
         $sortDirection = strtoupper(trim($sortDirection));
 
-        return in_array($sortDirection, ["ASC", "DESC"], true)
+        return in_array($sortDirection, ['ASC', 'DESC'], true)
             ? $sortDirection
             : $this->getDefaultSortDirection();
     }
 
     private function getDefaultSortDirection(): string {
-        return "ASC";
+        return 'ASC';
     }
 }

@@ -5,8 +5,7 @@ namespace BC\Core\Asset\Minifier;
 use Runway\Env\Provider\IEnvVariablesProvider;
 use Runway\Logger\ILogger;
 
-class MinifierFactory implements IMinifier
-{
+class MinifierFactory implements IMinifier {
     private ?IMinifier $minifier = null;
 
     public function __construct(
@@ -15,13 +14,11 @@ class MinifierFactory implements IMinifier
     ) {
     }
 
-    public function minify(string $content, string $type): string
-    {
+    public function minify(string $content, string $type): string {
         return $this->getMinifier()->minify($content, $type);
     }
 
-    private function getMinifier(): IMinifier
-    {
+    private function getMinifier(): IMinifier {
         if ($this->minifier === null) {
             $nodePath = $this->envVariablesProvider->getEnvVariable('NODE_PATH');
 

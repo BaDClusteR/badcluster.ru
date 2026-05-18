@@ -33,7 +33,6 @@
   color: var(--color-text-secondary);
   font-size: var(--font-size-small);
   white-space: nowrap;
-  transition: var(--transition-mode) color;
 }
 
 .post__date--updated {

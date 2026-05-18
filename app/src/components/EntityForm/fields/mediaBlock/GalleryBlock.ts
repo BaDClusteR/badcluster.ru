@@ -25,7 +25,8 @@ export class GalleryBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
       title: "Галерея",
-      icon: iconSlideshow
+      icon: iconSlideshow,
+      keywords: ['gallery', 'slideshow', 'carousel', 'slides']
     };
   }
 
@@ -51,7 +52,10 @@ export class GalleryBlock implements BlockTool {
   private addBtn!: HTMLButtonElement;
   private batchIndicatorEl!: HTMLElement;
 
-  constructor({data}: { data: BlockToolData<GalleryBlockData> }) {
+  private config: { getDefaultAlt?: () => string };
+
+  constructor({data, config}: { data: BlockToolData<GalleryBlockData>; config?: Record<string, unknown> }) {
+    this.config = { getDefaultAlt: config?.getDefaultAlt as (() => string) | undefined };
     this.data = {
       slides: Array.isArray(data?.slides) ? data.slides : [],
       captions: Array.isArray(data?.captions) ? data.captions : [],
@@ -218,6 +222,7 @@ export class GalleryBlock implements BlockTool {
       lazy: this.data.lazy,
       className: classes.media
     });
+
     slide.appendChild(pictureEl);
     slide.appendChild(this.buildCaptionInput(index));
 
@@ -517,7 +522,10 @@ export class GalleryBlock implements BlockTool {
     });
 
     try {
-      let media = await this.upload.promise;
+      const media = await this.upload.promise;
+      if (!media.alt && this.config.getDefaultAlt) {
+        media.alt = this.config.getDefaultAlt();
+      }
       URL.revokeObjectURL(blobUrl);
       this.upload = null;
       this.data.slides.push(media);
@@ -534,6 +542,7 @@ export class GalleryBlock implements BlockTool {
             lazy: this.data.lazy,
             className: classes.media
           }));
+          activeSlide.appendChild(this.buildCaptionInput(this.currentIndex));
         }
 
         // Append new slide DOM node

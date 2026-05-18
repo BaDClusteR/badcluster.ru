@@ -18,9 +18,8 @@ use Runway\Logger\ILogger;
 use Runway\Model\Exception\ModelException;
 use Throwable;
 
-#[Docs\Group("Files upload")]
-class Upload extends AEndpoint
-{
+#[Docs\Group('Files upload')]
+class Upload extends AEndpoint {
     public function __construct(
         private readonly IFileSystem $fileSystem,
         private readonly IPathsProvider $pathsProvider,
@@ -35,12 +34,11 @@ class Upload extends AEndpoint
      * @throws QueryBuilderException
      * @throws BadRequestException
      */
-    #[API\Endpoint(path: "upload", method: "POST")]
+    #[API\Endpoint(path: 'upload', method: 'POST')]
     public function uploadMedia(
-        #[API\Parameter(source: "file", name: "file")]
+        #[API\Parameter(source: 'file', name: 'file')]
         ApiEndpointArgumentFileDTO $file,
-
-        #[API\Parameter(source: "query", name: "purpose")]
+        #[API\Parameter(source: 'query', name: 'purpose')]
         ?string $purpose = null,
     ): MediaDTO {
         $mime = $file->mimeType;
@@ -51,7 +49,7 @@ class Upload extends AEndpoint
         $folder = $this->getImagesFolder();
 
         $imagePath = $this->handleWithException(
-            fn() => $this->fileSystem->copy(
+            fn () => $this->fileSystem->copy(
                 $file->tmpName,
                 "$folder/{$this->sanitizeFilename($file->name)}",
             )
@@ -100,8 +98,8 @@ class Upload extends AEndpoint
         $info = @getimagesize($imagePath);
         if ($this->isVideo($mime)) {
             $info = new getID3()->analyze($imagePath);
-            $width = (int)($info['video']['resolution_x'] ?? 0);
-            $height = (int)($info['video']['resolution_y'] ?? 0);
+            $width = (int) ($info['video']['resolution_x'] ?? 0);
+            $height = (int) ($info['video']['resolution_y'] ?? 0);
         } else {
             $width = (int) ($info[0] ?? 0);
             $height = (int) ($info[1] ?? 0);
@@ -117,21 +115,21 @@ class Upload extends AEndpoint
             ->setMd5($md5);
 
         $this->handleWithException(
-            static fn() => $media->persist()
+            static fn () => $media->persist()
         );
 
         return $media;
     }
 
     private function isVideo(string $mime): bool {
-        return str_starts_with($mime, "video/");
+        return str_starts_with($mime, 'video/');
     }
 
     private function sanitizeFilename(string $filename): string {
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         $base = pathinfo($filename, PATHINFO_FILENAME);
         $slug = preg_replace('/[^a-zA-Z0-9_-]+/', '-', $base);
-        $slug = trim((string)$slug, '-') ?: 'file';
+        $slug = trim((string) $slug, '-') ?: 'file';
 
         return "$slug.$ext";
     }
@@ -142,7 +140,7 @@ class Upload extends AEndpoint
         $relativePath = $this->getRelativeImagesFolder();
         $result = "$imagesRoot/$relativePath";
         $this->handleWithException(
-            fn() => $this->fileSystem->mkdir($result)
+            fn () => $this->fileSystem->mkdir($result)
         );
 
         return $result;

@@ -2,8 +2,7 @@
 
 namespace BC\Provider;
 
-interface IPathsProvider
-{
+interface IPathsProvider {
     /**
      * @return string[]
      */

@@ -5,7 +5,6 @@ namespace BC\Core\Converter\Media;
 use BC\Core\DTO\MediaDTO;
 use BC\Model\Media;
 
-interface IMediaConverter
-{
+interface IMediaConverter {
     public function convertMedia(?Media $media): ?MediaDTO;
 }

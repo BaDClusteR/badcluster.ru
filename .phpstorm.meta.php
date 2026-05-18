@@ -69,8 +69,12 @@ namespace PHPSTORM_META
         'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
         'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
         'BC\Generator\IThumbnailsGenerator' => \BC\Generator\ThumbnailsGenerator::class,
+        'BC\Core\Converter\Media\IMediaConverter' => \BC\Core\Converter\Media\MediaConverter::class,
+        'BC\Core\Helper\IBlockHelper' => \BC\Core\Helper\BlockHelper::class,
+        'BC\Provider\ICommentsProvider' => \BC\Provider\CommentsProvider::class,
         'BC\Controller\Index' => \BC\Controller\Index::class,
         'BC\Controller\Admin' => \BC\Controller\Admin::class,
+        'BC\Controller\Comment' => \BC\Controller\Comment::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,
@@ -78,6 +82,15 @@ namespace PHPSTORM_META
         'Runway\Console\Output\IOutput' => \Runway\Console\Output\Output::class,
         'Runway\Console\Output\Formatter\IOutputFormatter' => \Runway\Console\Output\Formatter\OutputFormatter::class,
         'Runway\Console\Output\Table\ITable' => \Runway\Console\Output\Table\Table::class,
+
+        // modules/Blog/config/actions.yaml
+        'BC\Modules\Blog\Core\Action\Post\ISavePostAction' => \BC\Modules\Blog\Core\Action\Post\SavePostAction::class,
+        'BC\Modules\Blog\Core\Action\Post\ICreatePostAction' => \BC\Modules\Blog\Core\Action\Post\CreatePostAction::class,
+        'BC\Modules\Blog\Core\Action\Post\IGetPostAction' => \BC\Modules\Blog\Core\Action\Post\GetPostAction::class,
+        'BC\Modules\Blog\Core\Action\Validator\IPostValidator' => \BC\Modules\Blog\Core\Action\Validator\PostValidator::class,
+
+        // modules/Blog/config/routes.yaml
+        'BC\Modules\Blog\Controller\Blog' => \BC\Modules\Blog\Controller\Blog::class,
     ]));
 
     override(\Runway\Singleton\Container::tryGetService(0), map([
@@ -147,8 +160,12 @@ namespace PHPSTORM_META
         'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
         'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
         'BC\Generator\IThumbnailsGenerator' => \BC\Generator\ThumbnailsGenerator::class,
+        'BC\Core\Converter\Media\IMediaConverter' => \BC\Core\Converter\Media\MediaConverter::class,
+        'BC\Core\Helper\IBlockHelper' => \BC\Core\Helper\BlockHelper::class,
+        'BC\Provider\ICommentsProvider' => \BC\Provider\CommentsProvider::class,
         'BC\Controller\Index' => \BC\Controller\Index::class,
         'BC\Controller\Admin' => \BC\Controller\Admin::class,
+        'BC\Controller\Comment' => \BC\Controller\Comment::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,
@@ -156,5 +173,14 @@ namespace PHPSTORM_META
         'Runway\Console\Output\IOutput' => \Runway\Console\Output\Output::class,
         'Runway\Console\Output\Formatter\IOutputFormatter' => \Runway\Console\Output\Formatter\OutputFormatter::class,
         'Runway\Console\Output\Table\ITable' => \Runway\Console\Output\Table\Table::class,
+
+        // modules/Blog/config/actions.yaml
+        'BC\Modules\Blog\Core\Action\Post\ISavePostAction' => \BC\Modules\Blog\Core\Action\Post\SavePostAction::class,
+        'BC\Modules\Blog\Core\Action\Post\ICreatePostAction' => \BC\Modules\Blog\Core\Action\Post\CreatePostAction::class,
+        'BC\Modules\Blog\Core\Action\Post\IGetPostAction' => \BC\Modules\Blog\Core\Action\Post\GetPostAction::class,
+        'BC\Modules\Blog\Core\Action\Validator\IPostValidator' => \BC\Modules\Blog\Core\Action\Validator\PostValidator::class,
+
+        // modules/Blog/config/routes.yaml
+        'BC\Modules\Blog\Controller\Blog' => \BC\Modules\Blog\Controller\Blog::class,
     ]));
 }

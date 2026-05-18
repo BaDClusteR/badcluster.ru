@@ -13,8 +13,7 @@ use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\Exception\ModelException;
 use Runway\Request\Response;
 
-readonly class Blog
-{
+readonly class Blog {
     use Controller404Trait;
 
     public function __construct(

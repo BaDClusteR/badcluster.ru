@@ -8,7 +8,6 @@ use DateTime;
 use Runway\DataStorage\Attribute as DS;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
-use Runway\Exception\Exception;
 use Runway\Model\AEntity;
 use Runway\Model\Exception\ModelException;
 
@@ -21,13 +20,13 @@ use Runway\Model\Exception\ModelException;
  * @method self setShortTitle(string $shortTitle)
  * @method string getAnnotation()
  * @method self setAnnotation(string $annotation)
- * @method DateTime getCreatedDate()
- * @method self setCreatedDate(DateTime $createdDate)
- * @method DateTime getPublishDate()
- * @method self setPublishDate(DateTime $publishDate)
- * @method DateTime|null getUpdateDate()
- * @method self setUpdateDate(DateTime|null $updateDate)
- * @method array getContent
+ * @method \DateTime getCreatedDate()
+ * @method self setCreatedDate(\DateTime $createdDate)
+ * @method \DateTime getPublishDate()
+ * @method self setPublishDate(\DateTime $publishDate)
+ * @method \DateTime|null getUpdateDate()
+ * @method self setUpdateDate(\DateTime|null $updateDate)
+ * @method array getContent()
  * @method self setContent(array $content)
  * @method bool getPublished()
  * @method self setPublished(bool $published)
@@ -35,14 +34,12 @@ use Runway\Model\Exception\ModelException;
  * @method self setSlug(string $slug)
  * @method string getMetaDescription()
  * @method self setMetaDescription(string $metaDescription)
- * @method Media|null getCover
- * @method self setCover(?Media $cover)
- * @method Tag[] getPostTags
+ * @method \BC\Model\Media|null getCover()
+ * @method self setCover(\BC\Model\Media|null $cover)
+ * @method \BC\Modules\Blog\Model\PostTag[] getPostTags()
  */
-
-#[DS\Table("posts")]
-class Post extends AEntity
-{
+#[DS\Table('posts')]
+class Post extends AEntity {
     use WebsiteSettingsTrait;
 
     #[DS\Id]
@@ -81,7 +78,7 @@ class Post extends AEntity
     #[DS\Column]
     protected ?Media $cover = null;
 
-    #[DS\Reference(refModel: PostTag::class, refProp: "post")]
+    #[DS\Reference(refModel: PostTag::class, refProp: 'post')]
     protected ?array $postTags = null;
 
     /**
@@ -89,7 +86,7 @@ class Post extends AEntity
      */
     public function getTags(): array {
         return array_map(
-            static fn(PostTag $pt): Tag => $pt->getTag(),
+            static fn (PostTag $pt): Tag => $pt->getTag(),
             $this->getPostTags()
         );
     }
@@ -103,7 +100,7 @@ class Post extends AEntity
      */
     public function syncTags(array $tags): static {
         $tagIds = array_map(
-            static fn(Tag $t): int => $t->getId(),
+            static fn (Tag $t): int => $t->getId(),
             $tags
         );
 
@@ -114,7 +111,7 @@ class Post extends AEntity
 
         if (!empty($tagIds)) {
             $qb->andWhere('tag_id NOT IN (:tagIds)')
-               ->setVariable('tagIds', implode(", ", $tagIds));
+               ->setVariable('tagIds', implode(', ', $tagIds));
         }
 
         $qb->execute();
@@ -130,7 +127,7 @@ class Post extends AEntity
         }
 
         $existingTagIds = array_map(
-            static fn(PostTag $t): int => $t->getTag()->getId(),
+            static fn (PostTag $t): int => $t->getTag()->getId(),
             $qb->getEntities()
         );
 
@@ -153,7 +150,7 @@ class Post extends AEntity
 
     public function getUrl(): string {
         return sprintf(
-            "%s/blog/%s",
+            '%s/blog/%s',
             $this->getWebsiteSettings()->getWebRoot(),
             $this->getSlug()
         );

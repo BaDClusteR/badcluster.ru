@@ -16,8 +16,7 @@ use Runway\Request\Response;
 use Runway\Singleton\Container;
 use Throwable;
 
-readonly class Admin
-{
+readonly class Admin {
     public function __construct(
         private IRequest $request,
         private ILogger $logger,
@@ -25,13 +24,12 @@ readonly class Admin
     ) {
     }
 
-    public function index(): Response
-    {
+    public function index(): Response {
         return new HtmlResponse(
             200,
             new \BC\Widget\Admin()->render([
                 'devMode'     => $this->isInDevMode(),
-                'webRoot'     => "http://localhost:5173/static/app",
+                'webRoot'     => 'http://localhost:5173/static/app',
                 'appSettings' => $this->appSettingsProvider->getAppSettings()
             ])
         );
@@ -52,8 +50,7 @@ readonly class Admin
      * @throws QueryBuilderException
      * @throws ModelException
      */
-    public function mediaUpload(): Response
-    {
+    public function mediaUpload(): Response {
         $file = $this->request->getFile('file');
         if (!$file) {
             return $this->jsonResponse(400, ['error' => 'No file uploaded']);
@@ -81,7 +78,7 @@ readonly class Admin
         $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
         $base = pathinfo($originalName, PATHINFO_FILENAME);
         $slug = preg_replace('/[^a-zA-Z0-9_-]+/', '-', $base);
-        $slug = trim((string)$slug, '-') ?: 'file';
+        $slug = trim((string) $slug, '-') ?: 'file';
 
         $filename = "$slug.$ext";
         $target = "$yearDir/$filename";
@@ -109,8 +106,8 @@ readonly class Admin
         if ($isImage) {
             $info = @getimagesize($target);
             if ($info) {
-                $width = (int)$info[0];
-                $height = (int)$info[1];
+                $width = (int) $info[0];
+                $height = (int) $info[1];
             }
         }
 
@@ -142,8 +139,7 @@ readonly class Admin
      * Serialize a Media record (with its thumbnails) into the JSON shape
      * consumed by the admin app's MediaBlock and Picture components.
      */
-    private function serializeMedia(Media $media): array
-    {
+    private function serializeMedia(Media $media): array {
         $thumbs = [];
         foreach ($media->getThumbnails() as $t) {
             $thumbs[] = [
@@ -166,8 +162,7 @@ readonly class Admin
         ];
     }
 
-    private function jsonResponse(int $code, array $data): Response
-    {
+    private function jsonResponse(int $code, array $data): Response {
         try {
             $encoded = json_encode($data, JSON_THROW_ON_ERROR);
         } catch (JsonException) {

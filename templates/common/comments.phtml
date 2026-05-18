@@ -1,0 +1,48 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Comments $this */
+
+$comments = $this->getComments();
+?>
+<link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('comments', 'css')?>" />
+<link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('toast', 'css')?>" />
+<section class="comments">
+    <h3 class="comments__title">Комментарии</h3>
+    <?php if ($this->getComments()) :?>
+        ...
+    <?php else :?>
+        <p class="comments__empty"><?=$this->getNoCommentsPhrase()?></p>
+    <?php endif; ?>
+
+    <form action="/comment" class="comments__form" id="comment-form" method="post">
+        <input type="hidden" name="type" value="<?=$this->getPageType()?>" />
+        <input type="hidden" name="id" value="<?=$this->getPageId()?>" />
+        <h3>Оставить комментарий</h3>
+        <div id="comment-success" class="comments__alert">
+            <h3>Сигнал принят! 📡</h3>
+            <p>Комментарий на модерации — скоро он выйдет из сумрака и появится на сайте.</p>
+            <a href="#comment-form">Закрыть</a>
+        </div>
+        <label>
+            <span class="visually-hidden">Имя или никнейм</span>
+            <input
+                type="text"
+                id="nickname"
+                name="nickname"
+                class="comment__field comment__field--text comment__field--nickname"
+                placeholder="Имя или никнейм"
+            >
+        </label>
+        <label>
+            <span class="visually-hidden">Текст комментария</span>
+            <textarea
+                id="comment"
+                name="comment"
+                placeholder="Напишите что-нибудь..."
+                class="comment__field comment__field--textarea comment__field--text"
+            ></textarea>
+            <span class="comment__field-error"></span>
+        </label>
+        <button type="submit" class="btn btn--primary">Отправить</button>
+    </form>
+</section>

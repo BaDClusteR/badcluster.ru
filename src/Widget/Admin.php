@@ -8,8 +8,7 @@ use BC\DTO\AppSettings\AppSettingsDTO;
 use JsonException;
 use RuntimeException;
 
-class Admin extends AWidget
-{
+class Admin extends AWidget {
     use PathsProviderTrait;
     use LoggerTrait;
 
@@ -19,7 +18,7 @@ class Admin extends AWidget
         }
     }
 
-    protected string $webRoot = "" {
+    protected string $webRoot = '' {
         get {
             return $this->webRoot;
         }
@@ -31,25 +30,23 @@ class Admin extends AWidget
         }
     }
 
-    protected function applyContext(array $context): void
-    {
+    protected function applyContext(array $context): void {
         parent::applyContext($context);
 
-        $this->isDevMode = (bool)($context['devMode'] ?? false);
-        $this->webRoot = (string)($context['webRoot'] ?? "");
+        $this->isDevMode = (bool) ($context['devMode'] ?? false);
+        $this->webRoot = (string) ($context['webRoot'] ?? '');
 
         if (isset($context['appSettings'])) {
             if ($context['appSettings'] instanceof AppSettingsDTO) {
                 $this->appSettings = $context['appSettings'];
             } else {
-                throw new RuntimeException(__METHOD__ . ": appSettings should be an instance of " . AppSettingsDTO::class);
+                throw new RuntimeException(__METHOD__ . ': appSettings should be an instance of ' . AppSettingsDTO::class);
             }
         }
     }
 
-    protected function getTemplatePath(): string
-    {
-        return "admin.phtml";
+    protected function getTemplatePath(): string {
+        return 'admin.phtml';
     }
 
     /**
@@ -62,7 +59,7 @@ class Admin extends AWidget
         ];
         $pathsProvider = $this->getPathsProvider();
         $manifestPath = $pathsProvider->getStaticPath() . '/app/.vite/manifest.json';
-        $appWebRoot = $pathsProvider->getStaticWebPath() . "/app";
+        $appWebRoot = $pathsProvider->getStaticWebPath() . '/app';
 
         if (!file_exists($manifestPath)) {
             $this->getLogger()->warning("Vite manifest does not exist: $manifestPath");

@@ -5,7 +5,7 @@
 use BC\Widget\Blocks;
 
 $post = $this->post;
-$blocks = (array)($post->getContent()['blocks'] ?? []);
+$blocks = (array) ($post->getContent()['blocks'] ?? []);
 ?>
 <article class="post text-block">
     <header class="post__header">
@@ -36,4 +36,9 @@ $blocks = (array)($post->getContent()['blocks'] ?? []);
     <div class="post__body text-block">
         <?= new Blocks($post->getContent())->render() ?>
     </div>
+    <footer class="post__footer">
+        <?=new \BC\Widget\Common\Comments([
+            'page' => $this->page
+        ])->render()?>
+    </footer>
 </article>

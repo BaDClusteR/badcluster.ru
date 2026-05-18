@@ -9,10 +9,8 @@ use BC\Widget\Page\APage;
 use Runway\Singleton\Container;
 
 #[WidgetList('body', priority: 9999)]
-class Footer extends AWidget
-{
-    protected function getTemplatePath(): string
-    {
+class Footer extends AWidget {
+    protected function getTemplatePath(): string {
         return 'common/footer.phtml';
     }
 

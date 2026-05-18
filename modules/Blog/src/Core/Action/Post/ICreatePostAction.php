@@ -6,8 +6,7 @@ use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
 use BC\Modules\Blog\Core\Action\DTO\CreatePostResponse;
 use Runway\Exception\Exception;
 
-interface ICreatePostAction
-{
+interface ICreatePostAction {
     /**
      * @throws Exception
      */

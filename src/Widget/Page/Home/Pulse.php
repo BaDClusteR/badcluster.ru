@@ -3,24 +3,21 @@
 namespace BC\Widget\Page\Home;
 
 use BC\Core\Asset\DTO\AssetDTO;
-use BC\Core\Trait\AssetBundlerTrait;
+use BC\Core\Trait\AssetBuilderTrait;
 use BC\DTO\PulseItemDTO;
 use BC\Provider\IPulseItemsProvider;
 use BC\Widget\AWidget;
 use BC\Widget\IAssetProvider;
 use Runway\Singleton\Container;
 
-class Pulse extends AWidget implements IAssetProvider
-{
-    use AssetBundlerTrait;
+class Pulse extends AWidget implements IAssetProvider {
+    use AssetBuilderTrait;
 
-    protected function getTemplatePath(): string
-    {
+    protected function getTemplatePath(): string {
         return 'home/pulse.phtml';
     }
 
-    public static function getAssets(): array
-    {
+    public static function getAssets(): array {
         return [
             new AssetDTO('grid', 'css/grid.css'),
         ];

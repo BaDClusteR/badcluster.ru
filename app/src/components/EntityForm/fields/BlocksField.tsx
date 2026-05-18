@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Box, Text } from '@mantine/core';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Text, TextInput } from '@mantine/core';
 import EditorJS, { type OutputData, type ToolConstructable } from '@editorjs/editorjs';
 import List from '@editorjs/list';
 import { HeadingBlock } from './heading/HeadingBlock';
@@ -40,6 +40,8 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
   const editorRef = useRef<EditorJS | null>(null);
   const isInternalChange = useRef(false);
   const lastValueJson = useRef<string>('');
+  const defaultAltRef = useRef<string>('');
+  const [defaultAlt, setDefaultAlt] = useState('');
 
   // When value changes externally (e.g. form.initialize()), re-render the editor.
   // Compare by JSON to avoid re-rendering on every keystroke in other form fields
@@ -86,8 +88,14 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
           class: QuoteBlock as unknown as ToolConstructable,
           inlineToolbar: true,
         },
-        media: MediaBlock as unknown as ToolConstructable,
-        gallery: GalleryBlock as unknown as ToolConstructable,
+        media: {
+          class: MediaBlock as unknown as ToolConstructable,
+          config: { getDefaultAlt: () => defaultAltRef.current },
+        },
+        gallery: {
+          class: GalleryBlock as unknown as ToolConstructable,
+          config: { getDefaultAlt: () => defaultAltRef.current },
+        },
         terminal: {
           class: TerminalBlock as unknown as ToolConstructable,
           inlineToolbar: ['bold', 'italic', 'link', 'kbd', 'code'],
@@ -223,6 +231,21 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
           {description}
         </Text>
       )}
+      <details className={classes.editorSettings}>
+        <summary className={classes.editorSettingsSummary}>Настройки редактора</summary>
+        <div className={classes.editorSettingsBody}>
+          <TextInput
+            size="xs"
+            label="Альт по умолчанию"
+            placeholder="Для новых картинок"
+            value={defaultAlt}
+            onChange={(e) => {
+              setDefaultAlt(e.currentTarget.value);
+              defaultAltRef.current = e.currentTarget.value;
+            }}
+          />
+        </div>
+      </details>
       <div ref={wrapperRef} className={clsx(classes.editor, className)} />
     </Box>
   );

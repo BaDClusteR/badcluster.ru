@@ -6,7 +6,7 @@ $blocks = $this->getBlocks();
 ?>
 <?php foreach ($blocks as $block) : ?>
     <?=$this->renderBlock(
-        (string)($block['type'] ?? ''),
-        (array)($block['data'] ?? '')
+        (string) ($block['type'] ?? ''),
+        (array) ($block['data'] ?? '')
     )?>
 <?php endforeach; ?>

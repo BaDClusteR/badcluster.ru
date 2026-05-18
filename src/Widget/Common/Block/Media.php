@@ -6,8 +6,7 @@ use BC\Model\Media as MediaModel;
 use BC\Widget\AWidget;
 use Exception;
 
-class Media extends AWidget
-{
+class Media extends AWidget {
     protected ?MediaModel $media = null {
         get {
             return $this->media;
@@ -20,7 +19,7 @@ class Media extends AWidget
         }
     }
 
-    protected string $caption = "" {
+    protected string $caption = '' {
         get {
             return $this->caption;
         }
@@ -36,20 +35,20 @@ class Media extends AWidget
         return 'common/block/media.phtml';
     }
 
-    protected function applyContext(array $context): void
-    {
+    protected function applyContext(array $context): void {
         parent::applyContext($context);
 
         if (isset($this->context['media']['id'])) {
             try {
                 $this->media = MediaModel::findByUniqueIdentifier(
-                    (int)$this->context['media']['id']
+                    (int) $this->context['media']['id']
                 );
 
-                $this->lazy = (bool)($this->context['lazy'] ?? false);
-                $this->caption = (string)($this->context['caption'] ?? "");
-                $this->lightbox = (bool)($this->context['lightbox'] ?? false);
-            } catch (Exception) {}
+                $this->lazy = (bool) ($this->context['lazy'] ?? false);
+                $this->caption = (string) ($this->context['caption'] ?? '');
+                $this->lightbox = (bool) ($this->context['lightbox'] ?? false);
+            } catch (Exception) {
+            }
         }
     }
 

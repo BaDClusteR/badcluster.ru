@@ -8,8 +8,7 @@ use BC\Core\Config\IWebsiteSettings;
 use Runway\Module\DTO\ModuleDTO;
 use Runway\Module\Provider\IModuleProvider;
 
-class PathsProvider implements IPathsProvider
-{
+class PathsProvider implements IPathsProvider {
     public function __construct(
         protected IModuleProvider $moduleProvider,
         protected IWebsiteSettings $websiteSettings
@@ -42,7 +41,7 @@ class PathsProvider implements IPathsProvider
                 [
                     PROJECT_ROOT . $subpath,
                     ...array_map(
-                        static function(ModuleDTO $module) use ($subpath): string {
+                        static function (ModuleDTO $module) use ($subpath): string {
                             $dir = $module->rootPath . $subpath;
 
                             if (is_dir($dir)) {
@@ -62,8 +61,7 @@ class PathsProvider implements IPathsProvider
         return PROJECT_ROOT . '/static';
     }
 
-    public function getStaticWebPath(): string
-    {
+    public function getStaticWebPath(): string {
         return $this->websiteSettings->getWebRoot() . '/static';
     }
 

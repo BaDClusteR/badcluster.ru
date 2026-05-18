@@ -6,8 +6,7 @@ use DateInvalidTimeZoneException;
 use DateMalformedStringException;
 use DateTime;
 
-interface IConverter
-{
+interface IConverter {
     /**
      * @throws DateMalformedStringException
      * @throws DateInvalidTimeZoneException

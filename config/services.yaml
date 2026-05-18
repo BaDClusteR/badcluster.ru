@@ -69,7 +69,11 @@ services:
   BC\Core\Helper\IBlockHelper:
     class: BC\Core\Helper\BlockHelper
 
+  BC\Provider\ICommentsProvider:
+    class: BC\Provider\CommentsProvider
+
 
 # Controllers
   BC\Controller\Index: ~
   BC\Controller\Admin: ~
+  BC\Controller\Comment: ~

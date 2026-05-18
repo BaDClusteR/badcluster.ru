@@ -7,8 +7,7 @@ use BC\Core\Trait\PathsProviderTrait;
 use BC\Model\Media;
 use BC\Widget\AWidget;
 
-class Picture extends AWidget
-{
+class Picture extends AWidget {
     use PathsProviderTrait;
     use AttributesHelperTrait;
 
@@ -47,8 +46,7 @@ class Picture extends AWidget
         }
     }
 
-    public function __construct(array $context = [])
-    {
+    public function __construct(array $context = []) {
         parent::__construct($context);
 
         if (($this->context['image'] ?? null) instanceof Media) {
@@ -56,7 +54,7 @@ class Picture extends AWidget
         }
 
         if (array_key_exists('lazyLoad', $this->context)) {
-            $this->isLazyLoad = (bool)$this->context['lazyLoad'];
+            $this->isLazyLoad = (bool) $this->context['lazyLoad'];
         }
 
         if (is_array($this->context['breakpoints'] ?? null)) {
@@ -76,8 +74,7 @@ class Picture extends AWidget
         }
     }
 
-    protected function hasImages(int $width, string $mime): bool
-    {
+    protected function hasImages(int $width, string $mime): bool {
         return $this->image?->getThumbnail($width, $mime)
             || $this->image?->getThumbnail($width * 2, $mime);
     }
@@ -105,7 +102,7 @@ class Picture extends AWidget
             ? "$imagesWebRoot/{$thumbnail->getPath()} 1x, $imagesWebRoot/{$thumbnail2x->getPath()} 2x"
             : "$imagesWebRoot/{$thumbnail2x->getPath()}";
 
-        $media = "";
+        $media = '';
         if ($minWidth > 0 && $maxWidth > 0) {
             $media = "(width >= {$minWidth}px) and (width < {$maxWidth}px)";
         } elseif ($minWidth > 0) {
@@ -123,7 +120,7 @@ class Picture extends AWidget
             $attrs['media'] = $media;
         }
 
-        return "<source " . $this->getAttributesHelper()->getAttributesAsString($attrs) . " />";
+        return '<source ' . $this->getAttributesHelper()->getAttributesAsString($attrs) . ' />';
     }
 
     protected function getAllowedMimeTypes(): array {

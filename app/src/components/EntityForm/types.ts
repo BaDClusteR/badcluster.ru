@@ -115,8 +115,12 @@ export interface FieldDefImage<T> extends FieldDefBase, FieldDefNamed<T> {
     previewWidth?: number | string,
     /** Show a small thumbnail at this width (px). */
     thumbnailWidth?: number,
+    /** Thumbnail height (px). When set, image uses object-fit: contain within width × height. */
+    thumbnailHeight?: number,
     /** Upload purpose — sent to backend to determine thumbnail sizes (e.g. 'cover', 'content'). */
     uploadPurpose?: string,
+    /** Show alt text input under the image. Defaults to false. */
+    showAlt?: boolean,
 }
 
 /** Async data provider for EntityForm — fetches entity data via React Query. */

@@ -4,8 +4,7 @@ namespace BC\Core\Media\Processor\Command;
 
 use BC\Core\Exception\ImageException;
 
-interface ICommand
-{
+interface ICommand {
     /**
      * @throws ImageException
      */

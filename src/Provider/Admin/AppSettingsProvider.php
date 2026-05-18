@@ -7,15 +7,13 @@ use BC\DTO\AppSettings\AppSettingsDTO;
 use BC\DTO\AppSettings\ModuleDTO;
 use BC\DTO\AppSettings\NavigationDTO;
 
-readonly class AppSettingsProvider implements IAppSettingsProvider
-{
+readonly class AppSettingsProvider implements IAppSettingsProvider {
     public function __construct(
         private IWebsiteSettings $websiteSettings
     ) {
     }
 
-    public function getAppSettings(): AppSettingsDTO
-    {
+    public function getAppSettings(): AppSettingsDTO {
         return new AppSettingsDTO(
             nav: $this->getNav(),
             modules: $this->getModules(),
@@ -29,9 +27,9 @@ readonly class AppSettingsProvider implements IAppSettingsProvider
     private function getNav(): array {
         return [
             new NavigationDTO(
-                label: "Дашборд",
-                path: "/admin",
-                icon: "dashboard",
+                label: 'Дашборд',
+                path: '/admin',
+                icon: 'dashboard',
             )
         ];
     }

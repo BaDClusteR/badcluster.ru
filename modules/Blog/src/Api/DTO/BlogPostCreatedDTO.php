@@ -2,8 +2,7 @@
 
 namespace BC\Modules\Blog\Api\DTO;
 
-readonly class BlogPostCreatedDTO
-{
+readonly class BlogPostCreatedDTO {
     public function __construct(
         public int $id
     ) {

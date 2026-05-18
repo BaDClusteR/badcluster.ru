@@ -4,8 +4,7 @@ namespace BC\DTO;
 
 use BC\Model\Media;
 
-readonly class PulseItemDTO
-{
+readonly class PulseItemDTO {
     public function __construct(
         public string $title,
         public string $url,

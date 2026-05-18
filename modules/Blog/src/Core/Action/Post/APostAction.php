@@ -13,8 +13,7 @@ use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\Exception\ModelException;
 use Runway\Singleton\Container;
 
-abstract class APostAction
-{
+abstract class APostAction {
     use BlockHelperTrait;
 
     /**

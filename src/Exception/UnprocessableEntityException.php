@@ -5,8 +5,7 @@ namespace BC\Exception;
 use Runway\Exception\Exception;
 use Throwable;
 
-class UnprocessableEntityException extends Exception
-{
+class UnprocessableEntityException extends Exception {
     public function __construct(
         private array $fieldErrors,
         private ?string $error = null,
@@ -15,16 +14,14 @@ class UnprocessableEntityException extends Exception
         parent::__construct($error, 422, $previous);
     }
 
-    public function getError(): ?string
-    {
+    public function getError(): ?string {
         return $this->error;
     }
 
     /**
      * @return array<string, string> [fieldName => error]
      */
-    public function getFieldErrors(): array
-    {
+    public function getFieldErrors(): array {
         return $this->fieldErrors;
     }
 }

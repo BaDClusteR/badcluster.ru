@@ -6,8 +6,7 @@ use BC\Core\DTO\MediaDTO;
 use BC\Core\DTO\MediaThumbnailDTO;
 use BC\Model\Media;
 
-class MediaConverter implements IMediaConverter
-{
+class MediaConverter implements IMediaConverter {
     public function convertMedia(?Media $media): ?MediaDTO {
         if ($media === null) {
             return null;
@@ -21,7 +20,7 @@ class MediaConverter implements IMediaConverter
             mime: $media->getMime(),
             alt: $media->getAlt(),
             thumbs: array_map(
-                fn(Media $thumbnail): MediaThumbnailDTO => $this->convertMediaModelThumbnail($thumbnail),
+                fn (Media $thumbnail): MediaThumbnailDTO => $this->convertMediaModelThumbnail($thumbnail),
                 $media->getThumbnails()
             )
         );

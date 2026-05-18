@@ -7,8 +7,7 @@ namespace BC\Core\Trait;
 use BC\Core\Helper\IAttributesHelper;
 use Runway\Singleton\Container;
 
-trait AttributesHelperTrait
-{
+trait AttributesHelperTrait {
     protected function getAttributesHelper(): IAttributesHelper {
         return Container::getInstance()->getService(IAttributesHelper::class);
     }

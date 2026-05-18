@@ -8,8 +8,7 @@ use DateMalformedStringException;
 use DateTime;
 use DateTimeZone;
 
-readonly class Converter implements IConverter
-{
+readonly class Converter implements IConverter {
     use LoggerTrait;
 
     public function __construct(
@@ -23,30 +22,25 @@ readonly class Converter implements IConverter
      * @throws DateInvalidTimeZoneException
      * @throws DateMalformedStringException
      */
-    public function convertTimestampToDateTime(int $timestamp): DateTime
-    {
+    public function convertTimestampToDateTime(int $timestamp): DateTime {
         return new DateTime('@' . $timestamp)->setTimezone(
             new DateTimeZone($this->timezone)
         );
     }
 
-    public function convertDateTimeToTimestamp(DateTime $dateTime): int
-    {
+    public function convertDateTimeToTimestamp(DateTime $dateTime): int {
         return $dateTime->getTimestamp();
     }
 
-    public function convertTimestampToDateString(int $timestamp): string
-    {
+    public function convertTimestampToDateString(int $timestamp): string {
         return $this->convertTimestampToString($timestamp, $this->dateFormat);
     }
 
-    public function convertTimestampToTimeString(int $timestamp): string
-    {
-        return $this->convertTimestampToString($timestamp, "H:i");
+    public function convertTimestampToTimeString(int $timestamp): string {
+        return $this->convertTimestampToString($timestamp, 'H:i');
     }
 
-    public function convertTimestampToDateTimeString(int $timestamp): string
-    {
+    public function convertTimestampToDateTimeString(int $timestamp): string {
         return $this->convertTimestampToString($timestamp, $this->dateTimeFormat);
     }
 
@@ -68,41 +62,39 @@ readonly class Converter implements IConverter
         }
     }
 
-    public function convertTimestampToHumanReadableDate(int $timestamp): string
-    {
+    public function convertTimestampToHumanReadableDate(int $timestamp): string {
         $day = ltrim(date('d', $timestamp), '0');
         $month = $this->getMonthName(
-            (int)date('m', $timestamp)
+            (int) date('m', $timestamp)
         );
         $year = ltrim(date('Y', $timestamp), '0');
 
-        return sprintf("%s %s %s", $day, $month, $year);
+        return sprintf('%s %s %s', $day, $month, $year);
     }
 
     private function getMonthName(int $month): string {
         return match ($month) {
-            1 => "янв",
-            2 => "фев",
-            3 => "мар",
-            4 => "апр",
-            5 => "мая",
-            6 => "июн",
-            7 => "июл",
-            8 => "авг",
-            9 => "сен",
-            10 => "окт",
-            11 => "ноя",
-            12 => "дек",
-            default => ""
+            1 => 'янв',
+            2 => 'фев',
+            3 => 'мар',
+            4 => 'апр',
+            5 => 'мая',
+            6 => 'июн',
+            7 => 'июл',
+            8 => 'авг',
+            9 => 'сен',
+            10 => 'окт',
+            11 => 'ноя',
+            12 => 'дек',
+            default => ''
         };
     }
 
-    public function convertDateTimeStringToDateTime(string $dtString): DateTime
-    {
+    public function convertDateTimeStringToDateTime(string $dtString): DateTime {
         try {
             return new DateTime($dtString);
         } catch (DateMalformedStringException) {
-            return new DateTime("now");
+            return new DateTime('now');
         }
     }
 }

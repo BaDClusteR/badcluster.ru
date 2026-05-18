@@ -4,13 +4,11 @@ namespace BC\Provider;
 
 use BC\Core\DTO\MenuItemDTO;
 
-class MenuItemsProvider implements IMenuItemsProvider
-{
+class MenuItemsProvider implements IMenuItemsProvider {
     /**
      * @return MenuItemDTO[]
      */
-    public function getMenuItems(): array
-    {
+    public function getMenuItems(): array {
         return $this->sortMenuItems(
             $this->collectMenuItems()
         );
@@ -24,7 +22,7 @@ class MenuItemsProvider implements IMenuItemsProvider
     protected function sortMenuItems(array $items): array {
         usort(
             $items,
-            static fn(MenuItemDTO $a, MenuItemDTO $b): int => $a->priority <=> $b->priority
+            static fn (MenuItemDTO $a, MenuItemDTO $b): int => $a->priority <=> $b->priority
         );
 
         return $items;

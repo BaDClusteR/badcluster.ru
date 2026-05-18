@@ -9,13 +9,11 @@ use BC\Model\Media;
 use BC\Widget\AWidget;
 use BC\Widget\Common\Picture;
 
-class PulseItem extends AWidget
-{
+class PulseItem extends AWidget {
     use AttributesHelperTrait;
     use WebsiteSettingsTrait;
 
-    protected function getTemplatePath(): string
-    {
+    protected function getTemplatePath(): string {
         return 'home/pulse-item.phtml';
     }
 
@@ -28,35 +26,35 @@ class PulseItem extends AWidget
     }
 
     protected function getUrl(): string {
-        return (string)$this->getItem()?->url;
+        return (string) $this->getItem()?->url;
     }
 
     protected function isTall(): bool {
-        return (bool)$this->getItem()?->isTall;
+        return (bool) $this->getItem()?->isTall;
     }
 
     protected function isSurfaced(): bool {
-        return (bool)$this->getItem()?->isSurfaced;
+        return (bool) $this->getItem()?->isSurfaced;
     }
 
     protected function getTag(): string {
-        return (string)$this->getItem()?->tag;
+        return (string) $this->getItem()?->tag;
     }
 
     protected function getTitle(): string {
-        return (string)$this->getItem()?->title;
+        return (string) $this->getItem()?->title;
     }
 
     protected function getText(): string {
-        return (string)$this->getItem()?->text;
+        return (string) $this->getItem()?->text;
     }
 
     protected function getStatus(): string {
-        return (string)$this->getItem()?->status;
+        return (string) $this->getItem()?->status;
     }
 
     protected function getIcon(): string {
-        return (string)$this->getItem()?->icon;
+        return (string) $this->getItem()?->icon;
     }
 
     protected function getImage(): ?Media {
@@ -100,7 +98,7 @@ class PulseItem extends AWidget
 
     protected function getContentContainerAttributes(): array {
         $result = [
-            'class' => "grid__item-content"
+            'class' => 'grid__item-content'
         ];
 
         if ($this->getImage()) {

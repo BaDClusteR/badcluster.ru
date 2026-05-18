@@ -7,8 +7,7 @@ namespace BC\Core\Trait;
 use BC\Core\Converter\IConverter;
 use Runway\Singleton\Container;
 
-trait ConverterTrait
-{
+trait ConverterTrait {
     protected function getConverter(): IConverter {
         return Container::getInstance()->getService(IConverter::class);
     }

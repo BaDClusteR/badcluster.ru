@@ -16,7 +16,8 @@ export class MediaBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
       title: "Медиа",
-      icon: iconMedia
+      icon: iconMedia,
+      keywords: ['image', 'media', 'picture', 'photo', 'video']
     };
   }
 
@@ -32,8 +33,11 @@ export class MediaBlock implements BlockTool {
   private upload: UploadHandle | null = null;
   private imageId: Nullable<number> = null;
 
-  constructor({data, api}: { data: BlockToolData<MediaBlockData>; api: API }) {
+  private config: { getDefaultAlt?: () => string };
+
+  constructor({data, api, config}: { data: BlockToolData<MediaBlockData>; api: API; config?: Record<string, unknown> }) {
     this.api = api;
+    this.config = { getDefaultAlt: config?.getDefaultAlt as (() => string) | undefined };
     this.data = {
       media: data?.media,
       lazy: data?.lazy ?? true,
@@ -325,6 +329,9 @@ export class MediaBlock implements BlockTool {
 
     this.upload.promise
       .then((media: MediaData) => {
+        if (!media.alt && this.config.getDefaultAlt) {
+          media.alt = this.config.getDefaultAlt();
+        }
         this.data.media = media;
         URL.revokeObjectURL(blobUrl);
         this.upload = null;

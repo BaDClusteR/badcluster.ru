@@ -4,8 +4,7 @@ namespace BC\Core\Media;
 
 use BC\Model\Media;
 
-interface IThumbnailGenerator
-{
+interface IThumbnailGenerator {
     /**
      * @return Media[]
      */

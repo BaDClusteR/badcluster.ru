@@ -4,7 +4,6 @@ namespace BC\Modules\Blog\Core\Action\Post;
 
 use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
 use BC\Modules\Blog\Core\Action\DTO\CreatePostResponse;
-use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
 use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
 use BC\Modules\Blog\Model\Post;
 use DateTime;
@@ -12,8 +11,7 @@ use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\Exception\ModelException;
 
-class CreatePostAction extends APostAction implements ICreatePostAction
-{
+class CreatePostAction extends APostAction implements ICreatePostAction {
     /**
      * @throws ActionValidationException
      * @throws DBException
@@ -38,7 +36,7 @@ class CreatePostAction extends APostAction implements ICreatePostAction
      */
     protected function doRun(Post $post, CreatePostRequest $request): void {
         $post->setCreatedDate(
-            new DateTime("now")
+            new DateTime('now')
         );
 
         $this->syncModel($post, $request);

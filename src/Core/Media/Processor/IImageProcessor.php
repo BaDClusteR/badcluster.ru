@@ -5,8 +5,7 @@ namespace BC\Core\Media\Processor;
 use BC\Core\DTO\ImageDTO;
 use BC\Core\Exception\ImageException;
 
-interface IImageProcessor
-{
+interface IImageProcessor {
     /**
      * @throws ImageException
      */

@@ -119,6 +119,7 @@ const FIELDS: FieldDef<PostDetailed, BlogPostContext>[] = [
     type: 'image',
     previewWidth: 400,
     thumbnailWidth: 100,
+    thumbnailHeight: 70,
     uploadPurpose: 'cover',
     span: 'full',
   },

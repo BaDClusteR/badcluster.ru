@@ -4,8 +4,7 @@ namespace BC\Core\Scanner;
 
 use BC\Widget\IAssetProvider;
 
-interface IWidgetClassScanner
-{
+interface IWidgetClassScanner {
     /**
      * Scans widget directories and returns FQCNs of all found classes.
      *

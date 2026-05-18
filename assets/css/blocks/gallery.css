@@ -21,7 +21,7 @@
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   scroll-behavior: smooth;
-  align-items:center;
+  align-items: flex-start;
 
   &::-webkit-scrollbar {
     display: none;

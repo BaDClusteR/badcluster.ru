@@ -6,8 +6,7 @@ namespace BC\Generator;
 
 use BC\Model\Media;
 
-interface IThumbnailsGenerator
-{
+interface IThumbnailsGenerator {
     /**
      * @param int[] $widths
      *

@@ -9,10 +9,8 @@ use BC\Widget\AWidget;
 use Runway\Singleton\Container;
 
 #[WidgetList('header.menu')]
-class Menu extends AWidget
-{
-    protected function getTemplatePath(): string
-    {
+class Menu extends AWidget {
+    protected function getTemplatePath(): string {
         return 'common/header/menu/menu.phtml';
     }
 

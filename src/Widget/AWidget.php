@@ -12,8 +12,7 @@ use Runway\Exception\RuntimeException;
 use Runway\Singleton\Container;
 use Throwable;
 
-abstract class AWidget
-{
+abstract class AWidget {
     use LoggerTrait;
 
     protected array $context = [];
@@ -47,7 +46,7 @@ abstract class AWidget
 
         if ($result === false) {
             throw new RuntimeException(
-                sprintf("Error while rendering %s: output buffer is inactive", get_class($this))
+                sprintf('Error while rendering %s: output buffer is inactive', get_class($this))
             );
         }
 
@@ -80,7 +79,7 @@ abstract class AWidget
             $this->getWidgetListEntriesByTag($list)
         );
 
-        usort($entries, static fn(array $a, array $b) => $a[0] <=> $b[0]);
+        usort($entries, static fn (array $a, array $b) => $a[0] <=> $b[0]);
 
         $result = '';
         /** @var AWidget $widget */
@@ -140,7 +139,7 @@ abstract class AWidget
             $widget = $container->getService($tagInfo['serviceName']);
 
             if ($widget instanceof self) {
-                $priority = (int)($tagInfo['extra']['priority'] ?? 100);
+                $priority = (int) ($tagInfo['extra']['priority'] ?? 100);
                 $entries[] = [$priority, $widget];
             }
         }
@@ -157,6 +156,6 @@ abstract class AWidget
             }
         }
 
-        return "";
+        return '';
     }
 }

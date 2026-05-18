@@ -4,11 +4,8 @@ namespace BC\Model;
 
 use BC\Core\Trait\LoggerTrait;
 use Runway\DataStorage\Attribute as DS;
-use Runway\DataStorage\Exception\DBException;
-use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Exception\Exception;
 use Runway\Model\AEntity;
-use Runway\Model\Exception\ModelException;
 
 /**
  * @method int getId()
@@ -18,9 +15,8 @@ use Runway\Model\Exception\ModelException;
  * @method string|null getValue()
  * @method self setValue(string|null $value)
  */
-#[DS\Table("config")]
-class Config extends AEntity
-{
+#[DS\Table('config')]
+class Config extends AEntity {
     use LoggerTrait;
 
     #[DS\Id]
@@ -34,7 +30,7 @@ class Config extends AEntity
 
     public static function getConfig(string $configName): string {
         try {
-            return self::findOne([ 'name' => $configName ])?->getValue();
+            return self::findOne(['name' => $configName])?->getValue();
         } catch (Exception $e) {
             self::getLoggerStatic()->warning(
                 __METHOD__ . ': Error while trying to find config',

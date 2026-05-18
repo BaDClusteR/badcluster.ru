@@ -6,8 +6,7 @@ use BC\Core\Trait\LoggerTrait;
 use BC\Model\Media;
 use Runway\Exception\Exception;
 
-readonly class ImagePostprocessor implements IImagePostprocessor
-{
+readonly class ImagePostprocessor implements IImagePostprocessor {
     use LoggerTrait;
 
     /**
@@ -24,8 +23,7 @@ readonly class ImagePostprocessor implements IImagePostprocessor
      *
      * @return Media[][]
      */
-    public function postProcessThumbnails(array $thumbnailGroups): array
-    {
+    public function postProcessThumbnails(array $thumbnailGroups): array {
         foreach ($thumbnailGroups as $group) {
             $webp = $this->getWebpThumbnail($group);
             $avif = $this->getAvifThumbnail($group);
@@ -74,7 +72,7 @@ readonly class ImagePostprocessor implements IImagePostprocessor
     private function getThumbnailByMimeType(array $thumbnailGroup, string $mimeType): ?Media {
         return array_find(
             $thumbnailGroup,
-            static fn(Media $thumbnail) => $thumbnail->getMime() === $mimeType
+            static fn (Media $thumbnail) => $thumbnail->getMime() === $mimeType
         );
     }
 }

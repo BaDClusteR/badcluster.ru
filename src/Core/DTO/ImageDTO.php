@@ -2,8 +2,7 @@
 
 namespace BC\Core\DTO;
 
-readonly class ImageDTO
-{
+readonly class ImageDTO {
     public function __construct(
         public string $path,
         public int $width,

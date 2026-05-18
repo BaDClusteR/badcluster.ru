@@ -9,8 +9,7 @@ use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\Exception\ModelException;
 
-class PulseItemsProvider implements IPulseItemsProvider
-{
+class PulseItemsProvider implements IPulseItemsProvider {
     use WebsiteSettingsTrait;
 
     /**
@@ -20,12 +19,11 @@ class PulseItemsProvider implements IPulseItemsProvider
      * @throws QueryBuilderException
      * @throws ModelException
      */
-    public function getPulseItems(): array
-    {
+    public function getPulseItems(): array {
         $webroot = $this->getWebsiteSettings()->getWebRoot();
-//        $img = Media::findByUniqueIdentifier(120);
-//        Container::getInstance()->getService(IThumbnailsGenerator::class)->generateThumbnails($img, [500, 1000, 2000], true);
-//        dd('123');
+        //        $img = Media::findByUniqueIdentifier(120);
+        //        Container::getInstance()->getService(IThumbnailsGenerator::class)->generateThumbnails($img, [500, 1000, 2000], true);
+        //        dd('123');
 
         return [
             new PulseItemDTO(
@@ -54,14 +52,14 @@ class PulseItemsProvider implements IPulseItemsProvider
             new PulseItemDTO(
                 title: 'Виртуальная фотография',
                 url: "$webroot/",
-                tag: "Галерея",
+                tag: 'Галерея',
                 image: Media::findByUniqueIdentifier(93)
             ),
             new PulseItemDTO(
-                title: "Впечатления от Cronos: The New Dawn",
+                title: 'Впечатления от Cronos: The New Dawn',
                 url: "$webroot/blog/cronos",
-                tag: "Блог",
-                text: "На удивление приятный сурвайвал хоррор про игры со временем. Лично для меня – главный видеоигровой сюрприз 2025-го.",
+                tag: 'Блог',
+                text: 'На удивление приятный сурвайвал хоррор про игры со временем. Лично для меня – главный видеоигровой сюрприз 2025-го.',
                 image: Media::findByUniqueIdentifier(120)
             )
         ];

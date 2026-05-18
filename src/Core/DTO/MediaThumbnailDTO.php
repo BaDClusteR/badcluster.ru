@@ -2,8 +2,7 @@
 
 namespace BC\Core\DTO;
 
-readonly class MediaThumbnailDTO
-{
+readonly class MediaThumbnailDTO {
     public function __construct(
         public int $id,
         public int $width,
@@ -13,8 +12,7 @@ readonly class MediaThumbnailDTO
     ) {
     }
 
-    public function toArray(): array
-    {
+    public function toArray(): array {
         return [
             'id'     => $this->id,
             'width'  => $this->width,

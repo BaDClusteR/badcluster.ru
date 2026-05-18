@@ -30,14 +30,13 @@ use Runway\Singleton\Container;
  * @method self setMime(string $mime)
  * @method string getAlt()
  * @method self setAlt(string $alt)
- * @method self|null getParent()
- * @method self setParent(self|null $parent)
+ * @method \BC\Model\Media|null getParent()
+ * @method self setParent(\BC\Model\Media|null $parent)
  * @method string getMd5()
  * @method self setMd5(string $md5)
  */
-#[DS\Table("media")]
-class Media extends AEntity
-{
+#[DS\Table('media')]
+class Media extends AEntity {
     use LoggerTrait;
     use FileSystemTrait;
     use PathsProviderTrait;
@@ -79,8 +78,8 @@ class Media extends AEntity
     #[DS\Column]
     protected string $md5;
 
-//    #[DS\Reference(refModel: self::class, refProp: "id")]
-//    protected ?array $children = null;
+    //    #[DS\Reference(refModel: self::class, refProp: "id")]
+    //    protected ?array $children = null;
 
     protected static ?string $imagesPath = null;
 
@@ -121,12 +120,11 @@ class Media extends AEntity
     public function getThumbnail(int $width, string $mimeType): ?self {
         return array_find(
             $this->getThumbnails(),
-            static fn(self $image): bool => ($image->getWidth() === $width) && ($image->getMime() === $mimeType)
+            static fn (self $image): bool => ($image->getWidth() === $width) && ($image->getMime() === $mimeType)
         );
     }
 
-    public function remove(): void
-    {
+    public function remove(): void {
         foreach ($this->getThumbnails() as $thumbnail) {
             $thumbnail->remove();
         }

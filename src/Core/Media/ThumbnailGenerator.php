@@ -2,19 +2,14 @@
 
 namespace BC\Core\Media;
 
-use BC\Core\Exception\ImageException;
 use BC\Core\Media\Processor\IImageProcessor;
 use BC\Model\Media;
 use BC\Provider\IPathsProvider;
-use Runway\DataStorage\Exception\DBException;
-use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Exception\Exception;
 use Runway\Logger\ILogger;
-use Runway\Model\Exception\ModelException;
 use Runway\Singleton\Container;
 
-readonly class ThumbnailGenerator implements IThumbnailGenerator
-{
+readonly class ThumbnailGenerator implements IThumbnailGenerator {
     public function __construct(
         private IPathsProvider $pathProvider,
         private ILogger $logger
@@ -24,8 +19,7 @@ readonly class ThumbnailGenerator implements IThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function generateThumbnails(Media $image, int $width, bool $force = false): array
-    {
+    public function generateThumbnails(Media $image, int $width, bool $force = false): array {
         $result = [];
         $imagesPath = $this->pathProvider->getImagesPath();
         $fullPath = "$imagesPath/{$image->getPath()}";

@@ -101,6 +101,7 @@ export interface FieldDefImage<T> extends FieldDefBase, FieldDefNamed<T> {
   type: "image";
   previewWidth?: number | string;
   thumbnailWidth?: number;
+  thumbnailHeight?: number;
   uploadPurpose?: string;
 }
 

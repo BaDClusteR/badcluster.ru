@@ -15,6 +15,7 @@ class Kernel {
                     $timezone->getValue()
                 );
             }
-        } catch (Exception) {}
+        } catch (Exception) {
+        }
     }
 }

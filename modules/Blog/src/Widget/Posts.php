@@ -12,8 +12,7 @@ use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\Exception\ModelException;
 
-class Posts extends AWidget
-{
+class Posts extends AWidget {
     use AuthTrait;
     use ConverterTrait;
 
@@ -30,11 +29,10 @@ class Posts extends AWidget
             $conditions = ['published' => true];
         }
 
-        return Post::iterate($conditions, ["publishDate", "DESC"]);
+        return Post::iterate($conditions, ['publishDate', 'DESC']);
     }
 
-    protected function getTemplatePath(): string
-    {
+    protected function getTemplatePath(): string {
         return 'modules/Blog/posts.phtml';
     }
 
@@ -43,13 +41,13 @@ class Posts extends AWidget
     }
 
     protected function getDateValue(?DateTime $date): string {
-        return $date?->format("Y-m-d") ?? "";
+        return $date?->format('Y-m-d') ?? '';
     }
 
     protected function getHumanReadableDate(?DateTime $date): string {
         return $date
             ? $this->getConverter()->convertTimestampToHumanReadableDate($date->getTimestamp())
-            : "";
+            : '';
     }
 
     protected function renderMiniature(Post $post): string {

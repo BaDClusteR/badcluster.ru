@@ -8,16 +8,14 @@ use BC\Core\Media\Processor\Command\ResizeCommand;
 use Runway\Env\Provider\IEnvVariablesProvider;
 use Runway\Singleton\Container;
 
-abstract readonly class AImageProcessor implements IImageProcessor
-{
+abstract readonly class AImageProcessor implements IImageProcessor {
     abstract protected function getResultImageExtension(): string;
     abstract protected function getSaveParameters(): string;
 
     /**
      * @throws ImageException
      */
-    public function getThumbnail(string $path, int $width, int $sourceWidth): ImageDTO
-    {
+    public function getThumbnail(string $path, int $width, int $sourceWidth): ImageDTO {
         if (!file_exists($path)) {
             throw new ImageException("File $path does not exist");
         }
@@ -31,13 +29,13 @@ abstract readonly class AImageProcessor implements IImageProcessor
         if ($width && $width !== $sourceWidth) {
             $output .= "-w$width";
         }
-//        if ($width && !$height) {
-//            $output .= "-w$width";
-//        } elseif (!$width && $height) {
-//            $output .= "-h$height";
-//        } else {
-//            $output .= "-s{$width}x$height";
-//        }
+        //        if ($width && !$height) {
+        //            $output .= "-w$width";
+        //        } elseif (!$width && $height) {
+        //            $output .= "-h$height";
+        //        } else {
+        //            $output .= "-s{$width}x$height";
+        //        }
         $output .= '.' . $this->getResultImageExtension();
 
         new ResizeCommand($path, $output, $width, 0, $this->getSaveParameters())->execute();
@@ -58,16 +56,15 @@ abstract readonly class AImageProcessor implements IImageProcessor
 
         return new ImageDTO(
             $output,
-            (int)($sizes[0] ?? 0),
-            (int)($sizes[1] ?? 0),
-            (string)($sizes['mime'] ?? ''),
+            (int) ($sizes[0] ?? 0),
+            (int) ($sizes[1] ?? 0),
+            (string) ($sizes['mime'] ?? ''),
             filesize($output),
             md5_file($output)
         );
     }
 
-    public function isApplicable(string $path): bool
-    {
+    public function isApplicable(string $path): bool {
         return $this->isVipsThumbnailEnabled();
     }
 
@@ -76,7 +73,7 @@ abstract readonly class AImageProcessor implements IImageProcessor
     }
 
     private function getVipsThumbnailPath(): string {
-        return (string)$this->getEnvVariablesProvider()->getEnvVariable('VIPSTHUMBNAIL_PATH');
+        return (string) $this->getEnvVariablesProvider()->getEnvVariable('VIPSTHUMBNAIL_PATH');
     }
 
     private function getEnvVariablesProvider(): IEnvVariablesProvider {

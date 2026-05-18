@@ -3,6 +3,10 @@ routes:
     path: /
     controller: BC\Controller\Index::run
 
+  comment:
+    path: /comment
+    controller: BC\Controller\Comment::run
+
   admin:
     path: /admin/.*
     controller: BC\Controller\Admin::index
