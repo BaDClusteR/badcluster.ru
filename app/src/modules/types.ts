@@ -13,7 +13,7 @@ export interface NavItemDescriptor {
 export interface ModuleDescriptor {
   /** Unique module identifier, e.g. "blog" */
   id: string;
-  /** Route path relative to /admin/, e.g. "posts" */
+  /** Route path relative to /admin/, e.g. "blog" */
   path: string;
   /** URL to the remote entry file */
   remoteEntry: string;

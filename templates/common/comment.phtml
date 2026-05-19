@@ -1,0 +1,28 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Comment $this */
+
+$comment = $this->getComment();
+$level = $this->getLevel();
+$children = $comment?->children;
+?><article class="comment<?php if ($level > 0): ?> comment--level-<?=$level?><?php endif;?>">
+    <section class="comment__meta">
+        <span class="comment__author"><?=$comment->name?></span>
+        <time
+            class="comment__date"
+            datetime="<?=$this->getCommentDateIso()?>"
+            title="<?=$this->getCommentDateHumanReadable()?>"
+        >
+            <?=$this->getCommentDateRelative()?>
+        </time>
+    </section>
+    <section class="comment__text"><?=$this->prepareCommentText($comment->comment)?></section>
+</article>
+<?php if ($children) : ?>
+    <?php foreach ($children as $child) : ?>
+        <?=new \BC\Widget\Common\Comment([
+            'comment' => $child,
+            'level' => $level + 1
+        ])->render()?>
+    <?php endforeach; ?>
+<?php endif; ?>

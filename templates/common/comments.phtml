@@ -8,8 +8,12 @@ $comments = $this->getComments();
 <link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('toast', 'css')?>" />
 <section class="comments">
     <h3 class="comments__title">Комментарии</h3>
-    <?php if ($this->getComments()) :?>
-        ...
+    <?php if ($comments = $this->getComments()) :?>
+        <div class="comments__list">
+            <?php foreach ($comments as $comment) : ?>
+                <?=new \BC\Widget\Common\Comment(['comment' => $comment])->render()?>
+            <?php endforeach; ?>
+        </div>
     <?php else :?>
         <p class="comments__empty"><?=$this->getNoCommentsPhrase()?></p>
     <?php endif; ?>

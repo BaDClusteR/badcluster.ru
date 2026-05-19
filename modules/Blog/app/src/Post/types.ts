@@ -13,6 +13,10 @@ export interface PostDetailed {
   tags: string[]
 }
 
+export interface PostCreatedResponse {
+  id: number
+}
+
 export interface Media {
   id: number,
   url: string,

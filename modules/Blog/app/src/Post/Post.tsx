@@ -1,14 +1,14 @@
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from '@tanstack/react-query';
 import { useAdminCore } from '../admin/useAdminCore';
-import type { EntityFormDataProvider} from "@admin/types";
+import type {EntityCreatedResponse, EntityFormDataProvider} from "@admin/types";
 import { PostDetailed, TagApi, TagsApiCallResult } from "./types";
 import fields, {BlogPostContext} from "./fields";
 
 export function BlogPost() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { EntityForm, apiCall, notify } = useAdminCore<PostDetailed, BlogPostContext>();
+  const { EntityForm, apiCall, notify } = useAdminCore();
 
   const isCreateMode = !id;
 
@@ -40,12 +40,12 @@ export function BlogPost() {
       };
 
   return (
-    <EntityForm
+    <EntityForm<PostDetailed, BlogPostContext>
       fields={fields}
       dataProvider={dataProvider}
       initialValues={isCreateMode ? { published: false } : undefined}
       context={context}
-      onSubmit={async (values: any) => {
+      onSubmit={async (values: PostDetailed) => {
         if (isCreateMode) {
           const result = await apiCall('POST', 'post', values);
           notify.success("Создано", "Пост успешно создан");
@@ -55,7 +55,7 @@ export function BlogPost() {
           notify.success("Сохранено", "Пост успешно сохранен");
         }
       }}
-      onCreated={(result: any) => {
+      onCreated={(result: EntityCreatedResponse) => {
         if (result?.id) {
           navigate(`/admin/blog/${result.id}`, { replace: true });
         }

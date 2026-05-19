@@ -27,14 +27,20 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                     new NavigationDTO(
                         label: 'Посты',
                         path: '/admin/blog',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/posts.svg'),
                         position: 100
                     ),
                     new NavigationDTO(
                         label: 'Новый пост',
                         path: '/admin/blog/new',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/post.svg'),
                         position: 200
+                    ),
+                    new NavigationDTO(
+                        label: 'Тэги',
+                        path: '/admin/blog/tags',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/tags.svg'),
+                        position: 300
                     )
                 ]
             )

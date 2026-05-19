@@ -1,8 +1,8 @@
 <?php
 
-namespace BC\Modules\Blog\Api\DTO;
+namespace BC\Api\DTO;
 
-readonly class BlogPostCreatedDTO {
+readonly class CreatedDTO {
     public function __construct(
         public int $id
     ) {

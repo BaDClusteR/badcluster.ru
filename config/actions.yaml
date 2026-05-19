@@ -1,0 +1,3 @@
+services:
+  BC\Core\Action\Comments\IGetCommentsAction:
+    class: BC\Core\Action\Comments\GetCommentsAction

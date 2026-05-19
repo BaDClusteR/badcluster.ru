@@ -1,6 +1,6 @@
 <?php
 
-namespace BC\Modules\Blog\Api\DTO;
+namespace BC\Api\DTO;
 
 readonly class SuccessfulResultDTO {
     public function __construct(

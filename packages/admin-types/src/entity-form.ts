@@ -120,13 +120,18 @@ export interface EntityFormDataProvider<T> {
   getData: (signal?: AbortSignal) => Promise<T>;
 }
 
+export interface EntityCreatedResponse {
+  id: number,
+  [key: string]: any
+}
+
 export interface EntityFormProps<T, C = unknown> {
   fields: FieldDef<T, C>[];
   dataProvider?: EntityFormDataProvider<T>;
   initialValues?: Partial<T>;
   context?: C;
   onSubmit: (values: T) => Promise<unknown> | void;
-  onCreated?: (result: unknown) => void;
+  onCreated?: (result: EntityCreatedResponse) => void;
   submitLabel?: string;
   onCancel?: () => void;
   notFoundText?: string;

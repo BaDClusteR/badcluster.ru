@@ -2,7 +2,7 @@
 
 namespace BC\Modules\Blog\Widget;
 
-use BC\Core\Trait\ConverterTrait;
+use BC\Core\Trait\DateConverterTrait;
 use BC\Modules\Blog\Model\Post as PostModel;
 use BC\Widget\AWidget;
 use BC\Widget\Page\APage;
@@ -10,7 +10,7 @@ use DateTime;
 use Runway\Exception\RuntimeException;
 
 class Post extends AWidget {
-    use ConverterTrait;
+    use DateConverterTrait;
 
     protected ?PostModel $post = null {
         get {
@@ -61,11 +61,11 @@ class Post extends AWidget {
     }
 
     protected function getDateTime(DateTime $dt): string {
-        return $dt->format('Y-m-d');
+        return $this->getDateConverter()->toIsoFormat($dt);
     }
 
     protected function getHumanReadableDateTime(DateTime $dt): string {
-        return $this->getConverter()->convertTimestampToHumanReadableDate(
+        return $this->getDateConverter()->toShortForm(
             $dt->getTimestamp(),
         );
     }

@@ -16,19 +16,19 @@ export function App() {
       <Route path="/admin" element={<AdminLayout nav={nav} modules={modules} loading={loading} />}>
         <Route index element={<DashboardPage />} />
         {modules.map((mod) => (
-          <Route
-            key={mod.id}
-            path={`${mod.path}/*`}
-            element={
-              <Suspense fallback={
-                <Box style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
-                  <Loader />
-                </Box>
-              }>
-                <mod.component />
-              </Suspense>
-            }
-          />
+            <Route
+              key={mod.id}
+              path={`${mod.path}/*`}
+              element={
+                <Suspense fallback={
+                  <Box style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
+                    <Loader />
+                  </Box>
+                }>
+                  <mod.component />
+                </Suspense>
+              }
+            />
         ))}
       </Route>
       <Route path="*" element={loading

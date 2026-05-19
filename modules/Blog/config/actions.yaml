@@ -11,3 +11,9 @@ services:
   BC\Modules\Blog\Core\Action\Validator\IPostValidator:
     class: BC\Modules\Blog\Core\Action\Validator\PostValidator
 
+  BC\Modules\Blog\Core\Action\Tag\ICreateTagAction:
+    class: BC\Modules\Blog\Core\Action\Tag\CreateTagAction
+
+  BC\Modules\Blog\Core\Action\Tag\ISaveTagAction:
+    class: BC\Modules\Blog\Core\Action\Tag\SaveTagAction
+

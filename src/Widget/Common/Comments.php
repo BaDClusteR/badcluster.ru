@@ -6,7 +6,7 @@ use BC\Core\Asset\DTO\AssetDTO;
 use BC\Core\Trait\AssetBuilderTrait;
 use BC\DTO\CommentsConfigDTO;
 use BC\Widget\AWidget;
-use BC\Widget\DTO\CommentDTO;
+use BC\Core\DTO\CommentDTO;
 use BC\Widget\IAssetProvider;
 use BC\Widget\Page\APage;
 use BC\Widget\Page\IPageWithComments;

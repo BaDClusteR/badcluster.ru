@@ -13,7 +13,6 @@ readonly class BlogPostDetailedDTO {
         public string $metaDescription,
         public string $annotation,
         public ?array $coverImage,
-        public string $createdDate,
         public string $publishDate,
         public ?string $updateDate,
         public array $content,

@@ -5,3 +5,7 @@ services:
 
   BC\Modules\Blog\Api\Endpoint\Upload:
     decorates: BC\Api\Endpoint\Upload
+
+  BC\Modules\Blog\Api\Endpoint\Tag:
+    tags:
+      - name: api_endpoint_collection

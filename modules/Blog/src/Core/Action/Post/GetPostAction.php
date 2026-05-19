@@ -2,18 +2,12 @@
 
 namespace BC\Modules\Blog\Core\Action\Post;
 
-use BC\Core\Converter\Media\IMediaConverter;
 use BC\Modules\Blog\Core\Action\DTO\GetPostRequest;
 use BC\Modules\Blog\Core\Action\DTO\GetPostResponse;
 use BC\Modules\Blog\Model\Post;
 use Runway\Exception\Exception;
 
 readonly class GetPostAction implements IGetPostAction {
-    public function __construct(
-        private IMediaConverter $mediaConverter
-    ) {
-    }
-
     /**
      * @throws Exception
      */

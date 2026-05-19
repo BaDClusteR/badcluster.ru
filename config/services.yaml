@@ -43,8 +43,10 @@ services:
   BC\Core\Auth\ApiAuth:
     decorates: ApiPlatform\Core\Singleton\IAuth
 
-  BC\Core\Converter\IConverter:
-    class: BC\Core\Converter\ConverterFactory
+  BC\Core\Converter\IDateConverter:
+    class: BC\Core\Converter\DateConverter
+    arguments:
+      timezone: 'Europe/Samara'
 
   BC\Provider\Admin\IAppSettingsProvider:
     class: BC\Provider\Admin\AppSettingsProvider

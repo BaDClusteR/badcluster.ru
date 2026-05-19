@@ -3,7 +3,7 @@
 namespace BC\Modules\Blog\Widget;
 
 use BC\Core\Trait\AuthTrait;
-use BC\Core\Trait\ConverterTrait;
+use BC\Core\Trait\DateConverterTrait;
 use BC\Modules\Blog\Model\Post;
 use BC\Widget\AWidget;
 use BC\Widget\Common\Picture;
@@ -14,7 +14,7 @@ use Runway\Model\Exception\ModelException;
 
 class Posts extends AWidget {
     use AuthTrait;
-    use ConverterTrait;
+    use DateConverterTrait;
 
     /**
      * @throws ModelException
@@ -41,12 +41,14 @@ class Posts extends AWidget {
     }
 
     protected function getDateValue(?DateTime $date): string {
-        return $date?->format('Y-m-d') ?? '';
+        return $date
+            ? $this->getDateConverter()->toIsoFormat($date)
+            : '';
     }
 
     protected function getHumanReadableDate(?DateTime $date): string {
         return $date
-            ? $this->getConverter()->convertTimestampToHumanReadableDate($date->getTimestamp())
+            ? $this->getDateConverter()->toShortForm($date)
             : '';
     }
 

@@ -2,7 +2,12 @@
 
 namespace BC\Modules\Blog\Widget\Page;
 
+use BC\Core\Action\Comments\IGetCommentsAction;
+use BC\Core\Action\DTO\GetCommentsRequest;
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Core\DTO\CommentDTO;
+use BC\Core\Trait\AuthTrait;
+use BC\Core\Trait\LoggerTrait;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\DTO\CommentsConfigDTO;
 use BC\Modules\Blog\Model\Post;
@@ -13,10 +18,14 @@ use BC\Widget\DTO\BackLinkDTO;
 use BC\Widget\DTO\MetaTagDTO;
 use BC\Widget\Page\APageWithBlocks;
 use BC\Widget\Page\IPageWithComments;
+use Runway\Exception\Exception;
 use Runway\Exception\RuntimeException;
+use Runway\Singleton\Container;
 
 class PostPage extends APageWithBlocks implements IPageWithComments {
     use WebsiteSettingsTrait;
+    use AuthTrait;
+    use LoggerTrait;
 
     private ?Post $post = null;
 
@@ -123,15 +132,40 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
 
     public function getCommentsConfig(): CommentsConfigDTO {
         return new CommentsConfigDTO(
-            comments: [],
+            comments: $this->getComments(),
             emptyPhrase: 'Пока никто не комментировал. Есть мысли? Делитесь, я читаю всё :)',
             pageType: 'post',
             pageId: (int) $this->post?->getId(),
         );
     }
 
-    public function getNoCommentsPhrase(): string {
-        return 'Пока никто не комментировал. Есть мысли? Делитесь, я читаю всё :)';
+    /**
+     * @return CommentDTO[]
+     */
+    private function getComments(): array {
+        $action = Container::getInstance()->getService(IGetCommentsAction::class);
+
+        if (!$this->post) {
+            return [];
+        }
+
+        try {
+            return $action->run(
+                new GetCommentsRequest(
+                    pageType: 'post',
+                    pageId: $this->post->getId(),
+                    includeWaitingForApproval: $this->getAuth()->isAuthenticated(),
+                    includeDeclined: false
+                )
+            )->comments;
+        } catch (Exception $e) {
+            $this->getLogger()->error(
+                "Error while getting post comments: {$e->getMessage()}",
+                ['postId' => $this->post->getId()]
+            );
+
+            return [];
+        }
     }
 
     public function getJsBundles(): array {

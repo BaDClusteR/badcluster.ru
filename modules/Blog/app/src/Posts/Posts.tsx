@@ -66,7 +66,7 @@ export default function BlogPosts() {
     }
   };
 
-  return <List
+  return <List<PageRow>
     name="posts"
     title="Посты"
     columns={columnsWithBadges}
@@ -86,8 +86,8 @@ export default function BlogPosts() {
     getDeleteConfirmationTitle={(_row: PageRow|PageRow[]) => "Удаление постов"}
     onDelete={async (rows: PageRow[]) => {
       await apiCall(
-        "POST",
-        "blog/delete",
+        "DELETE",
+        "blog",
         {
           rows: rows.map(row => row.id)
         }

@@ -6,20 +6,20 @@ use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use ApiPlatform\Exception\BadRequestException;
 use ApiPlatform\Exception\RuntimeInternalErrorException;
+use BC\Api\DTO\CreatedDTO;
+use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
-use BC\Core\Converter\IConverter;
+use BC\Core\Converter\IDateConverter;
 use BC\Core\Converter\Media\IMediaConverter;
 use BC\Core\Helper\IBlockHelper;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
-use BC\Modules\Blog\Api\DTO\BlogPostCreatedDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostDetailedDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostsDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostTagDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostTagsDTO;
-use BC\Modules\Blog\Api\DTO\SuccessfulResultDTO;
 use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
 use BC\Modules\Blog\Core\Action\DTO\GetPostRequest;
 use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
@@ -35,7 +35,7 @@ use Runway\Singleton\Container;
 #[Docs\Group('Blog posts')]
 class BlogPost extends AEndpoint {
     public function __construct(
-        private readonly IConverter $converter,
+        private readonly IDateConverter $dateConverter,
         private readonly IMediaConverter $mediaConverter,
         private readonly IBlockHelper $blockHelper
     ) {
@@ -157,7 +157,7 @@ class BlogPost extends AEndpoint {
         ?string $updateDate = null,
         #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
-    ): BlogPostCreatedDTO {
+    ): CreatedDTO {
         $action = Container::getInstance()->getService(ICreatePostAction::class);
 
         try {
@@ -170,9 +170,9 @@ class BlogPost extends AEndpoint {
                     slug: $slug,
                     metaDescription: $metaDescription,
                     published: $published,
-                    publishDate: $this->converter->convertDateTimeStringToDateTime($publishDate),
+                    publishDate: $this->dateConverter->toDateTime($publishDate),
                     updateDate: $updateDate
-                        ? $this->converter->convertDateTimeStringToDateTime($updateDate)
+                        ? $this->dateConverter->toDateTime($updateDate)
                         : null,
                     coverImage: $this->getCover($coverImage),
                     coverImageAltText: (string) ($coverImage['alt'] ?? ''),
@@ -190,8 +190,8 @@ class BlogPost extends AEndpoint {
             throw new RuntimeInternalErrorException($e->getMessage(), $e);
         }
 
-        return new BlogPostCreatedDTO(
-            id: $response->post->getId()
+        return new CreatedDTO(
+            $response->post->getId()
         );
     }
 
@@ -238,9 +238,9 @@ class BlogPost extends AEndpoint {
                     slug: $slug,
                     metaDescription: $metaDescription,
                     published: $published,
-                    publishDate: $this->converter->convertDateTimeStringToDateTime($publishDate),
+                    publishDate: $this->dateConverter->toDateTime($publishDate),
                     updateDate: $updateDate
-                        ? $this->converter->convertDateTimeStringToDateTime($updateDate)
+                        ? $this->dateConverter->toDateTime($updateDate)
                         : null,
                     coverImage: $this->getCover($coverImage),
                     coverImageAltText: (string) ($coverImage['alt'] ?? ''),
@@ -305,16 +305,11 @@ class BlogPost extends AEndpoint {
             coverImage: $this->mediaConverter->convertMedia(
                 $post->getCover()
             )?->toArray(),
-            createdDate: $this->converter->convertTimestampToDateTimeString(
-                $post->getCreatedDate()->getTimestamp()
-            ),
-            publishDate: $this->converter->convertTimestampToDateTimeString(
-                $post->getPublishDate()->getTimestamp()
+            publishDate: $this->dateConverter->toPickerValue(
+                $post->getPublishDate()
             ),
             updateDate: $updateDate
-                ? $this->converter->convertTimestampToDateTimeString(
-                    $updateDate
-                )
+                ? $this->dateConverter->toPickerValue($updateDate)
                 : null,
             content: $this->blockHelper->enrichBlocks(
                 $post->getContent()
@@ -335,15 +330,11 @@ class BlogPost extends AEndpoint {
             slug: $post->getSlug(),
             published: $post->getPublished(),
             publishDate: $post->getPublished()
-                ? $this->converter->convertTimestampToHumanReadableDate(
+                ? $this->dateConverter->toShortForm(
                     $post->getPublishDate()->getTimestamp()
                 )
                 : '—',
-            publishTime: $post->getPublished()
-                ? $this->converter->convertTimestampToTimeString(
-                    $post->getPublishDate()->getTimestamp()
-                )
-                : ''
+            publishTime: ''
         );
     }
 
