@@ -15,7 +15,6 @@ export default defineConfig({
             exposes: {
                 "./EntityForm": "./src/components/EntityForm/index.ts",
                 "./List": "./src/components/List/List.tsx",
-                "./List/types": "./src/components/List/types.ts",
                 "./List/utils": "./src/components/List/utils/convertListStateToQueryParameters.ts",
                 "./DataTable": "./src/components/DataTable/index.ts",
                 "./primitives/Button": "./src/components/primitives/Button.tsx",

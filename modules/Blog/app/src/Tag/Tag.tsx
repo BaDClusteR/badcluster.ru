@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import {Link, useNavigate, useParams} from "react-router";
 import { useAdminCore } from '../admin/useAdminCore';
 import type {EntityCreatedResponse, EntityFormDataProvider} from "@admin/types";
 import { TagDetailed } from "./types";
@@ -22,7 +22,7 @@ export function Tag() {
       };
 
   return (
-    <EntityForm
+    <EntityForm<TagDetailed>
       fields={fields}
       dataProvider={dataProvider}
       onSubmit={async (values: TagDetailed) => {
@@ -47,6 +47,13 @@ export function Tag() {
           ? "Создать тэг"
           : "Сохранить"
       }
+      title={(values) => <>
+        <Link to={ROOT_ENDPOINT}>Тэги</Link> :: {
+          isCreateMode
+            ? 'Новый тэг'
+            : values?.title
+        }
+      </>}
     />
   );
 }

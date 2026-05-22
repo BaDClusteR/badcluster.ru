@@ -10,9 +10,10 @@ import { TerminalBlock } from './terminal/TerminalBlock';
 import { TocBlock } from './toc/TocBlock';
 import { KbdInlineTool } from './inlineTools/KbdInlineTool';
 import { CodeInlineTool } from './inlineTools/CodeInlineTool';
+import { SpoilerInlineTool } from './inlineTools/SpoilerInlineTool';
 import classes from './BlocksField.module.css';
 import "./editorjs.css";
-import {Optional} from "@/types.ts";
+import {Optional} from "@admin/types";
 import clsx from "clsx";
 
 interface BlocksFieldProps {
@@ -56,6 +57,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
     if (json === lastValueJson.current) return;
     lastValueJson.current = json;
     editor.isReady.then(() => {
+      // noinspection JSIgnoredPromiseFromCall
       editor.render(value);
     });
   }, [value]);
@@ -69,6 +71,13 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
     // StrictMode's double-mount, the first instance's late destroy would
     // wipe the second instance's UI (the editor stays alive in memory but
     // its DOM disappears). Isolating holders fixes it permanently.
+    // Click-to-reveal spoilers
+    const spoilerHandler = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('.spoiler');
+      if (target) target.classList.toggle('spoiler--revealed');
+    };
+    wrapper.addEventListener('click', spoilerHandler);
+
     const holder = document.createElement('div');
     wrapper.appendChild(holder);
 
@@ -107,6 +116,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
         toc: TocBlock as unknown as ToolConstructable,
         kbd: KbdInlineTool as unknown as ToolConstructable,
         code: CodeInlineTool as unknown as ToolConstructable,
+        spoiler: SpoilerInlineTool as unknown as ToolConstructable,
         //link: LinkInlineTool as unknown as ToolConstructable,
       },
       i18n: {
@@ -207,6 +217,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
     });
 
     return () => {
+      wrapper.removeEventListener('click', spoilerHandler);
       editorRef.current = null;
       editor.isReady
         .then(() => {
@@ -218,7 +229,6 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
         });
     };
     // Mount once — re-mounting on every value change would wipe the editor.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

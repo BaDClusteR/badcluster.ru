@@ -6,7 +6,7 @@ import classes from "./MediaBlock.module.css";
 import TextField from "./settings/TextField/TextField.ts";
 import separator from "./settings/Separator/Separator.ts";
 import Toggle from "./settings/Toggle/Toggle.ts";
-import {Nullable} from "@/types.ts";
+import {Nullable} from "@admin/types";
 import {iconGallerySearch, iconLazyLoad, iconMedia} from "./icons.ts";
 import heading from "./settings/Heading/Heading.ts";
 import ImageSizes from "@/components/EntityForm/fields/mediaBlock/settings/ImageSizes/ImageSizes.ts";
@@ -16,8 +16,7 @@ export class MediaBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
       title: "Медиа",
-      icon: iconMedia,
-      keywords: ['image', 'media', 'picture', 'photo', 'video']
+      icon: iconMedia
     };
   }
 

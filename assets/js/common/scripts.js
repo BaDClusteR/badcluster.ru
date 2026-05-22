@@ -126,3 +126,11 @@ document.addEventListener(
         (new ResizeObserver(scrollBarSizeHandler)).observe(document.documentElement);
     }
 );
+
+document.querySelectorAll('.spoiler').forEach(
+    spoiler => {
+        spoiler.addEventListener('click', () => {
+            spoiler.classList.toggle('revealed');
+        });
+    }
+);

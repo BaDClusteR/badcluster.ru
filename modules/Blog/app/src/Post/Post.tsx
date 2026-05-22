@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { useQuery } from '@tanstack/react-query';
 import { useAdminCore } from '../admin/useAdminCore';
 import type {EntityCreatedResponse, EntityFormDataProvider} from "@admin/types";
-import { PostDetailed, TagApi, TagsApiCallResult } from "./types";
+import { Post, TagApi, TagsApiCallResult } from "./types";
 import fields, {BlogPostContext} from "./fields";
 
 export function BlogPost() {
@@ -30,22 +30,22 @@ export function BlogPost() {
       : [],
   };
 
-  const dataProvider: EntityFormDataProvider<PostDetailed> | undefined = isCreateMode
+  const dataProvider: EntityFormDataProvider<Post> | undefined = isCreateMode
     ? undefined
     : {
         queryKey: ['post', id],
         getData: async (signal) => {
-          return await apiCall('GET', `post/${id}`, {}, { signal }) as PostDetailed;
+          return await apiCall('GET', `post/${id}`, {}, { signal }) as Post;
         }
       };
 
   return (
-    <EntityForm<PostDetailed, BlogPostContext>
+    <EntityForm<Post, BlogPostContext>
       fields={fields}
       dataProvider={dataProvider}
       initialValues={isCreateMode ? { published: false } : undefined}
       context={context}
-      onSubmit={async (values: PostDetailed) => {
+      onSubmit={async (values: Post) => {
         if (isCreateMode) {
           const result = await apiCall('POST', 'post', values);
           notify.success("Создано", "Пост успешно создан");

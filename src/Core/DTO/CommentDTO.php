@@ -9,6 +9,7 @@ readonly class CommentDTO {
      * @param self[] $children
      */
     public function __construct(
+        public int $id,
         public DateTime $date,
         public string $name,
         public ?string $email,

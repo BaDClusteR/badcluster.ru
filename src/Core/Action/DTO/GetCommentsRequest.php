@@ -6,8 +6,8 @@ readonly class GetCommentsRequest {
     public function __construct(
         public string $pageType,
         public int $pageId,
-        public bool $includeWaitingForApproval,
-        public bool $includeDeclined
+        public ?bool $includePending = null, // NULL means default: include only if logged as admin
+        public ?bool $includeDeclined = null // NULL means default: include only if logged as admin
     ) {
     }
 }

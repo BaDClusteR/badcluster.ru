@@ -1,4 +1,6 @@
-export interface PostDetailed {
+import {Media} from "@admin/types";
+
+export interface Post {
   id: number,
   title: string,
   shortTitle: string,
@@ -11,27 +13,6 @@ export interface PostDetailed {
   metaDescription: string,
   coverImage?: Media | null,
   tags: string[]
-}
-
-export interface PostCreatedResponse {
-  id: number
-}
-
-export interface Media {
-  id: number,
-  url: string,
-  width: number,
-  height: number,
-  mime: string,
-  alt: string,
-  thumbs?: MediaThumbnail[]
-}
-
-export interface MediaThumbnail {
-  width: number,
-  height: number,
-  url: string,
-  mime: string
 }
 
 export interface TagApi {

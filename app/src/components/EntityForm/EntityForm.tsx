@@ -12,7 +12,7 @@ import {
   TextInput,
   Textarea,
   Title,
-  Fieldset,
+  Fieldset
 } from "@mantine/core";
 import {DateTimePicker, DateTimeStringValue} from "@mantine/dates";
 import "@mantine/dates/styles.layer.css";
@@ -21,13 +21,13 @@ import { useQuery } from '@tanstack/react-query';
 import { HttpError } from '@/utils/errors';
 import { notify } from '@/lib/notify';
 import { IconError, IconEmpty } from '@/components/List/components/Icons';
-import type {EntityFormProps, FieldDef, FieldDefNamed} from "./types";
+import type {EntityCreatedResponse, EntityFormProps, FieldDef, FieldDefNamed} from "@admin/types";
 import classes from "./EntityForm.module.css";
 import Button from "@/components/primitives/Button.tsx";
 import Slug from "@/components/primitives/Slug.tsx";
 import { ImageField } from "./fields/ImageField";
 import FieldGroup from "./FieldGroup";
-import type {EntityFormComponents} from "./types";
+import type {EntityFormComponents} from "@admin/types";
 import dtClasses from "./fields/DateTimePicker.module.css";
 import clsx from "clsx";
 
@@ -81,13 +81,13 @@ const formComponents: EntityFormComponents = {
   FieldGroup,
 };
 
-type FieldChunk<T> =
-  | { type: 'single'; field: FieldDef<T> }
-  | { type: 'fieldset'; legend: string; fields: FieldDef<T>[] };
+type FieldChunk<T, C> =
+  | { type: 'single'; field: FieldDef<T, C> }
+  | { type: 'fieldset'; legend: string; fields: FieldDef<T, C>[] };
 
 /** Group consecutive fields with the same `fieldset` value. */
-function chunkFields<T>(fields: FieldDef<T>[]): FieldChunk<T>[] {
-  const chunks: FieldChunk<T>[] = [];
+function chunkFields<T, C>(fields: FieldDef<T, C>[]): FieldChunk<T, C>[] {
+  const chunks: FieldChunk<T, C>[] = [];
 
   for (const field of fields) {
     if (field.fieldset) {
@@ -105,7 +105,7 @@ function chunkFields<T>(fields: FieldDef<T>[]): FieldChunk<T>[] {
   return chunks;
 }
 
-export function EntityForm<T extends Record<string, unknown>, C = unknown>({
+export function EntityForm<T extends Record<string, any>, C = unknown>({
   fields,
   dataProvider,
   initialValues,
@@ -115,7 +115,8 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
   submitLabel = 'Save',
   onCancel,
   notFoundText,
-  notFoundBtnCaption
+  notFoundBtnCaption,
+  title
 }: EntityFormProps<T, C>) {
   const isCreateMode = !dataProvider;
 
@@ -217,16 +218,16 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
 
   if (isLoading) {
     return (
-      <>
+      <div className={`${classes.skeletonContainer} skeletonContainer`}>
         {renderSection(primaryFields, renderSkeleton, false)}
         {secondaryFields.length > 0 && renderSection(secondaryFields, renderSkeleton, true)}
-      </>
+      </div>
     );
   }
 
   // --- Normal form ---
 
-  function renderField(field: FieldDef<T>) {
+  function renderField(field: FieldDef<T, C>) {
     const common = {
       label: 'label' in field ?
         field.label
@@ -256,7 +257,9 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
         return withCounter(
           <TextInput
             {...common}
-            {...form.getInputProps(field.name as string)}
+            value={form.values[field.name] as string ?? ''}
+            onChange={(e) => form.setFieldValue(field.name as string, e.currentTarget.value as never)}
+            error={form.errors[field.name as string]}
           />,
           field,
         );
@@ -273,7 +276,9 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
             {...common}
             autosize
             minRows={3}
-            {...form.getInputProps(field.name as string)}
+            value={form.values[field.name] as string ?? ''}
+            onChange={(e) => form.setFieldValue(field.name as string, e.currentTarget.value as never)}
+            error={form.errors[field.name as string]}
           />,
           field,
         );
@@ -287,7 +292,9 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
           <Select
             {...common}
             data={field.options ?? []}
-            {...form.getInputProps(field.name as string)}
+            value={form.values[field.name] as string ?? null}
+            onChange={(val) => form.setFieldValue(field.name as string, val as never)}
+            error={form.errors[field.name as string]}
           />
         );
       case 'switch':
@@ -360,16 +367,16 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
         );
       case 'group':
         return field.render
-          ? field.render(form, { loading: false, submitting: form.submitting, context, components: formComponents })
+          ? field.render(form, { loading: false, submitting: form.submitting, context, components: formComponents }, form.values)
           : null;
     }
   }
 
-  function renderSection(sectionFields: FieldDef<T>[], renderFn: (field: FieldDef<T>) => ReactNode, asCard: boolean) {
+  function renderSection(sectionFields: FieldDef<T, C>[], renderFn: (field: FieldDef<T, C>) => ReactNode, asCard: boolean) {
     if (sectionFields.length === 0) return null;
 
     const content = (
-      <Grid>
+      <Grid className={classes.formFieldsGrid}>
         {renderChunks(chunkFields(sectionFields), renderFn)}
       </Grid>
     );
@@ -383,7 +390,7 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
     );
   }
 
-  function renderChunks(chunks: FieldChunk<T>[], renderFn: (field: FieldDef<T>) => ReactNode) {
+  function renderChunks(chunks: FieldChunk<T, C>[], renderFn: (field: FieldDef<T, C>) => ReactNode) {
     return chunks.map((chunk, ci) => {
       if (chunk.type === 'single') {
         const key = 'name' in chunk.field
@@ -426,9 +433,9 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
     });
   }
 
-  function renderSkeleton(field: FieldDef<T>) {
+  function renderSkeleton(field: FieldDef<T, C>) {
     if (field.type === 'group') {
-      return field.render ? field.render(form, { loading: true, submitting: false, context, components: formComponents }) : <Skeleton height={100} />;
+      return field.render ? field.render(form, { loading: true, submitting: false, context, components: formComponents }, form.values) : <Skeleton height={100} />;
     }
 
     if (field.type === 'heading') {
@@ -454,40 +461,47 @@ export function EntityForm<T extends Record<string, unknown>, C = unknown>({
     );
   }
 
-  return (
-    <form ref={formRef} className="entity-form" onSubmit={form.onSubmit(async (values) => {
-      try {
-        const result = await onSubmit(values);
-        form.resetDirty(values);
-        if (isCreateMode && onCreated) {
-          onCreated(result);
-        }
-      } catch (err) {
-        if (err instanceof HttpError && err.status === 422 && err.payload?.errors) {
-          form.setErrors(err.payload.errors as Record<string, string>);
-          if (err.payload.message) {
-            notify.error(String(err.payload.message));
-          }
-        } else {
-          throw err;
-        }
-      }
-    })}>
-      <Stack gap="lg">
-        {renderSection(primaryFields, renderField, false)}
-        {secondaryFields.length > 0 && renderSection(secondaryFields, renderField, true)}
+  const titleNode = title && form.values
+    ? <h2 className={classes.formTitle}>{title(form.values, context)}</h2>
+    : null;
 
-        <Group justify="flex-end">
-          {onCancel && (
-            <Button variant="subtle" onClick={onCancel} type="button">
-              Cancel
+  return (
+    <>
+      {titleNode}
+      <form ref={formRef} className="entity-form" onSubmit={form.onSubmit(async (values) => {
+        try {
+          const result = await onSubmit(values) as EntityCreatedResponse;
+          form.resetDirty(values);
+          if (isCreateMode && onCreated) {
+            onCreated(result);
+          }
+        } catch (err) {
+          if (err instanceof HttpError && err.status === 422 && err.payload?.errors) {
+            form.setErrors(err.payload.errors as Record<string, string>);
+            if (err.payload.message) {
+              notify.error(String(err.payload.message));
+            }
+          } else {
+            throw err;
+          }
+        }
+      })}>
+        <Stack gap="lg">
+          {renderSection(primaryFields, renderField, false)}
+          {secondaryFields.length > 0 && renderSection(secondaryFields, renderField, true)}
+
+          <Group justify="flex-end">
+            {onCancel && (
+              <Button variant="subtle" onClick={onCancel} type="button">
+                Cancel
+              </Button>
+            )}
+            <Button type="submit" loading={form.submitting}>
+              {submitLabel}
             </Button>
-          )}
-          <Button type="submit" loading={form.submitting}>
-            {submitLabel}
-          </Button>
-        </Group>
-      </Stack>
-    </form>
+          </Group>
+        </Stack>
+      </form>
+    </>
   );
 }

@@ -1,0 +1,28 @@
+.container {
+  display: grid;
+  grid-template-columns: calc(1.25 * var(--rhythmic-unit)) auto;
+  gap: calc(.375 * var(--rhythmic-unit));
+  align-items: center;
+}
+
+.flag {
+  border: var(--border);
+  display: block;
+}
+
+.popover {
+  font-size: var(--font-size-small);
+  line-height: 1.43;
+}
+
+.place {
+  white-space: nowrap;
+}
+
+.range {
+  white-space: nowrap;
+  display: block;
+  margin-block-start: calc(.5 * var(--rhythmic-unit));
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-tiny);
+}

@@ -1,4 +1,4 @@
-import {Optional, StringKeyObject} from "@/types.ts";
+import {Optional, StringKeyObject} from "@admin/types";
 
 export class HttpError extends Error {
     public readonly status: number;

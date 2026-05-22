@@ -6,6 +6,10 @@
   font-variation-settings: 'wdth' 95;
   line-height: 1.5;
 
+  a:not(:hover, :focus-visible) {
+    text-decoration: none;
+  }
+
   .cdx-list {
     margin: 0;
     padding-inline-start: calc(2 * var(--rhythmic-unit));
@@ -100,8 +104,23 @@
     background: var(--color-surface);
   }
 
+  .spoiler {
+    filter: blur(4px);
+    cursor: pointer;
+    transition: filter 200ms;
+    user-select: text;
+  }
+
+  .spoiler.spoiler--revealed {
+    filter: none;
+  }
+
   ::selection {
     background: color-mix(in srgb, var(--color-link), transparent 60%);
+  }
+
+  .ce-block--selected .ce-block__content {
+    background: color-mix(in srgb, var(--color-contrast), transparent 90%);
   }
 }
 
@@ -116,7 +135,7 @@
   padding-bottom: 0 !important;
 }
 
-@media (min-width: 651px) {
+@media (width >= 651px) {
   body .codex-editor--narrow .ce-toolbar__actions {
     right: -20px;
   }

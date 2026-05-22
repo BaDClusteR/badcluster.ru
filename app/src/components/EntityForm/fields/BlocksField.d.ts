@@ -1,7 +1,6 @@
 import React from 'react';
 import { type OutputData } from '@editorjs/editorjs';
-import "./editorjs.css";
-import { Optional } from "@/types.ts";
+import { Optional } from "@admin/types";
 interface BlocksFieldProps {
     label?: string;
     description?: React.ReactNode;

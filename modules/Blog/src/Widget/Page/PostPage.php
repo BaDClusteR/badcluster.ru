@@ -153,9 +153,7 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
             return $action->run(
                 new GetCommentsRequest(
                     pageType: 'post',
-                    pageId: $this->post->getId(),
-                    includeWaitingForApproval: $this->getAuth()->isAuthenticated(),
-                    includeDeclined: false
+                    pageId: $this->post->getId()
                 )
             )->comments;
         } catch (Exception $e) {
@@ -173,6 +171,10 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
 
         $list[] = 'comments';
         $list[] = 'toast';
+
+        if ($this->getAuth()->isAuthenticated()) {
+            $list[] = 'comments-admin';
+        }
 
         return $list;
     }

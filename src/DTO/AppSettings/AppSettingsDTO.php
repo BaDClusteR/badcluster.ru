@@ -13,7 +13,8 @@ class AppSettingsDTO {
     public function __construct(
         public array $nav,
         public array $modules,
-        public string $webRoot
+        public string $webRoot,
+        public string $staticRoot
     ) {
     }
 
@@ -31,15 +32,16 @@ class AppSettingsDTO {
 
     public function toArray(): array {
         return [
-            'nav' => array_map(
+            'nav'        => array_map(
                 static fn (NavigationDTO $item) => $item->toArray(),
                 $this->nav
             ),
-            'modules' => array_map(
+            'modules'    => array_map(
                 static fn (ModuleDTO $item) => $item->toArray(),
                 $this->modules
             ),
-            'webRoot' => $this->webRoot
+            'webRoot'    => $this->webRoot,
+            'staticRoot' => $this->staticRoot,
         ];
     }
 

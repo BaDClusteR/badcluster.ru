@@ -5,8 +5,8 @@ namespace BC\Modules\Blog\Api\Endpoint;
 use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use ApiPlatform\Exception\BadRequestException;
-use ApiPlatform\Exception\RuntimeInternalErrorException;
 use BC\Api\DTO\CreatedDTO;
+use BC\Api\DTO\ListResponseDTO;
 use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
@@ -15,15 +15,13 @@ use BC\Core\Converter\Media\IMediaConverter;
 use BC\Core\Helper\IBlockHelper;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
-use BC\Modules\Blog\Api\DTO\BlogPostDetailedDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostDTO;
-use BC\Modules\Blog\Api\DTO\BlogPostsDTO;
+use BC\Modules\Blog\Api\DTO\BlogPostRowDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostTagDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostTagsDTO;
 use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
 use BC\Modules\Blog\Core\Action\DTO\GetPostRequest;
 use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
-use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
 use BC\Modules\Blog\Core\Action\Post\ICreatePostAction;
 use BC\Modules\Blog\Core\Action\Post\IGetPostAction;
 use BC\Modules\Blog\Core\Action\Post\ISavePostAction;
@@ -42,59 +40,40 @@ class BlogPost extends AEndpoint {
     }
 
     /**
+     * @return ListResponseDTO<BlogPostRowDTO>
+     *
      * @throws BadRequestException
      */
     #[API\Endpoint(path: 'posts', method: 'GET')]
-    #[Docs\Endpoint('Get the list of blog posts')]
     public function getList(
         #[API\Parameter(source: 'query')]
-        #[Docs\Argument(example: 'contact', description: 'Posts filter')]
         string $filter = '',
+
         #[API\Parameter(source: 'query')]
-        #[Docs\Argument(example: 'title', description: 'Column to sort for')]
         string $sortBy = '',
+
         #[API\Parameter(source: 'query')]
-        #[Docs\Argument(example: 'DESC', description: 'Sort direction')]
         string $sortDir = '',
+
         #[API\Parameter(source: 'query')]
-        #[Docs\Argument(example: 2, description: 'Results page')]
         int $page = 1,
+
         #[API\Parameter(source: 'query')]
-        #[Docs\Argument(example: 10, description: 'Results count on the page')]
         int $perPage = 25
-    ): BlogPostsDTO {
-        $filter = strtolower(trim($filter));
-        $page = max(1, $page);
-        $perPage = max(1, min(100, $perPage));
+    ): ListResponseDTO {
+        $qb = Post::getQueryBuilder()->orderBy('publish_date', 'DESC');
 
-        $qb = Post::getQueryBuilder()
-                  ->orderBy('publish_date', 'DESC')
-                  ->setLimit($perPage, ($page - 1) * $perPage);
+        $this->addFilter($qb, $filter, ['title']);
+        $total = $this->setSortLimitAndGetTotal($qb, $sortBy, $sortDir, $page, $perPage);
 
-        if ($filter !== '') {
-            $qb = $qb->andWhere('LOWER(title) LIKE :filter')
-                ->setVariable('filter', "%$filter%");
-        }
-
-        if ($sortBy && !in_array($sortBy, $this->getSortableColumns())) {
-            throw new BadRequestException(
-                sprintf("Не могу сортировать по '%s'.", $sortBy)
-            );
-        }
-
-        if (in_array($sortBy, $this->getSortableColumns())) {
-            $qb = $qb->orderBy(
-                $sortBy,
-                $this->sanitizeSortDirection($sortDir)
-            );
-        }
 
         return $this->handleWithException(
-            fn () => new BlogPostsDTO(
-                posts: array_map(
-                    fn (Post $post): BlogPostDTO => $this->convertModel($post),
+            fn () => new ListResponseDTO(
+                items: array_map(
+                    fn (Post $post): BlogPostRowDTO => $this->buildListResponseItem($post),
                     $qb->getEntities()
-                )
+                ),
+                total: $total
             )
         );
     }
@@ -106,7 +85,7 @@ class BlogPost extends AEndpoint {
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
-    ): BlogPostDetailedDTO {
+    ): BlogPostDTO {
         $action = Container::getInstance()->getService(IGetPostAction::class);
 
         $post = $this->handleWithException(
@@ -116,7 +95,7 @@ class BlogPost extends AEndpoint {
         );
 
         return $this->handleWithException(
-            fn (): BlogPostDetailedDTO => $this->convertDetailedModel($post)
+            fn (): BlogPostDTO => $this->convertDetailedModel($post)
         );
     }
 
@@ -158,37 +137,35 @@ class BlogPost extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): CreatedDTO {
-        $action = Container::getInstance()->getService(ICreatePostAction::class);
+        $response = null;
+        $request = $this->handleWithException(
+            fn () => new CreatePostRequest(
+                title: $title,
+                shortTitle: $shortTitle,
+                annotation: $annotation,
+                content: $content,
+                slug: $slug,
+                metaDescription: $metaDescription,
+                published: $published,
+                publishDate: $this->dateConverter->toDateTime($publishDate),
+                updateDate: $updateDate
+                    ? $this->dateConverter->toDateTime($updateDate)
+                    : null,
+                coverImage: $this->getCover($coverImage),
+                coverImageAltText: (string) ($coverImage['alt'] ?? ''),
+                tags: Tag::find([
+                    'id' => $tags
+                ])
+            )
+        );
 
-        try {
-            $response = $action->run(
-                new CreatePostRequest(
-                    title: $title,
-                    shortTitle: $shortTitle,
-                    annotation: $annotation,
-                    content: $content,
-                    slug: $slug,
-                    metaDescription: $metaDescription,
-                    published: $published,
-                    publishDate: $this->dateConverter->toDateTime($publishDate),
-                    updateDate: $updateDate
-                        ? $this->dateConverter->toDateTime($updateDate)
-                        : null,
-                    coverImage: $this->getCover($coverImage),
-                    coverImageAltText: (string) ($coverImage['alt'] ?? ''),
-                    tags: Tag::find([
-                        'id' => $tags
-                    ])
-                )
-            );
-        } catch (ActionValidationException $e) {
-            throw new UnprocessableEntityException(
-                $e->getErrors(),
-                'Ошибки при создании поста'
-            );
-        } catch (Exception $e) {
-            throw new RuntimeInternalErrorException($e->getMessage(), $e);
-        }
+        $this->handleActionWithException(
+            function () use (&$response, $request) {
+                $action = Container::getInstance()->getService(ICreatePostAction::class);
+                $response = $action->run($request);
+            },
+            'Ошибки при создании поста'
+        );
 
         return new CreatedDTO(
             $response->post->getId()
@@ -225,38 +202,35 @@ class BlogPost extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): SuccessfulResultDTO {
-        $action = Container::getInstance()->getService(ISavePostAction::class);
+        $request = $this->handleWithException(
+            fn () => new SavePostRequest(
+                id: $id,
+                title: $title,
+                shortTitle: $shortTitle,
+                annotation: $annotation,
+                content: $content,
+                slug: $slug,
+                metaDescription: $metaDescription,
+                published: $published,
+                publishDate: $this->dateConverter->toDateTime($publishDate),
+                updateDate: $updateDate
+                    ? $this->dateConverter->toDateTime($updateDate)
+                    : null,
+                coverImage: $this->getCover($coverImage),
+                coverImageAltText: (string) ($coverImage['alt'] ?? ''),
+                tags: Tag::find([
+                    'id' => $tags
+                ])
+            )
+        );
 
-        try {
-            $action->run(
-                new SavePostRequest(
-                    id: $id,
-                    title: $title,
-                    shortTitle: $shortTitle,
-                    annotation: $annotation,
-                    content: $content,
-                    slug: $slug,
-                    metaDescription: $metaDescription,
-                    published: $published,
-                    publishDate: $this->dateConverter->toDateTime($publishDate),
-                    updateDate: $updateDate
-                        ? $this->dateConverter->toDateTime($updateDate)
-                        : null,
-                    coverImage: $this->getCover($coverImage),
-                    coverImageAltText: (string) ($coverImage['alt'] ?? ''),
-                    tags: Tag::find([
-                        'id' => $tags
-                    ])
-                )
-            );
-        } catch (ActionValidationException $e) {
-            throw new UnprocessableEntityException(
-                $e->getErrors(),
-                'Ошибки при сохранении поста'
-            );
-        } catch (Exception $e) {
-            throw new RuntimeInternalErrorException($e->getMessage(), $e);
-        }
+        $this->handleActionWithException(
+            function () use ($request) {
+                $action = Container::getInstance()->getService(ISavePostAction::class);
+                $action->run($request);
+            },
+            'Ошибки при сохранении поста'
+        );
 
         return new SuccessfulResultDTO();
     }
@@ -293,10 +267,10 @@ class BlogPost extends AEndpoint {
     /**
      * @throws Exception
      */
-    private function convertDetailedModel(Post $post): BlogPostDetailedDTO {
+    private function convertDetailedModel(Post $post): BlogPostDTO {
         $updateDate = $post->getUpdateDate()?->getTimestamp();
 
-        return new BlogPostDetailedDTO(
+        return new BlogPostDTO(
             id: $post->getId(),
             title: $post->getTitle(),
             shortTitle: $post->getShortTitle(),
@@ -323,37 +297,27 @@ class BlogPost extends AEndpoint {
         );
     }
 
-    private function convertModel(Post $post): BlogPostDTO {
-        return new BlogPostDTO(
+    private function buildListResponseItem(Post $post): BlogPostRowDTO {
+        $isPublished = $post->getPublished();
+
+        return new BlogPostRowDTO(
             id: $post->getId(),
             title: $post->getShortTitle() ?: $post->getTitle(),
             slug: $post->getSlug(),
-            published: $post->getPublished(),
-            publishDate: $post->getPublished()
-                ? $this->dateConverter->toShortForm(
-                    $post->getPublishDate()->getTimestamp()
-                )
+            published: $isPublished,
+            publishDate: $isPublished
+                ? $this->dateConverter->toShortForm($post->getPublishDate())
                 : '—',
-            publishTime: ''
+            updateDate: ($isPublished && $post->getUpdateDate())
+                ? $this->dateConverter->toShortForm($post->getUpdateDate())
+                : ''
         );
     }
 
     /**
      * @return string[]
      */
-    private function getSortableColumns(): array {
+    protected function getSortableColumns(): array {
         return ['title', 'slug', 'published', 'publishDate'];
-    }
-
-    private function sanitizeSortDirection(string $sortDirection): string {
-        $sortDirection = strtoupper(trim($sortDirection));
-
-        return in_array($sortDirection, ['ASC', 'DESC'], true)
-            ? $sortDirection
-            : $this->getDefaultSortDirection();
-    }
-
-    private function getDefaultSortDirection(): string {
-        return 'ASC';
     }
 }

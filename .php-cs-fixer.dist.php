@@ -4,8 +4,9 @@ $finder = new PhpCsFixer\Finder()
     ->in([
         __DIR__ . '/src',
         __DIR__ . '/modules',
+        __DIR__ . '/templates',
     ])
-    ->name('*.php')
+    ->name(['*.php', '*.phtml'])
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
 

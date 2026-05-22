@@ -4,6 +4,7 @@ namespace BC\Core\Action\Comments;
 
 use BC\Core\Action\DTO\GetCommentsRequest;
 use BC\Core\Action\DTO\GetCommentsResponse;
+use BC\Core\Auth\IAuth;
 use BC\Core\DTO\CommentDTO;
 use BC\Core\Trait\LoggerTrait;
 use BC\Model\Comment;
@@ -13,6 +14,11 @@ use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 class GetCommentsAction implements IGetCommentsAction {
     use LoggerTrait;
 
+    public function __construct(
+        private readonly IAuth $auth
+    ) {
+    }
+
     /**
      * @throws DBException
      * @throws QueryBuilderException
@@ -20,11 +26,23 @@ class GetCommentsAction implements IGetCommentsAction {
     public function run(GetCommentsRequest $request): GetCommentsResponse {
         $statuses = ['A'];
 
-        if ($request->includeWaitingForApproval) {
+        if (
+            $request->includePending
+            || (
+                $request->includePending === null
+                && $this->auth->isAuthenticated()
+            )
+        ) {
             $statuses[] = 'M';
         }
 
-        if ($request->includeDeclined) {
+        if (
+            $request->includeDeclined
+            || (
+                $request->includeDeclined === null
+                && $this->auth->isAuthenticated()
+            )
+        ) {
             $statuses[] = 'D';
         }
 
@@ -47,7 +65,7 @@ class GetCommentsAction implements IGetCommentsAction {
         }
 
         $comments = array_map(
-            fn (Comment $comment) => $this->buildComment($comment),
+            fn (Comment $comment) => $this->buildComment($comment, $statuses),
             $qb->getEntities()
         );
 
@@ -55,11 +73,14 @@ class GetCommentsAction implements IGetCommentsAction {
     }
 
     /**
+     * @param string[] $allowedStatuses
+     *
      * @throws DBException
      * @throws QueryBuilderException
      */
-    private function buildComment(Comment $comment): CommentDTO {
+    private function buildComment(Comment $comment, array $allowedStatuses): CommentDTO {
         return new CommentDTO(
+            id: $comment->getId(),
             date: $comment->getDate(),
             name: $comment->getName(),
             email: $comment->getEmail(),
@@ -68,8 +89,13 @@ class GetCommentsAction implements IGetCommentsAction {
             isApproved: $comment->isApproved(),
             isDeclined: $comment->isDeclined(),
             children: array_map(
-                fn (Comment $comment): CommentDTO => $this->buildComment($comment),
-                $comment->getChildren()
+                fn (Comment $comment): CommentDTO => $this->buildComment($comment, $allowedStatuses),
+                array_values(
+                    array_filter(
+                        $comment->getChildren(),
+                        static fn (Comment $comment): bool => in_array($comment->getStatus(), $allowedStatuses, true)
+                    )
+                )
             )
         );
     }

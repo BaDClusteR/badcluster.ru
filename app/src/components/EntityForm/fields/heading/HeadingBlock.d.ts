@@ -40,11 +40,7 @@ export declare class HeadingBlock implements BlockTool {
     validate(data: HeadingBlockData): boolean;
     renderSettings(): HTMLDivElement;
     /** Handle paste of heading elements. */
-    onPaste(event: {
-        detail: {
-            data: HTMLHeadingElement;
-        };
-    }): void;
+    onPaste(event: Parameters<NonNullable<BlockTool['onPaste']>>[0]): void;
     private get availableLevels();
     private setLevel;
     private buildTag;

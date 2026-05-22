@@ -1,5 +1,8 @@
 import type { ComponentType, ReactNode } from "react";
+// noinspection TypeScriptCheckImport
+// @ts-ignore
 import type { FormErrors, UseFormReturnType } from "@mantine/form";
+import {Optional} from "./common";
 
 export type CommonFieldType =
   | "number"
@@ -70,7 +73,8 @@ export interface FieldDefGroup<T, C = unknown> extends FieldDefBase {
   type: "group";
   render?: (
     form: UseFormReturnType<T, T, (values: T) => FormErrors>,
-    options?: EntityFormRenderOptions<C>,
+    options: EntityFormRenderOptions<C>,
+    values: Optional<T>
   ) => ReactNode;
 }
 
@@ -103,6 +107,7 @@ export interface FieldDefImage<T> extends FieldDefBase, FieldDefNamed<T> {
   thumbnailWidth?: number;
   thumbnailHeight?: number;
   uploadPurpose?: string;
+  showAlt?: boolean;
 }
 
 export type FieldDef<T, C = unknown> =
@@ -136,4 +141,31 @@ export interface EntityFormProps<T, C = unknown> {
   onCancel?: () => void;
   notFoundText?: string;
   notFoundBtnCaption?: string;
+  title?: (data: Optional<T>, context: Optional<C>) => ReactNode;
+}
+
+export interface GeoIp {
+  ip: string,
+  country: string,
+  countryCode: string,
+  city: string,
+  rangeStart: string,
+  rangeEnd: string
+}
+
+export interface Media {
+  id: number,
+  url: string,
+  width: number,
+  height: number,
+  mime: string,
+  alt: string,
+  thumbs?: MediaThumbnail[]
+}
+
+export interface MediaThumbnail {
+  width: number,
+  height: number,
+  url: string,
+  mime: string
 }

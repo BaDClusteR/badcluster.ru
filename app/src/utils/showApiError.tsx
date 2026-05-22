@@ -1,5 +1,5 @@
 import {ApiErrorContext} from "@/utils/types.ts";
-import {Optional} from "@/types.ts";
+import {Optional} from "@admin/types";
 import {notify} from "@/lib/notify.ts";
 
 export default function showApiError(payload: Optional<ApiErrorContext>, code?: number) {
@@ -11,7 +11,7 @@ export default function showApiError(payload: Optional<ApiErrorContext>, code?: 
         : null;
 
     if (place) {
-      let placePieces = place.split('/src/');
+      const placePieces = place.split('/src/');
       placePieces.shift();
       place = `src/${placePieces.join('/src/')}`;
     }

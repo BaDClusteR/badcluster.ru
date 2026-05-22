@@ -13,11 +13,9 @@
     "./modules": "./src/modules.ts"
   },
   "peerDependencies": {
-    "@mantine/form": "^9.0.0",
     "react": "^19.0.0"
   },
   "devDependencies": {
-    "@mantine/form": "^9.2.0",
     "@types/react": "^19.2.14",
     "react": "^19.2.6"
   }

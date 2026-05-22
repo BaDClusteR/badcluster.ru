@@ -8,11 +8,12 @@ import {
 } from "@mantine/core";
 import Checkbox from "@/components/primitives/Checkbox";
 import { IconChevronUp, IconChevronDown, IconSelector} from '@tabler/icons-react';
-import type {ColumnDef, DataTableProps, TableSort, TableState} from "./types";
+import type {ColumnDef} from '@admin/types';
+import type {DataTableProps, TableSort, TableState} from "@admin/types";
 import classes from './DataTable.module.css';
 import deepMerge from "@/utils/deepMerge";
 import clsx from "clsx";
-import {EntityRow} from "@/components/List/types.ts";
+import {EntityRow} from "@admin/types";
 import buttonClasses from "../primitives/Button.module.css";
 import {IconEmpty} from "@/components/List/components/Icons.tsx";
 
@@ -51,7 +52,7 @@ export function DataTable<T extends EntityRow>({
   });
 
   if (!rows.length && loading) {
-    // @ts-expect-error
+    // @ts-expect-error EntityRow does not allow empty lines, we add them here just to force rendering placeholder rows
     rows = [[], [], [], [], []];
   }
 
@@ -242,7 +243,7 @@ export function DataTable<T extends EntityRow>({
                           onChange={
                             (value) => {
                               if (onSelectionChange) {
-                                let newSelectedRows = Array.from(selectedRows ?? []);
+                                const newSelectedRows = Array.from(selectedRows ?? []);
                                 newSelectedRows[rowIndex] = value;
 
                                 onSelectionChange(newSelectedRows);

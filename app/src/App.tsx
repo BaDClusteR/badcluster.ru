@@ -6,6 +6,8 @@ import { AdminLayout } from './layout/AdminLayout';
 import { DashboardPage } from './pages/Dashboard';
 import { useModules } from './modules/useModules';
 import { NotFoundPage } from './pages/NotFound';
+import Comments from "@/pages/Comments/Comments.tsx";
+import Comment from "@/pages/Comment/Comment.tsx";
 
 export function App() {
   const { nav, modules, loading } = useModules();
@@ -15,6 +17,8 @@ export function App() {
       <Route path="/admin/login" element={<LoginPage />} />
       <Route path="/admin" element={<AdminLayout nav={nav} modules={modules} loading={loading} />}>
         <Route index element={<DashboardPage />} />
+        <Route key="comments-list" path="comments" element={<Comments />} />
+        <Route key="comment-edit" path="comments/:id" element={<Comment />} />
         {modules.map((mod) => (
             <Route
               key={mod.id}

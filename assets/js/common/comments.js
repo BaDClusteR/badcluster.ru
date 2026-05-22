@@ -50,6 +50,22 @@ class CommentController {
             }
         );
 
+        this.#comment.addEventListener(
+            "keydown",
+            (e) => {
+                if (
+                    e.key === "Enter"
+                    && !e.shiftKey
+                    && (
+                        e.ctrlKey
+                        || e.metaKey
+                    )
+                ) {
+                    this.#sendBtn.click();
+                }
+            }
+        );
+
         this.#form.addEventListener(
             "submit",
             (e) => {
@@ -63,6 +79,9 @@ class CommentController {
                     const data = new FormData(this.#form);
                     data.set('nickname', this.#nickname.value);
                     data.set('comment', this.#comment.value);
+                    if (this.#form.querySelector('input[name="parentId"]')) {
+                        data.set('parentId', this.#form.querySelector('input[name="parentId"]').value);
+                    }
 
                     fetch(
                         this.#form.action,

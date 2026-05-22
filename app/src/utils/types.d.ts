@@ -1,4 +1,4 @@
-import { Optional } from "@/types.ts";
+import { Optional } from "@admin/types";
 export interface ApiCallOptions {
     signal?: AbortSignal;
 }

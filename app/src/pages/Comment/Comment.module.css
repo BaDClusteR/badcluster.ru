@@ -1,0 +1,28 @@
+.table {
+  display: grid;
+  grid-template-columns: min(200px, 50%) 1fr;
+  font-size: var(--font-size-small);
+  gap: calc(.375 * var(--rhythmic-unit));
+  padding: 24px;
+  border-radius: var(--border-radius);
+  background: color-mix(in sRGB, var(--color-high-contrast), transparent 96%);
+}
+
+:global([data-mantine-color-scheme="dark"]) .table {
+  background: color-mix(in sRGB, var(--color-high-contrast), transparent 96%);
+}
+
+.tr {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  gap: calc(.5 * var(--rhythmic-unit));
+}
+
+.th {
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+}

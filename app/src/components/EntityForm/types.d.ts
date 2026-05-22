@@ -1,7 +1,6 @@
 import type { ComponentType, ReactNode } from "react";
 import { FormErrors, UseFormReturnType } from "@mantine/form";
 export type CommonFieldType = "text" | "textarea" | "number" | "switch" | "blocks";
-export type FieldType = CommonFieldType | "select" | "heading" | "datetime" | "group" | "slug";
 export interface SelectOption {
     value: string;
     label: string;
@@ -63,19 +62,4 @@ export interface FieldDefSlug<T> extends FieldDefBase, FieldDefNamed<T> {
     type: "slug";
     placeholder?: string;
     url: (slug: string) => string;
-}
-/** Async data provider for EntityForm — fetches entity data via React Query. */
-export interface EntityFormDataProvider<T> {
-    queryKey: unknown[];
-    getData: (signal?: AbortSignal) => Promise<T>;
-}
-export interface EntityFormProps<T, C = unknown> {
-    fields: FieldDef<T, C>[];
-    dataProvider: EntityFormDataProvider<T>;
-    context?: C;
-    onSubmit: (values: T) => Promise<void> | void;
-    submitLabel?: string;
-    onCancel?: () => void;
-    notFoundText?: string;
-    notFoundBtnCaption?: string;
 }

@@ -4,6 +4,7 @@ namespace BC\Widget\Common;
 
 use BC\Core\Asset\DTO\AssetDTO;
 use BC\Core\Trait\AssetBuilderTrait;
+use BC\Core\Trait\AuthTrait;
 use BC\DTO\CommentsConfigDTO;
 use BC\Widget\AWidget;
 use BC\Core\DTO\CommentDTO;
@@ -13,6 +14,7 @@ use BC\Widget\Page\IPageWithComments;
 
 class Comments extends AWidget implements IAssetProvider {
     use AssetBuilderTrait;
+    use AuthTrait;
 
     private ?APage $page = null;
     private ?CommentsConfigDTO $config = null;
@@ -60,6 +62,10 @@ class Comments extends AWidget implements IAssetProvider {
                 path: 'css/common/comments.css',
             ),
             new AssetDTO(
+                bundle: 'comments-admin',
+                path: 'css/common/comments-admin.css',
+            ),
+            new AssetDTO(
                 bundle: 'toast',
                 path: 'css/common/toast.css',
             ),
@@ -68,9 +74,23 @@ class Comments extends AWidget implements IAssetProvider {
                 path: 'js/common/comments.js',
             ),
             new AssetDTO(
+                bundle: 'comments-admin',
+                path: 'js/common/comments-admin.js',
+            ),
+            new AssetDTO(
                 bundle: 'toast',
                 path: 'js/common/toast.js'
             )
         ];
+    }
+
+    protected function isAuthenticated(): bool {
+        return $this->getAuth()->isAuthenticated();
+    }
+
+    protected function getDefaultNickname(): string {
+        return $this->getAuth()->isAuthenticated()
+            ? 'BaD ClusteR'
+            : '';
     }
 }

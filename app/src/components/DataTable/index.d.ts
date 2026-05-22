@@ -1,2 +1,2 @@
 export { DataTable } from './DataTable';
-export type { ColumnDef, DataTableProps, SortDir, TableState, TableStateManager, } from './types';
+export type {ColumnDef, TableState} from '@admin/types';

@@ -1,5 +1,11 @@
 import { useAdminCore } from "../admin/useAdminCore";
-import type { ColumnDef, ListDataProvider, ListDataProviderRequestOptions, ListState } from "@admin/types";
+import type {
+  ColumnDef,
+  ListDataProvider,
+  ListDataProviderRequestOptions,
+  ListDataResponse,
+  ListState
+} from "@admin/types";
 import { TagRow } from "./types";
 import {useNavigate} from "react-router";
 
@@ -42,11 +48,11 @@ export default function Tags() {
         API_ENDPOINT,
         convertListStateToQueryParameters(state),
         { signal: options.signal }
-      ) as { tags: TagRow[] };
+      ) as ListDataResponse<TagRow>;
 
       return {
-        rows: rows.tags,
-        total: rows.tags.length
+        items: rows.items,
+        total: rows.total
       };
     }
   };

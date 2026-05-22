@@ -21,23 +21,26 @@
   display: flex;
   flex-direction: column;
   row-gap: calc(2 * var(--rhythmic-unit));
-  margin: calc(2 * var(--rhythmic-unit)) 0 0 0;
+  margin: calc(2 * var(--rhythmic-unit)) 0 0;
 }
 
 .comment {
   display: flex;
   flex-direction: column;
   row-gap: calc(.25 * var(--rhythmic-unit));
+  position: relative;
 }
 
 .comment__meta {
   display: flex;
   align-items: center;
   gap: calc(.5 * var(--rhythmic-unit));
+  flex-wrap: wrap;
 }
 
 .comment__author {
   font-weight: 650;
+  white-space: nowrap;
 }
 
 .comment__author--anonymous {
@@ -50,15 +53,16 @@
   font-size: var(--font-size-smaller);
   color: var(--color-text-secondary);
   transition: var(--transition-mode) color;
+  white-space: nowrap;
 
-  &:before {
+  &::before {
     content: '•';
     padding-right: calc(.5 * var(--rhythmic-unit));
   }
 }
 
 .comment__text {
-  margin: 2px 0 0 0;
+  margin: 2px 0 0;
   padding: var(--rhythmic-unit);
   background: var(--color-surface);
   border-radius: 0 var(--border-radius) var(--border-radius) var(--border-radius);
@@ -81,7 +85,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  margin: calc(3 * var(--rhythmic-unit)) 0 0 0;
+  margin: calc(3 * var(--rhythmic-unit)) 0 0;
   row-gap: var(--rhythmic-unit);
   width: 100%;
   max-width: 600px;
@@ -121,15 +125,16 @@
   }
 
   &::placeholder {
-    color: color-mix(in srgb, var(--color-text-secondary), var(--color-bg) 50%);
+    color: color-mix(in sRGB, var(--color-text-secondary), var(--color-bg) 50%);
   }
 
   &:focus {
-    --field-bg: color-mix(in srgb, var(--color-surface), var(--color-bg) 20%);
+    --field-bg: color-mix(in sRGB, var(--color-surface), var(--color-bg) 20%);
   }
 
   &[disabled] {
     --field-bg: var(--color-surface);
+
     opacity: .6;
     cursor: not-allowed;
   }
@@ -168,7 +173,7 @@
 }
 
 [data-theme="dark"] .comment__field {
-  --field-bg: color-mix(in srgb, var(--color-contrast), var(--color-bg) 97%);
+  --field-bg: color-mix(in sRGB, var(--color-contrast), var(--color-bg) 97%);
 
   &:focus {
     --field-bg: var(--color-surface);
@@ -207,7 +212,7 @@
   }
 }
 
-@media (min-width: 450px) {
+@media (width >= 450px) {
   .comments__form .btn {
     width: auto;
   }

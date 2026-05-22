@@ -10,11 +10,25 @@ export default function Badge(
     children
   }: {
     className?: string;
-    type: 'success' | 'info',
+    type: 'success' | 'info' | 'warning' | 'danger',
     children?: React.ReactNode
   }
 ): React.JSX.Element {
-  const color = type === 'success' ? 'teal' : 'gray';
+  let color;
+
+  switch (type) {
+    case "success":
+      color = 'teal';
+      break;
+    case 'warning':
+      color = 'yellow';
+      break;
+    case 'danger':
+      color = 'red';
+      break;
+    default:
+      color = 'gray';
+  }
 
   return <MantineBadge
     className={clsx(className, classes.badgeContainer, classes[`color${color}`])}
@@ -50,6 +64,34 @@ export function BadgeGray(
   }
 ): React.JSX.Element {
   return <Badge type="info" className={className}>
+    {children}
+  </Badge>
+}
+
+export function BadgeRed(
+  {
+    className = '',
+    children
+  }: {
+    className?: string,
+    children?: React.ReactNode
+  }
+): React.JSX.Element {
+  return <Badge type="danger" className={className}>
+    {children}
+  </Badge>
+}
+
+export function BadgeYellow(
+  {
+    className = '',
+    children
+  }: {
+    className?: string,
+    children?: React.ReactNode
+  }
+): React.JSX.Element {
+  return <Badge type="warning" className={className}>
     {children}
   </Badge>
 }

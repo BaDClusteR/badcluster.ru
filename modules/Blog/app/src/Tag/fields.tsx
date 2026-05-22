@@ -7,6 +7,7 @@ const FIELDS: FieldDef<TagDetailed>[] = [
     label: 'Название',
     type: 'text',
     span: 'full',
+    role: 'primary',
     required: true
   },
   {
@@ -14,6 +15,7 @@ const FIELDS: FieldDef<TagDetailed>[] = [
     label: 'Слаг',
     type: 'text',
     span: 'full',
+    role: 'primary',
     required: true,
     placeholder: 'url-friendly-name',
     validate: (v) => /^[a-z0-9-]+$/.test(v as string)

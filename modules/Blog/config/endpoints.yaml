@@ -9,3 +9,6 @@ services:
   BC\Modules\Blog\Api\Endpoint\Tag:
     tags:
       - name: api_endpoint_collection
+
+  BC\Modules\Blog\Api\Endpoint\Comments:
+    decorates: BC\Api\Endpoint\Comments

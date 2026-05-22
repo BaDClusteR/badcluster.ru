@@ -1,4 +1,4 @@
-import {StringKeyObject} from "@/types";
+import {StringKeyObject} from "@admin/types";
 import {ApiCallMethod, ApiCallOptions} from "./types";
 import {HttpError} from "@/utils/errors.ts";
 import showApiError from "@/utils/showApiError.tsx";

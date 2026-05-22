@@ -1,9 +1,9 @@
-import type { EntityRow } from "../admin/types";
+import type { EntityRow } from "@admin/types";
 
-export interface PageRow extends EntityRow {
+export interface PostRow extends EntityRow {
     title: string,
     slug: string,
     published: boolean,
     publishDate: string,
-    publishTime: string
+    updateDate: string
 }

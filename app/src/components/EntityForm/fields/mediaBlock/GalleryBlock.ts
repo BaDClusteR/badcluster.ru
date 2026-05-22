@@ -25,8 +25,7 @@ export class GalleryBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
       title: "Галерея",
-      icon: iconSlideshow,
-      keywords: ['gallery', 'slideshow', 'carousel', 'slides']
+      icon: iconSlideshow
     };
   }
 

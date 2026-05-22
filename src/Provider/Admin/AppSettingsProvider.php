@@ -6,10 +6,12 @@ use BC\Core\Config\IWebsiteSettings;
 use BC\DTO\AppSettings\AppSettingsDTO;
 use BC\DTO\AppSettings\ModuleDTO;
 use BC\DTO\AppSettings\NavigationDTO;
+use BC\Provider\IPathsProvider;
 
 readonly class AppSettingsProvider implements IAppSettingsProvider {
     public function __construct(
-        private IWebsiteSettings $websiteSettings
+        private IWebsiteSettings $websiteSettings,
+        private IPathsProvider $pathsProvider,
     ) {
     }
 
@@ -17,7 +19,8 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
         return new AppSettingsDTO(
             nav: $this->getNav(),
             modules: $this->getModules(),
-            webRoot: $this->websiteSettings->getWebRoot()
+            webRoot: $this->websiteSettings->getWebRoot(),
+            staticRoot: $this->pathsProvider->getStaticWebPath()
         );
     }
 
@@ -30,6 +33,12 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 label: 'Дашборд',
                 path: '/admin',
                 icon: 'dashboard',
+            ),
+            new NavigationDTO(
+                label: 'Комментарии',
+                path: '/admin/comments',
+                icon: 'message',
+                position: 1000
             )
         ];
     }

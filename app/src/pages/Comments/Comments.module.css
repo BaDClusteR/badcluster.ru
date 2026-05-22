@@ -1,0 +1,13 @@
+.comment {
+  max-width: 450px;
+  display: -webkit-box;
+  overflow-wrap: break-word;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.approvedBadge {
+  min-width: 120px;
+}

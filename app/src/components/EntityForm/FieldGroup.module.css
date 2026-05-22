@@ -5,6 +5,12 @@
   padding: 24px 0;
 }
 
+.title {
+  margin-block-start: 0;
+  margin-inline: auto;
+  max-width: 720px;
+}
+
 .fullscreen {
   position: fixed;
   top: 0;
@@ -33,7 +39,7 @@
   left: calc(100% + 8px);
   color: var(--color-text);
 
-  &:not([disabled]):not([data-loading]) {
+  &:not([disabled], [data-loading]) {
     &:hover,
     &:focus-visible,
     &:active {
@@ -47,6 +53,7 @@
   margin-inline: auto;
 }
 
+/* noinspection Stylelint */
 :global(html) {
   &:has(.fullscreen) {
     overflow: hidden;
@@ -56,6 +63,7 @@
 .loader {
   --loader-size: 18px;
   --loader-color: var(--color-text-secondary);
+
   top: calc(1.75 * var(--rhythmic-unit));
   position: fixed;
   right: calc(4.5 * var(--rhythmic-unit));

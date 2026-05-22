@@ -4,15 +4,16 @@
   transition: var(--transition) background-color, var(--transition) color, var(--transition) border-bottom-color;
 }
 
-:global([data-mantine-color-scheme="light"] body:has(.entity-form)) .header {
+:global([data-mantine-color-scheme="light"] body:has(.entity-form)) .header,
+:global([data-mantine-color-scheme="light"] body:has(.skeletonContainer)) .header {
   background: var(--color-bg);
 }
 
 .header-burger[data-opened] {
   background: var(--burger-color);
 
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     transform: none;
   }
 }

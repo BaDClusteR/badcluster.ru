@@ -16,8 +16,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setId(int $id)
  * @method int|null getParentId()
  * @method self setParentId(int|null $parentId)
- * @method DateTime getDate()
- * @method self setDate(DateTime $date)
+ * @method \DateTime getDate()
+ * @method self setDate(\DateTime $date)
  * @method string getName()
  * @method self setName(string $name)
  * @method string|null getEmail()
@@ -35,6 +35,10 @@ use Runway\Model\Exception\ModelException;
  */
 #[DS\Table('comments')]
 class Comment extends AEntity {
+    public const string STATUS_DECLINED = 'D';
+    public const string STATUS_APPROVED = 'A';
+    public const string STATUS_ON_MODERATION = 'M';
+
     #[DS\Id]
     protected int $id;
 
@@ -63,7 +67,7 @@ class Comment extends AEntity {
     protected int $pageId;
 
     #[DS\Column]
-    protected string $status = 'M';
+    protected string $status = self::STATUS_ON_MODERATION;
 
     /**
      * @throws ModelException
@@ -94,7 +98,7 @@ class Comment extends AEntity {
      * @throws QueryBuilderException
      */
     public function approve(): void {
-        $this->setStatus('A');
+        $this->setStatus(self::STATUS_APPROVED);
 
         $this->persist();
     }
@@ -105,20 +109,27 @@ class Comment extends AEntity {
      * @throws QueryBuilderException
      */
     public function decline(): void {
-        $this->setStatus('D');
+        $this->setStatus(self::STATUS_DECLINED);
 
         $this->persist();
     }
 
     public function isApproved(): bool {
-        return $this->status === 'A';
+        return $this->status === self::STATUS_APPROVED;
     }
 
     public function isDeclined(): bool {
-        return $this->status === 'D';
+        return $this->status === self::STATUS_DECLINED;
     }
 
-    public function isWaitingApproval(): bool {
-        return $this->status === 'M';
+    public function isPending(): bool {
+        return $this->status === self::STATUS_ON_MODERATION;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getAllowedStatuses(): array {
+        return [self::STATUS_APPROVED, self::STATUS_DECLINED, self::STATUS_ON_MODERATION];
     }
 }

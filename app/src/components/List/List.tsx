@@ -5,9 +5,9 @@ import {
   DataTable,
   TableState
 } from "@/components/DataTable";
-import {EntityRow, ListDataResponse, ListProps, ListState, PartialListState} from "@/components/List/types";
+import {EntityRow, ListDataResponse, ListProps, ListState, PartialListState} from "@admin/types";
 import {useUrlListState} from "./useUrlListState";
-import {Nullable} from "@/types.ts";
+import {Nullable} from "@admin/types";
 import classes from "./List.module.css";
 import {useQuery} from "@tanstack/react-query";
 import {useDebouncedCallback} from "use-debounce";
@@ -22,7 +22,6 @@ export function List<T extends EntityRow>(
   {
     name,
     permissions,
-    defaults,
     dataProvider,
     columns,
     title,
@@ -35,13 +34,13 @@ export function List<T extends EntityRow>(
     getDeleteConfirmationText
   }: ListProps<T>
 ) {
-  const listState = useUrlListState({defaults});
+  const listState = useUrlListState();
   const {state} = listState;
   const {getData} = dataProvider;
   const navigate = useNavigate();
 
   const [filterText, setFilterText] = useState(state.filter);
-  const [tableData, setTableData] = useState({rows: [], total: 0} as ListDataResponse<any>);
+  const [tableData, setTableData] = useState({items: [], total: 0} as ListDataResponse<any>);
   const [prevState, setPrevState] = useState<Nullable<ListState>>(null);
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
 
@@ -61,7 +60,7 @@ export function List<T extends EntityRow>(
   const {data, error: err, isFetching, refetch} = useQuery({
     queryKey: [name, state],
     retry: false,
-    queryFn: ({ signal }) => getData(state, {signal})
+    queryFn: ({ signal }) => getData(state, {signal}),
   });
 
   const error: any = err;
@@ -90,8 +89,8 @@ export function List<T extends EntityRow>(
           e.preventDefault();
           const rowsToDelete: T|T[] = [];
           selectedRows?.forEach((selected, rowIndex) => {
-            if (selected && data?.rows[rowIndex]) {
-              rowsToDelete.push(data?.rows[rowIndex]);
+            if (selected && data?.items[rowIndex]) {
+              rowsToDelete.push(data?.items[rowIndex]);
             }
           });
 
@@ -207,7 +206,7 @@ export function List<T extends EntityRow>(
               closeDeletionConfirmation();
               setSelectedRows([]);
               await refetch();
-            } catch (error) {
+            } catch {
               setIsDeleting(false);
             }
           }
@@ -248,7 +247,7 @@ export function List<T extends EntityRow>(
 
       <DataTable<T>
         columns={columns}
-        rows={tableData.rows}
+        rows={tableData.items}
         loading={isFetching}
         total={tableData.total}
         state={state.table}

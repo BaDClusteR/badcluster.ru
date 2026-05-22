@@ -1,4 +1,4 @@
-import {StringKeyObject} from "@/types";
+import {StringKeyObject} from "@admin/types";
 
 function isObject(item: any): boolean {
     // Нам важно, чтобы это был именно объект-контейнер { ... }, а не null или массив
@@ -7,7 +7,7 @@ function isObject(item: any): boolean {
 
 export default function deepMerge(target: StringKeyObject, source: StringKeyObject): StringKeyObject {
     // Создаем копию target, чтобы не мутировать исходный объект
-    let output = { ...target };
+    const output = { ...target };
 
     if (isObject(target) && isObject(source)) {
         Object.keys(source).forEach(key => {

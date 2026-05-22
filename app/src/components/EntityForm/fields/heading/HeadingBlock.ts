@@ -47,8 +47,7 @@ export class HeadingBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
       title: 'Заголовок',
-      icon: iconHeader,
-      keywords: ['heading', 'header', 'title', 'h2', 'h3'],
+      icon: iconHeader
     };
   }
 
@@ -164,14 +163,15 @@ export class HeadingBlock implements BlockTool {
   }
 
   /** Handle paste of heading elements. */
-  onPaste(event: { detail: { data: HTMLHeadingElement } }) {
-    const tag = event.detail.data.tagName;
+  onPaste(event: Parameters<NonNullable<BlockTool['onPaste']>>[0]) {
+    const el = (event as unknown as { detail: { data: HTMLElement } }).detail.data;
+    const tag = el.tagName;
     const level = parseInt(tag.replace('H', ''), 10);
 
     this.data = {
       ...this.data,
-      text: event.detail.data.innerHTML,
-      anchor: event.detail.data.id ?? "",
+      text: el.innerHTML,
+      anchor: el.id ?? "",
       level: this.config.levels.includes(level) ? level : this.config.defaultLevel,
     };
 

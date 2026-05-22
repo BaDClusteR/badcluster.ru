@@ -15,52 +15,41 @@
   --color-accent: #589E64;
   --color-link: #26914E;
   --color-link-hover: #166534;
-
   --color-surface: #FFF;
   --color-bg: #F4F4F5;
   --color-lvl1: var(--color-bg);
   --color-text-secondary: #71717A;
   --color-border: #E4E4E7;
   --color-contrast: #000;
+  --color-high-contrast: #000;
   --color-anti-contrast: #FFF;
   --color-error: #EF4444;
-
   --font-size-big: 20px;
   --font-size-root: 18px;
   --font-size-base: 16px;
   --font-size-small: 14px;
   --font-size-tiny: 12px;
-
   --header-bg: var(--color-surface);
-
-  --mantine-font-family: 'IBM Plex Sans', 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+  --mantine-font-family: 'IBM Plex Sans', 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', arial, sans-serif;
   --mantine-font-family-headings: var(--mantine-font-family);
   --mantine-font-family-monospace: 'IBM Plex Mono', monospace;
   --mantine-font-family-serif: 'IBM Plex Serif', "Merriweather", "Georgia", serif;
-
   --font-family: var(--mantine-font-family);
   --font-family-mono: var(--mantine-font-family-monospace);
   --font-family-serif: var(--mantine-font-family-serif);
-
   --mantine-radius-default: var(--mantine-radius-md);
-
   --border-width: 1px;
   --border: var(--border-width) solid var(--color-border);
-
   --transition-duration: .3s;
   --transition-function: cubic-bezier(.4, 0, .2, 1);
   --transition: var(--transition-duration) var(--transition-function);
-
   --transition-slow-duration: .25s;
   --transition-slow-function: var(--transition-function);
   --transition-slow: var(--transition-slow-duration) var(--transition-slow-function);
-
   --border-radius: 8px;
   --border-radius-big: calc(2 * var(--border-radius));
   --border-radius-small: calc(.5 * var(--border-radius));
-
   --rhythmic-unit: 16px;
-
   --mantine-primary-color-filled: var(--color-link);
   --mantine-primary-color-filled-hover: var(--mantine-primary-color-filled);
 }
@@ -85,28 +74,23 @@
   --mantine-color-dark-7: #242424;
   --mantine-color-dark-8: #1f1f1f;
   --mantine-color-dark-9: #141414;
-
   --color-brand: #22C55E;
-
-  --color-bg: #111111;
+  --color-bg: #111;
   --color-surface: #1C1C1C;
   --color-lvl1: #1C1C1C;
   --color-text: #E5E5E5;
   --color-text-secondary: #A1A1A1;
   --color-border: #27272A;
   --color-button-text: var(--color-surface);
-
   --color-link: #4ADE80;
   --color-link-hover: #86EFAC;
   --color-contrast: #FFF;
+  --color-high-contrast: #FFF;
   --color-anti-contrast: #111;
   --color-button: var(--color-accent);
   --color-button-hover: var(--color-link-hover);
-
   --header-bg: var(--color-surface);
-
   --border: var(--border-width) solid var(--color-border);
-
   --mantine-color-body: var(--mantine-color-dark-9);
   --mantine-primary-color-filled: var(--color-link);
   --mantine-primary-color-filled-hover: var(--mantine-primary-color-filled);
@@ -131,19 +115,23 @@ body {
 a,
 a:visited {
   color: var(--color-link);
+  text-decoration: none;
 
   &:hover,
   &:focus-visible,
   &:active {
     color: var(--color-link-hover);
-    outline-color: currentColor;
+    outline-color: currentcolor;
+    text-decoration: underline;
   }
 }
 
 @keyframes outline-animation {
   from {
     outline-offset: 8px;
-  } to {
+  }
+
+ to {
     outline-offset: 2px;
   }
 }
@@ -152,7 +140,7 @@ a,
 button,
 input[type="checkbox"] {
   -webkit-tap-highlight-color: transparent;
-  outline-color: currentColor;
+  outline-color: currentcolor;
 
   &:focus-visible {
     animation: var(--transition) outline-animation;
@@ -160,10 +148,29 @@ input[type="checkbox"] {
 }
 
 .mantine-Input-input {
-  transition: var(--transition) border-color, var(--transition) color, var(--transition) background-color;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
 
-  &::placeholder {
-    transition: calc(.5 * var(--transition-duration)) var(--transition-function) color;
+  &:hover:not(:focus) {
+    border-color: color-mix(in srgb, var(--color-text-secondary), transparent 30%);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 15%);
+  }
+
+  &:focus,
+  &:focus-within,
+  &.mantine-DateTimePicker-input[aria-expanded="true"] {
+    border-color: var(--input-bd-focus);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--input-bd-focus), transparent 70%);
+  }
+}
+
+.mantine-DateTimePicker-datePickerRoot button[data-selected] {
+  background: var(--color-surface);
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background: var(--color-link);
+    color: var(--color-bg);
   }
 }
 

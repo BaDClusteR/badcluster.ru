@@ -21,7 +21,7 @@
   pointer-events: none;
   transition: opacity 200ms ease;
 
-  @media (min-width: 48em) {
+  @media (width >= 48em) {
     display: none;
   }
 
@@ -58,6 +58,7 @@
     &:active {
       background: transparent;
       color: var(--nl-color);
+      text-decoration: none;
     }
   }
 }
@@ -118,4 +119,8 @@
 
 .main {
   background: var(--color-bg);
+}
+
+:global([data-mantine-color-scheme="light"] body:has(.entity-form):not(:has(.codex-editor))) .main {
+  background: var(--color-surface);
 }

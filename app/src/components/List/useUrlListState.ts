@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
-import type {ListState, ListStateManager, PartialListState} from "./types";
+import type {ListState, ListStateManager, PartialListState, SortDirection} from "@admin/types";
 import deepMerge from "@/utils/deepMerge";
-import {SortDir, TableState} from "@/components/DataTable";
-import {Optional} from "@/types";
+import {TableState} from "@admin/types";
+import {Optional} from "@admin/types";
 
 const BASE_DEFAULTS: ListState = {
     table: {
@@ -33,7 +33,6 @@ export function useUrlListState(options: ListStateOptions = {}): ListStateManage
 
     const defaults = useMemo<ListState>(
         () => deepMerge(BASE_DEFAULTS, (userDefaults || {})) as ListState,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
     );
 
@@ -46,7 +45,7 @@ export function useUrlListState(options: ListStateOptions = {}): ListStateManage
                 page: Number.isFinite(pageRaw) && pageRaw > 0 ? pageRaw : defaults.table.page,
                 perPage: Number.isFinite(perPageRaw) && perPageRaw > 0 ? perPageRaw : defaults.table.perPage,
                 sortBy: searchParams.get('sortBy') ?? defaults.table.sortBy,
-                sortDir: (searchParams.get('sortDir') as SortDir | null) ?? defaults.table.sortDir
+                sortDir: (searchParams.get('sortDir') as SortDirection | null) ?? defaults.table.sortDir
             },
             filter: searchParams.get('filter') ?? defaults.filter
         };

@@ -6,74 +6,66 @@ use ApiPlatform\Attribute as API;
 use ApiPlatform\Exception\BadRequestException;
 use ApiPlatform\Exception\RuntimeInternalErrorException;
 use BC\Api\DTO\CreatedDTO;
+use BC\Api\DTO\ListResponseDTO;
 use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Exception\UnprocessableEntityException;
-use BC\Modules\Blog\Api\DTO\TagDetailedDTO;
 use BC\Modules\Blog\Api\DTO\TagDTO;
-use BC\Modules\Blog\Api\DTO\TagsDTO;
+use BC\Modules\Blog\Api\DTO\TagRowDTO;
 use BC\Modules\Blog\Core\Action\DTO\CreateTagRequest;
 use BC\Modules\Blog\Core\Action\DTO\SaveTagRequest;
 use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
 use BC\Modules\Blog\Core\Action\Tag\ICreateTagAction;
 use BC\Modules\Blog\Core\Action\Tag\ISaveTagAction;
 use BC\Modules\Blog\Model\Tag as TagModel;
-use Runway\DataStorage\Exception\DBException;
-use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Exception\Exception;
 use Runway\Singleton\Container;
 
 class Tag extends AEndpoint {
     /**
+     * @return ListResponseDTO<TagRowDTO>
+     *
      * @throws BadRequestException
      */
     #[API\Endpoint(path: 'post_tags', method: 'GET')]
     public function getList(
         #[API\Parameter(source: 'query')]
         string $filter = '',
+
         #[API\Parameter(source: 'query')]
         string $sortBy = '',
+
         #[API\Parameter(source: 'query')]
         string $sortDir = '',
+
         #[API\Parameter(source: 'query')]
         int $page = 1,
+
         #[API\Parameter(source: 'query')]
         int $perPage = 25
-    ): TagsDTO {
-        $filter = strtolower(trim($filter));
-        $page = max(1, $page);
-        $perPage = max(1, min(100, $perPage));
-
-        $qb = TagModel::getQueryBuilder()
-            ->select('*, (SELECT COUNT(*) FROM `{post_tags}` WHERE tag_id = `{tags}`.id) AS count')
-            ->orderBy('count', 'DESC')
-            ->setLimit($perPage, ($page - 1) * $perPage);
-
-        if ($filter !== '') {
-            $qb = $qb->andWhere('(LOWER(title) LIKE :filter) OR (LOWER(slug) LIKE :filter)')
-                     ->setVariable('filter', "%$filter%");
+    ): ListResponseDTO {
+        if (!$sortBy) {
+            $sortBy = 'count';
         }
 
-        if ($sortBy && !in_array($sortBy, $this->getSortableColumns(), true)) {
-            throw new BadRequestException(
-                sprintf('Не могу сортировать по \'%s\'.', $sortBy)
-            );
+        if (!$sortDir) {
+            $sortDir = 'DESC';
         }
 
-        if (in_array($sortBy, $this->getSortableColumns())) {
-            $qb = $qb->orderBy(
-                $sortBy,
-                $this->sanitizeSortDirection($sortDir)
-            );
-        }
+        $qb = TagModel::getQueryBuilder();
+
+        $this->addFilter($qb, $filter, ['title', 'slug']);
+        $total = $this->setSortLimitAndGetTotal($qb, $sortBy, $sortDir, $page, $perPage);
+        $qb->select('*, (SELECT COUNT(*) FROM `{post_tags}` WHERE tag_id = `{tags}`.id) AS count');
 
         return $this->handleWithException(
-            fn () => new TagsDTO(
-                tags: array_map(
-                    fn (array $tag): TagDTO => $this->convertResult($tag),
+            fn () => new ListResponseDTO(
+                items: array_map(
+                    fn (array $tag): TagRowDTO => $this->convertListResponseItem($tag),
                     $qb->getResults()
-                )
+                ),
+                total: $total
             )
         );
     }
@@ -85,7 +77,7 @@ class Tag extends AEndpoint {
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
-    ): TagDetailedDTO {
+    ): TagDTO {
         /** @var TagModel|null $tag */
         $tag = $this->handleWithException(
             static fn () => TagModel::findByUniqueIdentifier($id)
@@ -96,7 +88,7 @@ class Tag extends AEndpoint {
         }
 
         return $this->handleWithException(
-            fn (): TagDetailedDTO => $this->convertDetailedModel($tag)
+            fn (): TagDTO => $this->convertDetailedModel($tag)
         );
     }
 
@@ -107,7 +99,6 @@ class Tag extends AEndpoint {
     public function createTag(
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
-
         #[API\Parameter(source: 'body', name: 'slug')]
         string $slug
     ): CreatedDTO {
@@ -141,10 +132,8 @@ class Tag extends AEndpoint {
     public function updateTag(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,
-
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
-
         #[API\Parameter(source: 'body', name: 'slug')]
         string $slug
     ): SuccessfulResultDTO {
@@ -186,15 +175,15 @@ class Tag extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
-    private function convertDetailedModel(TagModel $post): TagDetailedDTO {
-        return new TagDetailedDTO(
+    private function convertDetailedModel(TagModel $post): TagDTO {
+        return new TagDTO(
             title: $post->getTitle(),
             slug: $post->getSlug()
         );
     }
 
-    private function convertResult(array $tag): TagDTO {
-        return new TagDTO(
+    private function convertListResponseItem(array $tag): TagRowDTO {
+        return new TagRowDTO(
             id: (int) ($tag['id'] ?? 0),
             title: (string) ($tag['title'] ?? ''),
             slug: (string) ($tag['slug'] ?? ''),
@@ -202,19 +191,7 @@ class Tag extends AEndpoint {
         );
     }
 
-    private function getSortableColumns(): array {
+    protected function getSortableColumns(): array {
         return ['title', 'slug', 'count'];
-    }
-
-    private function sanitizeSortDirection(string $sortDirection): string {
-        $sortDirection = strtoupper(trim($sortDirection));
-
-        return in_array($sortDirection, ['ASC', 'DESC'], true)
-            ? $sortDirection
-            : $this->getDefaultSortDirection();
-    }
-
-    private function getDefaultSortDirection(): string {
-        return 'ASC';
     }
 }

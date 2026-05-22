@@ -2,6 +2,48 @@
   display: inline-block;
 }
 
+:global(.entity-form) {
+  --form-accent-bg: var(--color-bg);
+
+  &:not(:has(:global(.codex-editor)), :has(fieldset)) {
+    background: var(--form-accent-bg);
+    padding: calc(1.25 * var(--rhythmic-unit));
+    border-radius: var(--border-radius);
+    max-width: var(--form-max-content-width);
+  }
+
+  &:not(:has(:global(.codex-editor))) fieldset {
+    margin: 0;
+    background: var(--form-accent-bg);
+    padding: calc(1.25 * var(--rhythmic-unit));
+    border-radius: var(--border-radius);
+  }
+}
+
+:global([data-mantine-color-scheme="dark"] .entity-form) {
+  --form-accent-bg: var(--color-surface);
+}
+
+.formTitle {
+  margin-block-start: 0;
+  margin-inline: auto;
+  max-width: 720px;
+
+  a {
+    font-size: inherit;
+    font-weight: inherit;
+
+    &:not(:hover, :focus-visible) {
+      text-decoration: none;
+    }
+  }
+}
+
+.skeletonContainer {
+  margin-inline: auto;
+  max-width: 720px;
+}
+
 .card {
   padding: 24px;
   background: var(--color-surface);
@@ -40,15 +82,17 @@
   padding-inline: var(--form-padding);
 }
 
-:global(body:has(.entity-form)) {
+:global(body:has(.entity-form)),
+:global(body:has(.skeletonContainer)) {
   --color-bg: #FFF;
   --color-surface: #F4F4F5;
   --color-text: #131415;
   --color-contrast: #000;
 }
 
-:global([data-mantine-color-scheme="dark"] body:has(.entity-form)) {
-  --color-bg: #111111;
+:global([data-mantine-color-scheme="dark"] body:has(.entity-form)),
+:global([data-mantine-color-scheme="dark"] body:has(.skeletonContainer)) {
+  --color-bg: #111;
   --color-surface: #1C1C1C;
   --color-text: #E5E5E5;
   --color-contrast: #FFF;

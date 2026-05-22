@@ -25,6 +25,7 @@ import {
   IconWorld,
   IconBrush,
   IconPlug,
+  IconMessage,
   type IconProps,
 } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
@@ -52,6 +53,7 @@ const iconMap: Record<string, TablerIcon> = {
   world: IconWorld,
   brush: IconBrush,
   plug: IconPlug,
+  message: IconMessage,
 };
 
 interface NavItem {

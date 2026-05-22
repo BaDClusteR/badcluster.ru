@@ -1,14 +1,14 @@
 import { MultiSelect, Skeleton, Textarea } from "@mantine/core";
 import type { FieldDef } from "@admin/types";
 import classes from "./styles.module.css";
-import { PostDetailed} from "./types";
+import { Post} from "./types";
 import placeholders from "./placeholders";
 
 export interface BlogPostContext {
   tags: { value: string; label: string }[];
 }
 
-const FIELDS: FieldDef<PostDetailed, BlogPostContext>[] = [
+const FIELDS: FieldDef<Post, BlogPostContext>[] = [
   {
     type: 'group',
     role: 'primary',
@@ -39,8 +39,6 @@ const FIELDS: FieldDef<PostDetailed, BlogPostContext>[] = [
                 }
               }
             />
-          </Skeleton>
-          <Skeleton visible={options?.loading}>
             <MultiSelect
               classNames={{
                 root: classes.tagListRoot,
@@ -55,8 +53,6 @@ const FIELDS: FieldDef<PostDetailed, BlogPostContext>[] = [
                 form.setFieldValue("tags", values as never);
               }}
             />
-          </Skeleton>
-          <Skeleton visible={options?.loading}>
             <BlocksField
               className={classes.contentInline}
               value={form.values.content as never}

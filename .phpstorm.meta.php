@@ -63,8 +63,9 @@ namespace PHPSTORM_META
         'BC\Core\Media\IThumbnailGenerator' => \BC\Core\Media\ThumbnailGenerator::class,
         'BC\Core\Helper\IAttributesHelper' => \BC\Core\Helper\AttributesHelper::class,
         'BC\Core\Auth\IAuth' => \BC\Core\Auth\Auth::class,
-        'BC\Core\Converter\IConverter' => \BC\Core\Converter\DateConverterFactory::class,
+        'BC\Core\Converter\IDateConverter' => \BC\Core\Converter\DateConverter::class,
         'BC\Provider\Admin\IAppSettingsProvider' => \BC\Provider\Admin\AppSettingsProvider::class,
+        'BC\Core\Helper\IGeoIpHelper' => \BC\Core\Helper\GeoIpHelper::class,
         'BC\Provider\IMenuItemsProvider' => \BC\Provider\MenuItemsProvider::class,
         'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
         'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
@@ -75,6 +76,9 @@ namespace PHPSTORM_META
         'BC\Controller\Index' => \BC\Controller\Index::class,
         'BC\Controller\Admin' => \BC\Controller\Admin::class,
         'BC\Controller\Comment' => \BC\Controller\Comment::class,
+
+        // config/actions.yaml
+        'BC\Core\Action\Comments\IGetCommentsAction' => \BC\Core\Action\Comments\GetCommentsAction::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,
@@ -88,6 +92,8 @@ namespace PHPSTORM_META
         'BC\Modules\Blog\Core\Action\Post\ICreatePostAction' => \BC\Modules\Blog\Core\Action\Post\CreatePostAction::class,
         'BC\Modules\Blog\Core\Action\Post\IGetPostAction' => \BC\Modules\Blog\Core\Action\Post\GetPostAction::class,
         'BC\Modules\Blog\Core\Action\Validator\IPostValidator' => \BC\Modules\Blog\Core\Action\Validator\PostValidator::class,
+        'BC\Modules\Blog\Core\Action\Tag\ICreateTagAction' => \BC\Modules\Blog\Core\Action\Tag\CreateTagAction::class,
+        'BC\Modules\Blog\Core\Action\Tag\ISaveTagAction' => \BC\Modules\Blog\Core\Action\Tag\SaveTagAction::class,
 
         // modules/Blog/config/routes.yaml
         'BC\Modules\Blog\Controller\Blog' => \BC\Modules\Blog\Controller\Blog::class,
@@ -154,8 +160,9 @@ namespace PHPSTORM_META
         'BC\Core\Media\IThumbnailGenerator' => \BC\Core\Media\ThumbnailGenerator::class,
         'BC\Core\Helper\IAttributesHelper' => \BC\Core\Helper\AttributesHelper::class,
         'BC\Core\Auth\IAuth' => \BC\Core\Auth\Auth::class,
-        'BC\Core\Converter\IConverter' => \BC\Core\Converter\DateConverterFactory::class,
+        'BC\Core\Converter\IDateConverter' => \BC\Core\Converter\DateConverter::class,
         'BC\Provider\Admin\IAppSettingsProvider' => \BC\Provider\Admin\AppSettingsProvider::class,
+        'BC\Core\Helper\IGeoIpHelper' => \BC\Core\Helper\GeoIpHelper::class,
         'BC\Provider\IMenuItemsProvider' => \BC\Provider\MenuItemsProvider::class,
         'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
         'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
@@ -166,6 +173,9 @@ namespace PHPSTORM_META
         'BC\Controller\Index' => \BC\Controller\Index::class,
         'BC\Controller\Admin' => \BC\Controller\Admin::class,
         'BC\Controller\Comment' => \BC\Controller\Comment::class,
+
+        // config/actions.yaml
+        'BC\Core\Action\Comments\IGetCommentsAction' => \BC\Core\Action\Comments\GetCommentsAction::class,
 
         // vendor/bad_cluster/runway-console-app/config/services.yaml
         'Runway\Console\IApplication' => \Runway\Console\Application::class,
@@ -179,6 +189,8 @@ namespace PHPSTORM_META
         'BC\Modules\Blog\Core\Action\Post\ICreatePostAction' => \BC\Modules\Blog\Core\Action\Post\CreatePostAction::class,
         'BC\Modules\Blog\Core\Action\Post\IGetPostAction' => \BC\Modules\Blog\Core\Action\Post\GetPostAction::class,
         'BC\Modules\Blog\Core\Action\Validator\IPostValidator' => \BC\Modules\Blog\Core\Action\Validator\PostValidator::class,
+        'BC\Modules\Blog\Core\Action\Tag\ICreateTagAction' => \BC\Modules\Blog\Core\Action\Tag\CreateTagAction::class,
+        'BC\Modules\Blog\Core\Action\Tag\ISaveTagAction' => \BC\Modules\Blog\Core\Action\Tag\SaveTagAction::class,
 
         // modules/Blog/config/routes.yaml
         'BC\Modules\Blog\Controller\Blog' => \BC\Modules\Blog\Controller\Blog::class,

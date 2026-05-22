@@ -36,3 +36,7 @@ export function getModules(): ModuleDescriptor[] {
 export function getWebRoot(): string {
   return String(get('webRoot') || "");
 }
+
+export function getStaticRoot(): string {
+  return String(get('staticRoot') || "");
+}

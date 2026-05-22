@@ -3,11 +3,13 @@
 namespace BC\Widget\Common;
 
 use BC\Core\DTO\CommentDTO;
+use BC\Core\Trait\AuthTrait;
 use BC\Core\Trait\DateConverterTrait;
 use BC\Widget\AWidget;
 
 class Comment extends AWidget {
     use DateConverterTrait;
+    use AuthTrait;
 
     protected function getTemplatePath(): string {
         return 'common/comment.phtml';
@@ -58,5 +60,26 @@ class Comment extends AWidget {
     protected function prepareCommentText(string $text): string {
         $lines = explode("\n", $text);
         return '<p>' . implode('</p><p>', $lines) . '</p>';
+    }
+
+    protected function isAuthenticated(): bool {
+        return $this->getAuth()->isAuthenticated();
+    }
+
+    protected function getCssClass(): string {
+        $classes = ['comment'];
+        $comment = $this->getComment();
+
+        if (($level = $this->getLevel()) > 0) {
+            $classes[] = "comment--level-$level";
+        }
+
+        if ($comment?->isDeclined) {
+            $classes[] = 'comment--rejected';
+        } elseif (!$comment?->isApproved) {
+            $classes[] = 'comment--pending';
+        }
+
+        return implode(' ', $classes);
     }
 }
