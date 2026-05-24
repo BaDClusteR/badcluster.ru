@@ -67,7 +67,7 @@
   max-height: 480px;
   object-fit: contain;
   filter: grayscale(1) brightness(0.7);
-  transition: filter 180ms;
+  transition: filter var(--transition);
 }
 
 .progress {
@@ -76,14 +76,14 @@
   right: 0;
   bottom: 0;
   height: 4px;
-  background: rgba(0, 0, 0, .35);
+  background: rgb(0 0 0 / 35%);
 }
 
 .progressBar {
   width: 0;
   height: 100%;
   background: var(--mantine-primary-color-filled);
-  transition: width 120ms linear;
+  transition: width var(--transition) linear;
 }
 
 /* Uploaded state — the rendered <picture>/<video> */

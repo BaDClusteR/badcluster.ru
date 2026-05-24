@@ -1,23 +1,23 @@
 import {GeoIp, Nullable, Optional} from "@admin/types";
 
-export interface CommentDetailed {
+export interface Comment {
   date: string,
   name: string,
   comment: string,
   status: string
 }
 
-export interface CommentDetailedContext {
+export interface CommentContext {
   dateHumanReadable: string,
   geoIp: GeoIp,
   page: string,
   pageLink: string,
   email: Optional<string>,
-  parent: Nullable<CommentDetailedParent>,
+  parent: Nullable<CommentParent>,
   name: string
 }
 
-export interface CommentDetailedParent {
+export interface CommentParent {
   id: number,
   title: string,
   text: string,

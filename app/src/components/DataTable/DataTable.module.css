@@ -1,5 +1,5 @@
 .wrapper {
-  --selected-row-bg: color-mix(in srgb, var(--color-accent), transparent 90%);
+  --selected-row-bg: color-mix(in sRGB, var(--color-accent), transparent 90%);
 
   display: flex;
   flex-direction: column;
@@ -8,7 +8,6 @@
   padding: 0 var(--rhythmic-unit) var(--rhythmic-unit) var(--rhythmic-unit);
   border-radius: var(--border-radius);
   overflow: hidden;
-  transition: var(--transition) background-color;
 
   &.loading {
     table {
@@ -23,7 +22,6 @@
 
 .tableCard {
   border-block-end: var(--border);
-  transition: var(--transition) border-color;
   position: relative;
   margin-left: calc(-1 * var(--rhythmic-unit));
   margin-right: calc(-1 * var(--rhythmic-unit));
@@ -38,22 +36,15 @@
   --table-tr-hover: #F5F5F5;
 
   tr.selectedRow {
-    --table-tr-hover: color-mix(in srgb, var(--selected-row-bg), transparent 50%);
+    --table-tr-hover: color-mix(in sRGB, var(--selected-row-bg), transparent 50%);
   }
-}
 
-[data-mantine-color-scheme="dark"] .table {
-  --table-tr-hover: #151515;
-}
-
-.table {
   th,
   td {
     padding: calc(.75 * var(--rhythmic-unit)) var(--rhythmic-unit);
     text-align: left;
     border-bottom: var(--border);
     font-size: var(--mantine-font-size-sm);
-    transition: var(--transition) border-bottom-color, var(--transition) color;
   }
 
   th {
@@ -69,6 +60,10 @@
   tbody tr:last-child td {
     border-bottom: none;
   }
+}
+
+[data-mantine-color-scheme="dark"] .table {
+  --table-tr-hover: #151515;
 }
 
 .selectedRow {
@@ -128,7 +123,6 @@ td.errorContainer {
   padding: 48px 24px;
   text-align: left;
   color: var(--color-text);
-  transition: var(--transition) color;
 }
 
 td.empty {
@@ -161,7 +155,7 @@ table:has(.emptyInner) {
 .loadingOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgb(0 0 0 / 30%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -215,7 +209,6 @@ button.paginationButton {
   font-size: var(--font-size-tiny);
   color: var(--color-text-secondary);
   opacity: .7;
-  transition: var(--transition) color;
 }
 
 .emptyInner {
@@ -226,7 +219,7 @@ button.paginationButton {
   align-items: center;
 }
 
-@media (min-width: 650px) {
+@media (width >= 650px) {
   td.errorContainer,
   td.empty {
     text-align: center;

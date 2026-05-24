@@ -41,11 +41,11 @@ class Gallery {
     }
 
     #initDOM() {
-        this.#scroller = this.#root.querySelector('.post__gallery-scroller');
-        this.#slides = Array.from(this.#root.querySelectorAll('.post__gallery-slide'));
-        this.#btnPrev = this.#root.querySelector('.post__gallery-btn--prev');
-        this.#btnNext = this.#root.querySelector('.post__gallery-btn--next');
-        this.#currentCounter = this.#root.querySelector('.post__gallery-counter-current');
+        this.#scroller = this.#root.querySelector('.block__gallery-scroller');
+        this.#slides = Array.from(this.#root.querySelectorAll('.block__gallery-slide'));
+        this.#btnPrev = this.#root.querySelector('.block__gallery-btn--prev');
+        this.#btnNext = this.#root.querySelector('.block__gallery-btn--next');
+        this.#currentCounter = this.#root.querySelector('.block__gallery-counter-current');
     }
 
     #initListeners() {
@@ -111,7 +111,7 @@ class Gallery {
         this.#slides.forEach(
             (slide, i) => {
                 slide.classList.toggle(
-                    'post__gallery-slide--active',
+                    'block__gallery-slide--active',
                     slideIndex === i
                 );
             }
@@ -176,7 +176,7 @@ class Gallery {
 
         this.#slides.forEach(
             (slide, i) => {
-                if (slide.classList.contains('post__gallery-slide--active')) {
+                if (slide.classList.contains('block__gallery-slide--active')) {
                     index = i;
                 }
             }
@@ -199,7 +199,7 @@ class Gallery {
     static autoload(root) {
         root ??= document;
 
-        root.querySelectorAll('.post__gallery').forEach(
+        root.querySelectorAll('.block__gallery').forEach(
             /**
              * @param {Element & {galleryController?: Gallery}} gallery
              */

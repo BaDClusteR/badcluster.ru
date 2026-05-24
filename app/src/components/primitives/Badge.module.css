@@ -2,10 +2,6 @@
   text-box-trim: none;
 }
 
-.badgeContainer {
-  transition: var(--transition) background-color;
-}
-
 .colorgray {
   background: var(--color-border);
   color: var(--color-text);

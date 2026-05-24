@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
-import type { API, BlockTool, BlockToolData, ToolboxConfig } from '@editorjs/editorjs';
+import type { BlockTool, BlockToolData, ToolboxConfig } from '@editorjs/editorjs';
 import Toggle from '../mediaBlock/settings/Toggle/Toggle';
 import TextField from '../mediaBlock/settings/TextField/TextField.ts';
 import Separator from '../mediaBlock/settings/Separator/Separator.ts';
@@ -23,8 +23,7 @@ export class QuoteBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
       title: 'Цитата',
-      icon: ICON_QUOTE,
-      keywords: ['quote', 'blockquote', 'cite'],
+      icon: ICON_QUOTE
     };
   }
 
@@ -74,7 +73,7 @@ export class QuoteBlock implements BlockTool {
   private translationEl!: HTMLDivElement;
   private activeTab: 'original' | 'translation' = 'original';
 
-  constructor({ data, api }: { data: BlockToolData<QuoteBlockData>; api: API }) {
+  constructor({ data }: { data: BlockToolData<QuoteBlockData> }) {
     this.data = {
       text: data?.text ?? '',
       translated: data?.translated ?? false,
@@ -295,17 +294,5 @@ export class QuoteBlock implements BlockTool {
 
     this.originalEl.classList.toggle(classes.tabContentActive, tab === 'original');
     this.translationEl.classList.toggle(classes.tabContentActive, tab === 'translation');
-  }
-
-  private updateSwitcherLabels() {
-    const buttons = this.wrapper.querySelectorAll(`.${classes.controlBtn}`);
-    buttons.forEach((btn) => {
-      const el = btn as HTMLElement;
-      if (el.dataset.tab === 'original') {
-        el.textContent = this.data.labelOriginal;
-      } else {
-        el.textContent = this.data.labelTranslation;
-      }
-    });
   }
 }

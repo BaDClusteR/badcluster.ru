@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router';
+import React from "react";
+import {Link} from "react-router";
 import {
   Group,
   Pagination,
@@ -7,39 +7,42 @@ import {
   Skeleton
 } from "@mantine/core";
 import Checkbox from "@/components/primitives/Checkbox";
-import { IconChevronUp, IconChevronDown, IconSelector} from '@tabler/icons-react';
-import type {ColumnDef} from '@admin/types';
+import {IconChevronUp, IconChevronDown, IconSelector} from "@tabler/icons-react";
+import type {ColumnDef} from "@admin/types";
 import type {DataTableProps, TableSort, TableState} from "@admin/types";
-import classes from './DataTable.module.css';
+import classes from "./DataTable.module.css";
 import deepMerge from "@/utils/deepMerge";
 import clsx from "clsx";
 import {EntityRow} from "@admin/types";
 import buttonClasses from "../primitives/Button.module.css";
 import {IconEmpty} from "@/components/List/components/Icons.tsx";
+import {buildAdminUrl} from "@/utils/buildAdminUrl.ts";
 
 const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
 function TableSkeleton() {
-  return <Skeleton height={10} mt={6} mb={6} radius="xl" width="70%" />;
+  return <Skeleton height={10} mt={6} mb={6} radius="xl" width="70%"/>;
 }
 
-export function DataTable<T extends EntityRow>({
-  columns,
-  rows,
-  total,
-  state,
-  actions,
-  loading = false,
-  perPageOptions = DEFAULT_PER_PAGE_OPTIONS,
-  emptyMessage,
-  onStateChange,
-  error,
-  errorContent,
-  selectable,
-  selectedRows,
-  onSelectionChange,
-  bulkActions
-}: DataTableProps<T>
+export function DataTable<T extends EntityRow>(
+  {
+    columns,
+    rows,
+    total,
+    state,
+    actions,
+    loading = false,
+    perPageOptions = DEFAULT_PER_PAGE_OPTIONS,
+    emptyMessage,
+    onStateChange,
+    error,
+    errorContent,
+    selectable,
+    selectedRows,
+    onSelectionChange,
+    bulkActions,
+    webPath
+  }: DataTableProps<T>
 ) {
   const totalPages = Math.max(1, Math.ceil(total / state.perPage));
   const from = total === 0 ? 0 : (state.page - 1) * state.perPage + 1;
@@ -76,51 +79,59 @@ export function DataTable<T extends EntityRow>({
 
     const newSort: TableSort = {
       sortBy: null,
-      sortDir: 'asc'
+      sortDir: "asc"
     };
 
     if (state.sortBy !== col.key) {
       newSort.sortBy = col.key;
-    } else if (state.sortDir === 'asc') {
+    } else if (state.sortDir === "asc") {
       newSort.sortBy = state.sortBy;
-      newSort.sortDir = 'desc';
+      newSort.sortDir = "desc";
     }
 
     handleStateChange({
       sortBy: newSort.sortBy,
-      sortDir: newSort.sortDir,
-    })
+      sortDir: newSort.sortDir
+    });
   }
 
   function renderCell(col: ColumnDef<T>, row: T) {
     if (loading) {
-      return <TableSkeleton />;
+      return <TableSkeleton/>;
     }
 
     let content = col.render
       ? col.render(row)
       : col.accessor
-      ? col.accessor(row)
-      : (row as Record<string, unknown>)[col.key] as React.ReactNode;
+        ? col.accessor(row)
+        : (row as Record<string, unknown>)[col.key] as React.ReactNode;
 
     let subContent = col.subRender
       ? col.subRender(row)
       : col.subKey
-      ? (row as Record<string, unknown>)[col.subKey] as React.ReactNode
-      : null;
+        ? (row as Record<string, unknown>)[col.subKey] as React.ReactNode
+        : null;
 
     if (subContent) {
       subContent = <span className={classes.subContent}>
         {subContent}
-      </span>
+      </span>;
     }
 
     if (col.link) {
+      const url = (col.link === true)
+        ? buildAdminUrl(`${webPath}/${row.id}`)
+        : col.link(row);
+
       content = (
-        <Link to={col.link(row)} className={classes.cellLink}>
+        <Link to={url} className={classes.cellLink}>
           {content}
         </Link>
       );
+    }
+
+    if (col.nowrap) {
+      content = <span className="nobr">{content}</span>;
     }
 
     return <>
@@ -139,7 +150,7 @@ export function DataTable<T extends EntityRow>({
     }
 
     return result;
-  }
+  };
 
   return (
     <>
@@ -179,7 +190,7 @@ export function DataTable<T extends EntityRow>({
                     key={col.key}
                     style={{
                       width: col.width,
-                      textAlign: col.align ?? 'left',
+                      textAlign: col.align ?? "left"
                     }}
                     className={
                       clsx(
@@ -192,17 +203,17 @@ export function DataTable<T extends EntityRow>({
                     {col.header}
                     {col.sortable && (
                       <span
-                        className={`${classes.sortIcon} ${isSorted ? classes.sortActive : ''}`}
+                        className={`${classes.sortIcon} ${isSorted ? classes.sortActive : ""}`}
                       >
-                        {!isSorted && <IconSelector size={14} />}
-                        {isSorted && state.sortDir === 'asc' && <IconChevronUp size={14} />}
-                        {isSorted && state.sortDir === 'desc' && <IconChevronDown size={14} />}
+                        {!isSorted && <IconSelector size={14}/>}
+                        {isSorted && state.sortDir === "asc" && <IconChevronUp size={14}/>}
+                        {isSorted && state.sortDir === "desc" && <IconChevronDown size={14}/>}
                       </span>
                     )}
                   </th>
                 );
               })}
-              {actions && <th className={classes.actionsCell}> </th>}
+              {actions && <th className={classes.actionsCell}></th>}
             </tr>
             </thead>
             <tbody>
@@ -223,7 +234,7 @@ export function DataTable<T extends EntityRow>({
                   colSpan={getFullWidthColSpan()}
                   className={classes.empty}
                 >
-                  {emptyMessage ?? <span className={classes.emptyInner}><IconEmpty /> Ничего не найдено</span>}
+                  {emptyMessage ?? <span className={classes.emptyInner}><IconEmpty/> Ничего не найдено</span>}
                 </td>
               </tr>
             )}
@@ -254,14 +265,14 @@ export function DataTable<T extends EntityRow>({
                       </td>
                     }
                     {columns.map((col, colIndex) => (
-                      <td key={col.key ?? `${rowIndex}-${colIndex}`} style={{ textAlign: col.align ?? 'left' }}>
+                      <td key={col.key ?? `${rowIndex}-${colIndex}`} style={{textAlign: col.align ?? "left"}}>
                         {renderCell(col, row)}
                       </td>
                     ))}
                     {actions && (
                       <td className={classes.actionsCell}>
                         <Group gap="xs" justify="flex-end" wrap="nowrap">
-                          {loading ? <TableSkeleton /> : actions(row)}
+                          {loading ? <TableSkeleton/> : actions(row)}
                         </Group>
                       </td>
                     )}
@@ -283,8 +294,8 @@ export function DataTable<T extends EntityRow>({
             <Select
               size="xs"
               value={String(state.perPage)}
-              onChange={(v) => v && handleStateChange({ perPage: Number(v), page: 1 })}
-              data={perPageOptions.map((n) => ({ value: String(n), label: `${n} / page` }))}
+              onChange={(v) => v && handleStateChange({perPage: Number(v), page: 1})}
+              data={perPageOptions.map((n) => ({value: String(n), label: `${n} / page`}))}
               w={110}
               allowDeselect={false}
               disabled={loading || error}
@@ -305,17 +316,17 @@ export function DataTable<T extends EntityRow>({
                   control: clsx(buttonClasses.button, classes.paginationButton)
                 }}
                 value={state.page}
-                onChange={(page) => handleStateChange({ page })}
+                onChange={(page) => handleStateChange({page})}
                 total={totalPages}
                 siblings={1}
                 size="sm"
               >
                 <Group gap={5} justify="center">
-                  <Pagination.First className={classes.paginationButton} />
-                  <Pagination.Previous className={classes.paginationButton} />
-                  <Pagination.Items />
-                  <Pagination.Next className={classes.paginationButton} />
-                  <Pagination.Last className={classes.paginationButton} />
+                  <Pagination.First className={classes.paginationButton}/>
+                  <Pagination.Previous className={classes.paginationButton}/>
+                  <Pagination.Items/>
+                  <Pagination.Next className={classes.paginationButton}/>
+                  <Pagination.Last className={classes.paginationButton}/>
                 </Group>
               </Pagination.Root>
             </Skeleton>

@@ -9,7 +9,7 @@
  */
 
 :root,
-:root[data-mantine-color-scheme="light"] {
+:root[data-mantine-color-scheme='light'] {
   --color-brand: #16A34A;
   --color-text: #131415;
   --color-accent: #589E64;
@@ -33,7 +33,7 @@
   --mantine-font-family: 'IBM Plex Sans', 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', arial, sans-serif;
   --mantine-font-family-headings: var(--mantine-font-family);
   --mantine-font-family-monospace: 'IBM Plex Mono', monospace;
-  --mantine-font-family-serif: 'IBM Plex Serif', "Merriweather", "Georgia", serif;
+  --mantine-font-family-serif: 'IBM Plex Serif', 'Merriweather', 'Georgia', serif;
   --font-family: var(--mantine-font-family);
   --font-family-mono: var(--mantine-font-family-monospace);
   --font-family-serif: var(--mantine-font-family-serif);
@@ -52,6 +52,7 @@
   --rhythmic-unit: 16px;
   --mantine-primary-color-filled: var(--color-link);
   --mantine-primary-color-filled-hover: var(--mantine-primary-color-filled);
+  --burger-transition-duration: none;
 }
 
 @media (prefers-reduced-motion) {
@@ -64,15 +65,15 @@
 /* Dark scheme: override Mantine's default dark palette */
 [data-mantine-color-scheme='dark'],
 :root[data-mantine-color-scheme='dark'] {
-  --mantine-color-dark-0: #c9c9c9;
-  --mantine-color-dark-1: #b8b8b8;
+  --mantine-color-dark-0: #C9C9C9;
+  --mantine-color-dark-1: #B8B8B8;
   --mantine-color-dark-2: #828282;
   --mantine-color-dark-3: #696969;
   --mantine-color-dark-4: #424242;
-  --mantine-color-dark-5: #3b3b3b;
-  --mantine-color-dark-6: #2e2e2e;
+  --mantine-color-dark-5: #3B3B3B;
+  --mantine-color-dark-6: #2E2E2E;
   --mantine-color-dark-7: #242424;
-  --mantine-color-dark-8: #1f1f1f;
+  --mantine-color-dark-8: #1F1F1F;
   --mantine-color-dark-9: #141414;
   --color-brand: #22C55E;
   --color-bg: #111;
@@ -121,7 +122,7 @@ a:visited {
   &:focus-visible,
   &:active {
     color: var(--color-link-hover);
-    outline-color: currentcolor;
+    outline-color: currentColor;
     text-decoration: underline;
   }
 }
@@ -131,16 +132,16 @@ a:visited {
     outline-offset: 8px;
   }
 
- to {
+  to {
     outline-offset: 2px;
   }
 }
 
 a,
 button,
-input[type="checkbox"] {
+input[type='checkbox'] {
   -webkit-tap-highlight-color: transparent;
-  outline-color: currentcolor;
+  outline-color: currentColor;
 
   &:focus-visible {
     animation: var(--transition) outline-animation;
@@ -149,17 +150,18 @@ input[type="checkbox"] {
 
 .mantine-Input-input {
   box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+  transition: none;
 
   &:hover:not(:focus) {
-    border-color: color-mix(in srgb, var(--color-text-secondary), transparent 30%);
+    border-color: color-mix(in sRGB, var(--color-text-secondary), transparent 30%);
     box-shadow: 0 1px 2px rgb(0 0 0 / 15%);
   }
 
   &:focus,
   &:focus-within,
-  &.mantine-DateTimePicker-input[aria-expanded="true"] {
+  &.mantine-DateTimePicker-input[aria-expanded='true'] {
     border-color: var(--input-bd-focus);
-    box-shadow: 0 1px 2px color-mix(in srgb, var(--input-bd-focus), transparent 70%);
+    box-shadow: 0 1px 2px color-mix(in sRGB, var(--input-bd-focus), transparent 70%);
   }
 }
 
@@ -176,4 +178,8 @@ input[type="checkbox"] {
 
 .mantine-Notification-root {
   border: var(--border);
+}
+
+.nobr {
+  white-space: nowrap;
 }

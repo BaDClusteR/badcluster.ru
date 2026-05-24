@@ -3,12 +3,13 @@ services:
     tags:
       - name: api_endpoint_collection
 
+  BC\Modules\Blog\Api\Endpoint\BlogPostTags:
+    tags:
+      - name: api_endpoint_collection
+
   BC\Modules\Blog\Api\Endpoint\Upload:
     decorates: BC\Api\Endpoint\Upload
 
   BC\Modules\Blog\Api\Endpoint\Tag:
     tags:
       - name: api_endpoint_collection
-
-  BC\Modules\Blog\Api\Endpoint\Comments:
-    decorates: BC\Api\Endpoint\Comments

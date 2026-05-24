@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
-import type { ColumnDef } from "./data-table";
+import type {ReactNode} from "react";
+import type {ColumnDef} from "./data-table";
 import {Nullable} from "./common";
 
-export type SortDirection = 'asc' | 'desc';
+export type SortDirection = "asc" | "desc";
 
 export interface EntityRow {
   id: number;
@@ -10,12 +10,12 @@ export interface EntityRow {
 
 export interface ListState {
   table: {
-    page: number;
-    perPage: number;
-    sortBy: string | null;
-    sortDir: SortDirection;
-  };
-  filter: string;
+    page: number,
+    perPage: number,
+    sortBy: string | null,
+    sortDir: SortDirection,
+  },
+  filter: string
 }
 
 export interface PartialListState {
@@ -24,13 +24,14 @@ export interface PartialListState {
 }
 
 export interface ListDataResponse<T> {
-  items: T[];
-  total: number;
+  items: T[],
+  total: number
 }
 
 export interface ListStateManager {
-  state: ListState;
-  setState(patch: PartialListState): void;
+  state: ListState,
+
+  setState(patch: PartialListState): void
 }
 
 export interface ListRequestParameters {
@@ -47,7 +48,7 @@ export interface ListDataProviderRequestOptions {
 
 export type ListDataProviderRequest<T> = (
   state: ListState,
-  options: ListDataProviderRequestOptions,
+  options: ListDataProviderRequestOptions
 ) => Promise<ListDataResponse<T>>;
 
 export interface ListDataProvider<T> {
@@ -55,26 +56,31 @@ export interface ListDataProvider<T> {
 }
 
 export interface ListPermissions {
-  add: boolean;
-  edit: boolean;
-  delete: boolean;
-  select: boolean;
-  filter: boolean;
+  add: boolean,
+  edit: boolean,
+  delete: boolean,
+  select: boolean,
+  filter: boolean
 }
 
 export interface ListProps<T extends EntityRow> {
-  name: string;
-  title: ReactNode;
-  searchPlaceHolder?: string;
-  permissions: ListPermissions;
-  dataProvider: ListDataProvider<any>;
-  columns: ColumnDef<any>[];
-  getEditLink?: (row: T) => string;
-  getDeleteConfirmationTitle?: (row: T | T[]) => ReactNode | null;
-  getDeleteConfirmationText?: (row: T | T[]) => ReactNode | null;
-  onAdd?: () => void;
-  onDelete?: (rows: T[]) => Promise<void>;
-  addButtonTitle?: string;
+  name: string,
+  permissions?: ListPermissions,
+  columns: ColumnDef<T>[],
+  labels: ListLabels<T>,
+  webPath?: string,
+  dataProvider?: ListDataProvider<T>,
+  apiEndpoint?: string,
+}
+
+export interface ListLabels<T extends EntityRow> {
+  title: ReactNode,
+  searchPlaceholder?: string,
+  deleteConfirmation?: {
+    multiple: string,
+    single: (row: T) => ReactNode
+  },
+  add?: string
 }
 
 export interface TableState {
@@ -102,10 +108,11 @@ export interface DataTableProps<T> {
   selectable?: boolean,
   selectedRows?: boolean[],
   onSelectionChange?: (selectedRows: boolean[]) => void,
-  bulkActions?: ReactNode
+  bulkActions?: ReactNode,
+  webPath?: string
 }
 
 export interface TableSort {
   sortBy: Nullable<string>,
-  sortDir: SortDirection,
+  sortDir: SortDirection
 }

@@ -1,5 +1,9 @@
 import {Media} from "@admin/types";
 
+export interface BlogPostContext {
+  tags: { value: string; label: string }[];
+}
+
 export interface Post {
   id: number,
   title: string,

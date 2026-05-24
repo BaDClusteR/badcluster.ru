@@ -7,34 +7,17 @@
 .pswp {
   --pswp-bg: #000;
   --pswp-placeholder-bg: #222;
-
   --pswp-root-z-index: 100000;
-
-  --pswp-icon-color: #fff;
-  --pswp-icon-color-secondary: #4f4f4f;
-  --pswp-icon-stroke-color: #4f4f4f;
+  --pswp-icon-color: #FFF;
+  --pswp-icon-color-secondary: #4F4F4F;
+  --pswp-icon-stroke-color: #4F4F4F;
   --pswp-icon-stroke-width: 2px;
-
   --pswp-error-text-color: var(--pswp-icon-color);
-
   --pswp-nav-color: #BBB;
   --pswp-nav-hover-color: #F5F5F5;
+  --pswp-backdrop: rgb(0 0 0 / 75%);
+  --pswp-top-bar-bg: rgb(0 0 0 / 50%);
 
-  --pswp-backdrop: rgba(0, 0, 0, .75);
-  --pswp-top-bar-bg: rgba(0, 0, 0, .5);
-}
-
-[data-theme='dark'] .pswp {
-  --pswp-top-bar-bg: color-mix(in srgb, var(--color-surface), transparent 40%);
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .pswp {
-    --pswp-backdrop: var(--modal-backdrop);
-  }
-}
-
-.pswp {
   position: fixed;
   top: 0;
   left: 0;
@@ -45,7 +28,7 @@
   outline: 0;
   opacity: 0.003;
   contain: layout style size;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
   display: block;
 
   &:focus {
@@ -60,6 +43,16 @@
     opacity: 0.005;
     z-index: 10;
     pointer-events: none;
+  }
+}
+
+[data-theme='dark'] .pswp {
+  --pswp-top-bar-bg: color-mix(in sRGB, var(--color-surface), transparent 40%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .pswp {
+    --pswp-backdrop: var(--modal-backdrop);
   }
 }
 
@@ -279,11 +272,10 @@ div.pswp__img--placeholder,
   right: 0;
   text-align: center;
   color: #FFF;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgb(0 0 0 / 80%);
   overflow: hidden;
   text-overflow: ellipsis;
   min-height: 40px;
-  display: flex;
   align-items: center;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -298,7 +290,7 @@ div.pswp__img--placeholder,
   }
 }
 
-[data-theme="dark"] .pswp__custom-caption {
+[data-theme='dark'] .pswp__custom-caption {
   border-color: var(--color-surface);
 }
 
@@ -311,19 +303,6 @@ div.pswp__img--placeholder,
   display: flex;
   align-items: center;
 
-  svg {
-    width: 100%;
-    height: auto;
-    max-width: 60px;
-  }
-}
-
-
-.pswp__button--arrow--next svg {
-  transform: rotate(180deg);
-}
-
-.pswp__button--arrow {
   &:disabled {
     display: none;
     cursor: default;
@@ -335,6 +314,16 @@ div.pswp__img--placeholder,
     background: none;
     border-radius: 0;
   }
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 60px;
+  }
+}
+
+.pswp__button--arrow--next svg {
+  transform: rotate(180deg);
 }
 
 .pswp--one-slide .pswp__button--arrow {

@@ -1,26 +1,26 @@
-import type { FieldDef } from "@admin/types";
-import {TagDetailed} from "./types";
+import type {FieldDef} from "@admin/types";
+import {Tag} from "./types";
 
-const FIELDS: FieldDef<TagDetailed>[] = [
+const FIELDS: FieldDef<Tag>[] = [
   {
-    name: 'title',
-    label: 'Название',
-    type: 'text',
-    span: 'full',
-    role: 'primary',
+    name: "title",
+    label: "Название",
+    type: "text",
+    span: "full",
+    role: "primary",
     required: true
   },
   {
-    name: 'slug',
-    label: 'Слаг',
-    type: 'text',
-    span: 'full',
-    role: 'primary',
+    name: "slug",
+    label: "Слаг",
+    type: "text",
+    span: "full",
+    role: "primary",
     required: true,
-    placeholder: 'url-friendly-name',
+    placeholder: "url-friendly-name",
     validate: (v) => /^[a-z0-9-]+$/.test(v as string)
       ? null
-      : 'Только латиница, цифры и дефис',
+      : "Только латиница, цифры и дефис"
   }
 ];
 

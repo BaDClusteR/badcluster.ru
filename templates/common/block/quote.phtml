@@ -1,6 +1,7 @@
 <?php
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Block\Quote $this */
-?><blockquote class="post__quote"<?php if ($anchor = $this->getAnchor()) :?> id="<?=$anchor?>"<?php endif;?>>
+?>
+<blockquote class="block__quote"<?php if ($anchor = $this->getAnchor()) : ?> id="<?=$anchor?>"<?php endif; ?>>
     <?=$this->sanitizeQuoteText($this->getText())?>
 </blockquote>

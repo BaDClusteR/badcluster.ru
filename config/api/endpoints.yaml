@@ -6,3 +6,7 @@ services:
   BC\Api\Endpoint\Comments:
     tags:
       - name: api_endpoint_collection
+
+  BC\Api\Endpoint\CommentsModeration:
+    tags:
+      - name: api_endpoint_collection

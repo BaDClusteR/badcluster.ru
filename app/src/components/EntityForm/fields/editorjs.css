@@ -27,7 +27,6 @@
   strong,
   b {
     color: var(--color-contrast);
-    transition: var(--transition) color;
   }
 
   .ce-paragraph {
@@ -107,7 +106,7 @@
   .spoiler {
     filter: blur(4px);
     cursor: pointer;
-    transition: filter 200ms;
+    transition: filter var(--transition);
     user-select: text;
   }
 
@@ -116,11 +115,11 @@
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--color-link), transparent 60%);
+    background: color-mix(in sRGB, var(--color-link), transparent 60%);
   }
 
   .ce-block--selected .ce-block__content {
-    background: color-mix(in srgb, var(--color-contrast), transparent 90%);
+    background: color-mix(in sRGB, var(--color-contrast), transparent 90%);
   }
 }
 

@@ -1,44 +1,44 @@
-import { Suspense } from 'react';
-import { Routes, Route } from 'react-router';
-import { Loader, Box } from '@mantine/core';
-import { LoginPage } from './pages/Login';
-import { AdminLayout } from './layout/AdminLayout';
-import { DashboardPage } from './pages/Dashboard';
-import { useModules } from './modules/useModules';
-import { NotFoundPage } from './pages/NotFound';
-import Comments from "@/pages/Comments/Comments.tsx";
-import Comment from "@/pages/Comment/Comment.tsx";
+import {Suspense} from "react";
+import {Routes, Route} from "react-router";
+import {Loader, Box} from "@mantine/core";
+import {LoginPage} from "./pages/Login";
+import {AdminLayout} from "./layout/AdminLayout";
+import {DashboardPage} from "./pages/Dashboard";
+import {useModules} from "./modules/useModules";
+import {NotFoundPage} from "./pages/NotFound";
+import Comments from "@/pages/Comments";
+import Comment from "@/pages/Comment";
 
 export function App() {
-  const { nav, modules, loading } = useModules();
+  const {nav, modules, loading} = useModules();
 
   return (
     <Routes>
-      <Route path="/admin/login" element={<LoginPage />} />
-      <Route path="/admin" element={<AdminLayout nav={nav} modules={modules} loading={loading} />}>
-        <Route index element={<DashboardPage />} />
-        <Route key="comments-list" path="comments" element={<Comments />} />
-        <Route key="comment-edit" path="comments/:id" element={<Comment />} />
+      <Route path="/admin/login" element={<LoginPage/>}/>
+      <Route path="/admin" element={<AdminLayout nav={nav} loading={loading}/>}>
+        <Route index element={<DashboardPage/>}/>
+        <Route key="comments-list" path="comments" element={<Comments/>}/>
+        <Route key="comment-edit" path="comments/:id" element={<Comment/>}/>
         {modules.map((mod) => (
-            <Route
-              key={mod.id}
-              path={`${mod.path}/*`}
-              element={
-                <Suspense fallback={
-                  <Box style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
-                    <Loader />
-                  </Box>
-                }>
-                  <mod.component />
-                </Suspense>
-              }
-            />
+          <Route
+            key={mod.id}
+            path={`${mod.path}/*`}
+            element={
+              <Suspense fallback={
+                <Box style={{display: "flex", justifyContent: "center", padding: 48}}>
+                  <Loader/>
+                </Box>
+              }>
+                <mod.component/>
+              </Suspense>
+            }
+          />
         ))}
       </Route>
       <Route path="*" element={loading
-        ? <Box style={{ display: 'flex', justifyContent: 'center', padding: 48 }}><Loader /></Box>
-        : <NotFoundPage />
-      } />
+        ? <Box style={{display: "flex", justifyContent: "center", padding: 48}}><Loader/></Box>
+        : <NotFoundPage/>
+      }/>
     </Routes>
   );
 }

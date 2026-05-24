@@ -5,42 +5,42 @@ use BC\Widget\Common\Picture;
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Block\Media $this */
 ?>
-<?php if ($this->isImage()) :?>
-    <figure class="post__image-figure">
-        <?php if ($this->lightbox) :?>
-            <a
-                href="<?=$this->media->getWebPath()?>"
-                class="lightbox"
-                data-pswp-width="<?=$this->media->getWidth()?>"
-                data-pswp-height="<?=$this->media->getHeight()?>"
-            >
-        <?php endif; ?>
+<?php if ($this->isImage()) : ?>
+    <figure class="block__image-figure">
+        <?php if ($this->lightbox) : ?>
+        <a
+            href="<?=$this->media->getWebPath()?>"
+            class="lightbox"
+            data-pswp-width="<?=$this->media->getWidth()?>"
+            data-pswp-height="<?=$this->media->getHeight()?>"
+        >
+            <?php endif; ?>
             <?=new Picture([
                 'image'        => $this->media,
-                'class'        => "post__image-img",
-                'pictureClass' => "post__image-picture",
+                'class'        => "block__image-img",
+                'pictureClass' => "block__image-picture",
                 'lazyLoad'     => $this->lazy,
                 'caption'      => $this->caption,
                 'breakpoints'  => [
                     470 => 500,
-                    -1 => 1000
-                ]
+                    - 1 => 1000,
+                ],
             ])->render()?>
-        <?php if ($this->lightbox) :?>
-            </a>
-        <?php endif; ?>
-        <?php if ($this->caption) :?>
-            <figcaption class="post__image-text"><?=$this->caption?></figcaption>
+            <?php if ($this->lightbox) : ?>
+        </a>
+    <?php endif; ?>
+        <?php if ($this->caption) : ?>
+            <figcaption class="block__image-text"><?=$this->caption?></figcaption>
         <?php endif; ?>
     </figure>
-<?php elseif ($this->isVideo()) :?>
+<?php elseif ($this->isVideo()) : ?>
     <?php
-        $width = $this->media->getWidth();
-        $height = $this->media->getHeight();
+    $width = $this->media->getWidth();
+    $height = $this->media->getHeight();
     ?>
-    <figure class="post__image-figure figure--video<?php if ($this->lazy) :?>  figure--video-lazy<?php endif; ?>">
+    <figure class="block__image-figure figure--video<?php if ($this->lazy) : ?>  figure--video-lazy<?php endif; ?>">
         <video
-            class="post__image-video"
+            class="block__image-video"
             width="<?=$width?>"
             height="<?=$height?>"
             preload="<?=$this->lazy ? "none" : "auto"?>"
@@ -53,7 +53,7 @@ use BC\Widget\Common\Picture;
                 type="<?=$this->media->getMime()?>"
                 width="<?=$width?>"
                 height="<?=$height?>"
-                <?=$this->lazy ? "data-src" : "src"?>="<?=$this->media->getWebPath()?>"
+            <?=$this->lazy ? "data-src" : "src"?>="<?=$this->media->getWebPath()?>"
             />
         </video>
     </figure>

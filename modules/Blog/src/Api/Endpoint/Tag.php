@@ -11,6 +11,7 @@ use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Exception\UnprocessableEntityException;
+use BC\Modules\Blog\Api\DataBuilder\Tag\ITagDataBuilder;
 use BC\Modules\Blog\Api\DTO\TagDTO;
 use BC\Modules\Blog\Api\DTO\TagRowDTO;
 use BC\Modules\Blog\Core\Action\DTO\CreateTagRequest;
@@ -23,12 +24,17 @@ use Runway\Exception\Exception;
 use Runway\Singleton\Container;
 
 class Tag extends AEndpoint {
+    public function __construct(
+        private readonly ITagDataBuilder $dataBuilder
+    ) {
+    }
+
     /**
      * @return ListResponseDTO<TagRowDTO>
      *
      * @throws BadRequestException
      */
-    #[API\Endpoint(path: 'post_tags', method: 'GET')]
+    #[API\Endpoint(path: 'tags', method: 'GET')]
     public function getList(
         #[API\Parameter(source: 'query')]
         string $filter = '',
@@ -56,13 +62,20 @@ class Tag extends AEndpoint {
         $qb = TagModel::getQueryBuilder();
 
         $this->addFilter($qb, $filter, ['title', 'slug']);
-        $total = $this->setSortLimitAndGetTotal($qb, $sortBy, $sortDir, $page, $perPage);
+        $total = $this->setSortLimitAndGetTotal(
+            $qb,
+            $sortBy,
+            $sortDir,
+            $page,
+            $perPage,
+            ['title', 'slug', 'count']
+        );
         $qb->select('*, (SELECT COUNT(*) FROM `{post_tags}` WHERE tag_id = `{tags}`.id) AS count');
 
         return $this->handleWithException(
             fn () => new ListResponseDTO(
                 items: array_map(
-                    fn (array $tag): TagRowDTO => $this->convertListResponseItem($tag),
+                    fn (array $tag): TagRowDTO => $this->dataBuilder->buildRow($tag),
                     $qb->getResults()
                 ),
                 total: $total
@@ -73,29 +86,23 @@ class Tag extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'post_tag', method: 'GET')]
+    #[API\Endpoint(path: 'tag', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
     ): TagDTO {
-        /** @var TagModel|null $tag */
-        $tag = $this->handleWithException(
-            static fn () => TagModel::findByUniqueIdentifier($id)
-        );
-
-        if (!$tag) {
-            throw new NotFoundException("Тэг #$id не найден.");
-        }
-
-        return $this->handleWithException(
-            fn (): TagDTO => $this->convertDetailedModel($tag)
+        return $this->getEntity(
+            TagModel::class,
+            $id,
+            'Тэг #{{id}} не найден.',
+            fn (TagModel $tag): TagDTO => $this->dataBuilder->buildEntity($tag),
         );
     }
 
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'post_tags', method: 'POST')]
+    #[API\Endpoint(path: 'tag', method: 'POST')]
     public function createTag(
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
@@ -128,7 +135,7 @@ class Tag extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'post_tags', method: 'PUT')]
+    #[API\Endpoint(path: 'tag', method: 'PUT')]
     public function updateTag(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,
@@ -159,39 +166,13 @@ class Tag extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
-    #[API\Endpoint(path: 'post_tags', method: 'DELETE')]
+    #[API\Endpoint(path: 'tags', method: 'DELETE')]
     public function deleteTags(
         #[API\Parameter(source: 'body', name: 'rows')]
         array $rows
     ): SuccessfulResultDTO {
-        $qb = TagModel::getQueryBuilder();
-
-        $this->handleWithException(
-            static fn () => $qb->delete()
-                               ->where($qb->expr()->in('id', $rows))
-                               ->execute()
-        );
+        $this->deleteEntities(TagModel::class, $rows);
 
         return new SuccessfulResultDTO();
-    }
-
-    private function convertDetailedModel(TagModel $post): TagDTO {
-        return new TagDTO(
-            title: $post->getTitle(),
-            slug: $post->getSlug()
-        );
-    }
-
-    private function convertListResponseItem(array $tag): TagRowDTO {
-        return new TagRowDTO(
-            id: (int) ($tag['id'] ?? 0),
-            title: (string) ($tag['title'] ?? ''),
-            slug: (string) ($tag['slug'] ?? ''),
-            count: (int) ($tag['count'] ?? 0)
-        );
-    }
-
-    protected function getSortableColumns(): array {
-        return ['title', 'slug', 'count'];
     }
 }

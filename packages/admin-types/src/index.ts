@@ -4,3 +4,4 @@ export * from './data-table';
 export * from './modules';
 export * from './components';
 export * from './common';
+export * from './app-settings';

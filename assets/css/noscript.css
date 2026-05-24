@@ -1,8 +1,8 @@
-.post__gallery-controls {
+.block__gallery-controls {
   display: none;
 }
 
-.post__gallery-scroller .post__gallery-slide {
+.block__gallery-scroller .block__gallery-slide {
   opacity: 1;
 }
 

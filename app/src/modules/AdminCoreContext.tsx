@@ -1,13 +1,22 @@
-import { createContext, useContext, type ReactNode } from 'react';
-import { EntityForm } from '@/components/EntityForm';
-import type { EntityFormProps, EntityFormDataProvider, EntityFormRenderOptions, EntityFormComponents, FieldDef } from '@/components/EntityForm';
-import { List } from '@/components/List/List';
-import type { ListDataProvider, ListDataProviderRequestOptions, ListState, EntityRow } from '@/components/List/types';
-import convertListStateToQueryParameters from '@/components/List/utils/convertListStateToQueryParameters';
-import type { ColumnDef } from '@/components/DataTable';
-import { BadgeGray, BadgeGreen } from '@/components/primitives/Badge';
-import apiCall from '@/utils/apiCall';
-import { notify } from '@/lib/notify';
+import {createContext, useContext, type ReactNode} from "react";
+import {EntityForm} from "@/components/EntityForm";
+import type {
+  EntityFormProps,
+  EntityFormDataProvider,
+  EntityFormRenderOptions,
+  EntityFormComponents,
+  FieldDef
+} from "@/components/EntityForm";
+import {List} from "@/components/List/List";
+import type {ListDataProvider, ListDataProviderRequestOptions, ListState, EntityRow} from "@admin/types";
+import convertListStateToQueryParameters from "@/components/List/utils/convertListStateToQueryParameters";
+import type {ColumnDef} from "@/components/DataTable";
+import {BadgeGray, BadgeGreen} from "@/components/primitives/Badge";
+import apiCall from "@/utils/apiCall";
+import {notify} from "@/lib/notify";
+import * as appSettings from "@/providers/AppSettingsProvider";
+import {buildAdminUrl} from "@/utils/buildAdminUrl";
+import {createEntityFormDataProvider} from "@/utils/createDataProvider";
 
 /** All core components/utilities available to remote modules. */
 export interface AdminCore {
@@ -18,6 +27,9 @@ export interface AdminCore {
   BadgeGreen: typeof BadgeGreen;
   apiCall: typeof apiCall;
   notify: typeof notify;
+  appSettings: typeof appSettings;
+  buildAdminUrl: typeof buildAdminUrl;
+  createEntityFormDataProvider: typeof createEntityFormDataProvider;
 }
 
 // Expose context on a global so remote modules can access the same reference.
@@ -35,9 +47,12 @@ const coreValue: AdminCore = {
   BadgeGreen,
   apiCall,
   notify,
+  appSettings,
+  buildAdminUrl,
+  createEntityFormDataProvider
 };
 
-export function AdminCoreProvider({ children }: { children: ReactNode }) {
+export function AdminCoreProvider({children}: { children: ReactNode }) {
   return (
     <AdminCoreContext.Provider value={coreValue}>
       {children}
@@ -47,7 +62,7 @@ export function AdminCoreProvider({ children }: { children: ReactNode }) {
 
 export function useAdminCore(): AdminCore {
   const ctx = useContext(AdminCoreContext);
-  if (!ctx) throw new Error('useAdminCore must be used within AdminCoreProvider');
+  if (!ctx) throw new Error("useAdminCore must be used within AdminCoreProvider");
   return ctx;
 }
 
@@ -55,5 +70,5 @@ export function useAdminCore(): AdminCore {
 export type {
   EntityFormProps, EntityFormDataProvider, EntityFormRenderOptions, EntityFormComponents, FieldDef,
   ListDataProvider, ListDataProviderRequestOptions, ListState, EntityRow,
-  ColumnDef,
+  ColumnDef
 };

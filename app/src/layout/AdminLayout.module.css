@@ -19,7 +19,7 @@
 .navbar-overlay {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 200ms ease;
+  transition: opacity var(--transition) ease;
 
   @media (width >= 48em) {
     display: none;
@@ -40,7 +40,6 @@
   --nl-hover: transparent;
   --nl-color: var(--navbar-hover-color);
 
-  transition: var(--transition) color;
   padding-inline: calc(var(--mantine-spacing-sm) + var(--mantine-spacing-xs));
 
   &[data-active],

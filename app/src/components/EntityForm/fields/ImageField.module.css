@@ -23,7 +23,7 @@
   color: var(--color-text-secondary);
   cursor: pointer;
   font: inherit;
-  transition: border-color 120ms, color 120ms, background 120ms;
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
 }
 
 .placeholder:hover {
@@ -71,7 +71,7 @@
   height: auto;
   border-radius: var(--border-radius);
   filter: grayscale(1) brightness(0.7);
-  transition: filter 300ms;
+  transition: filter var(--transition);
 }
 
 /* Progress bar */
@@ -81,13 +81,13 @@
   right: 0;
   bottom: 0;
   height: 4px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgb(0 0 0 / 35%);
 }
 
 .progressFill {
   height: 100%;
   background: var(--color-link);
-  transition: width 120ms linear;
+  transition: width var(--transition) linear;
 }
 
 /* Hover overlay for replacing */
@@ -99,13 +99,13 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgb(0 0 0 / 50%);
   border: none;
   border-radius: var(--border-radius);
   color: #fff;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 150ms;
+  transition: opacity var(--transition-fast);
   z-index: 1;
 }
 
@@ -131,7 +131,7 @@
   display: flex;
   gap: 4px;
   opacity: 0;
-  transition: opacity 150ms;
+  transition: opacity var(--transition-fast);
   z-index: 2;
 }
 
@@ -148,15 +148,15 @@
   padding: 0;
   border: none;
   border-radius: var(--border-radius-small);
-  background: rgba(0, 0, 0, 0.6);
+  background: rgb(0 0 0 / 60%);
   color: #fff;
   cursor: pointer;
-  transition: background 150ms;
+  transition: background var(--transition-fast);
   text-decoration: none;
 }
 
 .topActionBtn:hover {
-  background: rgba(0, 0, 0, 0.85);
+  background: rgb(0 0 0 / 85%);
 }
 
 .topActionBtnDanger {

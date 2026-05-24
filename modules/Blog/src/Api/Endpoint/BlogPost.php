@@ -6,19 +6,17 @@ use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use ApiPlatform\Exception\BadRequestException;
 use BC\Api\DTO\CreatedDTO;
+use BC\Api\DTO\GetEntitiesListRequest;
 use BC\Api\DTO\ListResponseDTO;
 use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
-use BC\Core\Converter\Media\IMediaConverter;
-use BC\Core\Helper\IBlockHelper;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
+use BC\Modules\Blog\Api\DataBuilder\Post\IBlogPostDataBuilder;
 use BC\Modules\Blog\Api\DTO\BlogPostDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostRowDTO;
-use BC\Modules\Blog\Api\DTO\BlogPostTagDTO;
-use BC\Modules\Blog\Api\DTO\BlogPostTagsDTO;
 use BC\Modules\Blog\Core\Action\DTO\CreatePostRequest;
 use BC\Modules\Blog\Core\Action\DTO\GetPostRequest;
 use BC\Modules\Blog\Core\Action\DTO\SavePostRequest;
@@ -27,15 +25,13 @@ use BC\Modules\Blog\Core\Action\Post\IGetPostAction;
 use BC\Modules\Blog\Core\Action\Post\ISavePostAction;
 use BC\Modules\Blog\Model\Post;
 use BC\Modules\Blog\Model\Tag;
-use Runway\Exception\Exception;
 use Runway\Singleton\Container;
 
 #[Docs\Group('Blog posts')]
 class BlogPost extends AEndpoint {
     public function __construct(
         private readonly IDateConverter $dateConverter,
-        private readonly IMediaConverter $mediaConverter,
-        private readonly IBlockHelper $blockHelper
+        private readonly IBlogPostDataBuilder $dataBuilder
     ) {
     }
 
@@ -59,22 +55,20 @@ class BlogPost extends AEndpoint {
         int $page = 1,
 
         #[API\Parameter(source: 'query')]
-        int $perPage = 25
+        int $perPage = self::PER_PAGE_DEFAULT
     ): ListResponseDTO {
-        $qb = Post::getQueryBuilder()->orderBy('publish_date', 'DESC');
-
-        $this->addFilter($qb, $filter, ['title']);
-        $total = $this->setSortLimitAndGetTotal($qb, $sortBy, $sortDir, $page, $perPage);
-
-
-        return $this->handleWithException(
-            fn () => new ListResponseDTO(
-                items: array_map(
-                    fn (Post $post): BlogPostRowDTO => $this->buildListResponseItem($post),
-                    $qb->getEntities()
-                ),
-                total: $total
-            )
+        return $this->getEntitiesList(
+            new GetEntitiesListRequest(
+                qb: Post::getQueryBuilder()->orderBy('publish_date', 'DESC'),
+                filter: $filter,
+                columnsToFind: ['title'],
+                sortBy: $sortBy,
+                sortDir: $sortDir,
+                page: $page,
+                perPage: $perPage,
+                sortableColumns: ['title', 'slug', 'published', 'publish_date']
+            ),
+            fn (Post $post): BlogPostRowDTO => $this->dataBuilder->buildRow($post)
         );
     }
 
@@ -95,18 +89,8 @@ class BlogPost extends AEndpoint {
         );
 
         return $this->handleWithException(
-            fn (): BlogPostDTO => $this->convertDetailedModel($post)
+            fn (): BlogPostDTO => $this->dataBuilder->buildEntity($post)
         );
-    }
-
-    #[API\Endpoint(path: 'tags', method: 'GET')]
-    public function getTags(): BlogPostTagsDTO {
-        /** @var Tag[] $tags */
-        $tags = $this->handleWithException(
-            static fn () => Tag::find()
-        );
-
-        return $this->convertTags($tags);
     }
 
     /**
@@ -116,24 +100,34 @@ class BlogPost extends AEndpoint {
     public function createPost(
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
+
         #[API\Parameter(source: 'body', name: 'content')]
         array $content,
+
         #[API\Parameter(source: 'body', name: 'publishDate')]
         string $publishDate,
+
         #[API\Parameter(source: 'body', name: 'slug')]
         string $slug,
+
         #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle = '',
+
         #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation = '',
+
         #[API\Parameter(source: 'body', name: 'published')]
         bool $published = false,
+
         #[API\Parameter(source: 'body', name: 'metaDescription')]
         string $metaDescription = '',
+
         #[API\Parameter(source: 'body', name: 'tags')]
         array $tags = [],
+
         #[API\Parameter(source: 'body', name: 'updateDate')]
         ?string $updateDate = null,
+
         #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): CreatedDTO {
@@ -179,26 +173,37 @@ class BlogPost extends AEndpoint {
     public function savePost(
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
+
         #[API\Parameter(source: 'body', name: 'content')]
         array $content,
+
         #[API\Parameter(source: 'body', name: 'publishDate')]
         string $publishDate,
+
         #[API\Parameter(source: 'body', name: 'slug')]
         string $slug,
+
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,
+
         #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle = '',
+
         #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation = '',
+
         #[API\Parameter(source: 'body', name: 'published')]
         bool $published = false,
+
         #[API\Parameter(source: 'body', name: 'metaDescription')]
         string $metaDescription = '',
+
         #[API\Parameter(source: 'body', name: 'tags')]
         array $tags = [],
+
         #[API\Parameter(source: 'body', name: 'updateDate')]
         ?string $updateDate = null,
+
         #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): SuccessfulResultDTO {
@@ -235,6 +240,16 @@ class BlogPost extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    #[API\Endpoint(path: 'posts', method: 'DELETE')]
+    public function deletePosts(
+        #[API\Parameter(source: 'body', name: 'rows')]
+        array $rows
+    ): SuccessfulResultDTO {
+        $this->deleteEntities(Post::class, $rows);
+
+        return new SuccessfulResultDTO();
+    }
+
     private function getCover(?array $coverImage): ?Media {
         return $coverImage === null
             ? null
@@ -243,81 +258,5 @@ class BlogPost extends AEndpoint {
                     (int) ($coverImage['id'] ?? 0)
                 )
             );
-    }
-
-    /**
-     * @param Tag[] $tags
-     */
-    private function convertTags(array $tags): BlogPostTagsDTO {
-        return new BlogPostTagsDTO(
-            tags: array_map(
-                fn (Tag $tag): BlogPostTagDTO => $this->convertTag($tag),
-                $tags
-            )
-        );
-    }
-
-    private function convertTag(Tag $tag): BlogPostTagDTO {
-        return new BlogPostTagDTO(
-            id: $tag->getId(),
-            title: $tag->getTitle()
-        );
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function convertDetailedModel(Post $post): BlogPostDTO {
-        $updateDate = $post->getUpdateDate()?->getTimestamp();
-
-        return new BlogPostDTO(
-            id: $post->getId(),
-            title: $post->getTitle(),
-            shortTitle: $post->getShortTitle(),
-            metaDescription: $post->getMetaDescription(),
-            annotation: $post->getAnnotation(),
-            coverImage: $this->mediaConverter->convertMedia(
-                $post->getCover()
-            )?->toArray(),
-            publishDate: $this->dateConverter->toPickerValue(
-                $post->getPublishDate()
-            ),
-            updateDate: $updateDate
-                ? $this->dateConverter->toPickerValue($updateDate)
-                : null,
-            content: $this->blockHelper->enrichBlocks(
-                $post->getContent()
-            ),
-            published: $post->getPublished(),
-            slug: $post->getSlug(),
-            tags: array_map(
-                static fn (Tag $tag): string => (string) $tag->getId(),
-                $post->getTags()
-            )
-        );
-    }
-
-    private function buildListResponseItem(Post $post): BlogPostRowDTO {
-        $isPublished = $post->getPublished();
-
-        return new BlogPostRowDTO(
-            id: $post->getId(),
-            title: $post->getShortTitle() ?: $post->getTitle(),
-            slug: $post->getSlug(),
-            published: $isPublished,
-            publishDate: $isPublished
-                ? $this->dateConverter->toShortForm($post->getPublishDate())
-                : '—',
-            updateDate: ($isPublished && $post->getUpdateDate())
-                ? $this->dateConverter->toShortForm($post->getUpdateDate())
-                : ''
-        );
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getSortableColumns(): array {
-        return ['title', 'slug', 'published', 'publishDate'];
     }
 }

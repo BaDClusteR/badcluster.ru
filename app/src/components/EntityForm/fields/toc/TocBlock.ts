@@ -22,8 +22,7 @@ export class TocBlock implements BlockTool {
   static get toolbox(): ToolboxConfig {
     return {
       title: 'Оглавление',
-      icon: ICON_TOC,
-      keywords: ['toc', 'contents', 'table of contents', 'nav'],
+      icon: ICON_TOC
     };
   }
 

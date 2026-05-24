@@ -4,7 +4,7 @@
   border-radius: var(--border-radius);
   overflow: hidden;
   font-family: var(--font-family-mono), monospace;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 20%);
   border: var(--border);
 }
 
@@ -37,7 +37,6 @@
   gap: calc(.5 * var(--rhythmic-unit));
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: var(--transition-mode) color;
 }
 
 .titleInput::placeholder {
@@ -68,7 +67,6 @@
   font: inherit;
   font-size: var(--font-size-small);
   cursor: pointer;
-  transition: var(--transition) background-color, var(--transition) box-shadow, var(--transition) color;
   color: var(--color-text-secondary);
   font-weight: bold;
 
@@ -86,7 +84,7 @@
   &:active {
     color: var(--color-brand);
     background: var(--color-surface);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
   }
 }
 
@@ -164,7 +162,7 @@
 }
 
 .footerRow {
-  color: color-mix(in srgb, var(--color-text-secondary), transparent 30%);
+  color: color-mix(in sRGB, var(--color-text-secondary), transparent 30%);
   text-transform: uppercase;
   font-size: var(--font-size-small);
   line-height: 1.5;

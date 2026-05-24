@@ -8,6 +8,7 @@ export default defineConfig({
         react(),
         federation({
             name: "admin_host",
+            dts: false,
             remotes: {
                 // Remotes are loaded dynamically at runtime — not declared here.
                 // useModules() fetches the list from the backend and calls loadRemote().

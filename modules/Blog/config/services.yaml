@@ -10,3 +10,6 @@ services:
 
   BC\Modules\Blog\Provider\CommentsProvider:
     decorates: BC\Provider\ICommentsProvider
+
+  BC\Modules\Blog\Provider\Admin\PageProvider:
+    decorates: BC\Provider\Admin\IPageProvider

@@ -28,7 +28,6 @@ export function ImageField({
   error,
   value,
   onChange,
-  previewWidth = '100%',
   thumbnailWidth,
   thumbnailHeight,
   showAlt = false,

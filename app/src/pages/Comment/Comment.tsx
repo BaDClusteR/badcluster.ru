@@ -1,65 +1,47 @@
-import {Link, useNavigate, useParams} from "react-router";
-import type {EntityCreatedResponse, EntityFormDataProvider} from "@admin/types";
-import {CommentDetailed, CommentDetailedContext} from "./types";
+import {Link, useParams} from "react-router";
+import type {EntityFormDataProvider} from "@admin/types";
+import {type Comment, CommentContext} from "./types";
 import fields from "./fields";
-import {API_ENDPOINT, ROOT_ENDPOINT} from "../Comments/Comments";
-import apiCall from "@/utils/apiCall";
 import {EntityForm} from "@/components/EntityForm";
-import {notify} from "@/lib/notify";
 import {useState} from "react";
+import {buildAdminUrl} from "@/utils/buildAdminUrl.ts";
+import getDataProvider from "@/pages/Comment/dataProvider.ts";
 
 export default function Comment() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const {id} = useParams<{ id: string }>();
 
   const isCreateMode = !id;
-  const [context, setContext] = useState<CommentDetailedContext|undefined>(undefined);
+  const [context, setContext] = useState<CommentContext | undefined>(undefined);
 
-  const dataProvider: EntityFormDataProvider<CommentDetailed> | undefined = isCreateMode
+  const dataProvider: EntityFormDataProvider<Comment> | undefined = isCreateMode
     ? undefined
-    : {
-        queryKey: ['comment', id],
-        getData: async (signal) => {
-          const raw = await apiCall('GET', `comment/${id}`, {}, { signal }) as (CommentDetailed & CommentDetailedContext);
-          setContext({
-            dateHumanReadable: raw.dateHumanReadable,
-            geoIp: raw.geoIp,
-            page: raw.page,
-            pageLink: raw.pageLink,
-            email: raw.email,
-            parent: raw.parent,
-            name: raw.name || "Аноним"
-          });
-
-          return {
-            date: raw.date,
-            name: raw.name,
-            comment: raw.comment,
-            status: raw.status
-          };
-        }
-      };
+    : getDataProvider(
+      parseInt(id) || 0,
+      setContext
+    );
 
   return (
-    <EntityForm<CommentDetailed, CommentDetailedContext>
+    <EntityForm<Comment, CommentContext>
       fields={fields}
       dataProvider={dataProvider}
       context={context}
-      onSubmit={async (values: CommentDetailed) => {
-        await apiCall('PUT', `${API_ENDPOINT}/${id}`, values);
-        notify.success("Сохранено", "Коммент успешно сохранен");
-      }}
-      onCreated={(result: EntityCreatedResponse) => {
-        if (result?.id) {
-          navigate(`${ROOT_ENDPOINT}/${result.id}`, { replace: true });
+      webPath="comments"
+      apiEndpoint="comment"
+      title={(_value, context) => <>
+        <Link to={buildAdminUrl("comments")}>Комменты</Link> :: {context?.name} ({context?.dateHumanReadable})
+      </>}
+      labels={{
+        notFound: {
+          text: "Комментарий не найден",
+          btnCaption: "К списку комментов"
+        },
+        submit: {
+          update: "Сохранить"
+        },
+        messages: {
+          onUpdate: "Комментарий успешно сохранен"
         }
       }}
-      notFoundText="Коммент не найден"
-      notFoundBtnCaption="Назад к комментам"
-      submitLabel={"Сохранить"}
-      title={(_value, context) => <>
-        <Link to={ROOT_ENDPOINT}>Комменты</Link> :: {context?.name} ({context?.dateHumanReadable})
-      </>}
     />
   );
 }

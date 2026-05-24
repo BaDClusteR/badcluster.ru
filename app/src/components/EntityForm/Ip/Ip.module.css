@@ -6,7 +6,6 @@
 }
 
 .flag {
-  border: var(--border);
   display: block;
 }
 

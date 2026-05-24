@@ -1,5 +1,5 @@
 .postTitle {
-  font-variation-settings: "wdth" 100;
+  font-variation-settings: 'wdth' 100;
   margin: 0;
   color: var(--color-contrast);
   text-wrap: balance;
@@ -43,7 +43,6 @@
 }
 
 .tagListPill {
-  background: var(--color-surface);
   color: var(--color-text-secondary);
   font-size: var(--font-size-small);
   background: var(--color-surface);

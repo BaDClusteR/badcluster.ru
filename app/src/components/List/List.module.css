@@ -8,9 +8,10 @@
     }
   }
 }
+
 a.actionEdit {
   --ai-color: var(--color-link) !important;
-  --ai-hover: color-mix(in srgb, var(--color-link), transparent 80%) !important;
+  --ai-hover: color-mix(in sRGB, var(--color-link), transparent 80%) !important;
 }
 
 button.actionDelete {
@@ -24,12 +25,11 @@ button.actionDelete {
   }
 
   --ai-color: var(--color-error) !important;
-  --ai-hover: color-mix(in srgb, var(--color-error), transparent 80%) !important;
+  --ai-hover: color-mix(in sRGB, var(--color-error), transparent 80%) !important;
 }
 
 .title {
   margin-block-end: var(--mantine-spacing-lg);
-  transition: var(--transition) color;
 }
 
 .modalButtonsGroup {
@@ -43,11 +43,9 @@ button.actionDelete {
   text-align: left;
   font-size: var(--font-size-base);
   color: var(--color-text);
-  transition: var(--transition) color;
 
   svg {
     color: var(--color-error);
-    transition: var(--transition) color;
   }
 
   strong {

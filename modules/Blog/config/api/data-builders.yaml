@@ -1,0 +1,6 @@
+services:
+  BC\Modules\Blog\Api\DataBuilder\Post\IBlogPostDataBuilder:
+    class: BC\Modules\Blog\Api\DataBuilder\Post\BlogPostDataBuilder
+
+  BC\Modules\Blog\Api\DataBuilder\Tag\ITagDataBuilder:
+    class: BC\Modules\Blog\Api\DataBuilder\Tag\TagDataBuilder

@@ -1,16 +1,18 @@
 <?php
+
 use BC\Widget\Common\Block\TableOfContentsMenu;
 
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Block\TableOfContents $this */
-?><details class="post__toc" open>
-    <summary class="post__toc-summary">
-        <span class="post__toc-label"><?=$this->getLabel()?></span>
-        <span class="post__toc-icon">▼</span>
+?>
+<details class="block__toc" open>
+    <summary class="block__toc-summary">
+        <span class="block__toc-label"><?=$this->getLabel()?></span>
+        <span class="block__toc-icon">▼</span>
     </summary>
-    <nav class="post__toc-nav">
-        <ol class="post__toc-list">
-            <?=new TableOfContentsMenu(['items' => $this->getItems()])->render()?>
+    <nav class="block__toc-nav">
+        <ol class="block__toc-list">
+            <?=new TableOfContentsMenu([ 'items' => $this->getItems() ])->render()?>
         </ol>
     </nav>
 </details>

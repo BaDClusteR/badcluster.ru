@@ -2,14 +2,15 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Block\Quote $this */
 $anchor = $this->getAnchor();
-?><blockquote
-    class="post__quote post__quote--switchable"
-    <?php if ($anchor = $this->getAnchor()) :?> id="<?=$anchor?>"<?php endif;?>
+?>
+<blockquote
+    class="block__quote block__quote--switchable"
+    <?php if ($anchor = $this->getAnchor()) : ?> id="<?=$anchor?>"<?php endif; ?>
     data-tabs
 >
-    <div class="post__quote-controls" role="tablist" aria-label="Варианты цитаты">
+    <div class="block__quote-controls" role="tablist" aria-label="Варианты цитаты">
         <button
-            class="post__quote-control"
+            class="block__quote-control"
             id="<?=$anchor?>-source-switch"
             role="tab"
             aria-selected="true"
@@ -20,7 +21,7 @@ $anchor = $this->getAnchor();
         </button>
         <span class="quote__divider">/</span>
         <button
-            class="post__quote-control"
+            class="block__quote-control"
             id="<?=$anchor?>-translation-switch"
             role="tab"
             aria-selected="false"
@@ -31,7 +32,7 @@ $anchor = $this->getAnchor();
         </button>
     </div>
     <div
-        class="post__quote-content"
+        class="block__quote-content"
         role="tabpanel"
         id="<?=$anchor?>-source"
         aria-labelledby="<?=$anchor?>-source-switch"
@@ -39,7 +40,7 @@ $anchor = $this->getAnchor();
         <?=$this->sanitizeQuoteText($this->getText())?>
     </div>
     <div
-        class="post__quote-content"
+        class="block__quote-content"
         role="tabpanel"
         id="<?=$anchor?>-translation"
         aria-labelledby="<?=$anchor?>-translation-switch"

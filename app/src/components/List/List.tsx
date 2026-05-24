@@ -1,10 +1,7 @@
 import {ReactNode, useEffect, useState} from "react";
 import {ActionIcon, Group, TextInput, Title} from "@mantine/core";
 import {IconPencil, IconTrash, IconPlus, IconSearch} from "@tabler/icons-react";
-import {
-  DataTable,
-  TableState
-} from "@/components/DataTable";
+import {DataTable, TableState} from "@/components/DataTable";
 import {EntityRow, ListDataResponse, ListProps, ListState, PartialListState} from "@admin/types";
 import {useUrlListState} from "./useUrlListState";
 import {Nullable} from "@admin/types";
@@ -17,6 +14,10 @@ import {useDisclosure} from "@mantine/hooks";
 import Modal from "@/components/primitives/Modal";
 import {IconError} from "@/components/List/components/Icons.tsx";
 import {useNavigate} from "react-router";
+import apiCall from "@/utils/apiCall";
+import {buildAdminUrl} from "@/utils/buildAdminUrl.ts";
+import getDefaultDataProvider from "@/components/List/defaultDataProvider.ts";
+import {notify} from "@/lib/notify";
 
 export function List<T extends EntityRow>(
   {
@@ -24,16 +25,28 @@ export function List<T extends EntityRow>(
     permissions,
     dataProvider,
     columns,
-    title,
-    searchPlaceHolder,
-    getEditLink,
-    onAdd,
-    onDelete,
-    addButtonTitle,
-    getDeleteConfirmationTitle,
-    getDeleteConfirmationText
+    labels,
+    webPath,
+    apiEndpoint
   }: ListProps<T>
 ) {
+  permissions ??= {
+    add: true,
+    edit: true,
+    delete: true,
+    select: true,
+    filter: true
+  };
+
+  if (!dataProvider && apiEndpoint) {
+    dataProvider = getDefaultDataProvider(apiEndpoint);
+  }
+
+  if (!dataProvider) {
+    notify.error("Ошибка", "У компонента List не задан ни dataProvider, ни apiEndpoint.");
+    return null;
+  }
+
   const listState = useUrlListState();
   const {state} = listState;
   const {getData} = dataProvider;
@@ -44,10 +57,9 @@ export function List<T extends EntityRow>(
   const [prevState, setPrevState] = useState<Nullable<ListState>>(null);
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
 
-  const [isConfirmDeletion, { close: closeDeletionConfirmation, open: openDeletionConfirmation }] = useDisclosure();
+  const [isConfirmDeletion, {close: closeDeletionConfirmation, open: openDeletionConfirmation}] = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const [deleteConfirmationTitle, setDeleteConfirmationTitle] = useState<ReactNode>("Подтверждение");
   const [deleteConfirmationText, setDeleteConfirmationText] = useState<ReactNode>("Действительно удалить?");
   const [rowsToDelete, setRowsToDelete] = useState<EntityRow[]>([]);
 
@@ -55,12 +67,12 @@ export function List<T extends EntityRow>(
     setPrevState(state);
     setSelectedRows([]);
     listState.setState(newState);
-  }
+  };
 
   const {data, error: err, isFetching, refetch} = useQuery({
     queryKey: [name, state],
     retry: false,
-    queryFn: ({ signal }) => getData(state, {signal}),
+    queryFn: ({signal}) => getData(state, {signal})
   });
 
   const error: any = err;
@@ -80,14 +92,14 @@ export function List<T extends EntityRow>(
       listState.setState(prevState);
       setPrevState(null);
     }
-  }
+  };
 
   const renderBulkActions = (): ReactNode => {
     return permissions.delete
       ? <Button variant="default" color="red" onClick={
         (e) => {
           e.preventDefault();
-          const rowsToDelete: T|T[] = [];
+          const rowsToDelete: T | T[] = [];
           selectedRows?.forEach((selected, rowIndex) => {
             if (selected && data?.items[rowIndex]) {
               rowsToDelete.push(data?.items[rowIndex]);
@@ -100,22 +112,33 @@ export function List<T extends EntityRow>(
         Удалить
       </Button>
       : null;
-  }
+  };
 
-  const confirmDeletion = (rows: T|T[]) => {
-    setDeleteConfirmationTitle(
-      getDeleteConfirmationTitle?.(rows as any[]) ?? "Действительно удалить?"
-    );
-    setDeleteConfirmationText(
-      getDeleteConfirmationText?.(rows as any[]) ?? "Подтверждение"
-    );
+  const confirmDeletion = (rows: T | T[]) => {
+    if (Array.isArray(rows) && rows.length > 1) {
+      setDeleteConfirmationText(
+        labels.deleteConfirmation?.multiple
+          ? labels.deleteConfirmation?.multiple.replace("{{count}}", rows.length.toString())
+          : "Действительно удалить?"
+      );
+    } else {
+      setDeleteConfirmationText(
+        labels.deleteConfirmation?.single
+          ? labels.deleteConfirmation?.single(
+            Array.isArray(rows)
+              ? rows[0]
+              : rows
+          ) : "Действительно удалить?"
+      );
+    }
+
     setRowsToDelete(rows as EntityRow[]);
     openDeletionConfirmation();
-  }
+  };
 
   const errorContent = error
     ? <span className={classes.error}>
-        <IconError />
+        <IconError/>
         <span><strong>Упс!</strong> Что-то пошло не так.</span>
         <Group gap="sm" className={classes.errorButtons}>
           {
@@ -131,17 +154,19 @@ export function List<T extends EntityRow>(
       </span>
     : null;
 
-    const setFilterState = useDebouncedCallback(
-      (filter: string) => {
-        handleSetState({filter});
-      },
-      300
-    );
+  const setFilterState = useDebouncedCallback(
+    (filter: string) => {
+      handleSetState({filter});
+    },
+    300
+  );
 
   const renderActions = (row: EntityRow) => {
     const actions = [];
     if (permissions.edit) {
-      const url = String(getEditLink?.(row as any) || '');
+      const url = webPath
+        ? buildAdminUrl(`${webPath}/${row.id}`)
+        : "";
 
       actions.push(
         <ActionIcon
@@ -156,9 +181,9 @@ export function List<T extends EntityRow>(
           aria-label="Редактировать"
           className={clsx(classes.action, classes.actionEdit)}
         >
-          <IconPencil size={16} />
+          <IconPencil size={16}/>
         </ActionIcon>
-      )
+      );
     }
 
     if (permissions.delete) {
@@ -174,22 +199,23 @@ export function List<T extends EntityRow>(
             confirmDeletion([row as any]);
           }}
         >
-          <IconTrash size={16} />
+          <IconTrash size={16}/>
         </ActionIcon>
-      )
+      );
     }
 
     return actions.length
       ? <>{actions}</>
       : null;
-  }
+  };
 
   const renderDeleteConfirmationModal = () => {
     return <Modal
       opened={isConfirmDeletion}
-      onClose={isDeleting ? () => {} : closeDeletionConfirmation}
+      onClose={isDeleting ? () => {
+      } : closeDeletionConfirmation}
       withCloseButton={!isDeleting}
-      title={deleteConfirmationTitle}
+      title="Действительно удалить?"
     >
       <p>{deleteConfirmationText}</p>
       <Group justify="flex-end" className={classes.modalButtonsGroup}>
@@ -197,11 +223,19 @@ export function List<T extends EntityRow>(
           Отмена
         </Button>
         <Button loading={isDeleting} onClick={async () => {
-          if (onDelete) {
+          if (apiEndpoint) {
             setIsDeleting(true);
 
             try {
-              await onDelete(rowsToDelete as any[]);
+              await apiCall(
+                "DELETE",
+                apiEndpoint,
+                {
+                  rows: rowsToDelete.map(
+                    (value) => value.id
+                  )
+                }
+              );
               setIsDeleting(false);
               closeDeletionConfirmation();
               setSelectedRows([]);
@@ -215,32 +249,38 @@ export function List<T extends EntityRow>(
         </Button>
       </Group>
     </Modal>;
-  }
+  };
 
   return (
     <>
       {renderDeleteConfirmationModal()}
-      <Title className={classes.title} order={2}>{title}</Title>
+      <Title className={classes.title} order={2}>{labels.title}</Title>
       <Group justify="space-between" mb="lg">
         {permissions.filter && (
           <TextInput
-            placeholder={searchPlaceHolder ?? "Поиск..."}
+            placeholder={labels.searchPlaceholder ?? "Поиск..."}
             value={filterText}
             onChange={(e) => {
-              const value = String(e?.target?.value || '');
+              const value = String(e?.target?.value || "");
               setFilterText(value);
               setFilterState(value);
             }}
-            leftSection={<IconSearch size={16} />}
-            style={{ maxWidth: 320 }}
+            leftSection={<IconSearch size={16}/>}
+            style={{maxWidth: 320}}
           />
         )}
         {
           permissions.add && <Button
-            leftSection={<IconPlus size={16} />}
-            onClick={() => onAdd?.()}
+            leftSection={<IconPlus size={16}/>}
+            onClick={() => {
+              if (webPath) {
+                navigate(
+                  buildAdminUrl(`${webPath}/new`)
+                );
+              }
+            }}
           >
-            {addButtonTitle ?? "Добавить"}
+            {labels.add ?? "Добавить"}
           </Button>
         }
       </Group>
@@ -265,6 +305,7 @@ export function List<T extends EntityRow>(
           setSelectedRows(rows);
         }}
         bulkActions={renderBulkActions()}
+        webPath={webPath}
       />
     </>
   );

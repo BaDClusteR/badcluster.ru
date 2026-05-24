@@ -1,0 +1,3 @@
+services:
+  BC\Api\DataBuilder\Comment\ICommentDataBuilder:
+    class: BC\Api\DataBuilder\Comment\CommentDataBuilder

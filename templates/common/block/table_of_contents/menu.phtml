@@ -1,13 +1,15 @@
 <?php
-use BC\Widget\Common\Block\TableOfContentsMenu;
-/** @var TableOfContentsMenu $this */
-?><?php foreach ($this->getItems() as $item) :?>
-    <li class="post__toc-list-item">
-        <a href="#<?=$item->anchor?>" class="post__toc-link"><?=$item->text?></a>
 
-        <?php if (!empty($item->children)) :?>
-            <ol class="post__toc-sublist">
-                <?=new TableOfContentsMenu(['items' => $item->children])->render()?>
+use BC\Widget\Common\Block\TableOfContentsMenu;
+
+/** @var TableOfContentsMenu $this */
+?><?php foreach ($this->getItems() as $item) : ?>
+    <li class="block__toc-list-item">
+        <a href="#<?=$item->anchor?>" class="block__toc-link"><?=$item->text?></a>
+
+        <?php if (!empty($item->children)) : ?>
+            <ol class="block__toc-sublist">
+                <?=new TableOfContentsMenu([ 'items' => $item->children ])->render()?>
             </ol>
         <?php endif; ?>
     </li>

@@ -1,7 +1,7 @@
-import type { ComponentType, ReactNode } from "react";
+import type {ComponentType, ReactNode} from "react";
 // noinspection TypeScriptCheckImport
 // @ts-ignore
-import type { FormErrors, UseFormReturnType } from "@mantine/form";
+import type {FormErrors, UseFormReturnType} from "@mantine/form";
 import {Optional} from "./common";
 
 export type CommonFieldType =
@@ -122,26 +122,38 @@ export type FieldDef<T, C = unknown> =
 
 export interface EntityFormDataProvider<T> {
   queryKey: unknown[];
+  entityId: number;
   getData: (signal?: AbortSignal) => Promise<T>;
 }
 
 export interface EntityCreatedResponse {
   id: number,
+
   [key: string]: any
 }
 
 export interface EntityFormProps<T, C = unknown> {
-  fields: FieldDef<T, C>[];
-  dataProvider?: EntityFormDataProvider<T>;
-  initialValues?: Partial<T>;
-  context?: C;
-  onSubmit: (values: T) => Promise<unknown> | void;
-  onCreated?: (result: EntityCreatedResponse) => void;
-  submitLabel?: string;
-  onCancel?: () => void;
-  notFoundText?: string;
-  notFoundBtnCaption?: string;
-  title?: (data: Optional<T>, context: Optional<C>) => ReactNode;
+  fields: FieldDef<T, C>[],
+  dataProvider?: EntityFormDataProvider<T>,
+  initialValues?: Partial<T>,
+  context?: C,
+  title?: string | ((data: Optional<T>, context: Optional<C>) => ReactNode),
+  webPath: string,
+  apiEndpoint: string,
+  labels: {
+    notFound: {
+      text: string,
+      btnCaption: string,
+    },
+    submit: {
+      create?: string,
+      update: string,
+    },
+    messages: {
+      onCreate?: string,
+      onUpdate: string
+    }
+  }
 }
 
 export interface GeoIp {

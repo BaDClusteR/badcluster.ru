@@ -54,6 +54,8 @@ services:
   BC\Core\Helper\IGeoIpHelper:
     class: BC\Core\Helper\GeoIpHelper
 
+  BC\Provider\Admin\IPageProvider:
+    class: BC\Provider\Admin\PageProvider
 
 # Website-specific services
   BC\Provider\IMenuItemsProvider:

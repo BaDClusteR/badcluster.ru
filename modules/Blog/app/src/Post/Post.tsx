@@ -1,20 +1,23 @@
-import { useNavigate, useParams } from "react-router";
-import { useQuery } from '@tanstack/react-query';
-import { useAdminCore } from '../admin/useAdminCore';
-import type {EntityCreatedResponse, EntityFormDataProvider} from "@admin/types";
-import { Post, TagApi, TagsApiCallResult } from "./types";
-import fields, {BlogPostContext} from "./fields";
+import {useParams} from "react-router";
+import {useQuery} from "@tanstack/react-query";
+import {useAdminCore} from "../admin/useAdminCore";
+import {Post, TagApi, TagsApiCallResult, BlogPostContext} from "./types";
+import fields from "./fields";
 
-export function BlogPost() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { EntityForm, apiCall, notify } = useAdminCore();
+export default function BlogPost() {
+  const {id} = useParams<{ id: string }>();
+  const {EntityForm, apiCall, createEntityFormDataProvider} = useAdminCore();
 
   const isCreateMode = !id;
 
-  const { data } = useQuery({
-    queryKey: ['tags'],
-    queryFn: ({ signal }) => apiCall('GET', 'tags', {}, { signal }),
+  const {data} = useQuery({
+    queryKey: ["post_tags"],
+    queryFn: ({signal}) => apiCall(
+      "GET",
+      "post_tags",
+      {},
+      {signal}
+    )
   });
 
   const tagsRaw = data as TagsApiCallResult | undefined;
@@ -27,46 +30,31 @@ export function BlogPost() {
           label: t.title
         })
       )
-      : [],
+      : []
   };
-
-  const dataProvider: EntityFormDataProvider<Post> | undefined = isCreateMode
-    ? undefined
-    : {
-        queryKey: ['post', id],
-        getData: async (signal) => {
-          return await apiCall('GET', `post/${id}`, {}, { signal }) as Post;
-        }
-      };
 
   return (
     <EntityForm<Post, BlogPostContext>
       fields={fields}
-      dataProvider={dataProvider}
-      initialValues={isCreateMode ? { published: false } : undefined}
+      dataProvider={createEntityFormDataProvider<Post>("post", id, isCreateMode)}
+      initialValues={isCreateMode ? {published: false} : undefined}
       context={context}
-      onSubmit={async (values: Post) => {
-        if (isCreateMode) {
-          const result = await apiCall('POST', 'post', values);
-          notify.success("Создано", "Пост успешно создан");
-          return result;
-        } else {
-          await apiCall('PUT', `post/${id}`, values);
-          notify.success("Сохранено", "Пост успешно сохранен");
+      webPath="post"
+      apiEndpoint="post"
+      labels={{
+        notFound: {
+          text: "Пост не найден",
+          btnCaption: "Назад к постам"
+        },
+        submit: {
+          create: "Создать пост",
+          update: "Сохранить"
+        },
+        messages: {
+          onCreate: "Пост успешно создан",
+          onUpdate: "Пост успешно сохранен"
         }
       }}
-      onCreated={(result: EntityCreatedResponse) => {
-        if (result?.id) {
-          navigate(`/admin/blog/${result.id}`, { replace: true });
-        }
-      }}
-      notFoundText="Пост не найден"
-      notFoundBtnCaption="Назад к постам"
-      submitLabel={
-        isCreateMode
-          ? "Создать пост"
-          : "Сохранить"
-      }
     />
   );
 }

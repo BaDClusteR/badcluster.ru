@@ -8,7 +8,7 @@ readonly class BlogPostRowDTO {
         public string $title,
         public string $slug,
         public bool $published,
-        public string $publishDate,
+        public string $publish_date,
         public string $updateDate
     ) {
     }

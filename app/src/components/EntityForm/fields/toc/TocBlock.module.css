@@ -56,7 +56,6 @@
   background: transparent;
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition: color 150ms, border-color 150ms;
 }
 
 .refreshBtn:hover {
@@ -68,7 +67,7 @@
 .nav {
   border-top: var(--border);
   margin: 0;
-  padding: 0 calc(1.5 * var(--rhythmic-unit)) calc(1.5 * var(--rhythmic-unit)) calc(1.5 * var(--rhythmic-unit));
+  padding: 0 calc(1.5 * var(--rhythmic-unit)) calc(1.5 * var(--rhythmic-unit));
   font-weight: normal;
 }
 
@@ -111,7 +110,7 @@
   column-gap: calc(.25 * var(--rhythmic-unit));
   counter-increment: item;
 
-  &:before {
+  &::before {
     content: counter(item) ".";
   }
 }
@@ -122,7 +121,7 @@
   margin-block-start: calc(.25 * var(--rhythmic-unit));
   counter-increment: sub-item;
 
-  &:before {
+  &::before {
     content: counter(item) '.' counters(sub-item, '.') '. ';
   }
 

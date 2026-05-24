@@ -1,58 +1,40 @@
-import {Link, useNavigate, useParams} from "react-router";
-import { useAdminCore } from '../admin/useAdminCore';
-import type {EntityCreatedResponse, EntityFormDataProvider} from "@admin/types";
-import { TagDetailed } from "./types";
+import {Link, useParams} from "react-router";
+import {useAdminCore} from "../admin/useAdminCore";
+import {type Tag} from "./types";
 import fields from "./fields";
-import {API_ENDPOINT, API_ENDPOINT_SINGLE_ENTITY, ROOT_ENDPOINT} from "../Tags/Tags";
 
 export function Tag() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { EntityForm, apiCall, notify } = useAdminCore();
+  const {id} = useParams<{ id: string }>();
+  const {EntityForm, buildAdminUrl, createEntityFormDataProvider} = useAdminCore();
 
   const isCreateMode = !id;
 
-  const dataProvider: EntityFormDataProvider<TagDetailed> | undefined = isCreateMode
-    ? undefined
-    : {
-        queryKey: ['tag', id],
-        getData: async (signal) => {
-          return await apiCall('GET', `${API_ENDPOINT_SINGLE_ENTITY}/${id}`, {}, { signal }) as TagDetailed;
-        }
-      };
-
   return (
-    <EntityForm<TagDetailed>
+    <EntityForm<Tag>
       fields={fields}
-      dataProvider={dataProvider}
-      onSubmit={async (values: TagDetailed) => {
-        if (isCreateMode) {
-          const result = await apiCall('POST', API_ENDPOINT, values);
-          notify.success("Создано", "Тэг успешно создан");
-          return result;
-        } else {
-          await apiCall('PUT', `${API_ENDPOINT}/${id}`, values);
-          notify.success("Сохранено", "Тэг успешно сохранен");
+      dataProvider={createEntityFormDataProvider<Tag>("tag", id, isCreateMode)}
+      webPath="blog/tags"
+      apiEndpoint="tag"
+      labels={{
+        notFound: {
+          text: "Тэг не найден",
+          btnCaption: "Назад к тэгам"
+        },
+        submit: {
+          create: "Создать тэг",
+          update: "Сохранить"
+        },
+        messages: {
+          onCreate: "Тэг успешно создан",
+          onUpdate: "Тэг успешно сохранен"
         }
       }}
-      onCreated={(result: EntityCreatedResponse) => {
-        if (result?.id) {
-          navigate(`${ROOT_ENDPOINT}/${result.id}`, { replace: true });
-        }
-      }}
-      notFoundText="Тэг не найден"
-      notFoundBtnCaption="Назад к тэгам"
-      submitLabel={
-        isCreateMode
-          ? "Создать тэг"
-          : "Сохранить"
-      }
       title={(values) => <>
-        <Link to={ROOT_ENDPOINT}>Тэги</Link> :: {
-          isCreateMode
-            ? 'Новый тэг'
-            : values?.title
-        }
+        <Link to={buildAdminUrl("blog/tags")}>Тэги</Link> :: {
+        isCreateMode
+          ? "Новый тэг"
+          : values?.title
+      }
       </>}
     />
   );

@@ -1,2 +1,13 @@
-import { EntityRow, ListProps } from "@/components/List/types";
-export declare function List<T extends EntityRow>({ name, permissions, defaults, dataProvider, columns, title, searchPlaceHolder, getEditLink, onAdd, onDelete, addButtonTitle, getDeleteConfirmationTitle, getDeleteConfirmationText }: ListProps<T>): import("react/jsx-runtime").JSX.Element;
+import {EntityRow, ListProps} from "@admin/types";
+
+export declare function List<T extends EntityRow>(
+  {
+    name,
+    permissions,
+    dataProvider,
+    columns,
+    onDelete,
+    links,
+    labels
+  }: ListProps<T>
+): import("react/jsx-runtime").JSX.Element;

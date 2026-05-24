@@ -1,11 +1,11 @@
-import type { NavItemDescriptor, ModuleDescriptor } from '@/modules/types';
+import type {NavItemDescriptor, ModuleDescriptor} from "@/modules/types";
 
 let cached: Record<string, unknown> | null = null;
 
 function parse(): Record<string, unknown> {
   if (cached) return cached;
 
-  const el = document.getElementById('app-settings');
+  const el = document.getElementById("app-settings");
   if (!el?.textContent) {
     cached = {};
     return cached;
@@ -14,7 +14,7 @@ function parse(): Record<string, unknown> {
   try {
     cached = JSON.parse(el.textContent.trim());
   } catch {
-    console.error('Failed to parse app-settings JSON');
+    console.error("Failed to parse app-settings JSON");
     cached = {};
   }
 
@@ -26,17 +26,17 @@ export function get<T = unknown>(key: string): T | undefined {
 }
 
 export function getNavigation(): NavItemDescriptor[] {
-  return get<NavItemDescriptor[]>('nav') ?? [];
+  return get<NavItemDescriptor[]>("nav") ?? [];
 }
 
 export function getModules(): ModuleDescriptor[] {
-  return get<ModuleDescriptor[]>('modules') ?? [];
+  return get<ModuleDescriptor[]>("modules") ?? [];
 }
 
 export function getWebRoot(): string {
-  return String(get('webRoot') || "");
+  return String(get("webRoot") || "");
 }
 
 export function getStaticRoot(): string {
-  return String(get('staticRoot') || "");
+  return String(get("staticRoot") || "");
 }

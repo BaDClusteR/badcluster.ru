@@ -29,7 +29,7 @@ import {
   type IconProps,
 } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
-import type { NavItemDescriptor, ResolvedModule } from '@/modules/types';
+import type { NavItemDescriptor } from '@/modules/types';
 import { AdminCoreProvider } from '@/modules/AdminCoreContext';
 import classes from "./AdminLayout.module.css"
 import clsx from "clsx";
@@ -64,9 +64,8 @@ interface NavItem {
 }
 
 interface AdminLayoutProps {
-  nav: NavItemDescriptor[];
-  modules: ResolvedModule[];
-  loading: boolean;
+  nav: NavItemDescriptor[],
+  loading: boolean
 }
 
 /** Resolve icon: known name → Tabler component, SVG string → inline wrapper, fallback → IconDashboard */
@@ -160,7 +159,7 @@ function NavItemView({ item, pathname, level = 1}: { item: NavItem; pathname: st
   );
 }
 
-export function AdminLayout({ nav, modules, loading }: AdminLayoutProps) {
+export function AdminLayout({ nav, loading }: AdminLayoutProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const location = useLocation();

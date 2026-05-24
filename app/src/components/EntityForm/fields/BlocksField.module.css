@@ -16,7 +16,6 @@
   position: relative;
   color: var(--color-text);
   background: var(--color-bg);
-  transition: var(--transition) color, var(--transition) background-color;
 
   > div {
     max-width: 720px;
@@ -43,7 +42,7 @@
   cursor: pointer;
   user-select: none;
   opacity: 0.5;
-  transition: opacity 150ms;
+  transition: opacity var(--transition);
   list-style: none;
 }
 
