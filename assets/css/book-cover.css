@@ -15,21 +15,11 @@
   --book-cover-gradient-start-color: #1E293B;
   --book-cover-gradient-end-color: #0F172A;
 
-  transition: var(--transition-mode) --book-cover-gradient-start-color, var(--transition-mode) --book-cover-gradient-end-color;
-}
-
-[data-theme="dark"] .book__cover {
-  --book-cover-filter: blur(60px) brightness(1.1);
-  --book-cover-gradient-start-color: #0E131C;
-  --book-cover-gradient-end-color: #080C16;
-}
-
-.book__cover {
   width: 100%;
   aspect-ratio: 2 / 3;
   position: relative;
   border-radius: var(--border-radius-small) var(--border-radius) var(--border-radius) var(--border-radius-small);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, .15);
+  box-shadow: 0 20px 40px rgb(0 0 0 / 15%);
   background-size: cover;
   background-position: center;
   overflow: hidden;
@@ -37,17 +27,24 @@
   display: flex;
   flex-direction: column;
   user-select: none;
+  transition: var(--transition-mode) --book-cover-gradient-start-color, var(--transition-mode) --book-cover-gradient-end-color;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
     left: 10px;
     top: 0;
     bottom: 0;
     width: 2px;
-    background: rgba(255, 255, 255, .1);
+    background: rgb(255 255 255 / 10%);
     z-index: 2;
   }
+}
+
+[data-theme='dark'] .book__cover {
+  --book-cover-filter: blur(60px) brightness(1.1);
+  --book-cover-gradient-start-color: #0E131C;
+  --book-cover-gradient-end-color: #080C16;
 }
 
 .book__cover-bg {
@@ -60,7 +57,7 @@
   filter: var(--book-cover-filter);
   transition: var(--transition-mode) filter;
 
-  &:before {
+  &::before {
     content: none;
   }
 
@@ -97,7 +94,7 @@
   z-index: 2;
 }
 
-.book__cover:after {
+.book__cover::after {
   border-radius: inherit;
   content: '';
   z-index: 10;
@@ -111,7 +108,7 @@
   transition: var(--transition-mode) border-color;
 }
 
-[data-theme="dark"] .book__cover:after {
+[data-theme='dark'] .book__cover::after {
   border-color: var(--color-border--no-animation);
 }
 

@@ -74,7 +74,7 @@ abstract class AEndpoint {
             );
 
             $qb->andWhere(implode(' OR ', $filterParts))
-                ->setVariable('filter', "%$filter%");
+               ->setVariable('filter', "%$filter%");
         }
 
         return $qb;
@@ -119,7 +119,7 @@ abstract class AEndpoint {
 
     /**
      * @param class-string<AEntity> $entityFQN
-     * @param int[] $entityIds
+     * @param int[]                 $entityIds
      */
     protected function deleteEntities(string $entityFQN, array $entityIds): void {
         $qb = $entityFQN::getQueryBuilder();
@@ -182,7 +182,7 @@ abstract class AEndpoint {
 
         if (!$entity) {
             throw new NotFoundException(
-                str_replace('{{id}}', $id, $notFoundMessage)
+                str_replace('{{id}}', (string) $id, $notFoundMessage)
             );
         }
 

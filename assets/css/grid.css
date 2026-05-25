@@ -3,16 +3,14 @@
   --grid-columns: 1;
   --grid-padding: calc(2 * var(--rhythmic-unit));
 
-  @media (min-width: 700px) {
-    --grid-columns: 2;
-  }
-}
-
-.grid {
   margin: var(--rhythmic-unit) 0 0 0;
   display: grid;
   gap: var(--grid-gap);
   grid-template-columns: repeat(var(--grid-columns), 1fr);
+
+  @media (width >= 700px) {
+    --grid-columns: 2;
+  }
 }
 
 .grid__title {
@@ -46,7 +44,7 @@
 }
 
 .grid__item--surfaced {
-  background: color-mix(in srgb, var(--color-surface), transparent 50%);
+  background: color-mix(in sRGB, var(--color-surface), transparent 50%);
 }
 
 .grid__item--tall {
@@ -65,7 +63,7 @@
   font-variation-settings: 'wdth' 100;
   padding: calc(.25 * var(--rhythmic-unit)) calc(.75 * var(--rhythmic-unit));
   border-radius: var(--border-radius-big);
-  background: color-mix(in srgb, var(--color-surface), var(--color-contrast) 5%);
+  background: color-mix(in sRGB, var(--color-surface), var(--color-contrast) 5%);
   color: var(--color-text-secondary);
   transition: var(--transition-mode) color;
 }
@@ -92,7 +90,7 @@
   position: relative;
   padding-top: calc(var(--rhythmic-unit) + var(--border-width));
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
     top: calc(.5 * var(--rhythmic-unit));
@@ -119,15 +117,14 @@
   left: var(--grid-padding);
 }
 
-.grid__item--gallery .grid__item-content:after {
+.grid__item--gallery .grid__item-content::after {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  inset: 0;
-  background: linear-gradient(to top, color-mix(in srgb, var(--color-bg), transparent 20%), color-mix(in srgb, var(--color-bg), transparent 30%));
+  background: linear-gradient(to top, color-mix(in sRGB, var(--color-bg), transparent 20%), color-mix(in sRGB, var(--color-bg), transparent 30%));
   z-index: -1;
   pointer-events: none;
 }

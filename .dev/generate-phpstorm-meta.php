@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Generates .phpstorm.meta.php from YAML service configs.
  *
@@ -13,9 +15,9 @@ $yamlDirs = [
     'config',
     'vendor/bad_cluster/runway-console-app/config',
     ...array_map(
-        fn(string $path) => str_replace($projectRoot . '/', '', $path),
+        static fn (string $path) => str_replace($projectRoot . '/', '', $path),
         glob($projectRoot . '/modules/*/config', GLOB_ONLYDIR) ?: []
-    )
+    ),
 ];
 
 $services = [];

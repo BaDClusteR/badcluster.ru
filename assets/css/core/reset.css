@@ -4,16 +4,13 @@
 
 body {
   margin: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html {
     interpolate-size: allow-keywords;
   }
-}
-
-body {
-  -webkit-font-smoothing: antialiased;
 }
 
 img, picture, video, canvas, svg {
@@ -32,10 +29,6 @@ input, button, textarea, select {
 p, h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
 }
-
-/*p {
-  text-wrap: pretty;
-}*/
 
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;

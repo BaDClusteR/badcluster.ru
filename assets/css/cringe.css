@@ -28,13 +28,12 @@
   initial-value: #000;
 }
 
-:root, [data-theme="light"] {
+:root, [data-theme='light'] {
   --color-warning: #F59E0B;
   --color-warning--no-animation: #F59E0B;
   --color-warning-hover: #D97706;
-  --color-warning-bg: color-mix(in srgb, var(--color-warning), transparent 90%);
-  --color-warning-border: color-mix(in srgb, var(--color-warning), transparent 60%);
-
+  --color-warning-bg: color-mix(in sRGB, var(--color-warning), transparent 90%);
+  --color-warning-border: color-mix(in sRGB, var(--color-warning), transparent 60%);
   --cringe-bg: #F8FAFC;
   --cringe-surface: #FFF;
 }
@@ -43,9 +42,8 @@
   --color-warning: #FBBF24;
   --color-warning--no-animation: #FBBF24;
   --color-warning-hover: #FCD34D;
-  --color-warning-bg: color-mix(in srgb, var(--color-warning), transparent 90%);
-  --color-warning-border: color-mix(in srgb, var(--color-warning), transparent 70%);
-
+  --color-warning-bg: color-mix(in sRGB, var(--color-warning), transparent 90%);
+  --color-warning-border: color-mix(in sRGB, var(--color-warning), transparent 70%);
   --cringe-bg: #09090B;
   --cringe-surface: #18181B;
 }
@@ -64,7 +62,7 @@
   color: var(--color-warning);
   letter-spacing: 2px;
 
-  &:before {
+  &::before {
     content: '⚠️';
     font-size: 1.6em;
   }
@@ -91,13 +89,13 @@
   border: var(--border);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 2%);
   transition: var(--transition) border-color, var(--transition) box-shadow;
 
   &:hover,
   &:has(:focus-visible) {
     border-color: var(--color-warning);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--color-warning), transparent 90%);
+    box-shadow: 0 0 20px color-mix(in sRGB, var(--color-warning), transparent 90%);
   }
 }
 
@@ -135,7 +133,7 @@
   gap: calc(.25 * var(--rhythmic-unit)) var(--rhythmic-unit);
   font-size: var(--font-size-small);
   text-transform: uppercase;
-  background: color-mix(in srgb, var(--color-surface), transparent);
+  background: color-mix(in sRGB, var(--color-surface), transparent);
 }
 
 .cringe__status-name {
@@ -161,7 +159,7 @@
     border-color: var(--color-warning--no-animation);
   }
 
-  &:before {
+  &::before {
     content: '↓';
   }
 

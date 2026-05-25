@@ -2,9 +2,9 @@
   --modal-padding: var(--gutter-size);
   --modal-border-radius: var(--border-radius-big);
   --modal-max-width: 600px;
-  --modal-backdrop: rgba(0, 0, 0, .6);
+  --modal-backdrop: rgb(0 0 0 / 60%);
 
-  @media (min-width: 420px) {
+  @media (width >= 420px) {
     --modal-padding: calc(2 * var(--gutter-size));
   }
 }
@@ -75,11 +75,11 @@
   text-align: center;
 }
 
-@media (min-width: 420px) {
+@media (width >= 420px) {
   .modal {
     border-radius: var(--modal-border-radius);
     width: calc(100% - 2 * var(--gutter-size));
-    box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+    box-shadow: 0 20px 60px rgb(0 0 0 / 30%);
     min-height: 0;
     height: min-content;
     max-height: calc(100vh - 2 * var(--gutter-size));
@@ -101,7 +101,7 @@
     opacity: 0;
   }
 
-  @media (min-width: 420px) {
+  @media (width >= 420px) {
     .modal[open] {
       transform: translateY(-30px);
 

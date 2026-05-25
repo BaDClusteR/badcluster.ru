@@ -22,7 +22,7 @@ require_once $projectRoot . '/vendor/autoload.php';
 
 $modelDirs = [
     'src/Model',
-    ...glob($projectRoot . '/modules/*/src/Model', GLOB_ONLYDIR) ?: []
+    ...glob($projectRoot . '/modules/*/src/Model', GLOB_ONLYDIR) ?: [],
 ];
 
 $modelFiles = [];
@@ -96,8 +96,7 @@ foreach ($modelFiles as $model) {
 
 echo "$updatedCount model(s) updated.\n";
 
-function updateFileContent(string $content, array $methods): string
-{
+function updateFileContent(string $content, array $methods): string {
     // Pattern: find an existing PHPDoc block right before the class declaration (or its attributes)
     // The class line may be preceded by #[...] attributes
     $classPattern = '/^(\/\*\*.*?\*\/\s*?)?((?:\s*#\[.+?\]\s*)*)(class\s+\w+)/ms';
@@ -109,13 +108,14 @@ function updateFileContent(string $content, array $methods): string
     $existingDocBlock = $match[1][0] ?? '';
     $attributes = $match[2][0];
     $classKeyword = $match[3][0];
-    $fullMatchOffset = $match[0][1];
+    $fullMatchOffset = (int) $match[0][1];
     $fullMatchLength = strlen($match[0][0]);
 
     if (empty($methods)) {
         // No methods — remove existing doc block if present
         if (!empty(trim($existingDocBlock))) {
             $replacement = $attributes . $classKeyword;
+
             return substr_replace($content, $replacement, $fullMatchOffset, $fullMatchLength);
         }
 
@@ -142,8 +142,7 @@ function updateFileContent(string $content, array $methods): string
 /**
  * @return string[]
  */
-function collectMethods(ReflectionClass $ref): array
-{
+function collectMethods(ReflectionClass $ref): array {
     $methods = [];
 
     foreach ($ref->getProperties() as $prop) {
@@ -189,8 +188,7 @@ function collectMethods(ReflectionClass $ref): array
     return $methods;
 }
 
-function resolvePropertyType(ReflectionProperty $prop): string
-{
+function resolvePropertyType(ReflectionProperty $prop): string {
     $type = $prop->getType();
 
     if ($type === null) {
@@ -202,20 +200,21 @@ function resolvePropertyType(ReflectionProperty $prop): string
     }
 
     if ($type instanceof ReflectionUnionType) {
-        $parts = array_map(fn(ReflectionNamedType $t) => formatNamedType($t), $type->getTypes());
+        $parts = array_map(static fn (ReflectionNamedType $t) => formatNamedType($t), $type->getTypes());
+
         return implode('|', $parts);
     }
 
     if ($type instanceof ReflectionIntersectionType) {
-        $parts = array_map(fn(ReflectionNamedType $t) => formatNamedType($t), $type->getTypes());
+        $parts = array_map(static fn (ReflectionNamedType $t) => formatNamedType($t), $type->getTypes());
+
         return implode('&', $parts);
     }
 
     return 'mixed';
 }
 
-function formatNamedType(ReflectionNamedType $type): string
-{
+function formatNamedType(ReflectionNamedType $type): string {
     $name = $type->getName();
 
     if (!$type->isBuiltin()) {

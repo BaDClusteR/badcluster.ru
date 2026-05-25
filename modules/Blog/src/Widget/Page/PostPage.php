@@ -188,4 +188,10 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
     public function getPageType(): string {
         return 'post';
     }
+
+    public function getCanonicalUrl(): string {
+        return $this->post
+            ? $this->getWebRoot() . '/blog/' . $this->post->getSlug()
+            : '';
+    }
 }

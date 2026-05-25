@@ -1,10 +1,9 @@
 .footer {
   --footer-social-buttons-gap: calc(.5 * var(--rhythmic-unit));
-
   --facts-button-border-color: #FCD34D;
-  --facts-button-shadow: 0 0 15px color-mix(in srgb, var(--facts-button-border-color), transparent 60%);
+  --facts-button-shadow: 0 0 15px color-mix(in sRGB, var(--facts-button-border-color), transparent 60%);
 
-  @media (min-width: 370px) {
+  @media (width >= 370px) {
     --footer-social-buttons-gap: var(--rhythmic-unit);
   }
 }
@@ -44,7 +43,7 @@
   &:active {
     border-color: var(--facts-button-border-color);
     box-shadow: var(--facts-button-shadow);
-    background: color-mix(in srgb, var(--facts-button-border-color), transparent 90%);
+    background: color-mix(in sRGB, var(--facts-button-border-color), transparent 90%);
     transform: scale(1.1);
     filter: none;
   }

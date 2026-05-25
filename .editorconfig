@@ -17,8 +17,3 @@ ij_wrap_on_typing = false
 indent_size = 4
 tab_width = 4
 ij_continuation_indent_size = 4
-
-[{*.ts,*.tsx,*.css}]
-indent_size = 2
-tab_width = 2
-ij_continuation_indent_size = 2

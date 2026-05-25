@@ -25,13 +25,12 @@
   background: var(--color-bg);
   min-height: 240px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 15%);
   display: flex;
   align-items: center;
   padding: calc(2 * var(--rhythmic-unit));
   color: var(--color-text);
-
-  margin-inline: calc(-1  *var(--gutter-size));
+  margin-inline: calc(-1 * var(--gutter-size));
   padding-inline: var(--gutter-size);
 
   &.game__hero--dark-miniature {
@@ -42,7 +41,7 @@
     --game-hero-miniature-brightness: 1.3;
   }
 
-  @media (min-width: 420px) {
+  @media (width >= 420px) {
     margin-inline: 0;
     padding-inline: calc(2 * var(--rhythmic-unit));
     margin-top: 0;
@@ -62,7 +61,7 @@
   user-select: none;
   filter: blur(25px) brightness(var(--game-hero-miniature-brightness, 1));
 
-  &:before {
+  &::before {
     background: var(--color-bg);
   }
 
@@ -103,9 +102,9 @@
 }
 
 .game__hero-tag {
-  background: rgba(255, 255, 255, .15);
+  background: rgb(255 255 255 / 15%);
   backdrop-filter: blur(5px);
-  border: var(--border-width) solid rgba(255, 255, 255, .1);
+  border: var(--border-width) solid rgb(255 255 255 / 10%);
   border-radius: var(--border-radius);
   padding: calc(.25 * var(--rhythmic-unit)) calc(.5 * var(--rhythmic-unit));
   display: flex;

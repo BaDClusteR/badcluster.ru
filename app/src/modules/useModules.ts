@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import type { ResolvedModule, NavItemDescriptor } from './types';
-import { resolveModule } from './loader';
-import { getNavigation, getModules } from '@/providers/AppSettingsProvider';
+import {useState, useEffect} from "react";
+import type {ResolvedModule, NavItemDescriptor} from "./types";
+import {resolveModule} from "./loader";
+import {getNavigation, getModules} from "@/providers/AppSettingsProvider";
 
 /**
  * Reads navigation and module list from the inline app-settings JSON,
@@ -20,7 +20,7 @@ export function useModules() {
         const descriptors = getModules();
 
         const resolved = await Promise.all(
-          descriptors.map((desc) => resolveModule(desc)),
+          descriptors.map((desc) => resolveModule(desc))
         );
 
         if (!cancelled) {
@@ -33,9 +33,12 @@ export function useModules() {
       }
     }
 
+    // noinspection JSIgnoredPromiseFromCall
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  return { nav, modules, loading };
+  return {nav, modules, loading};
 }

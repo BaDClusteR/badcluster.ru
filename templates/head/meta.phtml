@@ -4,6 +4,10 @@
 ?>
 <meta charset="UTF-8">
 
-<?php foreach ($this->getMeta() as $meta) :?>
-    <meta name="<?=$meta->name?>" content="<?=$meta->content?>" />
+<?php if ($this->page): ?>
+    <link rel="canonical" href="<?=$this->page->getCanonicalUrl()?>"/>
+<?php endif; ?>
+
+<?php foreach ($this->getMeta() as $meta) : ?>
+    <meta name="<?=$meta->name?>" content="<?=$meta->content?>"/>
 <?php endforeach; ?>

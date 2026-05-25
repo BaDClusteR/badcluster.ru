@@ -16,7 +16,8 @@ readonly class PulseItemDTO {
         public string $status = '',
         public string $icon = '',
         public bool $isTall = false,
-        public bool $isSurfaced = false
+        public bool $isSurfaced = false,
+        public int $position = 0
     ) {
     }
 }

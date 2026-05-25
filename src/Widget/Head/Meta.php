@@ -11,7 +11,7 @@ use BC\Widget\Page\APage;
 
 #[WidgetList('head')]
 class Meta extends AWidget {
-    private ?APage $page;
+    protected ?APage $page;
 
     protected function getTemplatePath(): string {
         return 'head/meta.phtml';
@@ -53,7 +53,7 @@ class Meta extends AWidget {
                 content: $description
             ),
             ...$this->getOpenGraphMeta(),
-            ...(array) $this->page?->getMetaTags()
+            ...(array) $this->page?->getMetaTags(),
         ];
     }
 
@@ -66,7 +66,7 @@ class Meta extends AWidget {
             new MetaTagDTO(
                 name: 'og:type',
                 content: $this->page?->getOpenGraphType() ?? 'website'
-            )
+            ),
         ];
 
         if (
@@ -81,12 +81,12 @@ class Meta extends AWidget {
                 ),
                 new MetaTagDTO(
                     name: 'og:image:width',
-                    content: $image->width
+                    content: (string) $image->width
                 ),
                 new MetaTagDTO(
                     name: 'og:image:height',
-                    content: $image->height
-                )
+                    content: (string) $image->height
+                ),
             ];
         }
 

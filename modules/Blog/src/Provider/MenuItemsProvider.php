@@ -12,7 +12,7 @@ class MenuItemsProvider implements IMenuItemsProvider {
     use WebsiteSettingsTrait;
 
     public function __construct(
-        private IMenuItemsProvider $inner
+        private readonly IMenuItemsProvider $inner
     ) {
     }
 

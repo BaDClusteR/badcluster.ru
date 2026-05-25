@@ -78,7 +78,7 @@
     color: var(--color-contrast--no-animation);
   }
 
-  &:after {
+  &::after {
     content: '→';
     color: var(--color-text-secondary);
     position: absolute;
@@ -99,7 +99,7 @@
       color: var(--color-link--no-animation);
     }
 
-    &:after {
+    &::after {
       color: var(--color-link);
       transform: translateY(-50%) translateX(4px);
     }
@@ -111,7 +111,7 @@
 }
 
 :dir(rtl) .game__material {
-  &:after {
+  &::after {
     right: auto;
     left: calc(.75 * var(--rhythmic-unit));
     transform: translateY(-50%) scaleX(-1);
@@ -120,7 +120,7 @@
   &:hover,
   &:focus-visible,
   &:active {
-    &:after {
+    &::after {
       transform: translateY(-50%) scaleX(-1) translateX(4px);
     }
   }
@@ -151,7 +151,7 @@
   transition: var(--transition-mode) color;
 }
 
-@media (min-width: 320px) {
+@media (width >= 320px) {
   .game__card {
     gap: var(--rhythmic-unit);
   }
@@ -161,7 +161,7 @@
   }
 }
 
-@media (min-width: 320px) and (width < 700px) {
+@media (width >= 320px) and (width < 700px) {
   .games {
     grid-template-columns: max-content 1fr;
   }
@@ -175,7 +175,7 @@
   }
 }
 
-@media (min-width: 700px) {
+@media (width >= 700px) {
   .games {
     grid-template-columns: max-content max-content 1fr;
   }

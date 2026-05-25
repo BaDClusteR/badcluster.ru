@@ -19,7 +19,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .footer > .content-container {
     justify-content: space-between;
   }

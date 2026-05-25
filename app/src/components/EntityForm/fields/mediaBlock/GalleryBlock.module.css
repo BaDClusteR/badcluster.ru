@@ -64,6 +64,8 @@
   margin: 0;
   padding: 0;
   display: flex;
+
+  /* noinspection CssUnresolvedCustomProperty */
   transform: translateX(calc(-100% * var(--active-slide, 0)));
   transition: transform var(--transition) ease;
 }
@@ -288,7 +290,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Upload state */
@@ -343,6 +347,6 @@
   .cdx-search-field {
     grid-template-columns: 1fr;
     padding: calc(0.25 * var(--rhythmic-unit));
-    background: #fafafa;
+    background: #FAFAFA;
   }
 }

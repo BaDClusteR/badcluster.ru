@@ -14,5 +14,8 @@ services:
   BC\Modules\Blog\Provider\Admin\PageProvider:
     decorates: BC\Provider\Admin\IPageProvider
 
+  BC\Modules\Blog\Provider\PulseItemsProvider:
+    decorates: BC\Provider\IPulseItemsProvider
+
   BC\Modules\Blog\Provider\IPostsProvider:
     class: BC\Modules\Blog\Provider\PostsProvider

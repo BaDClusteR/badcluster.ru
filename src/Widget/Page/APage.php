@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\DTO\PageImageDTO;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\BackLinkDTO;
@@ -12,9 +13,13 @@ use BC\Widget\DTO\MetaTagDTO;
 use BC\Widget\IAssetProvider;
 
 abstract class APage extends AWidget implements IAssetProvider {
+    use WebsiteSettingsTrait;
+
     abstract public function getHeader(): string;
 
     abstract public function getMetaDescription(): string;
+
+    abstract public function getCanonicalUrl(): string;
 
     public function getPageImage(): ?PageImageDTO {
         return null;
@@ -87,5 +92,9 @@ abstract class APage extends AWidget implements IAssetProvider {
      */
     public function getJsBundles(): array {
         return [];
+    }
+
+    protected function getWebRoot(): string {
+        return $this->getWebsiteSettings()->getWebRoot();
     }
 }

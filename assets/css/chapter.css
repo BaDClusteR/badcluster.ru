@@ -68,7 +68,7 @@
   &:focus-visible {
     background: var(--color-bg);
     border-color: currentColor;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 5%);
     color: var(--color-brand);
   }
 }
@@ -154,7 +154,7 @@
   }
 }
 
-@media (min-width: 650px) {
+@media (width >= 650px) {
   .chapter__nav {
     grid-template-columns: 1fr auto 1fr;
     gap: var(--rhythmic-unit);

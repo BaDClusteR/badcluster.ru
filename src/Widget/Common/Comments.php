@@ -18,17 +18,17 @@ class Comments extends AWidget implements IAssetProvider {
     use AssetBuilderTrait;
     use AuthTrait;
 
-    private ?APage $page = null;
     private ?CommentsConfigDTO $config = null;
 
     protected function applyContext(array $context): void {
         parent::applyContext($context);
 
         if (($this->context['page'] ?? null) instanceof APage) {
-            $this->page = $this->context['page'];
+            $page = null;
+            $page = $this->context['page'];
 
-            $this->config = ($this->page instanceof IPageWithComments)
-                ? $this->page->getCommentsConfig()
+            $this->config = ($page instanceof IPageWithComments)
+                ? $page->getCommentsConfig()
                 : null;
         }
     }
@@ -82,7 +82,7 @@ class Comments extends AWidget implements IAssetProvider {
             new AssetDTO(
                 bundle: 'toast',
                 path: 'js/common/toast.js'
-            )
+            ),
         ];
     }
 

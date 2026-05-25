@@ -99,7 +99,7 @@
   }
 }
 
-@media (min-width: 600px) {
+@media (width >= 600px) {
   .material {
     grid-template-columns: 1fr auto;
   }

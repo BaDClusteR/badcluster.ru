@@ -62,7 +62,7 @@
   justify-content: center;
 }
 
-@media (min-width: 580px) {
+@media (width >= 580px) {
   .file:has(.file__actions > a:only-child) {
     flex-direction: row;
     align-items: center;
@@ -80,7 +80,7 @@
   }
 }
 
-@media (min-width: 700px) {
+@media (width >= 700px) {
   .file {
     flex-direction: row;
     align-items: center;

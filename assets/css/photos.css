@@ -70,7 +70,7 @@
   position: absolute;
   opacity: 0;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent var(--photo-overlay-transparent));
+  background: linear-gradient(to top, rgb(0 0 0 / 70%) 0%, transparent var(--photo-overlay-transparent));
   transition: var(--transition-slow) opacity;
   display: flex;
   align-items: flex-end;
@@ -116,14 +116,14 @@
 }
 
 .photos--real .photo__link {
-  &:before {
+  &::before {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, .45);
+    background: rgb(0 0 0 / 45%);
     z-index: 2;
     transition: var(--transition-slow) opacity, var(--transition-slow) backdrop-filter;
     opacity: 0;
@@ -132,7 +132,7 @@
     border-radius: var(--border-radius);
   }
 
-  &:after {
+  &::after {
     background: #FFF;
     content: '';
     width: 60px;
@@ -151,19 +151,19 @@
   &:hover,
   &:focus-visible,
   &:active {
-    &:before {
+    &::before {
       opacity: 1;
       backdrop-filter: blur(2px);
     }
 
-    &:after {
+    &::after {
       opacity: .7;
       transform: scale(1);
     }
   }
 }
 
-@media (min-width: 540px) and (width < 700px) {
+@media (width >= 540px) and (width < 700px) {
   .photos {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -175,7 +175,7 @@
   }
 }
 
-@media (min-width: 700px) {
+@media (width >= 700px) {
   .photos {
     grid-template-columns: repeat(6, 1fr);
   }

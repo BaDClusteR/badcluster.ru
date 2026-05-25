@@ -138,7 +138,7 @@ readonly class DateConverter implements IDateConverter {
             $template = str_replace('{{diff}} ', '', $template);
         }
 
-        return str_replace('{{diff}}', $diff, $template);
+        return str_replace('{{diff}}', (string) $diff, $template);
     }
 
     private function convertToDateTime(int|string|DateTime $date): DateTime {

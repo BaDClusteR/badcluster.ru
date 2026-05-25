@@ -1,11 +1,11 @@
-:root, [data-theme="light"] {
+:root, [data-theme='light'] {
   --tooltip-bg: var(--color-bg);
   --tooltip-color: var(--color-text);
   --tooltip-font-size: .75rem;
-  --tooltip-shadow: 0 5px 15px rgba(0, 0, 0, .2);
+  --tooltip-shadow: 0 5px 15px rgb(0 0 0 / 20%);
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   --tooltip-bg: var(--color-surface);
   --tooltip-color: var(--color-text);
 }
@@ -25,10 +25,8 @@
   z-index: 100;
   box-shadow: var(--tooltip-shadow);
   display: none;
-
   position-area: top;
   margin-bottom: calc(.5 * var(--rhythmic-unit));
-
   position-anchor: --tooltip;
 }
 

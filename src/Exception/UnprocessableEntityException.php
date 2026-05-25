@@ -9,8 +9,8 @@ use Throwable;
 
 class UnprocessableEntityException extends Exception {
     public function __construct(
-        private array $fieldErrors,
-        private ?string $error = null,
+        private readonly array $fieldErrors,
+        private readonly ?string $error = null,
         ?Throwable $previous = null
     ) {
         parent::__construct($error, 422, $previous);

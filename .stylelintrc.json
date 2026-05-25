@@ -1,18 +1,32 @@
 {
   "extends": "stylelint-config-standard",
   "rules": {
-    "selector-class-pattern": null,
-    "custom-property-pattern": null,
     "declaration-block-no-redundant-longhand-properties": null,
     "no-descending-specificity": null,
     "import-notation": null,
-    "at-rule-no-unknown": [true, {
-      "ignoreAtRules": ["mixin", "include", "each", "for"]
-    }],
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "mixin",
+          "include",
+          "each",
+          "for"
+        ]
+      }
+    ],
     "value-keyword-case": [
       "lower",
       {
         "camelCaseSvgKeywords": true
+      }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": [
+          "global"
+        ]
       }
     ]
   }

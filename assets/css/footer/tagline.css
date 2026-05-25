@@ -11,7 +11,7 @@
   a {
     text-decoration: underline;
 
-    &:not(:hover):not(:focus-visible):not(:active) {
+    &:not(:hover, :focus-visible, :active) {
       color: var(--color-text-secondary);
     }
   }

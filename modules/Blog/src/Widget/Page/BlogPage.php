@@ -9,10 +9,7 @@ use BC\Modules\Blog\Model\Tag;
 use BC\Modules\Blog\Widget\Posts;
 use BC\Widget\AWidget;
 use BC\Widget\Page\APage;
-use Runway\DataStorage\Exception\DBException;
-use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Exception\Exception;
-use Runway\Model\Exception\ModelException;
 
 class BlogPage extends APage {
     private int $page = 1;
@@ -111,8 +108,21 @@ class BlogPage extends APage {
             return Tag::findOne([
                 'slug' => $this->tag,
             ]);
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
+    }
+
+    public function getCanonicalUrl(): string {
+        $link = $this->getWebRoot() . '/blog';
+        if ($tag = $this->getTag()) {
+            $link .= '/tag/' . $tag->getSlug();
+        }
+
+        if ($this->page > 1) {
+            $link .= '/page/' . $this->page;
+        }
+
+        return $link;
     }
 }

@@ -32,7 +32,7 @@
   display: inline-flex;
   height: 20px;
   padding: 0 calc(.5 * var(--rhythmic-unit)) 0 0;
-  color: color-mix(in srgb, var(--color-text-secondary), transparent 20%);
+  color: color-mix(in sRGB, var(--color-text-secondary), transparent 20%);
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
@@ -70,7 +70,7 @@
   align-self: center;
 }
 
-@media (min-width: 600px) {
+@media (width >= 600px) {
   .material__actions {
     flex-direction: column;
     grid-row: 1;
@@ -78,9 +78,6 @@
 
   .material__icon {
     align-items: flex-start;
-  }
-
-  .material__icon {
     grid-row: 1 / 4;
   }
 

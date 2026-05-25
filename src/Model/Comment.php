@@ -16,8 +16,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setId(int $id)
  * @method int|null getParentId()
  * @method self setParentId(int|null $parentId)
- * @method \DateTime getDate()
- * @method self setDate(\DateTime $date)
+ * @method DateTime getDate()
+ * @method self setDate(DateTime $date)
  * @method string getName()
  * @method self setName(string $name)
  * @method string|null getEmail()
@@ -88,8 +88,8 @@ class Comment extends AEntity {
      */
     public function getChildren(): array {
         return self::getQueryBuilder()->where('parent_id = :id')
-            ->setVariable('id', $this->id)
-            ->getEntities();
+                   ->setVariable('id', $this->id)
+                   ->getEntities();
     }
 
     /**

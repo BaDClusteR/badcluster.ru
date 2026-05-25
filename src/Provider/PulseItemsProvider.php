@@ -22,10 +22,23 @@ class PulseItemsProvider implements IPulseItemsProvider {
      * @throws ModelException
      */
     public function getPulseItems(): array {
+        $items = $this->getPulseItemsUnsorted();
+
+        usort(
+            $items,
+            static fn (PulseItemDTO $a, PulseItemDTO $b): int => $a->position <=> $b->position
+        );
+
+        return $items;
+    }
+
+    /**
+     * @throws DBException
+     * @throws ModelException
+     * @throws QueryBuilderException
+     */
+    protected function getPulseItemsUnsorted(): array {
         $webroot = $this->getWebsiteSettings()->getWebRoot();
-        //        $img = Media::findByUniqueIdentifier(120);
-        //        Container::getInstance()->getService(IThumbnailsGenerator::class)->generateThumbnails($img, [500, 1000, 2000], true);
-        //        dd('123');
 
         return [
             new PulseItemDTO(
@@ -35,35 +48,32 @@ class PulseItemsProvider implements IPulseItemsProvider {
                 text: 'Причесываю старые переводы в компании AI-редакторов. Правим стиль, убираем опечатки, наводим красоту.',
                 status: 'Сейчас в работе:<strong>Doom: Небо в огне. Глава 2</strong>',
                 icon: '📖',
-                isTall: true
+                isTall: true,
+                position: 100
             ),
             new PulseItemDTO(
                 title: 'Хомид Йит',
                 url: "$webroot/art/sh",
                 tag: 'Original Fiction',
                 text: 'Триллер о путешествии на нижние уровни Сети. Главный герой ищет ответы в глубинах даркнета, но находит лишь безумие.',
-                isSurfaced: true
+                isSurfaced: true,
+                position: 200
             ),
             new PulseItemDTO(
                 title: 'SBC Band',
                 url: "$webroot/music",
                 tag: 'Youtube',
                 text: 'Проект SBC. Когда нейросети пытаются в музыку. Задорный рок, синтвейв и щепотка Dark Electro.',
-                image: Media::findByUniqueIdentifier(68)
+                image: Media::findByUniqueIdentifier(68),
+                position: 300
             ),
             new PulseItemDTO(
                 title: 'Виртуальная фотография',
                 url: "$webroot/",
                 tag: 'Галерея',
-                image: Media::findByUniqueIdentifier(93)
+                image: Media::findByUniqueIdentifier(93),
+                position: 400
             ),
-            new PulseItemDTO(
-                title: 'Впечатления от Cronos: The New Dawn',
-                url: "$webroot/blog/cronos",
-                tag: 'Блог',
-                text: 'На удивление приятный сурвайвал хоррор про игры со временем. Лично для меня – главный видеоигровой сюрприз 2025-го.',
-                image: Media::findByUniqueIdentifier(120)
-            )
         ];
     }
 }

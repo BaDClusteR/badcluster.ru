@@ -6,7 +6,7 @@ namespace BC\Core\Config;
 
 use BC\Core\DTO\AdminContactsDTO;
 
-class WebsiteSettings implements IWebsiteSettings {
+readonly class WebsiteSettings implements IWebsiteSettings {
     public function __construct(
         private string $webRoot,
         private string $adminEmail,
@@ -23,7 +23,7 @@ class WebsiteSettings implements IWebsiteSettings {
     public function getImageBreakpoints(): array {
         return [
             450 => 500,
-            -1  => 1000
+            -1  => 1000,
         ];
     }
 

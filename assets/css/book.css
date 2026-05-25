@@ -93,7 +93,7 @@
     color: var(--color-text-secondary);
   }
 
-  &:after {
+  &::after {
     content: '→';
     transition: var(--transition) opacity, var(--transition) transform;
     transform: translateX(-16px);
@@ -106,7 +106,7 @@
     color: var(--color-link);
     padding-inline-start: calc(1.5 * var(--rhythmic-unit));
 
-    &:after {
+    &::after {
       opacity: 1;
       transform: none;
     }
@@ -114,12 +114,24 @@
 }
 
 .chapters {
+  --chapters-inactive-link-transperency: 60%;
+
+  &:has(.chapters__list-item--has-children) {
+    --chapters-inactive-link-transperency: 80%;
+  }
+
   &:has(.chapter__link:hover),
   &:has(.chapter__link:focus-visible) {
-    .chapter__link:not(:hover):not(:focus-visible) {
-      color: color-mix(in srgb, var(--color-text-secondary), transparent 60%);
+    .chapter__link:not(:hover, :focus-visible) {
+      color: color-mix(in sRGB, var(--color-text-secondary), transparent 60%);
       transition: var(--transition-mode) color, var(--transition) padding-left, var(--transition) padding-right;
     }
+  }
+
+  .chapter__section {
+    padding-top: calc(2 * var(--rhythmic-unit));
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -148,34 +160,20 @@
   margin-top: calc(.5 * var(--rhythmic-unit));
 }
 
-.chapters {
-  --chapters-inactive-link-transperency: 60%;
-
-  &:has(.chapters__list-item--has-children) {
-    --chapters-inactive-link-transperency: 80%;
-  }
-
-  .chapter__section {
-    padding-top: calc(2 * var(--rhythmic-unit));
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-}
-
 .comments__area {
   margin-top: calc(2 * var(--rhythmic-unit));
 }
 
 :dir(rtl) {
   .chapter__link {
-    &:after {
+    &::after {
       transform: scaleX(-1) translateX(-32px);
     }
 
     &:hover,
     &:focus-visible,
     &:active {
-      &:after {
+      &::after {
         transform: scaleX(-1);
       }
     }
