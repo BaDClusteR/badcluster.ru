@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Asset;
 
 use BC\Core\Asset\DTO\BundleFileDTO;

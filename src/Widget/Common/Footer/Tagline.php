@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Widget\Common\Footer;
 
 use BC\Core\Asset\DTO\AssetDTO;

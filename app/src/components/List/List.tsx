@@ -54,6 +54,7 @@ export function List<T extends EntityRow>(
 
   const [filterText, setFilterText] = useState(state.filter);
   const [tableData, setTableData] = useState({items: [], total: 0} as ListDataResponse<any>);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [prevState, setPrevState] = useState<Nullable<ListState>>(null);
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
 
@@ -80,6 +81,7 @@ export function List<T extends EntityRow>(
   useEffect(() => {
     if (!isFetching && data) {
       setTableData(data);
+      setHasLoaded(true);
     }
   }, [isFetching, data]);
 
@@ -288,7 +290,7 @@ export function List<T extends EntityRow>(
       <DataTable<T>
         columns={columns}
         rows={tableData.items}
-        loading={isFetching}
+        loading={isFetching || !hasLoaded}
         total={tableData.total}
         state={state.table}
         error={!!err}

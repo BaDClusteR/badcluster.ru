@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Auth;
 
 use ApiPlatform\Core\Singleton\IAuth;

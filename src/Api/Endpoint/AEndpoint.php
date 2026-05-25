@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Api\Endpoint;
 
 use ApiPlatform\Exception\BadRequestException;
@@ -149,7 +151,6 @@ abstract class AEndpoint {
             $request->perPage,
             $request->sortableColumns
         );
-
 
         return $this->handleWithException(
             fn () => new ListResponseDTO(

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Response;
 
 class SuccessfulHtmlResponse extends HtmlResponse {

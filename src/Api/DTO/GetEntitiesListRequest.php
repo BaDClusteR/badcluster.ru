@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Api\DTO;
 
 use Runway\DataStorage\QueryBuilder\IQueryBuilder;

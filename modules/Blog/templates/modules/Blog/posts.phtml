@@ -1,51 +1,62 @@
 <?php
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Modules\Blog\Widget\Posts $this */
-$updateIcon = $this->getSvgContent("images/icons/update.svg");
+$updateIcon = $this->getSvgContent('images/icons/update.svg');
+$pages = $this->getPages();
+$currPage = $this->getPage();
 ?>
 <ul class="posts list--block">
     <?php foreach ($this->getPosts() as $post): ?>
-        <li class="post">
-            <a href="<?= $post->getUrl() ?>" class="post__link">
-                <div class="post__date">
-                    <?php
+        <?php if ($post) : ?>
+            <li class="post">
+                <a href="<?=$post->getUrl()?>" class="post__link">
+                    <div class="post__date">
+                        <?php
                         $publishDate = $post->getPublishDate();
                         $updateDate = $post->getUpdateDate();
-                    ?>
-                    <time
-                        class="post__date-time post__date-time--publish"
-                        datetime="<?=$this->getDateValue($publishDate)?>"
-                    >
-                        <?=$this->getHumanReadableDate($publishDate)?>
-                    </time>
-                    <?php if ($updateDate): ?>
+                        ?>
                         <time
-                            class="post__date-time post__date-time--updated"
-                            datetime="<?=$this->getDateValue($updateDate)?>"
+                            class="post__date-time post__date-time--publish"
+                            datetime="<?=$this->getDateValue($publishDate)?>"
                         >
-                            <?=$updateIcon?>
-                            <?=$this->getHumanReadableDate($updateDate)?>
+                            <?=$this->getHumanReadableDate($publishDate)?>
                         </time>
+                        <?php if ($updateDate): ?>
+                            <time
+                                class="post__date-time post__date-time--updated"
+                                datetime="<?=$this->getDateValue($updateDate)?>"
+                            >
+                                <?=$updateIcon?>
+                                <?=$this->getHumanReadableDate($updateDate)?>
+                            </time>
+                        <?php endif; ?>
+                    </div>
+                    <h2 class="post__title">
+                        <?php if (!$post->getPublished()) : ?>
+                            [Черновик]
+                        <?php endif; ?>
+                        <?=$post->getShortTitle() ?: $post->getTitle()?>
+                    </h2>
+                    <?php if ($annotation = $post->getAnnotation()): ?>
+                        <p class="post__annotation"><?=$annotation?></p>
                     <?php endif; ?>
-                </div>
-                <h2 class="post__title">
-                    <?php if (!$post->getPublished()) :?>
-                        [Черновик]
-                    <?php endif; ?>
-                    <?=$post->getShortTitle() ?: $post->getTitle()?>
-                </h2>
-                <?php if ($annotation = $post->getAnnotation()): ?>
-                    <p class="post__annotation"><?=$annotation?></p>
-                <?php endif; ?>
+                    <?=$this->renderMiniature($post)?>
+                </a>
                 <?php if ($tags = $post->getTags()): ?>
                     <ul class="list--block tags post__tags">
                         <?php foreach ($tags as $tag): ?>
-                            <li class="tag post__tag"><?=$tag->getTitle()?></li>
+                            <li class="tag post__tag">
+                                <a href="<?=$tag->getUrl()?>" class="post__tag-link"><?=$tag->getTitle()?></a>
+                            </li>
                         <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
-                <?=$this->renderMiniature($post)?>
-            </a>
-        </li>
+            </li>
+        <?php endif; ?>
     <?php endforeach; ?>
 </ul>
+<?=new \BC\Widget\Common\Pagination()->render([
+    'currPage'  => $currPage,
+    'pages'     => $pages,
+    'urlPrefix' => $this->getFirstPageUrl(),
+])?>

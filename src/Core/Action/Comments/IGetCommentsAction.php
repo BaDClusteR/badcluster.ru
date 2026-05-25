@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Action\Comments;
 
 use BC\Core\Action\DTO\GetCommentsRequest;

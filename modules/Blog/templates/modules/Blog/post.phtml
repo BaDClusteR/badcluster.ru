@@ -1,5 +1,6 @@
 <?php
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
+
 /** @var \BC\Modules\Blog\Widget\Post $this */
 
 use BC\Widget\Blocks;
@@ -9,36 +10,38 @@ $blocks = (array) ($post->getContent()['blocks'] ?? []);
 ?>
 <article class="post text-block">
     <header class="post__header">
-        <?php if ($publishDate = $post->getPublishDate()) :?>
+        <?php if ($publishDate = $post->getPublishDate()) : ?>
             <time class="post__date" datetime="<?=$this->getDateTime($publishDate)?>">
                 <?=$this->getHumanReadableDateTime($publishDate)?>
             </time>
         <?php endif; ?>
-        <?php if ($updateDate = $post->getUpdateDate()) :?>
+        <?php if ($updateDate = $post->getUpdateDate()) : ?>
             <time class="post__date post__date--updated" datetime="<?=$this->getDateTime($updateDate)?>">
                 Upd: <?=$this->getHumanReadableDateTime($updateDate)?>
             </time>
         <?php endif; ?>
         <h1 class="post__title">
-            <?php if (!$post->getPublished()) :?>
+            <?php if (!$post->getPublished()) : ?>
                 [Черновик]
             <?php endif; ?>
             <?=$post->getTitle()?>
         </h1>
-        <?php if ($tags = $post->getTags()) :?>
+        <?php if ($tags = $post->getTags()) : ?>
             <ul class="list--block tags post__tags">
                 <?php foreach ($tags as $tag) : ?>
-                    <li class="tag post__tag"><?=$tag->getTitle()?></li>
+                    <li class="tag post__tag">
+                        <a href="<?=$tag->getUrl()?>" class="post__tag-link"><?=$tag->getTitle()?></a>
+                    </li>
                 <?php endforeach; ?>
             </ul>
         <?php endif; ?>
     </header>
     <div class="post__body text-block">
-        <?= new Blocks($post->getContent())->render() ?>
+        <?=new Blocks($post->getContent())->render()?>
     </div>
     <footer class="post__footer">
         <?=new \BC\Widget\Common\Comments([
-            'page' => $this->page
+            'page' => $this->page,
         ])->render()?>
     </footer>
 </article>

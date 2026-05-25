@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Widget\Common\Header\Menu;
 
 use BC\Core\DTO\MenuItemDTO;

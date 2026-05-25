@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Core\Action\Tag;
 
 use BC\Modules\Blog\Core\Action\DTO\SaveTagRequest;
@@ -29,7 +31,8 @@ class SaveTagAction implements ISaveTagAction {
         }
 
         $tag->setTitle($request->name)
-            ->setSlug($request->slug);
+            ->setSlug($request->slug)
+            ->setDescription($request->description);
 
         $tag->persist();
 
@@ -45,21 +48,21 @@ class SaveTagAction implements ISaveTagAction {
     private function validate(SaveTagRequest $request): void {
         /** @var Tag|null $tagBySlug */
         $tagBySlug = Tag::getQueryBuilder()->where('slug = :slug')
-            ->andWhere('id != :id')
-            ->setVariable('slug', $request->slug)
-            ->setVariable('id', $request->id)
-            ->getFirstEntity();
+                        ->andWhere('id != :id')
+                        ->setVariable('slug', $request->slug)
+                        ->setVariable('id', $request->id)
+                        ->getFirstEntity();
 
         if ($tagBySlug) {
             throw new ActionValidationException(['slug' => "Этот слаг уже занят тэгом '{$tagBySlug->getTitle()}'"]);
         }
 
         $tagByTitle = Tag::getQueryBuilder()
-            ->where('title = :title')
-            ->andWhere('id != :id')
-            ->setVariable('title', $request->name)
-            ->setVariable('id', $request->id)
-            ->getFirstEntity();
+                         ->where('title = :title')
+                         ->andWhere('id != :id')
+                         ->setVariable('title', $request->name)
+                         ->setVariable('id', $request->id)
+                         ->getFirstEntity();
 
         if ($tagByTitle) {
             throw new ActionValidationException(['title' => 'Уже есть тэг с таким названием']);

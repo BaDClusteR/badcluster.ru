@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Api\DataBuilder\Comment;
 
 use BC\Api\DTO\Comment\CommentDTO;

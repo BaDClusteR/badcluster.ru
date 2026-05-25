@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Controller;
 
 use BC\Core\Response\HtmlResponse;

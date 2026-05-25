@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Action\Comments;
 
 use BC\Core\Action\DTO\GetCommentsRequest;
@@ -52,16 +54,16 @@ class GetCommentsAction implements IGetCommentsAction {
             $qb->expr()->isNull('parent_id')
         )->andWhere(
             $qb->expr()->in('status', $statuses)
-        )->orderBy('date', 'DESC');
+        )->orderBy('date', 'ASC');
 
         if ($request->pageType) {
             $qb->andWhere('page_type = :pageType')
-                ->setVariable('pageType', $request->pageType);
+               ->setVariable('pageType', $request->pageType);
         }
 
         if ($request->pageId) {
             $qb->andWhere('page_id = :pageId')
-                ->setVariable('pageId', $request->pageId);
+               ->setVariable('pageId', $request->pageId);
         }
 
         $comments = array_map(

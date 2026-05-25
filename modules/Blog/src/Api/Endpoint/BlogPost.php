@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Api\Endpoint;
 
 use ApiPlatform\Attribute as API;
@@ -44,16 +46,12 @@ class BlogPost extends AEndpoint {
     public function getList(
         #[API\Parameter(source: 'query')]
         string $filter = '',
-
         #[API\Parameter(source: 'query')]
         string $sortBy = '',
-
         #[API\Parameter(source: 'query')]
         string $sortDir = '',
-
         #[API\Parameter(source: 'query')]
         int $page = 1,
-
         #[API\Parameter(source: 'query')]
         int $perPage = self::PER_PAGE_DEFAULT
     ): ListResponseDTO {
@@ -100,34 +98,24 @@ class BlogPost extends AEndpoint {
     public function createPost(
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
-
         #[API\Parameter(source: 'body', name: 'content')]
         array $content,
-
         #[API\Parameter(source: 'body', name: 'publishDate')]
         string $publishDate,
-
         #[API\Parameter(source: 'body', name: 'slug')]
         string $slug,
-
         #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle = '',
-
         #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation = '',
-
         #[API\Parameter(source: 'body', name: 'published')]
         bool $published = false,
-
         #[API\Parameter(source: 'body', name: 'metaDescription')]
         string $metaDescription = '',
-
         #[API\Parameter(source: 'body', name: 'tags')]
         array $tags = [],
-
         #[API\Parameter(source: 'body', name: 'updateDate')]
         ?string $updateDate = null,
-
         #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): CreatedDTO {
@@ -173,37 +161,26 @@ class BlogPost extends AEndpoint {
     public function savePost(
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
-
         #[API\Parameter(source: 'body', name: 'content')]
         array $content,
-
         #[API\Parameter(source: 'body', name: 'publishDate')]
         string $publishDate,
-
         #[API\Parameter(source: 'body', name: 'slug')]
         string $slug,
-
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,
-
         #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle = '',
-
         #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation = '',
-
         #[API\Parameter(source: 'body', name: 'published')]
         bool $published = false,
-
         #[API\Parameter(source: 'body', name: 'metaDescription')]
         string $metaDescription = '',
-
         #[API\Parameter(source: 'body', name: 'tags')]
         array $tags = [],
-
         #[API\Parameter(source: 'body', name: 'updateDate')]
         ?string $updateDate = null,
-
         #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): SuccessfulResultDTO {

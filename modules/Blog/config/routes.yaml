@@ -3,6 +3,18 @@ routes:
     path: /blog
     controller: BC\Modules\Blog\Controller\Blog::renderPostList
 
+  posts_list_page:
+    path: /blog/page/{page}
+    controller: BC\Modules\Blog\Controller\Blog::renderPostList
+
+  posts_list_tag:
+    path: /blog/tag/{tag}
+    controller: BC\Modules\Blog\Controller\Blog::renderPostList
+
+  posts_list_tag_page:
+    path: /blog/tag/{tag}/page/{page}
+    controller: BC\Modules\Blog\Controller\Blog::renderPostList
+
   post:
     path: /blog/{slug}
     controller: BC\Modules\Blog\Controller\Blog::renderPost

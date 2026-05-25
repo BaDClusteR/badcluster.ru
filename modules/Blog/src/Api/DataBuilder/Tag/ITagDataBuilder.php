@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Api\DataBuilder\Tag;
 
 use BC\Modules\Blog\Api\DTO\TagDTO;

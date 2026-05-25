@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Api\Endpoint;
 
 use ApiPlatform\Attribute as API;
@@ -38,16 +40,12 @@ class Tag extends AEndpoint {
     public function getList(
         #[API\Parameter(source: 'query')]
         string $filter = '',
-
         #[API\Parameter(source: 'query')]
         string $sortBy = '',
-
         #[API\Parameter(source: 'query')]
         string $sortDir = '',
-
         #[API\Parameter(source: 'query')]
         int $page = 1,
-
         #[API\Parameter(source: 'query')]
         int $perPage = 25
     ): ListResponseDTO {
@@ -107,7 +105,9 @@ class Tag extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
         #[API\Parameter(source: 'body', name: 'slug')]
-        string $slug
+        string $slug,
+        #[API\Parameter(source: 'body', name: 'description')]
+        string $description
     ): CreatedDTO {
         $action = Container::getInstance()->getService(ICreateTagAction::class);
 
@@ -115,7 +115,8 @@ class Tag extends AEndpoint {
             $response = $action->run(
                 new CreateTagRequest(
                     name: $title,
-                    slug: $slug
+                    slug: $slug,
+                    description: $description
                 )
             );
         } catch (ActionValidationException $e) {
@@ -142,7 +143,9 @@ class Tag extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
         #[API\Parameter(source: 'body', name: 'slug')]
-        string $slug
+        string $slug,
+        #[API\Parameter(source: 'body', name: 'description')]
+        string $description
     ): SuccessfulResultDTO {
         $action = Container::getInstance()->getService(ISaveTagAction::class);
 
@@ -151,7 +154,8 @@ class Tag extends AEndpoint {
                 new SaveTagRequest(
                     id: $id,
                     name: $title,
-                    slug: $slug
+                    slug: $slug,
+                    description: $description
                 )
             );
         } catch (ActionValidationException $e) {

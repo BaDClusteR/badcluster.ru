@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\DTO\AppSettings;
 
 readonly class NavigationDTO {

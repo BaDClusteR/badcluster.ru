@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Widget\Page;
 
 use BC\Core\Action\Comments\IGetCommentsAction;
@@ -37,7 +39,7 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
             new AssetDTO(
                 'post',
                 'css/modules/Blog/post.css'
-            )
+            ),
         ];
     }
 
@@ -62,7 +64,7 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
     public function getMainWidget(): AWidget {
         return new PostWidget([
             'post' => $this->post,
-            'page' => $this
+            'page' => $this,
         ]);
     }
 
@@ -81,7 +83,7 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
     }
 
     public function getTitle(): string {
-        return $this->getPostTitle() . ' :: Блог :: ' . parent::getTitle();
+        return $this->getPostTitle() . ' :: ' . parent::getTitle();
     }
 
     private function getPostTitle(): string {
@@ -110,7 +112,7 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
             new MetaTagDTO(
                 name: 'og:article:published_time',
                 content: $this->post->getPublishDate()->format(DATE_ATOM),
-            )
+            ),
         ];
 
         if ($modified = $this->post->getUpdateDate()) {
@@ -135,7 +137,7 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
             comments: $this->getComments(),
             emptyPhrase: 'Пока никто не комментировал. Есть мысли? Делитесь, я читаю всё :)',
             pageType: 'post',
-            pageId: (int) $this->post?->getId(),
+            pageId: (string) $this->post?->getId(),
         );
     }
 

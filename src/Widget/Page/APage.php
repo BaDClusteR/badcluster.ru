@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
@@ -31,7 +33,7 @@ abstract class APage extends AWidget implements IAssetProvider {
     }
 
     public function getTitle(): string {
-        return 'BaD ClusteR home page';
+        return 'BaD ClusteR';
     }
 
     public function getMetaTitle(): string {
@@ -68,7 +70,7 @@ abstract class APage extends AWidget implements IAssetProvider {
             new AssetDTO('core', 'css/core/font.css', -50),
             new AssetDTO('core', 'css/core/style.css', 0),
 
-            new AssetDTO('footer', 'css/footer.css')
+            new AssetDTO('footer', 'css/footer.css'),
         ];
     }
 

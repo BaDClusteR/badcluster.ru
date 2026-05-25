@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Converter;
 
-use DateInvalidTimeZoneException;
-use DateMalformedStringException;
 use DateTime;
 
 interface IDateConverter {

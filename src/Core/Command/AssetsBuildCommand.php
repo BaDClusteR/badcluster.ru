@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Command;
 
 use BC\Core\Asset\IAssetBuilder;

@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace BC\Model;
 
-use DateTime;
 use Runway\DataStorage\Attribute as DS;
-use Runway\DataStorage\Exception\DBException;
-use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\AEntity;
-use Runway\Model\Exception\ModelException;
 
 /**
  * @method int getId()

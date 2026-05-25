@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Widget\Head;
 
-use BC\Core\Asset\IAssetBuilder;
 use BC\Core\Trait\AssetBuilderTrait;
 use BC\Widget\Attribute\WidgetList;
 use BC\Widget\AWidget;
 use BC\Widget\Page\APage;
-use Runway\Singleton\Container;
 
 #[WidgetList('head')]
 class Bundles extends AWidget {

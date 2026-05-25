@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Widget\Page\Home;
 
 use BC\Core\Asset\DTO\AssetDTO;

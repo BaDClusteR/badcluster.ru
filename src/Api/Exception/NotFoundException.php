@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Api\Exception;
 
 use ApiPlatform\Exception\ApiException;

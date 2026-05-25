@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Core\Action\Tag;
 
 use BC\Modules\Blog\Core\Action\DTO\CreateTagRequest;
@@ -22,7 +24,8 @@ class CreateTagAction implements ICreateTagAction {
 
         $tag = new Tag();
         $tag->setTitle($request->name)
-            ->setSlug($request->slug);
+            ->setSlug($request->slug)
+            ->setDescription($request->description);
 
         $tag->persist();
 

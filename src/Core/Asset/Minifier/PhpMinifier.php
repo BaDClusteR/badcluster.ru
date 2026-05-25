@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Asset\Minifier;
 
 use MatthiasMullie\Minify\CSS as CssMinifier;

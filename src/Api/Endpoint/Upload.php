@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Api\Endpoint;
 
 use ApiPlatform\Attribute as API;
@@ -85,7 +87,7 @@ class Upload extends AEndpoint {
                 "Thumbnail generation failed for media {$media->getPath()}: {$e->getMessage()}",
                 [
                     'mediaPath' => $media->getPath(),
-                    'widths'    => $widths
+                    'widths'    => $widths,
                 ]
             );
         }

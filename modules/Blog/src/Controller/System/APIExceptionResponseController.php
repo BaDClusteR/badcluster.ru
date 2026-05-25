@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Controller\System;
 
 use BC\Exception\UnprocessableEntityException;

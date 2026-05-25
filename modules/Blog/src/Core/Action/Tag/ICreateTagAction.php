@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Core\Action\Tag;
 
 use BC\Modules\Blog\Core\Action\DTO\CreateTagRequest;

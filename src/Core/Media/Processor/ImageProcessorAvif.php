@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Media\Processor;
 
 readonly class ImageProcessorAvif extends AImageProcessor {

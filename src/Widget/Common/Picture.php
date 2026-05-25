@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Widget\Common;
 
 use BC\Core\Trait\AttributesHelperTrait;
@@ -76,7 +78,7 @@ class Picture extends AWidget {
 
     protected function hasImages(int $width, string $mime): bool {
         return $this->image?->getThumbnail($width, $mime)
-            || $this->image?->getThumbnail($width * 2, $mime);
+               || $this->image?->getThumbnail($width * 2, $mime);
     }
 
     protected function getSource(int $width, string $mime, int $minWidth, int $maxWidth): string {
@@ -126,7 +128,7 @@ class Picture extends AWidget {
     protected function getAllowedMimeTypes(): array {
         return [
             'image/avif',
-            'image/webp'
+            'image/webp',
         ];
     }
 
@@ -158,8 +160,8 @@ class Picture extends AWidget {
 
         $result = [
             'src'    => $image->getWebPath(),
-            'width'  => $image->getWidth(),
-            'height' => $image->getHeight(),
+            'width'  => (string) $image->getWidth(),
+            'height' => (string) $image->getHeight(),
             'alt'    => $image->getAlt() ?: $this->caption,
         ];
 

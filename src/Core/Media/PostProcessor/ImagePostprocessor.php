@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Core\Media\PostProcessor;
 
 use BC\Core\Trait\LoggerTrait;
@@ -24,41 +26,42 @@ readonly class ImagePostprocessor implements IImagePostprocessor {
      * @return Media[][]
      */
     public function postProcessThumbnails(array $thumbnailGroups): array {
-        foreach ($thumbnailGroups as $group) {
-            $webp = $this->getWebpThumbnail($group);
-            $avif = $this->getAvifThumbnail($group);
-
-            if (!$webp || !$avif || $webp->getSize() - $avif->getSize() > $this->significantSizeDifferenceBytes) {
-                return $thumbnailGroups;
-            }
-        }
-
-        /*
-         * Remove all AVIF thumbnails if the difference between the size of WebP thumbnails and the size of the
-         * corresponding AVIF thumbnails is less than self::SIGNIFICANT_SIZE_DIFFERENCE.
-         */
-        $newGroups = [];
-        foreach ($thumbnailGroups as $group) {
-            $webp = $this->getWebpThumbnail($group);
-            $avif = $this->getAvifThumbnail($group);
-
-            try {
-                $avif->remove();
-            } catch (Exception $e) {
-                $this->getLogger()->warning(
-                    "Cannot delete redundant AVIF thumbnail: {$e->getMessage()}",
-                    [
-                        'webp_id' => $webp?->getId(),
-                        'avif_id' => $avif->getId(),
-                        'parent'  => $avif->getParent()->getId(),
-                    ]
-                );
-            }
-
-            $newGroups[] = [$webp];
-        }
-
-        return $newGroups;
+        return $thumbnailGroups;
+        //        foreach ($thumbnailGroups as $group) {
+        //            $webp = $this->getWebpThumbnail($group);
+        //            $avif = $this->getAvifThumbnail($group);
+        //
+        //            if (!$webp || !$avif || $webp->getSize() - $avif->getSize() > $this->significantSizeDifferenceBytes) {
+        //                return $thumbnailGroups;
+        //            }
+        //        }
+        //
+        //        /*
+        //         * Remove all AVIF thumbnails if the difference between the size of WebP thumbnails and the size of the
+        //         * corresponding AVIF thumbnails is less than self::SIGNIFICANT_SIZE_DIFFERENCE.
+        //         */
+        //        $newGroups = [];
+        //        foreach ($thumbnailGroups as $group) {
+        //            $webp = $this->getWebpThumbnail($group);
+        //            $avif = $this->getAvifThumbnail($group);
+        //
+        //            try {
+        //                $avif->remove();
+        //            } catch (Exception $e) {
+        //                $this->getLogger()->warning(
+        //                    "Cannot delete redundant AVIF thumbnail: {$e->getMessage()}",
+        //                    [
+        //                        'webp_id' => $webp?->getId(),
+        //                        'avif_id' => $avif->getId(),
+        //                        'parent'  => $avif->getParent()->getId(),
+        //                    ]
+        //                );
+        //            }
+        //
+        //            $newGroups[] = [$webp];
+        //        }
+        //
+        //        return $newGroups;
     }
 
     private function getWebpThumbnail(array $thumbnailGroup): ?Media {

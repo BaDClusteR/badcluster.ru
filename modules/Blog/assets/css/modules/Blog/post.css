@@ -47,3 +47,28 @@
   border-top: var(--border);
   padding-top: calc(2 * var(--rhythmic-unit));
 }
+
+.post__tag-link {
+  margin: -2px -8px;
+  border-radius: inherit;
+  padding: inherit;
+  transition: var(--transition-mode) color, var(--transition-mode) background-color;
+
+  &,
+  &:visited {
+    color: var(--color-text-secondary);
+  }
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background: color-mix(in sRGB, currentColor, transparent 90%);
+    color: var(--color-link--no-animation);
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+}

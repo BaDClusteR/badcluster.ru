@@ -13,14 +13,24 @@ const FIELDS: FieldDef<Tag>[] = [
   {
     name: "slug",
     label: "Слаг",
-    type: "text",
+    type: "slug",
     span: "full",
     role: "primary",
     required: true,
     placeholder: "url-friendly-name",
+    url: (slug: string) => `http://bc.local/blog/tag/${slug}`,
     validate: (v) => /^[a-z0-9-]+$/.test(v as string)
       ? null
       : "Только латиница, цифры и дефис"
+  },
+  {
+    name: "description",
+    label: "Краткое описание",
+    hint: "Будет под заголовком на первой странице тэга",
+    type: "textarea",
+    span: "full",
+    role: "primary",
+    required: true
   }
 ];
 

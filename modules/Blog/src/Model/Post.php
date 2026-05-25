@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Model;
 
 use BC\Core\Trait\WebsiteSettingsTrait;
@@ -34,9 +36,9 @@ use Runway\Model\Exception\ModelException;
  * @method self setSlug(string $slug)
  * @method string getMetaDescription()
  * @method self setMetaDescription(string $metaDescription)
- * @method \BC\Model\Media|null getCover()
- * @method self setCover(\BC\Model\Media|null $cover)
- * @method \BC\Modules\Blog\Model\PostTag[] getPostTags()
+ * @method Media|null getCover()
+ * @method self setCover(Media|null $cover)
+ * @method PostTag[] getPostTags()
  */
 #[DS\Table('posts')]
 class Post extends AEntity {
@@ -106,8 +108,8 @@ class Post extends AEntity {
 
         $qb = PostTag::getQueryBuilder();
         $qb->delete()
-            ->where('post_id = :postId')
-            ->setVariable('postId', $this->id);
+           ->where('post_id = :postId')
+           ->setVariable('postId', $this->id);
 
         if (!empty($tagIds)) {
             $qb->andWhere('tag_id NOT IN (:tagIds)')
@@ -117,8 +119,8 @@ class Post extends AEntity {
         $qb->execute();
 
         $qb = PostTag::getQueryBuilder()
-            ->where('post_id = :postId')
-            ->setVariable('postId', $this->id);
+                     ->where('post_id = :postId')
+                     ->setVariable('postId', $this->id);
 
         if (!empty($tagIds)) {
             $qb->andWhere(

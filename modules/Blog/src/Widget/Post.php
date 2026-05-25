@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Blog\Widget;
 
 use BC\Core\Trait\DateConverterTrait;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Api\Endpoint;
 
 use ApiPlatform\Attribute as API;

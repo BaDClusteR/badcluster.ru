@@ -1,0 +1,21 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Pagination $this */
+
+$currPage = $this->getCurrentPage();
+$totalPages = $this->getTotalPages();
+?><?php if ($totalPages > 1) : ?>
+    <nav class="pagination">
+        <ul class="pagination__list list--block">
+            <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+                <li class="pagination__item">
+                    <?php if ($page === $currPage): ?>
+                        <span class="pagination__link pagination__link--current"><?=$page?></span>
+                    <?php else: ?>
+                        <a class="pagination__link" href="<?=$this->buildUrl($page)?>"><?=$page?></a>
+                    <?php endif; ?>
+                </li>
+            <?php endfor; ?>
+        </ul>
+    </nav>
+<?php endif; ?>
