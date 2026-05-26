@@ -8,6 +8,7 @@ use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use ApiPlatform\DTO\ApiEndpointArgumentFileDTO;
 use ApiPlatform\Exception\BadRequestException;
+use BC\Api\Processor\IImageProcessor;
 use BC\Core\Converter\Media\IMediaConverter;
 use BC\Core\DTO\MediaDTO;
 use BC\Model\Media;
@@ -26,7 +27,8 @@ class Upload extends AEndpoint {
         private readonly IFileSystem $fileSystem,
         private readonly IPathsProvider $pathsProvider,
         private readonly ILogger $logger,
-        private readonly IMediaConverter $mediaConverter
+        private readonly IMediaConverter $mediaConverter,
+        private readonly IImageProcessor $imageProcessor
     ) {
     }
 
@@ -66,11 +68,10 @@ class Upload extends AEndpoint {
 
     protected function doWithPurpose(Media $media, ?string $purpose): Media {
         if (
-            $purpose === null
-            && $media->isImage()
+            $media->isImage()
             && $media->getWidth() > 0
         ) {
-            $this->tryGenerateThumbnails($media, [500, 1000, 2000]);
+            $media = $this->imageProcessor->process($media, $purpose);
         }
 
         return $media;

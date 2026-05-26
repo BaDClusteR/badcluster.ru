@@ -1,0 +1,3 @@
+services:
+  BC\Modules\Blog\Api\Processor\ImageProcessor:
+    decorates: BC\Api\Processor\IImageProcessor

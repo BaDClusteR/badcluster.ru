@@ -1,0 +1,3 @@
+services:
+  BC\Api\Processor\IImageProcessor:
+    class: BC\Api\Processor\ImageProcessor

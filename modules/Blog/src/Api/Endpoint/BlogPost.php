@@ -133,10 +133,10 @@ class BlogPost extends AEndpoint {
                 updateDate: $updateDate
                     ? $this->dateConverter->toDateTime($updateDate)
                     : null,
-                coverImage: $this->getCover($coverImage),
+                coverImage: $this->findMedia($coverImage),
                 coverImageAltText: (string) ($coverImage['alt'] ?? ''),
                 tags: Tag::find([
-                    'id' => $tags
+                    'id' => $tags,
                 ])
             )
         );
@@ -198,10 +198,10 @@ class BlogPost extends AEndpoint {
                 updateDate: $updateDate
                     ? $this->dateConverter->toDateTime($updateDate)
                     : null,
-                coverImage: $this->getCover($coverImage),
+                coverImage: $this->findMedia($coverImage),
                 coverImageAltText: (string) ($coverImage['alt'] ?? ''),
                 tags: Tag::find([
-                    'id' => $tags
+                    'id' => $tags,
                 ])
             )
         );
@@ -225,15 +225,5 @@ class BlogPost extends AEndpoint {
         $this->deleteEntities(Post::class, $rows);
 
         return new SuccessfulResultDTO();
-    }
-
-    private function getCover(?array $coverImage): ?Media {
-        return $coverImage === null
-            ? null
-            : $this->handleWithException(
-                fn () => Media::findByUniqueIdentifier(
-                    (int) ($coverImage['id'] ?? 0)
-                )
-            );
     }
 }

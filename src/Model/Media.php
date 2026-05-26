@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BC\Model;
 
+use BC\Core\DTO\MediaDTO;
+use BC\Core\DTO\MediaThumbnailDTO;
 use BC\Core\Media\IThumbnailGenerator;
 use BC\Core\Media\PostProcessor\IImagePostprocessor;
 use BC\Core\Trait\FileSystemTrait;
@@ -16,6 +18,7 @@ use Runway\Exception\Exception;
 use Runway\FileSystem\Exception\CannotDeleteFileException;
 use Runway\Model\AEntity;
 use Runway\Singleton\Container;
+use Throwable;
 
 /**
  * @method int getId()
@@ -32,8 +35,8 @@ use Runway\Singleton\Container;
  * @method self setMime(string $mime)
  * @method string getAlt()
  * @method self setAlt(string $alt)
- * @method Media|null getParent()
- * @method self setParent(Media|null $parent)
+ * @method \BC\Model\Media|null getParent()
+ * @method self setParent(\BC\Model\Media|null $parent)
  * @method string getMd5()
  * @method self setMd5(string $md5)
  */
@@ -90,6 +93,23 @@ class Media extends AEntity {
      */
     public function generateThumbnails(array $widths, bool $force = false): array {
         return $this->getThumbnailsGenerator()->generateThumbnails($this, $widths, $force);
+    }
+
+    /**
+     * @param int[] $widths
+     */
+    public function tryGenerateThumbnails(array $widths): void {
+        try {
+            $this->generateThumbnails($widths);
+        } catch (Throwable $e) {
+            $this->getLogger()->warning(
+                "Thumbnail generation failed for media {$this->getPath()}: {$e->getMessage()}",
+                [
+                    'mediaPath' => $this->getPath(),
+                    'widths'    => $widths,
+                ]
+            );
+        }
     }
 
     public function generateThumbnail(int $width, bool $force = false): array {
@@ -166,5 +186,26 @@ class Media extends AEntity {
 
     protected function getImagePostprocessor(): IImagePostprocessor {
         return Container::getInstance()->getService(IImagePostprocessor::class);
+    }
+
+    public function toMediaDTO(): MediaDTO {
+        return new MediaDTO(
+            id: $this->id,
+            url: $this->getWebPath(),
+            width: $this->width,
+            height: $this->height,
+            mime: $this->mime,
+            alt: $this->alt,
+            thumbs: array_map(
+                static fn (Media $thumb): MediaThumbnailDTO => new MediaThumbnailDTO(
+                    id: $thumb->getId(),
+                    width: $thumb->getWidth(),
+                    height: $thumb->getHeight(),
+                    mime: $thumb->getMime(),
+                    url: $thumb->getWebPath()
+                ),
+                $this->getThumbnails()
+            )
+        );
     }
 }

@@ -10,6 +10,7 @@ use BC\Api\DTO\GetEntitiesListRequest;
 use BC\Api\DTO\ListResponseDTO;
 use BC\Api\Exception\NotFoundException;
 use BC\Exception\UnprocessableEntityException;
+use BC\Model\Media;
 use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
 use Runway\DataStorage\QueryBuilder\IQueryBuilder;
 use Runway\Exception\Exception;
@@ -189,5 +190,15 @@ abstract class AEndpoint {
         return $this->handleWithException(
             fn () => $buildData($entity)
         );
+    }
+
+    protected function findMedia(?array $mediaInfo): ?Media {
+        return $mediaInfo === null
+            ? null
+            : $this->handleWithException(
+                fn () => Media::findByUniqueIdentifier(
+                    (int) ($mediaInfo['id'] ?? 0)
+                )
+            );
     }
 }

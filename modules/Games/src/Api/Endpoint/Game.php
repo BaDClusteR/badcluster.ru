@@ -1,0 +1,216 @@
+<?php
+
+declare(strict_types=1);
+
+namespace BC\Modules\Games\Api\Endpoint;
+
+use ApiPlatform\Attribute as API;
+use ApiPlatform\Exception\BadRequestException;
+use BC\Api\DTO\CreatedDTO;
+use BC\Api\DTO\ListResponseDTO;
+use BC\Api\DTO\SuccessfulResultDTO;
+use BC\Api\Endpoint\AEndpoint;
+use BC\Api\Exception\NotFoundException;
+use BC\Exception\UnprocessableEntityException;
+use BC\Modules\Games\Api\DataBuilder\Game\IGameDataBuilder;
+use BC\Modules\Games\Api\DTO\GameDTO;
+use BC\Modules\Games\Api\DTO\GameRowDTO;
+use BC\Modules\Games\Model\Game as GameModel;
+use Runway\DataStorage\Exception\DBException;
+use Runway\DataStorage\QueryBuilder\Enum\ExpressionJoinConditionTypeEnum;
+use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
+
+class Game extends AEndpoint {
+    public function __construct(
+        private readonly IGameDataBuilder $dataBuilder,
+    ) {
+    }
+
+    /**
+     * @return ListResponseDTO<GameRowDTO>
+     *
+     * @throws BadRequestException
+     */
+    #[API\Endpoint(path: 'games', method: 'GET')]
+    public function getList(
+        #[API\Parameter(source: 'query')]
+        string $filter = '',
+        #[API\Parameter(source: 'query')]
+        string $sortBy = '',
+        #[API\Parameter(source: 'query')]
+        string $sortDir = '',
+        #[API\Parameter(source: 'query')]
+        int $page = 1,
+        #[API\Parameter(source: 'query')]
+        int $perPage = self::PER_PAGE_DEFAULT
+    ): ListResponseDTO {
+        if (!$sortBy || $sortBy === 'title') {
+            $sortBy = 'g.title';
+        }
+
+        if (!$sortDir) {
+            $sortDir = 'ASC';
+        }
+
+        $qb = GameModel::getQueryBuilder('g');
+
+        $this->addFilter($qb, $filter, ['g.title']);
+        $total = $this->setSortLimitAndGetTotal(
+            $qb,
+            $sortBy,
+            $sortDir,
+            $page,
+            $perPage,
+            ['g.title', 'count']
+        );
+        $qb->select('g.*, (SELECT COUNT(*) FROM `{game_materials}` WHERE game_id = g.id) AS count')
+           ->leftJoin('game_materials', 'gm', ExpressionJoinConditionTypeEnum::ON, 'gm.game_id = g.id');
+
+        return $this->handleWithException(
+            fn () => new ListResponseDTO(
+                items: array_map(
+                    fn (array $tag): GameRowDTO => $this->dataBuilder->buildRow($tag),
+                    $qb->getResults()
+                ),
+                total: $total
+            )
+        );
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    #[API\Endpoint(path: 'game', method: 'GET')]
+    public function getOne(
+        #[API\Parameter(source: 'path', name: 'identifier')]
+        int $id
+    ): GameDTO {
+        return $this->getEntity(
+            GameModel::class,
+            $id,
+            'Игра #{{id}} не найдена.',
+            fn (GameModel $game): GameDTO => $this->dataBuilder->buildEntity($game)
+        );
+    }
+
+    /**
+     * @throws UnprocessableEntityException
+     */
+    #[API\Endpoint(path: 'game', method: 'POST')]
+    public function create(
+        #[API\Parameter(source: 'body', name: 'title')]
+        string $title,
+        #[API\Parameter(source: 'body', name: 'releaseYear')]
+        ?string $releaseYear = null,
+        #[API\Parameter(source: 'body', name: 'cover')]
+        ?array $coverImage = null,
+    ): CreatedDTO {
+        $isDuplicate = $this->handleWithException(
+            fn () => $this->isExistsGameWithTitle($title)
+        );
+
+        if ($isDuplicate) {
+            throw new UnprocessableEntityException(
+                ['title' => 'Игра с таким названием уже есть.'],
+                "Не могу создать $title: игра с таким названием уже есть."
+            );
+        }
+
+        $game = $this->handleWithException(
+            fn () => new GameModel()
+                ->setTitle($title)
+                ->setReleaseYear(
+                    $releaseYear
+                        ? (int) $releaseYear
+                        : null
+                )->setCover(
+                    $this->findMedia($coverImage)
+                )
+        );
+
+        $this->handleWithException(
+            static fn () => $game->persist()
+        );
+
+        return new CreatedDTO(
+            id: $game->getId()
+        );
+    }
+
+    /**
+     * @throws UnprocessableEntityException
+     * @throws NotFoundException
+     */
+    #[API\Endpoint(path: 'game', method: 'PUT')]
+    public function save(
+        #[API\Parameter(source: 'path', name: 'identifier')]
+        int $id,
+        #[API\Parameter(source: 'body', name: 'title')]
+        string $title,
+        #[API\Parameter(source: 'body', name: 'releaseYear')]
+        ?string $releaseYear = null,
+        #[API\Parameter(source: 'body', name: 'cover')]
+        ?array $coverImage = null,
+    ): SuccessfulResultDTO {
+        $isDuplicate = $this->handleWithException(
+            fn () => $this->isExistsGameWithTitle($title, $id)
+        );
+
+        if ($isDuplicate) {
+            throw new UnprocessableEntityException(
+                ['title' => 'Игра с таким названием уже есть.'],
+                "Не могу сохранить изменения: игра '$title' уже есть в базе."
+            );
+        }
+
+        $this->handleWithException(
+            function () use ($title, $releaseYear, $coverImage, $id): void {
+                $game = GameModel::findByUniqueIdentifier($id);
+
+                if (!$game) {
+                    throw new NotFoundException("Игра #$id не найдена");
+                }
+
+                $game->setTitle($title)
+                     ->setReleaseYear(
+                         $releaseYear
+                             ? (int) $releaseYear
+                             : null
+                     )->setCover(
+                         $this->findMedia($coverImage)
+                     );
+                $game->persist();
+            }
+        );
+
+        return new SuccessfulResultDTO();
+    }
+
+    #[API\Endpoint(path: 'games', method: 'DELETE')]
+    public function deletePosts(
+        #[API\Parameter(source: 'body', name: 'rows')]
+        array $rows
+    ): SuccessfulResultDTO {
+        $this->deleteEntities(GameModel::class, $rows);
+
+        return new SuccessfulResultDTO();
+    }
+
+    /**
+     * @throws DBException
+     * @throws QueryBuilderException
+     */
+    protected function isExistsGameWithTitle(string $title, ?int $id = null): bool {
+        $title = strtolower(trim($title));
+
+        $qb = GameModel::getQueryBuilder()
+                       ->where('LOWER(title) = :title')
+                       ->setVariable('title', $title);
+        if ($id) {
+            $qb->andWhere('id != :id')
+               ->setVariable('id', $id);
+        }
+
+        return ($qb->count() > 0);
+    }
+}

@@ -1,0 +1,3 @@
+services:
+  BC\Modules\Games\Api\DataBuilder\Game\IGameDataBuilder:
+    class: BC\Modules\Games\Api\DataBuilder\Game\GameDataBuilder

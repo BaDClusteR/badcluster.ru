@@ -1,0 +1,4 @@
+services:
+  BC\Modules\Games\Api\Endpoint\Game:
+    tags:
+      - name: api_endpoint_collection
