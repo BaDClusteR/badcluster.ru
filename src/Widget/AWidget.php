@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Widget;
 
 use BC\Core\Scanner\IWidgetClassScanner;
+use BC\Core\Trait\AssetBuilderTrait;
 use BC\Core\Trait\LoggerTrait;
 use BC\Provider\IPathsProvider;
 use BC\Widget\Attribute\WidgetList;
@@ -16,6 +17,7 @@ use Throwable;
 
 abstract class AWidget {
     use LoggerTrait;
+    use AssetBuilderTrait;
 
     protected array $context = [];
 
@@ -159,5 +161,13 @@ abstract class AWidget {
         }
 
         return '';
+    }
+
+    protected function getCssBundleUrl(string $relativePath): string {
+        return $this->getAssetBuilder()->getBundleWebPath($relativePath, 'css');
+    }
+
+    protected function getJsBundleUrl(string $relativePath): string {
+        return $this->getAssetBuilder()->getBundleWebPath($relativePath, 'js');
     }
 }

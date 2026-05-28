@@ -60,6 +60,10 @@ abstract class APage extends AWidget implements IAssetProvider {
         return null;
     }
 
+    public function getContentContainerCssClass(): string {
+        return 'content-container';
+    }
+
     public static function getAssets(): array {
         return [
             new AssetDTO('critical', 'js/critical/singleton.js', -100),

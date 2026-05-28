@@ -9,6 +9,7 @@ use Runway\DataStorage\Attribute as DS;
 use Runway\Model\AEntity;
 
 /**
+ * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
  * @method string getTitle()

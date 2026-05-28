@@ -1,0 +1,48 @@
+<?php
+
+use BC\Modules\Games\Widget\GameMaterial\File;
+use BC\Widget\Blocks;
+use BC\Widget\Common\Picture;
+
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Games\Widget\GameMaterial $this */
+
+$game = $this->getGame();
+$material = $this->getMaterial();
+$dateConverter = $this->getDateConverter();
+$dateAdded = $material?->getDateAdded();
+?>
+<?php if ($game && $material) : ?>
+    <header class="game__hero" data-theme="dark">
+        <?=new Picture([
+            'image'         => $game->getCover(),
+            'pictureClass'  => 'game__hero-picture',
+            'alt'           => $game->getTitle(),
+            'retina'        => false,
+            'fetchPriority' => 'high',
+            'breakpoints'   => [
+                -1 => 200,
+            ],
+        ])->render()?>
+        <div class="game__hero-content">
+            <span class="game__hero-game-name"><?=$game->getTitle()?></span>
+            <h1><?=$material->getTitle()?></h1>
+            <div class="game__hero-meta">
+                <time datetime="<?=$dateConverter->toIsoFormat($dateAdded)?>"
+                      class="game__hero-tag game__hero-tag--date"
+                >
+                    <?=$this->getSvgContent('images/modules/Games/calendar.svg')?>
+                    <?=$dateConverter->toShortForm($dateAdded)?>
+                </time>
+                <span class="game__hero-tag">Сохранения</span>
+            </div>
+        </div>
+    </header>
+    <h2 class="visually-hidden" id="description">Описание</h2>
+    <?=new Blocks($material->getDescription())->render()?>
+    <?=new File()->render([
+        'file'      => $material->getFile(),
+        'dateAdded' => $material->getDateAdded(),
+    ])?>
+    <?=new Blocks($material->getSetupInstructions())->render()?>
+<?php endif; ?>

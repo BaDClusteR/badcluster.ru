@@ -33,6 +33,7 @@ class GameDataBuilder implements IGameDataBuilder {
     public function buildEntity(Game $game): GameDTO {
         return new GameDTO(
             title: $game->getTitle(),
+            slug: $game->getSlug(),
             releaseYear: (string) $game->getReleaseYear(),
             cover: $game->getCover()?->toMediaDTO(),
         );

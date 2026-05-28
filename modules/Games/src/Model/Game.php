@@ -13,10 +13,13 @@ use Runway\Model\AEntity;
 use Runway\Model\Exception\ModelException;
 
 /**
+ * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
  * @method string getTitle()
  * @method self setTitle(string $title)
+ * @method string getSlug()
+ * @method self setSlug(string $slug)
  * @method int|null getReleaseYear()
  * @method self setReleaseYear(int|null $releaseYear)
  * @method Media|null getCover()
@@ -30,6 +33,9 @@ class Game extends AEntity {
 
     #[DS\Column]
     protected string $title = '';
+
+    #[DS\Column]
+    protected string $slug = '';
 
     #[DS\Column]
     protected ?int $releaseYear = null;
@@ -55,6 +61,10 @@ class Game extends AEntity {
 
     public function remove(): void {
         $this->cover?->remove();
+
+        foreach (GameMaterial::find(['game_id' => $this->id]) as $material) {
+            $material->remove();
+        }
 
         parent::remove();
     }

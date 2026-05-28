@@ -1,0 +1,104 @@
+.file {
+  margin-block: calc(1.5 * var(--rhythmic-unit));
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: calc(1.5 * var(--rhythmic-unit));
+  border-radius: var(--border-radius);
+  border: var(--border);
+  background: var(--color-surface);
+  align-items: flex-start;
+  gap: calc(2 * var(--rhythmic-unit));
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: calc(.25 * var(--rhythmic-unit));
+  max-width: 100%;
+}
+
+.fileLabel {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+  font-weight: bold;
+  font-size: var(--font-size-smaller);
+}
+
+.fileName {
+  font-family: var(--font-family-mono), monospace;
+  font-weight: bold;
+  font-size: var(--font-size-big);
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.fileMeta {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.fileMetaDot {
+  opacity: .5;
+  margin: 0 calc(.5 * var(--rhythmic-unit));
+}
+
+.fileAction {
+  flex: 1;
+  justify-content: center;
+  max-width: 300px;
+  font-size: var(--font-size-big);
+  font-weight: 500;
+  color: var(--color-bg);
+  align-self: flex-start;
+  padding: var(--rhythmic-unit) calc(2 * var(--rhythmic-unit));
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  background: var(--color-accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: calc(.5 * var(--rhythmic-unit));
+  border: var(--border-width) solid var(--color-accent);
+  touch-action: manipulation;
+  user-select: none;
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background: var(--color-link-hover);
+    color: var(--color-bg);
+    border-color: var(--color-link-hover);
+    text-decoration: none;
+  }
+}
+
+.fileActions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--rhythmic-unit);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (width >= 580px) {
+  .file {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .fileDownload {
+    width: min-content;
+    margin: 0;
+    align-self: center;
+  }
+
+  .fileActions {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}

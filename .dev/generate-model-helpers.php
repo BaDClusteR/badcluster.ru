@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Writes @method annotations directly into model class files.
+ * Writes method annotations directly into model class files.
  *
  * Scans src/Model and modules/[star]/src/Model for classes extending AEntity,
  * reads their DS\Column, DS\Id, and DS\Reference attributes,
- * and writes PHPDoc @method tags into each model file.
+ * and writes PHPDoc method tags into each model file.
  *
  * Replaces the entire PHPDoc block before the class on each run.
  * Usage: php generate-model-helpers.php
@@ -80,10 +80,17 @@ if (empty($modelFiles)) {
 $updatedCount = 0;
 
 foreach ($modelFiles as $model) {
-    $methods = collectMethods($model['ref']);
     $filePath = $model['path'];
     $content = file_get_contents($filePath);
 
+    // Skip if annotations were already generated (marker present)
+    if (str_contains($content, '@generated-model-helpers')) {
+        $relative = str_replace($projectRoot . '/', '', $filePath);
+        echo "  Skipped (already generated): $relative\n";
+        continue;
+    }
+
+    $methods = collectMethods($model['ref']);
     $newContent = updateFileContent($content, $methods);
 
     if ($newContent !== $content) {
@@ -123,6 +130,7 @@ function updateFileContent(string $content, array $methods): string {
     }
 
     $docBlock = "/**\n";
+    $docBlock .= " * @generated-model-helpers\n";
     foreach ($methods as $method) {
         $docBlock .= " * $method\n";
     }
@@ -166,21 +174,24 @@ function collectMethods(ReflectionClass $ref): array {
         if ($isId || $isColumn) {
             $typeStr = resolvePropertyType($prop);
 
-            if (!$hasNoGetter) {
-                $methods[] = "@method $typeStr get$capitalizedName()";
+            $getterName = "get$capitalizedName";
+            if (!$hasNoGetter && !$ref->hasMethod($getterName)) {
+                $methods[] = "@method $typeStr $getterName()";
             }
 
-            if (!$hasNoSetter) {
-                $methods[] = "@method self set$capitalizedName($typeStr \$$propName)";
+            $setterName = "set$capitalizedName";
+            if (!$hasNoSetter && !$ref->hasMethod($setterName)) {
+                $methods[] = "@method self $setterName($typeStr \$$propName)";
             }
         }
 
         if ($isRef) {
             $refAttr = $prop->getAttributes(DS\Reference::class)[0]->newInstance();
 
-            if (!$hasNoGetter) {
+            $getterName = "get$capitalizedName";
+            if (!$hasNoGetter && !$ref->hasMethod($getterName)) {
                 $refShort = '\\' . $refAttr->refModel;
-                $methods[] = "@method {$refShort}[] get$capitalizedName()";
+                $methods[] = "@method {$refShort}[] $getterName()";
             }
         }
     }

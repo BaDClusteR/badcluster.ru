@@ -9,10 +9,11 @@ $mainWidget = $page?->getMainWidget();
 $backlink = $page?->getBackLink();
 ?>
 <main class="content-area">
-    <div class="content-container">
+    <div class="<?=$page?->getContentContainerCssClass()?>">
         <?php if ($backlink): ?>
             <a href="<?=$backlink->url?>" class="back-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 <?=$backlink->text?>
@@ -22,7 +23,7 @@ $backlink = $page?->getBackLink();
             <h1><?=$header?></h1>
         <?php endif; ?>
         <?php if ($description): ?>
-            <?php foreach ($description as $p) :?>
+            <?php foreach ($description as $p) : ?>
                 <p><?=$p?></p>
             <?php endforeach; ?>
         <?php endif; ?>

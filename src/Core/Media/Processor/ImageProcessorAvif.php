@@ -10,7 +10,7 @@ readonly class ImageProcessorAvif extends AImageProcessor {
     }
 
     protected function getSaveParameters(): string {
-        return 'Q=75,effort=6';
+        return 'Q=70,effort=6';
     }
 
     public function getGeneratedMimeType(): string {

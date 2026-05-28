@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Widget\Common;
 
 use BC\Core\Asset\IAssetBuilder;
+use BC\Core\Trait\AssetBuilderTrait;
 use BC\Widget\Attribute\WidgetList;
 use BC\Widget\AWidget;
 use BC\Widget\Page\APage;
@@ -12,6 +13,8 @@ use Runway\Singleton\Container;
 
 #[WidgetList('body', priority: 100000)]
 class JsBundles extends AWidget {
+    use AssetBuilderTrait;
+
     private ?APage $page = null;
 
     protected function applyContext(array $context): void {
@@ -31,9 +34,5 @@ class JsBundles extends AWidget {
             ['scripts'],
             (array) $this->page?->getJsBundles()
         );
-    }
-
-    public function getBundler(): IAssetBuilder {
-        return Container::getInstance()->getService(IAssetBuilder::class);
     }
 }

@@ -2,7 +2,7 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Footer $this */
 ?>
-<link rel="stylesheet" href="<?=$this->getStyleUrl("footer")?>" as="style" />
+<link rel="stylesheet" href="<?=$this->getCssBundleUrl("footer")?>" as="style"/>
 <footer class="footer">
     <div class="content-container">
         <?=$this->renderWidgetList("footer", ["page" => $this->getPage()])?>

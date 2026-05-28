@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Box, Text, TextInput } from '@mantine/core';
-import EditorJS, { type OutputData, type ToolConstructable } from '@editorjs/editorjs';
-import List from '@editorjs/list';
-import { HeadingBlock } from './heading/HeadingBlock';
-import { QuoteBlock } from './quote/QuoteBlock';
-import { MediaBlock } from './mediaBlock/MediaBlock';
-import { GalleryBlock } from './mediaBlock/GalleryBlock';
-import { TerminalBlock } from './terminal/TerminalBlock';
-import { TocBlock } from './toc/TocBlock';
-import { KbdInlineTool } from './inlineTools/KbdInlineTool';
-import { CodeInlineTool } from './inlineTools/CodeInlineTool';
-import { SpoilerInlineTool } from './inlineTools/SpoilerInlineTool';
-import classes from './BlocksField.module.css';
+import React, {useEffect, useRef, useState} from "react";
+import {Box, Text, TextInput} from "@mantine/core";
+import EditorJS, {type OutputData, type ToolConstructable} from "@editorjs/editorjs";
+import List from "@editorjs/list";
+import {HeadingBlock} from "./heading/HeadingBlock";
+import {QuoteBlock} from "./quote/QuoteBlock";
+import {MediaBlock} from "./mediaBlock/MediaBlock";
+import {GalleryBlock} from "./mediaBlock/GalleryBlock";
+import {TerminalBlock} from "./terminal/TerminalBlock";
+import {TocBlock} from "./toc/TocBlock";
+import {KbdInlineTool} from "./inlineTools/KbdInlineTool";
+import {CodeInlineTool} from "./inlineTools/CodeInlineTool";
+import {SpoilerInlineTool} from "./inlineTools/SpoilerInlineTool";
+import classes from "./BlocksField.module.css";
 import "./editorjs.css";
 import {Optional} from "@admin/types";
 import clsx from "clsx";
@@ -23,6 +23,7 @@ interface BlocksFieldProps {
   value: Optional<OutputData>,
   onChange: (data: OutputData) => void,
   className?: string,
+  showSettings?: boolean,
 }
 
 /**
@@ -34,15 +35,25 @@ interface BlocksFieldProps {
  *   1. npm install @editorjs/<plugin>
  *   2. Import it here and add to the `tools` map.
  */
-export function BlocksField({ label, description, placeholder, value, onChange, className }: BlocksFieldProps) {
+export function BlocksField(
+  {
+    label,
+    description,
+    placeholder,
+    value,
+    onChange,
+    className,
+    showSettings
+  }: BlocksFieldProps
+) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
   const editorRef = useRef<EditorJS | null>(null);
   const isInternalChange = useRef(false);
-  const lastValueJson = useRef<string>('');
-  const defaultAltRef = useRef<string>('');
-  const [defaultAlt, setDefaultAlt] = useState('');
+  const lastValueJson = useRef<string>("");
+  const defaultAltRef = useRef<string>("");
+  const [defaultAlt, setDefaultAlt] = useState("");
 
   // When value changes externally (e.g. form.initialize()), re-render the editor.
   // Compare by JSON to avoid re-rendering on every keystroke in other form fields
@@ -73,12 +84,12 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
     // its DOM disappears). Isolating holders fixes it permanently.
     // Click-to-reveal spoilers
     const spoilerHandler = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement).closest('.spoiler');
-      if (target) target.classList.toggle('spoiler--revealed');
+      const target = (e.target as HTMLElement).closest(".spoiler");
+      if (target) target.classList.toggle("spoiler--revealed");
     };
-    wrapper.addEventListener('click', spoilerHandler);
+    wrapper.addEventListener("click", spoilerHandler);
 
-    const holder = document.createElement('div');
+    const holder = document.createElement("div");
     wrapper.appendChild(holder);
 
     const editor = editorRef.current = new EditorJS({
@@ -90,33 +101,33 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
           class: HeadingBlock as unknown as ToolConstructable,
           config: {
             levels: [2, 3, 4],
-            defaultLevel: 2,
-          },
+            defaultLevel: 2
+          }
         },
         quote: {
           class: QuoteBlock as unknown as ToolConstructable,
-          inlineToolbar: true,
+          inlineToolbar: true
         },
         media: {
           class: MediaBlock as unknown as ToolConstructable,
-          config: { getDefaultAlt: () => defaultAltRef.current },
+          config: {getDefaultAlt: () => defaultAltRef.current}
         },
         gallery: {
           class: GalleryBlock as unknown as ToolConstructable,
-          config: { getDefaultAlt: () => defaultAltRef.current },
+          config: {getDefaultAlt: () => defaultAltRef.current}
         },
         terminal: {
           class: TerminalBlock as unknown as ToolConstructable,
-          inlineToolbar: ['bold', 'italic', 'link', 'kbd', 'code'],
+          inlineToolbar: ["bold", "italic", "link", "kbd", "code"]
         },
         list: {
           class: List as unknown as ToolConstructable,
-          inlineToolbar: true,
+          inlineToolbar: true
         },
         toc: TocBlock as unknown as ToolConstructable,
         kbd: KbdInlineTool as unknown as ToolConstructable,
         code: CodeInlineTool as unknown as ToolConstructable,
-        spoiler: SpoilerInlineTool as unknown as ToolConstructable,
+        spoiler: SpoilerInlineTool as unknown as ToolConstructable
         //link: LinkInlineTool as unknown as ToolConstructable,
       },
       i18n: {
@@ -126,7 +137,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
               "toggler": {
                 "Click to tune": "Нажмите, чтобы настроить",
                 "or drag to move": "или перетащите"
-              },
+              }
             },
             "inlineToolbar": {
               "converter": {
@@ -135,13 +146,13 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
             },
             "toolbar": {
               "toolbox": {
-                "Add": "Добавить",
+                "Add": "Добавить"
               }
             },
             "popover": {
               "Filter": "Поиск",
               "Nothing found": "Ничего не найдено",
-              "Convert to": "Конвертировать в",
+              "Convert to": "Конвертировать в"
             }
           },
           toolNames: {
@@ -160,13 +171,13 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
               "Add a link": "Вставьте ссылку"
             },
             "stub": {
-              'The block can not be displayed correctly.': 'Блок не может быть отображен'
+              "The block can not be displayed correctly.": "Блок не может быть отображен"
             },
             "linkTool": {
               "Link": "Ссылка",
               "Couldn't fetch the link data": "Не удалось получить данные",
               "Couldn't get this link data, try the other one": "Не удалось получить данные по ссылке, попробуйте другую",
-              "Wrong response format from the server": "Неполадки на сервере",
+              "Wrong response format from the server": "Неполадки на сервере"
             },
             "header": {
               "Heading 1": "Заголовок 1",
@@ -174,7 +185,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
               "Heading 3": "Заголовок 3",
               "Heading 4": "Заголовок 4",
               "Heading 5": "Заголовок 5",
-              "Heading 6": "Заголовок 6",
+              "Heading 6": "Заголовок 6"
             },
             "paragraph": {
               "Enter something": "Введите текст"
@@ -192,7 +203,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
             },
             "convertTo": {
               "Convert to": "Конвертировать в"
-            },
+            }
           },
           blockTunes: {
             "delete": {
@@ -205,7 +216,7 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
             "moveDown": {
               "Move down": "Переместить вниз"
             }
-          },
+          }
         }
       },
       async onChange(api) {
@@ -213,50 +224,56 @@ export function BlocksField({ label, description, placeholder, value, onChange, 
         isInternalChange.current = true;
         lastValueJson.current = JSON.stringify(saved);
         onChangeRef.current(saved);
-      },
+      }
     });
 
     return () => {
-      wrapper.removeEventListener('click', spoilerHandler);
+      wrapper.removeEventListener("click", spoilerHandler);
       editorRef.current = null;
       editor.isReady
-        .then(() => {
-          editor.destroy();
-          holder.remove();
-        })
-        .catch(() => {
-          holder.remove();
-        });
+      .then(() => {
+        editor.destroy();
+        holder.remove();
+      })
+      .catch(() => {
+        holder.remove();
+      });
     };
     // Mount once — re-mounting on every value change would wipe the editor.
   }, []);
 
   return (
     <Box>
-      <Text size="sm" fw={500} mb={4}>
-        {label}
-      </Text>
+      {
+        label &&
+        <Text size="sm" fw={500} mb={4}>
+          {label}
+        </Text>
+      }
       {description && (
         <Text size="xs" c="dimmed" mb={6}>
           {description}
         </Text>
       )}
-      <details className={classes.editorSettings}>
-        <summary className={classes.editorSettingsSummary}>Настройки редактора</summary>
-        <div className={classes.editorSettingsBody}>
-          <TextInput
-            size="xs"
-            label="Альт по умолчанию"
-            placeholder="Для новых картинок"
-            value={defaultAlt}
-            onChange={(e) => {
-              setDefaultAlt(e.currentTarget.value);
-              defaultAltRef.current = e.currentTarget.value;
-            }}
-          />
-        </div>
-      </details>
-      <div ref={wrapperRef} className={clsx(classes.editor, className)} />
+      {
+        (showSettings || (showSettings === undefined))
+        && <details className={classes.editorSettings}>
+          <summary className={classes.editorSettingsSummary}>Настройки редактора</summary>
+          <div className={classes.editorSettingsBody}>
+            <TextInput
+              size="xs"
+              label="Альт по умолчанию"
+              placeholder="Для новых картинок"
+              value={defaultAlt}
+              onChange={(e) => {
+                setDefaultAlt(e.currentTarget.value);
+                defaultAltRef.current = e.currentTarget.value;
+              }}
+            />
+          </div>
+        </details>
+      }
+      <div ref={wrapperRef} className={clsx(classes.editor, className)}/>
     </Box>
   );
 }

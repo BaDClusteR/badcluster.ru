@@ -64,6 +64,10 @@
   margin-bottom: 4px;
 }
 
+:global(.entity-form .mantine-Grid-col:empty) {
+  display: none;
+}
+
 .fieldset {
   border: none;
   padding: 0;

@@ -26,6 +26,7 @@ import classes from "./EntityForm.module.css";
 import Button from "@/components/primitives/Button.tsx";
 import Slug from "@/components/primitives/Slug.tsx";
 import {ImageField} from "./fields/ImageField";
+import {FileField} from "./fields/FileField";
 import FieldGroup from "./FieldGroup";
 import type {EntityFormComponents} from "@admin/types";
 import dtClasses from "./fields/DateTimePicker.module.css";
@@ -133,28 +134,27 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
   const form = useForm<T>({
     mode: "uncontrolled",
     initialValues: (initialValues ?? {}) as T,
-    validate: Object.fromEntries(
-      fields
-      .filter((f) => ("name" in f) && (f.required || f.validate))
-      .map((f) => {
-        const named = f as FieldDefNamed<T>;
-        return [
-          named.name,
-          (value: unknown) => {
-            // Required check
-            if (f.required) {
-              if (value == null) return `Обязательное поле`;
-              if (typeof value === "string" && value.trim() === "") return `Обязательное поле`;
-            }
-            // Custom validator
-            if (f.validate) {
-              return f.validate(value);
-            }
-            return null;
-          }
-        ];
-      })
-    ) as never
+    validate: (values: T) => {
+      const errors: Record<string, string> = {};
+      for (const f of fields) {
+        if (!("name" in f) || (!f.required && !f.validate)) continue;
+        // Skip validation for hidden fields
+        if (f.visible && !f.visible(values)) continue;
+
+        const name = (f as FieldDefNamed<T>).name as string;
+        const value = values[name];
+
+        if (f.required) {
+          if (value == null) { errors[name] = "Обязательное поле"; continue; }
+          if (typeof value === "string" && value.trim() === "") { errors[name] = "Обязательное поле"; continue; }
+        }
+        if (f.validate) {
+          const err = f.validate(value);
+          if (err) errors[name] = err;
+        }
+      }
+      return errors;
+    }
   });
 
   useEffect(() => {
@@ -234,6 +234,10 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
   // --- Normal form ---
 
   function renderField(field: FieldDef<T, C>) {
+    if (field.visible && !field.visible(form.values)) {
+      return null;
+    }
+
     const common = {
       label: "label" in field ?
         field.label
@@ -271,7 +275,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
         );
       case "slug":
         return <Slug
-          url={field.url}
+          url={(slug: string) => field.url(slug, form.values, context)}
           {...common}
           {...form.getInputProps(field.name as string)}
         />;
@@ -363,6 +367,20 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
             thumbnailHeight={field.thumbnailHeight}
             uploadPurpose={field.uploadPurpose}
             showAlt={field.showAlt}
+          />
+        );
+      case "file":
+        return (
+          <FileField
+            label={field.label}
+            description={field.hint}
+            withAsterisk={field.required}
+            error={form.errors[field.name as string]}
+            value={form.values[field.name] as any}
+            onChange={(file) => form.setFieldValue(field.name as string, file as never)}
+            uploadEndpoint={field.uploadEndpoint}
+            uploadFields={field.uploadFields}
+            accept={field.accept}
           />
         );
       case "heading":
@@ -466,7 +484,8 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
       switch: 24,
       blocks: 200,
       datetime: 36,
-      image: 120
+      image: 120,
+      file: 48
     };
 
     return (

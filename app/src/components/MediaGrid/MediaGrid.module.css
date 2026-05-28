@@ -1,0 +1,11 @@
+.card {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.empty {
+  text-align: center;
+  padding: calc(3 * var(--rhythmic-unit));
+  color: var(--color-text-secondary);
+  font-style: italic;
+}

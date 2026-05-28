@@ -44,7 +44,7 @@
 .game__name {
   font-size: var(--font-size-big);
   line-height: 1.2;
-  text-wrap: auto;
+  text-wrap-style: pretty;
 }
 
 .game__year {
@@ -181,7 +181,7 @@
   }
 
   .game__card-header {
-    max-width: 160px;
+    max-width: 180px;
   }
 
   .game__materials {

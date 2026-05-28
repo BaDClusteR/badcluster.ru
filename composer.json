@@ -2,6 +2,7 @@
   "private": true,
   "require": {
     "php": ">=8.5",
+    "ext-fileinfo": "*",
     "ext-mbstring": "*",
     "ext-yaml": "*",
     "ext-zip": "*",

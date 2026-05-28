@@ -1,0 +1,11 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Games\Widget\GamesList\GamesList $this */
+
+$listItem = new \BC\Modules\Games\Widget\GamesList\GamesListItem();
+?>
+<ul class="games list--block">
+    <?php foreach ($this->getGames() as $game) : ?>
+        <?=$listItem->render(['game' => $game])?>
+    <?php endforeach; ?>
+</ul>

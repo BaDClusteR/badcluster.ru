@@ -2,8 +2,8 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\JsBundles $this */
 
-$bundler = $this->getBundler();
+$builder = $this->getAssetBuilder();
 ?>
-<?php foreach ($this->getJsBundles() as $bundle) :?>
-    <script src="<?=$bundler->getBundleWebPath($bundle, 'js')?>"></script>
+<?php foreach ($this->getJsBundles() as $bundle) : ?>
+    <script src="<?=$builder->getBundleWebPath($bundle, 'js')?>"></script>
 <?php endforeach; ?>

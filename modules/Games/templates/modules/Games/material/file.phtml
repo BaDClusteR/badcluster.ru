@@ -1,0 +1,28 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Games\Widget\GameMaterial\File $this */
+$file = $this->getFile();
+$dateAdded = $this->getDateAdded();
+?>
+<?php if ($file) : ?>
+    <link rel="stylesheet" href="<?=$this->getCssBundleUrl('file')?>" as="style"/>
+    <section class="file" id="download">
+        <div class="file__info">
+            <span class="file__label">Файл:</span>
+            <span class="file__name"><?=basename($file->getPath())?></span>
+            <div class="file__meta">
+                <span><?=$this->getFormatter()->formatAsHumanReadableSize($file->getSize())?></span>
+                <?php if ($dateAdded) : ?>
+                    <span class="file__meta-dot">•</span>
+                    <span>Добавлен <?=$this->getDateConverter()->toShortForm($dateAdded)?></span>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="file__actions">
+            <a href="<?=$file->getUrl()?>" class="btn btn--primary btn--big file__action">
+                <?=$this->getSvgContent('images/modules/Games/download.svg')?>
+                Скачать
+            </a>
+        </div>
+    </section>
+<?php endif; ?>

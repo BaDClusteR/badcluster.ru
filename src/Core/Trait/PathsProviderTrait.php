@@ -9,6 +9,10 @@ use Runway\Singleton\Container;
 
 trait PathsProviderTrait {
     protected function getPathsProvider(): IPathsProvider {
+        return static::getPathsProviderStatic();
+    }
+
+    protected static function getPathsProviderStatic(): IPathsProvider {
         return Container::getInstance()->getService(IPathsProvider::class);
     }
 }

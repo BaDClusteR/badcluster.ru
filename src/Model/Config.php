@@ -10,6 +10,7 @@ use Runway\Exception\Exception;
 use Runway\Model\AEntity;
 
 /**
+ * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
  * @method string getName()

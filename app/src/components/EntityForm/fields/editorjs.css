@@ -43,6 +43,14 @@
     margin-top: calc(1.5 * var(--rhythmic-unit));
   }
 
+  .ce-block code {
+    background: var(--color-surface);
+    padding: calc(.125 * var(--rhythmic-unit)) calc(.375 * var(--rhythmic-unit));
+    border-radius: var(--border-radius-small);
+    word-break: break-word;
+    font-size: var(--font-size-base);
+  }
+
   .ce-toolbar__plus,
   .ce-toolbar__settings-btn {
     color: var(--color-text);
@@ -123,8 +131,14 @@
   }
 }
 
-[data-mantine-color-scheme="dark"] .codex-editor .ce-popover {
-  --color-border: #27272A;
+[data-mantine-color-scheme='dark'] .codex-editor {
+  .ce-popover {
+    --color-border: #27272A;
+  }
+
+  .ce-block code {
+    background: color-mix(in sRGB, var(--color-surface), #FFF 5%);
+  }
 }
 
 .codex-editor__redactor {

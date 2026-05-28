@@ -1,25 +1,7 @@
-.content-area .text-block {
-  h2,
-  h3,
-  h4 {
-    margin-top: calc(.5 * var(--rhythmic-unit));
-  }
-
-  code {
-    background: var(--color-surface);
-    padding: calc(.125 * var(--rhythmic-unit)) calc(.375 * var(--rhythmic-unit));
-    border-radius: var(--border-radius-small);
-    word-break: break-word;
-  }
-
-  h2.visually-hidden {
-    position: relative;
-    margin-top: calc(-1.5 * var(--rhythmic-unit));
-  }
-}
-
-.game__hero {
-  --game-hero-miniature-brightness: .8;
+.gameHero {
+  --game-hero-miniature-brightness: 1;
+  --game-hero-overlay-color: #000;
+  --game-hero-overlay-opacity: .4;
 
   position: relative;
   background: var(--color-bg);
@@ -32,16 +14,10 @@
   color: var(--color-text);
   margin-inline: calc(-1 * var(--gutter-size));
   padding-inline: var(--gutter-size);
+  margin-block-end: calc(1.5 * var(--rhythmic-unit));
+  z-index: 2;
 
-  &.game__hero--dark-miniature {
-    --game-hero-miniature-brightness: 1;
-  }
-
-  &.game__hero--darker-miniature {
-    --game-hero-miniature-brightness: 1.3;
-  }
-
-  @media (width >= 420px) {
+  @container (width >= 420px) {
     margin-inline: 0;
     padding-inline: calc(2 * var(--rhythmic-unit));
     margin-top: 0;
@@ -49,7 +25,12 @@
   }
 }
 
-.game__hero-picture {
+:global(html[data-mantine-color-scheme='dark']) .gameHero {
+  --game-hero-overlay-color: #353535;
+  --game-hero-overlay-opacity: .7;
+}
+
+.gameHeroPicture {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -59,10 +40,23 @@
   right: 0;
   pointer-events: none;
   user-select: none;
-  filter: blur(25px) brightness(var(--game-hero-miniature-brightness, 1));
+  filter: blur(50px) brightness(var(--game-hero-miniature-brightness, 1));
+  opacity: .8;
 
   &::before {
     background: var(--color-bg);
+  }
+
+  &::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--game-hero-overlay-color);
+    content: '';
+    opacity: var(--game-hero-overlay-opacity);
+    z-index: 2;
   }
 
   img {
@@ -70,38 +64,49 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    z-index: 1;
   }
 }
 
-.game__hero-content {
+.gameHeroContent {
   position: relative;
   z-index: 2;
+  flex: 0 0 100%;
 
-  h1 {
-    margin-bottom: calc(.5 * var(--rhythmic-unit));
+  textarea {
+    font-variation-settings: 'wdth' 100;
+    margin: 0 0 calc(.5 * var(--rhythmic-unit));
+    color: var(--color-contrast);
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    font-size: 36px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-weight: bold;
+    box-shadow: none !important;
+    line-height: 1.35;
   }
 }
 
-.game__hero-game-name {
+.gameHeroGameName {
   font-family: var(--font-family-mono), monospace;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-base);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--color-text-secondary);
   display: block;
-  transition: var(--transition-mode) color;
 }
 
-.game__hero-meta {
+.gameHeroMeta {
   display: flex;
   flex-wrap: wrap;
   gap: calc(.5 * var(--rhythmic-unit));
-  font-size: var(--font-size-smaller);
+  font-size: var(--font-size-small);
   color: var(--color-text-secondary);
-  transition: var(--transition-mode) color;
 }
 
-.game__hero-tag {
+.gameHeroTag {
   background: rgb(255 255 255 / 15%);
   backdrop-filter: blur(5px);
   border: var(--border-width) solid rgb(255 255 255 / 10%);

@@ -21,6 +21,7 @@ use Runway\Singleton\Container;
 use Throwable;
 
 /**
+ * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
  * @method string getPath()

@@ -1,23 +1,14 @@
-import {ReactNode, useEffect, useState} from "react";
+import {ReactNode} from "react";
 import {ActionIcon, Group, TextInput, Title} from "@mantine/core";
 import {IconPencil, IconTrash, IconPlus, IconSearch} from "@tabler/icons-react";
 import {DataTable, TableState} from "@/components/DataTable";
-import {EntityRow, ListDataResponse, ListProps, ListState, PartialListState} from "@admin/types";
-import {useUrlListState} from "./useUrlListState";
-import {Nullable} from "@admin/types";
+import type {ColumnDef, EntityRow, ListProps} from "@admin/types";
 import classes from "./List.module.css";
-import {useQuery} from "@tanstack/react-query";
-import {useDebouncedCallback} from "use-debounce";
 import Button from "@/components/primitives/Button";
 import clsx from "clsx";
-import {useDisclosure} from "@mantine/hooks";
 import Modal from "@/components/primitives/Modal";
 import {IconError} from "@/components/List/components/Icons.tsx";
-import {useNavigate} from "react-router";
-import apiCall from "@/utils/apiCall";
-import {buildAdminUrl} from "@/utils/buildAdminUrl.ts";
-import getDefaultDataProvider from "@/components/List/defaultDataProvider.ts";
-import {notify} from "@/lib/notify";
+import {useListController} from "./useListController";
 
 export function List<T extends EntityRow>(
   {
@@ -27,168 +18,40 @@ export function List<T extends EntityRow>(
     columns,
     labels,
     webPath,
-    apiEndpoint
+    apiEndpoint,
   }: ListProps<T>
 ) {
-  permissions ??= {
-    add: true,
-    edit: true,
-    delete: true,
-    select: true,
-    filter: true
-  };
-
-  if (!dataProvider && apiEndpoint) {
-    dataProvider = getDefaultDataProvider(apiEndpoint);
-  }
-
-  if (!dataProvider) {
-    notify.error("Ошибка", "У компонента List не задан ни dataProvider, ни apiEndpoint.");
-    return null;
-  }
-
-  const listState = useUrlListState();
-  const {state} = listState;
-  const {getData} = dataProvider;
-  const navigate = useNavigate();
-
-  const [filterText, setFilterText] = useState(state.filter);
-  const [tableData, setTableData] = useState({items: [], total: 0} as ListDataResponse<any>);
-  const [hasLoaded, setHasLoaded] = useState(false);
-  const [prevState, setPrevState] = useState<Nullable<ListState>>(null);
-  const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
-
-  const [isConfirmDeletion, {close: closeDeletionConfirmation, open: openDeletionConfirmation}] = useDisclosure();
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const [deleteConfirmationText, setDeleteConfirmationText] = useState<ReactNode>("Действительно удалить?");
-  const [rowsToDelete, setRowsToDelete] = useState<EntityRow[]>([]);
-
-  const handleSetState = (newState: PartialListState) => {
-    setPrevState(state);
-    setSelectedRows([]);
-    listState.setState(newState);
-  };
-
-  const {data, error: err, isFetching, refetch} = useQuery({
-    queryKey: [name, state],
-    retry: false,
-    queryFn: ({signal}) => getData(state, {signal})
+  const ctrl = useListController<T>({
+    name,
+    permissions,
+    labels,
+    webPath,
+    dataProvider,
+    apiEndpoint,
   });
 
-  const error: any = err;
-
-  useEffect(() => {
-    if (!isFetching && data) {
-      setTableData(data);
-      setHasLoaded(true);
-    }
-  }, [isFetching, data]);
-
-  useEffect(() => {
-    setFilterText(state.filter);
-  }, [state.filter]);
-
-  const rollbackState = () => {
-    if (prevState) {
-      listState.setState(prevState);
-      setPrevState(null);
-    }
-  };
-
-  const renderBulkActions = (): ReactNode => {
-    return permissions.delete
-      ? <Button variant="default" color="red" onClick={
-        (e) => {
-          e.preventDefault();
-          const rowsToDelete: T | T[] = [];
-          selectedRows?.forEach((selected, rowIndex) => {
-            if (selected && data?.items[rowIndex]) {
-              rowsToDelete.push(data?.items[rowIndex]);
-            }
-          });
-
-          confirmDeletion(rowsToDelete);
-        }
-      }>
-        Удалить
-      </Button>
-      : null;
-  };
-
-  const confirmDeletion = (rows: T | T[]) => {
-    if (Array.isArray(rows) && rows.length > 1) {
-      setDeleteConfirmationText(
-        labels.deleteConfirmation?.multiple
-          ? labels.deleteConfirmation?.multiple.replace("{{count}}", rows.length.toString())
-          : "Действительно удалить?"
-      );
-    } else {
-      setDeleteConfirmationText(
-        labels.deleteConfirmation?.single
-          ? labels.deleteConfirmation?.single(
-            Array.isArray(rows)
-              ? rows[0]
-              : rows
-          ) : "Действительно удалить?"
-      );
-    }
-
-    setRowsToDelete(rows as EntityRow[]);
-    openDeletionConfirmation();
-  };
-
-  const errorContent = error
-    ? <span className={classes.error}>
-        <IconError/>
-        <span><strong>Упс!</strong> Что-то пошло не так.</span>
-        <Group gap="sm" className={classes.errorButtons}>
-          {
-            prevState
-            && <Button onClick={rollbackState} variant="default">
-              На шаг назад
-            </Button>
-          }
-          <Button onClick={() => refetch()}>
-            Попытаться еще раз
-          </Button>
-        </Group>
-      </span>
-    : null;
-
-  const setFilterState = useDebouncedCallback(
-    (filter: string) => {
-      handleSetState({filter});
-    },
-    300
-  );
-
-  const renderActions = (row: EntityRow) => {
+  const renderActions = (row: T): ReactNode => {
     const actions = [];
-    if (permissions.edit) {
-      const url = webPath
-        ? buildAdminUrl(`${webPath}/${row.id}`)
-        : "";
 
+    if (ctrl.permissions.edit) {
       actions.push(
         <ActionIcon
           component="a"
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent) => {
             e.preventDefault();
-            navigate(url);
+            ctrl.navigateToEdit(row);
           }}
           key={`row-${row.id}-edit`}
-          href={url}
           variant="subtle"
           aria-label="Редактировать"
           className={clsx(classes.action, classes.actionEdit)}
         >
           <IconPencil size={16}/>
-        </ActionIcon>
+        </ActionIcon>,
       );
     }
 
-    if (permissions.delete) {
+    if (ctrl.permissions.delete) {
       actions.push(
         <ActionIcon
           key={`row-${row.id}-delete`}
@@ -196,116 +59,97 @@ export function List<T extends EntityRow>(
           color="red"
           aria-label="Удалить"
           className={clsx(classes.action, classes.actionDelete)}
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent) => {
             e.preventDefault();
-            confirmDeletion([row as any]);
+            ctrl.confirmDeletion([row]);
           }}
         >
           <IconTrash size={16}/>
-        </ActionIcon>
+        </ActionIcon>,
       );
     }
 
-    return actions.length
-      ? <>{actions}</>
+    return actions.length ? <>{actions}</> : null;
+  };
+
+  const renderBulkActions = (): ReactNode => {
+    return ctrl.permissions.delete
+      ? <Button variant="default" color="red" onClick={(e: React.MouseEvent) => {
+        e.preventDefault();
+        ctrl.confirmBulkDeletion();
+      }}>
+        Удалить
+      </Button>
       : null;
   };
 
-  const renderDeleteConfirmationModal = () => {
-    return <Modal
-      opened={isConfirmDeletion}
-      onClose={isDeleting ? () => {
-      } : closeDeletionConfirmation}
-      withCloseButton={!isDeleting}
-      title="Действительно удалить?"
-    >
-      <p>{deleteConfirmationText}</p>
-      <Group justify="flex-end" className={classes.modalButtonsGroup}>
-        <Button disabled={isDeleting} onClick={closeDeletionConfirmation} variant="default">
-          Отмена
-        </Button>
-        <Button loading={isDeleting} onClick={async () => {
-          if (apiEndpoint) {
-            setIsDeleting(true);
-
-            try {
-              await apiCall(
-                "DELETE",
-                apiEndpoint,
-                {
-                  rows: rowsToDelete.map(
-                    (value) => value.id
-                  )
-                }
-              );
-              setIsDeleting(false);
-              closeDeletionConfirmation();
-              setSelectedRows([]);
-              await refetch();
-            } catch {
-              setIsDeleting(false);
-            }
-          }
-        }}>
-          Удалить
-        </Button>
-      </Group>
-    </Modal>;
-  };
+  const errorContent = ctrl.error
+    ? <span className={classes.error}>
+        <IconError/>
+        <span><strong>Упс!</strong> Что-то пошло не так.</span>
+        <Group gap="sm" className={classes.errorButtons}>
+          {ctrl.prevState && (
+            <Button onClick={ctrl.rollbackState} variant="default">
+              На шаг назад
+            </Button>
+          )}
+          <Button onClick={() => ctrl.refetch()}>
+            Попытаться еще раз
+          </Button>
+        </Group>
+      </span>
+    : null;
 
   return (
     <>
-      {renderDeleteConfirmationModal()}
-      <Title className={classes.title} order={2}>{labels.title}</Title>
+      <Modal
+        opened={ctrl.isConfirmDeletion}
+        onClose={ctrl.isDeleting ? () => {} : ctrl.closeDeletionConfirmation}
+        withCloseButton={!ctrl.isDeleting}
+        title="Действительно удалить?"
+      >
+        <p>{ctrl.deleteConfirmationText}</p>
+        <Group justify="flex-end" className={classes.modalButtonsGroup}>
+          <Button disabled={ctrl.isDeleting} onClick={ctrl.closeDeletionConfirmation} variant="default">
+            Отмена
+          </Button>
+          <Button loading={ctrl.isDeleting} onClick={ctrl.executeDeletion}>
+            Удалить
+          </Button>
+        </Group>
+      </Modal>
+
+      <Title className={classes.title} order={2}>{ctrl.labels.title}</Title>
       <Group justify="space-between" mb="lg">
-        {permissions.filter && (
+        {ctrl.permissions.filter && (
           <TextInput
-            placeholder={labels.searchPlaceholder ?? "Поиск..."}
-            value={filterText}
-            onChange={(e) => {
-              const value = String(e?.target?.value || "");
-              setFilterText(value);
-              setFilterState(value);
-            }}
+            placeholder={ctrl.labels.searchPlaceholder ?? "Поиск..."}
+            value={ctrl.filterText}
+            onChange={(e) => ctrl.handleFilterChange(e.target.value)}
             leftSection={<IconSearch size={16}/>}
             style={{maxWidth: 320}}
           />
         )}
-        {
-          permissions.add && <Button
-            leftSection={<IconPlus size={16}/>}
-            onClick={() => {
-              if (webPath) {
-                navigate(
-                  buildAdminUrl(`${webPath}/new`)
-                );
-              }
-            }}
-          >
-            {labels.add ?? "Добавить"}
+        {ctrl.permissions.add && (
+          <Button leftSection={<IconPlus size={16}/>} onClick={ctrl.navigateToAdd}>
+            {ctrl.labels.add ?? "Добавить"}
           </Button>
-        }
+        )}
       </Group>
 
       <DataTable<T>
         columns={columns}
-        rows={tableData.items}
-        loading={isFetching || !hasLoaded}
-        total={tableData.total}
-        state={state.table}
-        error={!!err}
+        rows={ctrl.items}
+        loading={ctrl.loading}
+        total={ctrl.total}
+        state={ctrl.state.table}
+        error={ctrl.error}
         errorContent={errorContent}
         actions={(row) => renderActions(row)}
-        selectable={permissions.select}
-        selectedRows={selectedRows}
-        onStateChange={(state: TableState) => {
-          handleSetState({
-            table: state
-          });
-        }}
-        onSelectionChange={(rows) => {
-          setSelectedRows(rows);
-        }}
+        selectable={ctrl.permissions.select}
+        selectedRows={ctrl.selectedRows}
+        onStateChange={(state: TableState) => ctrl.handleTableStateChange(state)}
+        onSelectionChange={ctrl.setSelectedRows}
         bulkActions={renderBulkActions()}
         webPath={webPath}
       />

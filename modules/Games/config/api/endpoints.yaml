@@ -2,3 +2,7 @@ services:
   BC\Modules\Games\Api\Endpoint\Game:
     tags:
       - name: api_endpoint_collection
+
+  BC\Modules\Games\Api\Endpoint\GameMaterial:
+    tags:
+      - name: api_endpoint_collection

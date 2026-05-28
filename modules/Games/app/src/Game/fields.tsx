@@ -23,10 +23,20 @@ const FIELDS: FieldDef<Game>[] = [
     required: true
   },
   {
+    name: "slug",
+    type: "slug",
+    label: "Слаг",
+    required: true,
+    role: "primary",
+    url: () => "",
+    validate: (v) => /^[a-z0-9-]+$/.test(v as string)
+      ? null
+      : "Только латиница, цифры и дефис"
+  },
+  {
     name: "releaseYear",
     label: "Год выхода",
     role: "primary",
-    span: "full",
     type: "select",
     options: years
   },
@@ -38,7 +48,8 @@ const FIELDS: FieldDef<Game>[] = [
     type: "image",
     thumbnailWidth: 100,
     thumbnailHeight: 70,
-    uploadPurpose: "game"
+    uploadPurpose: "game",
+    required: true
   }
 ];
 

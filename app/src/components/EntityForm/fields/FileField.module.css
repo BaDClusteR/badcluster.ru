@@ -1,0 +1,105 @@
+/* Empty state */
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: calc(1.5 * var(--rhythmic-unit)) var(--rhythmic-unit);
+  background: transparent;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 120ms, color 120ms, background 120ms;
+}
+
+.placeholder:hover {
+  border-color: var(--color-link);
+  color: var(--color-link);
+  background: var(--color-surface);
+}
+
+.placeholderText {
+  font-size: var(--font-size-small);
+}
+
+/* Uploading state */
+.uploadingBox {
+  padding: calc(0.75 * var(--rhythmic-unit));
+  border: var(--border);
+  border-radius: var(--border-radius);
+}
+
+.uploadingInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--rhythmic-unit);
+  margin-bottom: calc(0.5 * var(--rhythmic-unit));
+}
+
+.progressBar {
+  height: 4px;
+  background: var(--color-surface);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-link);
+  transition: width 120ms linear;
+}
+
+/* File loaded state */
+.fileBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rhythmic-unit);
+  padding: calc(0.75 * var(--rhythmic-unit));
+  border: var(--border);
+  border-radius: var(--border-radius);
+}
+
+.fileInfo {
+  min-width: 0;
+  flex: 1;
+}
+
+.fileActions {
+  display: flex;
+  gap: calc(0.5 * var(--rhythmic-unit));
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  padding: calc(0.25 * var(--rhythmic-unit)) calc(0.75 * var(--rhythmic-unit));
+  border: var(--border);
+  border-radius: var(--border-radius);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: border-color 150ms, color 150ms;
+}
+
+.actionBtn:hover {
+  border-color: var(--color-link);
+  color: var(--color-link);
+}
+
+.actionBtnDanger {
+  composes: actionBtn;
+  color: var(--color-error);
+}
+
+.actionBtnDanger:hover {
+  border-color: var(--color-error);
+}
+
+.asterisk {
+  color: var(--color-error);
+}

@@ -8,6 +8,7 @@ use Runway\DataStorage\Attribute as DS;
 use Runway\Model\AEntity;
 
 /**
+ * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
  * @method \BC\Modules\Blog\Model\Post getPost()

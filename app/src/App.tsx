@@ -9,6 +9,8 @@ import {NotFoundPage} from "./pages/NotFound";
 import Comments from "@/pages/Comments";
 import Comment from "@/pages/Comment";
 
+// import MediaLibrary from "@/pages/MediaLibrary/MediaLibrary.tsx";
+
 export function App() {
   const {nav, modules, loading} = useModules();
 
@@ -19,6 +21,7 @@ export function App() {
         <Route index element={<DashboardPage/>}/>
         <Route key="comments-list" path="comments" element={<Comments/>}/>
         <Route key="comment-edit" path="comments/:id" element={<Comment/>}/>
+        {/*<Route path="media" element={<MediaLibrary/>}/>*/}
         {modules.map((mod) => (
           <Route
             key={mod.id}

@@ -100,25 +100,19 @@ class Game extends AEndpoint {
     public function create(
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
+        #[API\Parameter(source: 'body', name: 'slug')]
+        string $slug,
         #[API\Parameter(source: 'body', name: 'releaseYear')]
         ?string $releaseYear = null,
         #[API\Parameter(source: 'body', name: 'cover')]
         ?array $coverImage = null,
     ): CreatedDTO {
-        $isDuplicate = $this->handleWithException(
-            fn () => $this->isExistsGameWithTitle($title)
-        );
-
-        if ($isDuplicate) {
-            throw new UnprocessableEntityException(
-                ['title' => 'Игра с таким названием уже есть.'],
-                "Не могу создать $title: игра с таким названием уже есть."
-            );
-        }
+        $this->validateEntity($slug, $title, null, 'Ошибки при добавлении игры.');
 
         $game = $this->handleWithException(
             fn () => new GameModel()
                 ->setTitle($title)
+                ->setSlug($slug)
                 ->setReleaseYear(
                     $releaseYear
                         ? (int) $releaseYear
@@ -142,29 +136,22 @@ class Game extends AEndpoint {
      * @throws NotFoundException
      */
     #[API\Endpoint(path: 'game', method: 'PUT')]
-    public function save(
+    public function update(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,
+        #[API\Parameter(source: 'body', name: 'slug')]
+        string $slug,
         #[API\Parameter(source: 'body', name: 'releaseYear')]
         ?string $releaseYear = null,
         #[API\Parameter(source: 'body', name: 'cover')]
         ?array $coverImage = null,
     ): SuccessfulResultDTO {
-        $isDuplicate = $this->handleWithException(
-            fn () => $this->isExistsGameWithTitle($title, $id)
-        );
-
-        if ($isDuplicate) {
-            throw new UnprocessableEntityException(
-                ['title' => 'Игра с таким названием уже есть.'],
-                "Не могу сохранить изменения: игра '$title' уже есть в базе."
-            );
-        }
+        $this->validateEntity($slug, $title, $id, 'Не могу сохранить изменения.');
 
         $this->handleWithException(
-            function () use ($title, $releaseYear, $coverImage, $id): void {
+            function () use ($slug, $title, $releaseYear, $coverImage, $id): void {
                 $game = GameModel::findByUniqueIdentifier($id);
 
                 if (!$game) {
@@ -172,6 +159,7 @@ class Game extends AEndpoint {
                 }
 
                 $game->setTitle($title)
+                     ->setSlug($slug)
                      ->setReleaseYear(
                          $releaseYear
                              ? (int) $releaseYear
@@ -184,6 +172,44 @@ class Game extends AEndpoint {
         );
 
         return new SuccessfulResultDTO();
+    }
+
+    /**
+     * @throws UnprocessableEntityException
+     */
+    private function validateEntity(string $slug, string $title, ?int $id, string $errorTitle): void {
+        $errors = [];
+
+        if (
+            $this->handleWithException(
+                fn () => $this->isExistsGameWithTitle($title, $id)
+            )
+        ) {
+            $errors['title'] = 'Игра с таким названием уже есть.';
+        }
+
+        /** @var GameModel|null $gameBySlug */
+        if (
+            $gameBySlug = $this->handleWithException(
+                static function () use ($slug, $id) {
+                    $qb = GameModel::getQueryBuilder()
+                                   ->where('slug = :slug')
+                                   ->setVariable('slug', $slug);
+                    if ($id) {
+                        $qb = $qb->andWhere('id != :id')
+                                 ->setVariable('id', $id);
+                    }
+
+                    return $qb->getFirstEntity();
+                }
+            )
+        ) {
+            $errors['slug'] = sprintf('Этот слаг уже занят игрой %s', $gameBySlug->getTitle());
+        }
+
+        if (!empty($errors)) {
+            throw new UnprocessableEntityException($errors, $errorTitle);
+        }
     }
 
     #[API\Endpoint(path: 'games', method: 'DELETE')]

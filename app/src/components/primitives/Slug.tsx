@@ -19,25 +19,22 @@ export default function Slug(
     rest?: any
   }
 ): React.JSX.Element {
-  // The "original" slug from the backend — set once on initial load,
-  // not updated on every keystroke.
   const savedSlug = useRef<string | undefined>(undefined);
   const initialized = useRef(false);
+  const userEdited = useRef(false);
 
-  const [currentSlug, setCurrentSlug] = useState<string>('');
-  const [currentUrl, setCurrentUrl] = useState<string>('');
+  const [currentSlug, setCurrentSlug] = useState<string>("");
+  const [currentUrl, setCurrentUrl] = useState<string>("");
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Initialize/reset when form data arrives (form.initialize() updates defaultValue).
-  // We only capture savedSlug on the FIRST non-empty value, or when it changes
-  // from a previously saved value (e.g. navigating to a different entity).
+  // Initialize/reset when form data arrives or after save.
   useEffect(() => {
-    const slug = defaultValue ?? value ?? '';
+    const slug = defaultValue ?? value ?? "";
     if (!slug) return;
 
-    // First load, or navigated to a different entity
     if (!initialized.current || (savedSlug.current !== undefined && savedSlug.current !== slug && slug !== currentSlug)) {
       savedSlug.current = slug;
+      userEdited.current = false;
       initialized.current = true;
     }
 
@@ -46,7 +43,17 @@ export default function Slug(
     setValidationError(null);
   }, [defaultValue, value]);
 
-  const isOriginal = currentSlug !== '' && currentSlug === savedSlug.current;
+  // Recalculate URL when context/values change.
+  useEffect(() => {
+    if (!currentSlug) return;
+    const newUrl = url(currentSlug);
+    if (newUrl !== currentUrl) {
+      setCurrentUrl(newUrl);
+    }
+  });
+
+  // Show link when user hasn't edited the slug (it's still the backend value).
+  const isOriginal = currentSlug !== "" && !userEdited.current;
 
   return <>
     <TextInput
@@ -58,9 +65,10 @@ export default function Slug(
         onChange(slug);
         setCurrentSlug(slug);
         setCurrentUrl(url(slug));
+        userEdited.current = slug !== savedSlug.current;
         setValidationError(
           slug && !VALID_SLUG.test(slug)
-            ? 'Только латиница, цифры, дефис и подчёркивание'
+            ? "Только латиница, цифры, дефис и подчёркивание"
             : null
         );
       }}

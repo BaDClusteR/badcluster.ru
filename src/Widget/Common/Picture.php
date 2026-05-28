@@ -30,6 +30,10 @@ class Picture extends AWidget {
 
     private bool $isLazyLoad = false;
 
+    private bool $retina = true;
+
+    private string $fetchPriority = '';
+
     protected string $pictureCssClass = '' {
         get {
             return $this->pictureCssClass;
@@ -48,8 +52,14 @@ class Picture extends AWidget {
         }
     }
 
-    public function __construct(array $context = []) {
-        parent::__construct($context);
+    protected string $alt = '' {
+        get {
+            return $this->alt;
+        }
+    }
+
+    protected function applyContext(array $context): void {
+        parent::applyContext($context);
 
         if (($this->context['image'] ?? null) instanceof Media) {
             $this->image = $this->context['image'];
@@ -64,21 +74,31 @@ class Picture extends AWidget {
         }
 
         if (!empty($this->context['class'])) {
-            $this->imgCssClass = $this->context['class'];
+            $this->imgCssClass = (string) $this->context['class'];
         }
 
         if (!empty($this->context['pictureClass'])) {
-            $this->pictureCssClass = $this->context['pictureClass'];
+            $this->pictureCssClass = (string) $this->context['pictureClass'];
         }
 
         if (!empty($this->context['caption'])) {
-            $this->caption = $this->context['caption'];
+            $this->caption = (string) $this->context['caption'];
         }
+
+        if (!empty($this->context['alt'])) {
+            $this->caption = (string) $this->context['alt'];
+        }
+
+        if (!empty($this->context['fetchPriority'])) {
+            $this->fetchPriority = (string) $this->context['fetchPriority'];
+        }
+
+        $this->retina = !empty($this->context['retina']) || !array_key_exists('retina', $this->context);
     }
 
     protected function hasImages(int $width, string $mime): bool {
         return $this->image?->getThumbnail($width, $mime)
-               || $this->image?->getThumbnail($width * 2, $mime);
+               || ($this->retina && $this->image?->getThumbnail($width * 2, $mime));
     }
 
     protected function getSource(int $width, string $mime, int $minWidth, int $maxWidth): string {
@@ -87,22 +107,31 @@ class Picture extends AWidget {
         }
 
         $thumbnail = $this->image->getThumbnail($width, $mime);
-        $thumbnail2x = $this->image->getThumbnail($width * 2, $mime);
         $imagesWebRoot = $this->getPathsProvider()->getImagesWebPath();
 
-        if (!$thumbnail) {
-            $thumbnail = $thumbnail2x;
-        } elseif (!$thumbnail2x) {
-            $thumbnail2x = $this->image->getThumbnail($this->image->getWidth(), $mime);
-        }
+        if ($this->retina) {
+            $thumbnail2x = $this->image->getThumbnail($width * 2, $mime);
 
-        if (!$thumbnail2x) {
-            return '';
-        }
+            if (!$thumbnail) {
+                $thumbnail = $thumbnail2x;
+            } elseif (!$thumbnail2x) {
+                $thumbnail2x = $this->image->getThumbnail($this->image->getWidth(), $mime);
+            }
 
-        $srcset = $thumbnail
-            ? "$imagesWebRoot/{$thumbnail->getPath()} 1x, $imagesWebRoot/{$thumbnail2x->getPath()} 2x"
-            : "$imagesWebRoot/{$thumbnail2x->getPath()}";
+            if (!$thumbnail2x) {
+                return '';
+            }
+
+            $srcset = $thumbnail
+                ? "$imagesWebRoot/{$thumbnail->getPath()} 1x, $imagesWebRoot/{$thumbnail2x->getPath()} 2x"
+                : "$imagesWebRoot/{$thumbnail2x->getPath()}";
+        } else {
+            if (!$thumbnail) {
+                return '';
+            }
+
+            $srcset = "$imagesWebRoot/{$thumbnail->getPath()}";
+        }
 
         $media = '';
         if ($minWidth > 0 && $maxWidth > 0) {
@@ -162,7 +191,7 @@ class Picture extends AWidget {
             'src'    => $image->getWebPath(),
             'width'  => (string) $image->getWidth(),
             'height' => (string) $image->getHeight(),
-            'alt'    => $image->getAlt() ?: $this->caption,
+            'alt'    => $image->getAlt() ?: $this->caption ?: $this->alt,
         ];
 
         if ($this->isLazyLoad) {
@@ -171,6 +200,10 @@ class Picture extends AWidget {
 
         if ($class = $this->imgCssClass) {
             $result['class'] = $class;
+        }
+
+        if ($this->fetchPriority) {
+            $result['fetchpriority'] = $this->fetchPriority;
         }
 
         return $result;

@@ -4,3 +4,5 @@ services:
 
   BC\Modules\Games\Provider\Admin\AppSettingsProvider:
     decorates: BC\Provider\Admin\IAppSettingsProvider
+
+  BC\Modules\Games\Controller\Games: ~

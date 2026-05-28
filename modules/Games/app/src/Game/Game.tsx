@@ -1,5 +1,4 @@
 import {Link, useParams} from "react-router";
-import type {EntityFormDataProvider} from "@admin/types";
 import fields from "./fields";
 import {useAdminCore} from "../admin/useAdminCore";
 import {type Game} from "./types";
@@ -17,7 +16,7 @@ export default function Game() {
       webPath="games"
       apiEndpoint="game"
       title={(value) => <>
-        <Link to={buildAdminUrl("games")}>Игры</Link> :: {value?.title}
+        <Link to={buildAdminUrl("games")}>Игры</Link> :: {value?.title ?? "[Новая игра]"}
       </>}
       labels={{
         notFound: {

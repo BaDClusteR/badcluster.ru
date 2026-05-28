@@ -1,0 +1,28 @@
+.container {
+  --block-editor-min-height: 150px;
+
+  container-type: inline-size;
+}
+
+.description {
+  padding: 0;
+  border: none;
+
+  :global(.codex-editor .ce-header) {
+    font-variation-settings: 'wdth' 100;
+    margin: 0;
+    color: var(--color-contrast);
+  }
+}
+
+.setupInstructions {
+  width: 100%;
+
+  :global(.ce-block:first-child) {
+    h2,
+    h3,
+    h4 {
+      padding-top: calc(.5 * var(--rhythmic-unit));
+    }
+  }
+}

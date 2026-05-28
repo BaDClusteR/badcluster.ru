@@ -9,6 +9,10 @@ use Runway\Singleton\Container;
 
 trait FileSystemTrait {
     protected function getFileSystem(): IFileSystem {
+        return static::getFileSystemStatic();
+    }
+
+    protected static function getFileSystemStatic(): IFileSystem {
         return Container::getInstance()->getService(IFileSystem::class);
     }
 }

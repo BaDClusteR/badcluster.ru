@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BC\Modules\Blog\Controller\System;
+namespace BC\Controller\System;
 
 use BC\Exception\UnprocessableEntityException;
 use Throwable;
@@ -12,7 +12,7 @@ class APIExceptionResponseController extends \ApiPlatform\Controller\System\APIE
         if ($exception instanceof UnprocessableEntityException) {
             return [
                 'message' => $exception->getError(),
-                'errors'  => $exception->getFieldErrors()
+                'errors'  => $exception->getFieldErrors(),
             ];
         }
 

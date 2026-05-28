@@ -14,6 +14,7 @@ use Runway\Model\AEntity;
 use Runway\Model\Exception\ModelException;
 
 /**
+ * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
  * @method string getTitle()

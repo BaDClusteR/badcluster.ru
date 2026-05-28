@@ -8,6 +8,9 @@ services:
   BC\Core\Asset\IAssetBuilder:
     class: BC\Core\Asset\AssetBuilder
 
+  BC\Controller\System\APIExceptionResponseController:
+    decorates: ApiPlatform\Controller\System\IApiExceptionResponseController
+
   BC\Core\Config\IWebsiteSettings:
     class: BC\Core\Config\WebsiteSettings
     arguments:
@@ -27,7 +30,7 @@ services:
 
   BC\Core\Media\PostProcessor\ImagePostprocessor:
     arguments:
-      significantSizeDifferenceBytes: 1024
+      significantSizeDifferenceBytes: 8192
     tags:
       - name: image.postprocessor
 
@@ -57,7 +60,10 @@ services:
   BC\Provider\Admin\IPageProvider:
     class: BC\Provider\Admin\PageProvider
 
-# Website-specific services
+  BC\Core\Formatter\IFormatter:
+    class: BC\Core\Formatter\Formatter
+
+  # Website-specific services
   BC\Provider\IMenuItemsProvider:
     class: BC\Provider\MenuItemsProvider
 
@@ -80,7 +86,7 @@ services:
     class: BC\Provider\CommentsProvider
 
 
-# Controllers
+  # Controllers
   BC\Controller\Index: ~
   BC\Controller\Admin: ~
   BC\Controller\Comment: ~
