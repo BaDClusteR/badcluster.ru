@@ -29,25 +29,25 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                     new NavigationDTO(
                         label: 'Список игр',
                         path: '/admin/games',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/games.svg'),
                         position: 100
                     ),
                     new NavigationDTO(
                         label: 'Добавить игру',
                         path: '/admin/games/new',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/games.svg'),
                         position: 200
                     ),
                     new NavigationDTO(
                         label: 'Материалы',
                         path: '/admin/games/materials',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/materials.svg'),
                         position: 300
                     ),
                     new NavigationDTO(
                         label: 'Новый материал',
                         path: '/admin/games/materials/new',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/materials.svg'),
                         position: 400
                     ),
                 ]

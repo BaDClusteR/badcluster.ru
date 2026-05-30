@@ -5,4 +5,10 @@ services:
   BC\Modules\Games\Provider\Admin\AppSettingsProvider:
     decorates: BC\Provider\Admin\IAppSettingsProvider
 
+  BC\Modules\Games\Provider\CommentsProvider:
+    decorates: BC\Provider\ICommentsProvider
+
+  BC\Modules\Games\Provider\Admin\PageProvider:
+    decorates: BC\Provider\Admin\IPageProvider
+
   BC\Modules\Games\Controller\Games: ~

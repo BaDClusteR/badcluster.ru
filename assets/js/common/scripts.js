@@ -129,8 +129,22 @@ document.addEventListener(
 
 document.querySelectorAll('.spoiler').forEach(
     spoiler => {
-        spoiler.addEventListener('click', () => {
+        spoiler.setAttribute('tabindex', '0');
+        const reveal = () => {
             spoiler.classList.toggle('revealed');
-        });
+        }
+
+        spoiler.addEventListener('click', reveal);
+        spoiler.addEventListener(
+            'keydown',
+            /**
+             * @param {KeyboardEvent} e
+             */
+            (e) => {
+                if (['Enter', 'Space'].includes(e.key)) {
+                    reveal()
+                }
+            }
+        );
     }
 );

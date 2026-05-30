@@ -134,38 +134,11 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
 
     public function getCommentsConfig(): CommentsConfigDTO {
         return new CommentsConfigDTO(
-            comments: $this->getComments(),
+            comments: $this->getComments('post', $this->post?->getId()),
             emptyPhrase: 'Пока никто не комментировал. Есть мысли? Делитесь, я читаю всё :)',
             pageType: 'post',
             pageId: (string) $this->post?->getId(),
         );
-    }
-
-    /**
-     * @return CommentDTO[]
-     */
-    private function getComments(): array {
-        $action = Container::getInstance()->getService(IGetCommentsAction::class);
-
-        if (!$this->post) {
-            return [];
-        }
-
-        try {
-            return $action->run(
-                new GetCommentsRequest(
-                    pageType: 'post',
-                    pageId: $this->post->getId()
-                )
-            )->comments;
-        } catch (Exception $e) {
-            $this->getLogger()->error(
-                "Error while getting post comments: {$e->getMessage()}",
-                ['postId' => $this->post->getId()]
-            );
-
-            return [];
-        }
     }
 
     public function getJsBundles(): array {

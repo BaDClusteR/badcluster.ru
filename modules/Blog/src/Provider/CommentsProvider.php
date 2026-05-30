@@ -6,12 +6,18 @@ namespace BC\Modules\Blog\Provider;
 
 use BC\Core\Auth\IAuth;
 use BC\Modules\Blog\Model\Post;
+use BC\Provider\ICommentsProvider;
 use Runway\Exception\Exception;
 
-class CommentsProvider extends \BC\Provider\CommentsProvider {
+readonly class CommentsProvider implements ICommentsProvider {
     public function __construct(
-        private readonly IAuth $auth
+        private ICommentsProvider $inner,
+        private IAuth $auth
     ) {
+    }
+
+    public function getSuccessMessages(): array {
+        return $this->inner->getSuccessMessages();
     }
 
     public function isPageExist(string $pageType, int $pageId): bool {
@@ -29,6 +35,6 @@ class CommentsProvider extends \BC\Provider\CommentsProvider {
             }
         }
 
-        return parent::isPageExist($pageType, $pageId);
+        return $this->inner->isPageExist($pageType, $pageId);
     }
 }

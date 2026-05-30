@@ -34,6 +34,7 @@ export default function GameMaterial() {
         isCreateMode
           ? {
             type: "F",
+            slug: "saves",
             setupInstructions: {
               // @ts-ignore
               blocks: [

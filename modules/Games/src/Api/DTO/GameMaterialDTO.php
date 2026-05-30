@@ -10,7 +10,7 @@ readonly class GameMaterialDTO {
         public string $shortTitle,
         public string $slug,
         public int $gameId,
-        public string $dateAdded,
+        public ?string $dateAdded,
         public string $annotation,
         public array $description,
         public array $setupInstructions,

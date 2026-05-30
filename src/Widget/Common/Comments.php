@@ -24,7 +24,6 @@ class Comments extends AWidget implements IAssetProvider {
         parent::applyContext($context);
 
         if (($this->context['page'] ?? null) instanceof APage) {
-            $page = null;
             $page = $this->context['page'];
 
             $this->config = ($page instanceof IPageWithComments)

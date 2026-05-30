@@ -145,8 +145,14 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
         const value = values[name];
 
         if (f.required) {
-          if (value == null) { errors[name] = "Обязательное поле"; continue; }
-          if (typeof value === "string" && value.trim() === "") { errors[name] = "Обязательное поле"; continue; }
+          if (value == null) {
+            errors[name] = "Обязательное поле";
+            continue;
+          }
+          if (typeof value === "string" && value.trim() === "") {
+            errors[name] = "Обязательное поле";
+            continue;
+          }
         }
         if (f.validate) {
           const err = f.validate(value);

@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace BC\Widget\Page;
 
+use BC\Core\Action\Comments\IGetCommentsAction;
+use BC\Core\Action\DTO\GetCommentsRequest;
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Core\DTO\CommentDTO;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\DTO\PageImageDTO;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\BackLinkDTO;
 use BC\Widget\DTO\MetaTagDTO;
 use BC\Widget\IAssetProvider;
+use Runway\Exception\Exception;
+use Runway\Singleton\Container;
 
 abstract class APage extends AWidget implements IAssetProvider {
     use WebsiteSettingsTrait;
@@ -100,5 +105,35 @@ abstract class APage extends AWidget implements IAssetProvider {
 
     protected function getWebRoot(): string {
         return $this->getWebsiteSettings()->getWebRoot();
+    }
+
+    /**
+     * @return CommentDTO[]
+     */
+    protected function getComments(string $pageType, ?int $pageId): array {
+        if (!$pageType || !$pageId) {
+            return [];
+        }
+
+        $action = Container::getInstance()->getService(IGetCommentsAction::class);
+
+        try {
+            return $action->run(
+                new GetCommentsRequest(
+                    pageType: $pageType,
+                    pageId: $pageId
+                )
+            )->comments;
+        } catch (Exception $e) {
+            $this->getLogger()->error(
+                "Error while getting comments: {$e->getMessage()}",
+                [
+                    'pageType' => $pageType,
+                    'pageId'   => $pageId,
+                ]
+            );
+
+            return [];
+        }
     }
 }

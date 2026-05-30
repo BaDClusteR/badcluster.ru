@@ -62,7 +62,8 @@ class GameMaterial extends AEndpoint {
 
         $qb = GameMaterialModel::getQueryBuilder('gm');
 
-        $this->addFilter($qb, $filter, ['title', 'game_title', 'annotation']);
+        $this->addFilter($qb, $filter, ['gm.title', 'g.title', 'annotation'])
+             ->leftJoin('games', 'g', ExpressionJoinConditionTypeEnum::ON, 'g.id = gm.game_id');
         $total = $this->setSortLimitAndGetTotal(
             $qb,
             $sortBy,
@@ -71,8 +72,7 @@ class GameMaterial extends AEndpoint {
             $perPage,
             ['game_title', 'date_added']
         );
-        $qb->select('gm.*, g.title AS game_title')
-           ->leftJoin('games', 'g', ExpressionJoinConditionTypeEnum::ON, 'g.id = gm.game_id');
+        $qb->select('gm.*, g.title AS game_title');
 
         return $this->handleWithException(
             fn () => new ListResponseDTO(
@@ -145,16 +145,10 @@ class GameMaterial extends AEndpoint {
     public function create(
         #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation,
-        #[API\Parameter(source: 'body', name: 'dateAdded')]
-        string $dateAdded,
         #[API\Parameter(source: 'body', name: 'gameId')]
         int $gameId,
         #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle,
-        #[API\Parameter(source: 'body', name: 'title')]
-        string $title,
-        #[API\Parameter(source: 'body', name: 'slug')]
-        string $slug,
         #[API\Parameter(source: 'body', name: 'type')]
         string $type,
         #[API\Parameter(source: 'body', name: 'description')]
@@ -165,6 +159,12 @@ class GameMaterial extends AEndpoint {
         ?array $file = null,
         #[API\Parameter(source: 'body', name: 'url')]
         string $url = '',
+        #[API\Parameter(source: 'body', name: 'title')]
+        string $title = '',
+        #[API\Parameter(source: 'body', name: 'slug')]
+        string $slug = '',
+        #[API\Parameter(source: 'body', name: 'dateAdded')]
+        ?string $dateAdded = null
     ): CreatedDTO {
         $this->validate(
             $type,
@@ -188,7 +188,9 @@ class GameMaterial extends AEndpoint {
                 ->setShortTitle($shortTitle)
                 ->setAnnotation($annotation)
                 ->setDateAdded(
-                    $this->dateConverter->toDateTime($dateAdded)
+                    $dateAdded
+                        ? $this->dateConverter->toDateTime($dateAdded)
+                        : null
                 )->setGame($game)
                 ->setType($type)
                 ->setDescription($description)
@@ -216,18 +218,18 @@ class GameMaterial extends AEndpoint {
         int $id,
         #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation,
-        #[API\Parameter(source: 'body', name: 'dateAdded')]
-        string $dateAdded,
         #[API\Parameter(source: 'body', name: 'gameId')]
         int $gameId,
         #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle,
-        #[API\Parameter(source: 'body', name: 'title')]
-        string $title,
-        #[API\Parameter(source: 'body', name: 'slug')]
-        string $slug,
         #[API\Parameter(source: 'body', name: 'type')]
         string $type,
+        #[API\Parameter(source: 'body', name: 'dateAdded')]
+        ?string $dateAdded = null,
+        #[API\Parameter(source: 'body', name: 'title')]
+        string $title = '',
+        #[API\Parameter(source: 'body', name: 'slug')]
+        string $slug = '',
         #[API\Parameter(source: 'body', name: 'description')]
         array $description = [],
         #[API\Parameter(source: 'body', name: 'setupInstructions')]
@@ -267,7 +269,9 @@ class GameMaterial extends AEndpoint {
                 ->setShortTitle($shortTitle)
                 ->setAnnotation($annotation)
                 ->setDateAdded(
-                    $this->dateConverter->toDateTime($dateAdded)
+                    $dateAdded
+                        ? $this->dateConverter->toDateTime($dateAdded)
+                        : null
                 )->setGame($game)
                 ->setType($type)
                 ->setDescription($description)
@@ -353,16 +357,8 @@ class GameMaterial extends AEndpoint {
             $errors['title'] = 'Укажите заголовок';
         }
 
-        if ($type === GameMaterialModel::TYPE_FILE && empty($description)) {
-            $errors['description'] = 'Добавьте описание';
-        }
-
         if (empty($gameId)) {
             $errors['gameId'] = 'Выберите игру';
-        }
-
-        if ($type === GameMaterialModel::TYPE_FILE && empty($setupInstructions)) {
-            $errors['setupInstructions'] = 'Добавьте инструкцию для установки';
         }
 
         if ($type === GameMaterialModel::TYPE_FILE && empty($file)) {

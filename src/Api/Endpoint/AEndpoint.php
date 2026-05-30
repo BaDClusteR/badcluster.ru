@@ -112,7 +112,7 @@ abstract class AEndpoint {
         }
 
         if ($page) {
-            $qb->setLimit($perPage, ($page - 1) * $perPage);
+            $qb->setLimit(($page - 1) * $perPage, $perPage);
         }
 
         return $total;

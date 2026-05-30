@@ -11,6 +11,8 @@ import {TocBlock} from "./toc/TocBlock";
 import {KbdInlineTool} from "./inlineTools/KbdInlineTool";
 import {CodeInlineTool} from "./inlineTools/CodeInlineTool";
 import {SpoilerInlineTool} from "./inlineTools/SpoilerInlineTool";
+import {NowrapInlineTool} from "./inlineTools/NowrapInlineTool";
+import {SupInlineTool} from "./inlineTools/SupInlineTool";
 import classes from "./BlocksField.module.css";
 import "./editorjs.css";
 import {Optional} from "@admin/types";
@@ -127,7 +129,9 @@ export function BlocksField(
         toc: TocBlock as unknown as ToolConstructable,
         kbd: KbdInlineTool as unknown as ToolConstructable,
         code: CodeInlineTool as unknown as ToolConstructable,
-        spoiler: SpoilerInlineTool as unknown as ToolConstructable
+        spoiler: SpoilerInlineTool as unknown as ToolConstructable,
+        nowrap: NowrapInlineTool as unknown as ToolConstructable,
+        sup: SupInlineTool as unknown as ToolConstructable
         //link: LinkInlineTool as unknown as ToolConstructable,
       },
       i18n: {

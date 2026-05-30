@@ -1,7 +1,7 @@
 import {FieldDef, Nullable, Optional, SelectOptions} from "@admin/types";
 import {GameMaterial, GameMaterialContext, MaterialGame} from "../types";
 import MaterialContent from "./MaterialContent";
-import {Select} from "@mantine/core";
+import {Select, Skeleton} from "@mantine/core";
 
 const FIELDS: FieldDef<GameMaterial, GameMaterialContext>[] = [
   {
@@ -24,20 +24,23 @@ const FIELDS: FieldDef<GameMaterial, GameMaterialContext>[] = [
         )
       );
 
-      return <Select
-        label={"Игра"}
-        withAsterisk
-        data={games ?? []}
-        value={games?.length ? (form.values?.gameId?.toString() ?? "") : ""}
-        onChange={(value: Nullable<string>) => {
-          form.setFieldValue(
-            "gameId",
-            value
-              ? parseInt(value) || 0
-              : 0
-          );
-        }}
-      />;
+      return <Skeleton visible={options.loading}>
+        <Select
+          label={"Игра"}
+          withAsterisk
+          searchable
+          data={games ?? []}
+          value={games?.length ? (form.values?.gameId?.toString() ?? "") : ""}
+          onChange={(value: Nullable<string>) => {
+            form.setFieldValue(
+              "gameId",
+              value
+                ? parseInt(value) || 0
+                : 0
+            );
+          }}
+        />
+      </Skeleton>;
     }
   },
   {

@@ -2,6 +2,7 @@
 
 use BC\Modules\Games\Widget\GameMaterial\File;
 use BC\Widget\Blocks;
+use BC\Widget\Common\Comments;
 use BC\Widget\Common\Picture;
 
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
@@ -45,4 +46,9 @@ $dateAdded = $material?->getDateAdded();
         'dateAdded' => $material->getDateAdded(),
     ])?>
     <?=new Blocks($material->getSetupInstructions())->render()?>
+    <footer class="page__footer">
+        <?=new Comments([
+            'page' => $this->getPage(),
+        ])->render()?>
+    </footer>
 <?php endif; ?>

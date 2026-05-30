@@ -27,7 +27,7 @@
 
 :global(html[data-mantine-color-scheme='dark']) .gameHero {
   --game-hero-overlay-color: #353535;
-  --game-hero-overlay-opacity: .7;
+  --game-hero-overlay-opacity: .45;
 }
 
 .gameHeroPicture {

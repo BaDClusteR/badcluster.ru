@@ -23,7 +23,7 @@
 }
 
 .game__hero {
-  --game-hero-miniature-brightness: .8;
+  --game-hero-miniature-brightness: 1;
   --game-hero-overlay-color: #000;
   --game-hero-overlay-opacity: .4;
 
@@ -49,7 +49,7 @@
 
 html[data-theme='dark'] .game__hero {
   --game-hero-overlay-color: #353535;
-  --game-hero-overlay-opacity: .7;
+  --game-hero-overlay-opacity: .45;
 }
 
 .game__hero-picture {
@@ -126,4 +126,9 @@ html[data-theme='dark'] .game__hero {
   align-items: center;
   gap: calc(.375 * var(--rhythmic-unit));
   white-space: nowrap;
+}
+
+body .page__footer {
+  margin-top: var(--rhythmic-unit);
+  padding-top: calc(1.5 * var(--rhythmic-unit))
 }

@@ -20,7 +20,8 @@
     "psr-4": {
       "BC\\": "src/",
       "BC\\Modules\\Blog\\": "modules/Blog/src/",
-      "BC\\Modules\\Games\\": "modules/Games/src/"
+      "BC\\Modules\\Games\\": "modules/Games/src/",
+      "BC\\Modules\\Books\\": "modules/Books/src/"
     },
     "files": [
       "bootstrap.php"

@@ -25,8 +25,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setShortTitle(string $shortTitle)
  * @method Game getGame()
  * @method self setGame(Game $game)
- * @method DateTime getDateAdded()
- * @method self setDateAdded(DateTime $dateAdded)
+ * @method DateTime|null getDateAdded()
+ * @method self setDateAdded(DateTime|null $dateAdded)
  * @method string getAnnotation()
  * @method self setAnnotation(string $annotation)
  * @method array getDescription()
@@ -62,7 +62,7 @@ class GameMaterial extends AEntity {
     protected Game $game;
 
     #[DS\Column]
-    protected DateTime $dateAdded;
+    protected ?DateTime $dateAdded = null;
 
     #[DS\Column]
     protected string $annotation = '';

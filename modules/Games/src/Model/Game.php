@@ -60,7 +60,7 @@ class Game extends AEntity {
     }
 
     public function remove(): void {
-        $this->cover?->remove();
+        $this->getCover()?->remove();
 
         foreach (GameMaterial::find(['game_id' => $this->id]) as $material) {
             $material->remove();

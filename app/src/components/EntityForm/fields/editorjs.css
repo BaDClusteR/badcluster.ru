@@ -111,6 +111,10 @@
     background: var(--color-surface);
   }
 
+  .nowrap {
+    white-space: nowrap;
+  }
+
   .spoiler {
     filter: blur(4px);
     cursor: pointer;

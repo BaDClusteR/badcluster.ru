@@ -103,7 +103,7 @@ export default function GameHero(
         }
         {
           form.values.shortTitle &&
-          <span className={classes.gameHeroTag}>{form.values.shortTitle}</span>
+          <span className={classes.gameHeroTag}>Сохранения</span>
         }
       </div>
     </div>

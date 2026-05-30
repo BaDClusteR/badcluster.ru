@@ -90,6 +90,8 @@ readonly class CommentDataBuilder implements ICommentDataBuilder {
     }
 
     protected function prepareComment(string $comment): string {
-        return nl2br($comment);
+        return nl2br(
+            str_replace("\n\n", "\n", $comment)
+        );
     }
 }

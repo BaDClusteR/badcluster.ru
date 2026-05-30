@@ -7,7 +7,8 @@ readonly class GameMaterialRowDTO {
         public int $id,
         public GameMaterialRowGameDTO $game,
         public string $title,
-        public string $date,
+        public string $game_title,
+        public string $date_added,
         public string $type,
         public string $annotation
     ) {

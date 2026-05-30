@@ -52,10 +52,11 @@ class Game extends AEndpoint {
             $sortDir = 'ASC';
         }
 
-        $qb = GameModel::getQueryBuilder('g');
+        $qb = GameModel::getQueryBuilder('g')
+                       ->leftJoin('game_materials', 'gm', ExpressionJoinConditionTypeEnum::ON, 'gm.game_id = g.id');
 
         $this->addFilter($qb, $filter, ['g.title']);
-        $total = $this->setSortLimitAndGetTotal(
+        $this->setSortLimitAndGetTotal(
             $qb,
             $sortBy,
             $sortDir,
@@ -63,8 +64,11 @@ class Game extends AEndpoint {
             $perPage,
             ['g.title', 'count']
         );
+        $total = $this->handleWithException(
+            static fn () => GameModel::getQueryBuilder()->count()
+        );
         $qb->select('g.*, (SELECT COUNT(*) FROM `{game_materials}` WHERE game_id = g.id) AS count')
-           ->leftJoin('game_materials', 'gm', ExpressionJoinConditionTypeEnum::ON, 'gm.game_id = g.id');
+           ->groupBy('g.id');
 
         return $this->handleWithException(
             fn () => new ListResponseDTO(
@@ -165,8 +169,8 @@ class Game extends AEndpoint {
                              ? (int) $releaseYear
                              : null
                      )->setCover(
-                         $this->findMedia($coverImage)
-                     );
+                        $this->findMedia($coverImage)
+                    );
                 $game->persist();
             }
         );

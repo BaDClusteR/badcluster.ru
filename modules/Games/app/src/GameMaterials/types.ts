@@ -5,8 +5,8 @@ export interface GameMaterialRow extends EntityRow {
     id: number,
     title: string,
   },
-  title: string,
-  date: string,
+  game_title: string,
+  date_added: string,
   type: string,
   annotation: string
 }

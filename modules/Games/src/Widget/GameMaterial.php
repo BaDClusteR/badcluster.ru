@@ -6,6 +6,7 @@ use BC\Core\Trait\DateConverterTrait;
 use BC\Modules\Games\Model\Game;
 use BC\Modules\Games\Model\GameMaterial as GameMaterialModel;
 use BC\Widget\AWidget;
+use BC\Widget\Page\APage;
 
 class GameMaterial extends AWidget {
     use DateConverterTrait;
@@ -23,6 +24,12 @@ class GameMaterial extends AWidget {
     protected function getMaterial(): ?GameMaterialModel {
         return (($this->context['material'] ?? null) instanceof GameMaterialModel)
             ? $this->context['material']
+            : null;
+    }
+
+    protected function getPage(): ?APage {
+        return (($this->context['page'] ?? null) instanceof APage)
+            ? $this->context['page']
             : null;
     }
 }

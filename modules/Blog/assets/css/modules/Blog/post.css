@@ -42,12 +42,6 @@
   border-radius: var(--border-radius-small);
 }
 
-.post__footer {
-  margin-top: calc(3 * var(--rhythmic-unit));
-  border-top: var(--border);
-  padding-top: calc(2 * var(--rhythmic-unit));
-}
-
 .post__tag-link {
   margin: -2px -8px;
   border-radius: inherit;

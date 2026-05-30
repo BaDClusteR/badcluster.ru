@@ -9,9 +9,10 @@ const columns: ColumnDef<GameMaterialRow>[] = [
     link: true
   },
   {
-    key: "game",
+    key: "game_title",
     header: "Игра",
     sortable: true,
+    nowrap: true,
     render: row => <Link to={`/admin/games/${row.game.id}`}>{row.game.title}</Link>
   },
   {
@@ -19,7 +20,7 @@ const columns: ColumnDef<GameMaterialRow>[] = [
     header: "Аннотация"
   },
   {
-    key: "date",
+    key: "date_added",
     header: "Добавлен",
     sortable: true,
     nowrap: true

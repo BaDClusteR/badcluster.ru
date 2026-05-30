@@ -1,0 +1,8 @@
+routes:
+#  games:
+#    path: /games
+#    controller: BC\Modules\Games\Controller\Games::renderGamesList
+#
+#  games_game:
+#    path: /games/{game}/{material}
+#    controller: BC\Modules\Games\Controller\Games::renderMaterialPage

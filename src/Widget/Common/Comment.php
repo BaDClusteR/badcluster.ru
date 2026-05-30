@@ -60,7 +60,11 @@ class Comment extends AWidget {
     }
 
     protected function prepareCommentText(string $text): string {
-        $lines = explode("\n", $text);
+        $lines = explode(
+            "\n",
+            str_replace("\n\n", "\n", $text)
+        );
+
         return '<p>' . implode('</p><p>', $lines) . '</p>';
     }
 

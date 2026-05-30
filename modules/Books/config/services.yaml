@@ -1,0 +1,12 @@
+services:
+  BC\Modules\Books\Provider\MenuItemsProvider:
+    decorates: BC\Provider\IMenuItemsProvider
+
+  BC\Modules\Books\Provider\Admin\AppSettingsProvider:
+    decorates: BC\Provider\Admin\IAppSettingsProvider
+
+  BC\Modules\Books\Provider\CommentsProvider:
+    decorates: BC\Provider\ICommentsProvider
+
+  BC\Modules\Books\Provider\Admin\PageProvider:
+    decorates: BC\Provider\Admin\IPageProvider

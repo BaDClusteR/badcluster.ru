@@ -4,7 +4,7 @@ export interface GameMaterial {
   title: string,
   shortTitle: string,
   gameId: number,
-  dateAdded: string,
+  dateAdded: Nullable<string>,
   annotation: string,
   description: Record<string, unknown>[]
   setupInstructions: Record<string, unknown>[]

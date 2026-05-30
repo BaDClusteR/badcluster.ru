@@ -5,15 +5,21 @@ declare(strict_types=1);
 namespace BC\Modules\Games\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Core\Trait\AuthTrait;
+use BC\DTO\CommentsConfigDTO;
 use BC\Modules\Games\Model\Game;
 use BC\Modules\Games\Model\GameMaterial;
 use BC\Modules\Games\Widget\GameMaterial as GameMaterialWidget;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\BackLinkDTO;
 use BC\Widget\Page\APageWithBlocks;
+use BC\Widget\Page\IPageWithComments;
 
-class GameMaterialPage extends APageWithBlocks {
+class GameMaterialPage extends APageWithBlocks implements IPageWithComments {
+    use AuthTrait;
+
     protected Game $game;
+
     protected GameMaterial $material;
 
     protected function applyContext(array $context): void {
@@ -87,5 +93,27 @@ class GameMaterialPage extends APageWithBlocks {
 
     public function getContentContainerCssClass(): string {
         return parent::getContentContainerCssClass() . ' text-block';
+    }
+
+    public function getCommentsConfig(): CommentsConfigDTO {
+        return new CommentsConfigDTO(
+            comments: $this->getComments('material', $this->material->getId()),
+            emptyPhrase: 'Пока никто не комментировал. Работает?',
+            pageType: 'material',
+            pageId: (string) $this->material->getId()
+        );
+    }
+
+    public function getJsBundles(): array {
+        $list = parent::getJsBundles();
+
+        $list[] = 'comments';
+        $list[] = 'toast';
+
+        if ($this->getAuth()->isAuthenticated()) {
+            $list[] = 'comments-admin';
+        }
+
+        return $list;
     }
 }
