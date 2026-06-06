@@ -1,0 +1,17 @@
+.editor {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.editor .cm-editor {
+  font-family: var(--font-family-mono), monospace;
+}
+
+.editor .cm-editor.cm-focused {
+  outline: none;
+  border-color: var(--color-link);
+}
+
+.asterisk {
+  color: var(--color-error);
+}

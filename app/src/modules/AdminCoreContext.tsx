@@ -17,6 +17,7 @@ import {notify} from "@/lib/notify";
 import * as appSettings from "@/providers/AppSettingsProvider";
 import {buildAdminUrl} from "@/utils/buildAdminUrl";
 import {createEntityFormDataProvider} from "@/utils/createDataProvider";
+import Picture from "@/components/primitives/Picture";
 
 /** All core components/utilities available to remote modules. */
 export interface AdminCore {
@@ -49,7 +50,8 @@ const coreValue: AdminCore = {
   notify,
   appSettings,
   buildAdminUrl,
-  createEntityFormDataProvider
+  createEntityFormDataProvider,
+  Picture
 };
 
 export function AdminCoreProvider({children}: { children: ReactNode }) {

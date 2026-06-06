@@ -128,6 +128,16 @@ export interface FieldDefFile<T> extends FieldDefBase<T>, FieldDefNamed<T> {
   accept?: string;
 }
 
+export interface FieldDefJson<T> extends FieldDefBase<T>, FieldDefNamed<T> {
+  type: "json";
+  /** Editor height in px. Defaults to 300. */
+  height?: number;
+}
+
+export interface FieldDefSpacer<T> extends FieldDefBase<T> {
+  type: "spacer";
+}
+
 export type FieldDef<T, C = unknown> =
   | FieldDefCommon<T>
   | FieldDefGroup<T, C>
@@ -137,6 +147,8 @@ export type FieldDef<T, C = unknown> =
   | FieldDefSlug<T, C>
   | FieldDefImage<T>
   | FieldDefFile<T>
+  | FieldDefJson<T>
+  | FieldDefSpacer<T>
   | FieldDefText<T>;
 
 export interface EntityFormDataProvider<T> {

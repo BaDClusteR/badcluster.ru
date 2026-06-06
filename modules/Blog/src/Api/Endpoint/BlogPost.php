@@ -15,7 +15,6 @@ use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
 use BC\Exception\UnprocessableEntityException;
-use BC\Model\Media;
 use BC\Modules\Blog\Api\DataBuilder\Post\IBlogPostDataBuilder;
 use BC\Modules\Blog\Api\DTO\BlogPostDTO;
 use BC\Modules\Blog\Api\DTO\BlogPostRowDTO;

@@ -28,10 +28,7 @@ const FIELDS: FieldDef<Game>[] = [
     label: "Слаг",
     required: true,
     role: "primary",
-    url: () => "",
-    validate: (v) => /^[a-z0-9-]+$/.test(v as string)
-      ? null
-      : "Только латиница, цифры и дефис"
+    url: () => ""
   },
   {
     name: "releaseYear",

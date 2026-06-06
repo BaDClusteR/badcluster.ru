@@ -1,0 +1,8 @@
+services:
+  BC\Modules\Books\Format\Txt:
+    tags:
+      - name: book_format
+
+  BC\Modules\Books\Format\Fb2:
+    tags:
+      - name: book_format

@@ -370,22 +370,10 @@ class GameMaterial extends AEndpoint {
         }
 
         $qb = GameMaterialModel::getQueryBuilder()
-                               ->where('slug = :slug')
-                               ->andWhere('game_id = :gameId')
-                               ->setVariable('slug', $slug)
+                               ->where('game_id = :gameId')
                                ->setVariable('gameId', $gameId);
 
-        if ($id) {
-            $qb->andWhere('id != :id')
-               ->setVariable('id', $id);
-        }
-
-        /** @var GameMaterialModel|null $materialBySlug */
-        $materialBySlug = $this->handleWithException(
-            static fn () => $qb->getFirstEntity()
-        );
-
-        if ($materialBySlug) {
+        if ($this->getEntityBySlug(GameMaterialModel::class, $slug, $id, $qb)) {
             $errors['slug'] = 'Этот слаг уже занят другим материалом';
         }
 

@@ -1,0 +1,3 @@
+services:
+  BC\Modules\Books\Api\DataBuilder\Book\IBookDataBuilder:
+    class: BC\Modules\Books\Api\DataBuilder\Book\BookDataBuilder

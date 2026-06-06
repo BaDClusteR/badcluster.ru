@@ -27,6 +27,10 @@ import Button from "@/components/primitives/Button.tsx";
 import Slug from "@/components/primitives/Slug.tsx";
 import {ImageField} from "./fields/ImageField";
 import {FileField} from "./fields/FileField";
+
+const JsonField = lazy(() =>
+  import("./fields/JsonField").then((m) => ({default: m.JsonField}))
+);
 import FieldGroup from "./FieldGroup";
 import type {EntityFormComponents} from "@admin/types";
 import dtClasses from "./fields/DateTimePicker.module.css";
@@ -137,7 +141,8 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
     validate: (values: T) => {
       const errors: Record<string, string> = {};
       for (const f of fields) {
-        if (!("name" in f) || (!f.required && !f.validate)) continue;
+        const isSlug = f.type === "slug";
+        if (!("name" in f) || (!f.required && !f.validate && !isSlug)) continue;
         // Skip validation for hidden fields
         if (f.visible && !f.visible(values)) continue;
 
@@ -154,6 +159,11 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
             continue;
           }
         }
+        // Built-in slug validation
+        if (isSlug && typeof value === "string" && value && !/^[a-z0-9_-]+$/.test(value)) {
+          errors[name] = "Только латиница, цифры, дефис и подчёркивание";
+          continue;
+        }
         if (f.validate) {
           const err = f.validate(value);
           if (err) errors[name] = err;
@@ -168,6 +178,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
       form.initialize(data);
     }
   }, [data]);
+
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -301,7 +312,9 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
       case "number":
         return <NumberInput
           {...common}
-          {...form.getInputProps(field.name as string)}
+          value={form.values[field.name] as number ?? ''}
+          onChange={(val) => form.setFieldValue(field.name as string, val as never)}
+          error={form.errors[field.name as string]}
         />;
       case "select":
         return (
@@ -389,12 +402,26 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
             accept={field.accept}
           />
         );
+      case "json":
+        return (
+          <JsonField
+            label={field.label}
+            description={field.hint}
+            withAsterisk={field.required}
+            error={form.errors[field.name as string]}
+            value={form.values[field.name] as string ?? ""}
+            onChange={(val) => form.setFieldValue(field.name as string, val as never)}
+            height={field.height}
+          />
+        );
       case "heading":
         return (
           <Title order={4} className={classes.sectionHeading}>
             {field.label}
           </Title>
         );
+      case "spacer":
+        return <div className={classes.spacer}/>;
       case "group":
         return field.render
           ? field.render(form, {
@@ -491,7 +518,8 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
       blocks: 200,
       datetime: 36,
       image: 120,
-      file: 48
+      file: 48,
+      json: 200
     };
 
     return (

@@ -16,10 +16,7 @@ const FIELDS: FieldDef<Post, BlogPostContext>[] = [
     type: "slug",
     required: true,
     placeholder: "url-friendly-name",
-    url: (slug: string) => `http://bc.local/blog/${slug}`,
-    validate: (v) => /^[a-z0-9-]+$/.test(v as string)
-      ? null
-      : "Только латиница, цифры и дефис"
+    url: (slug: string) => `http://bc.local/blog/${slug}`
   },
   {
     name: "published",

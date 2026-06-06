@@ -1,7 +1,7 @@
 import type {ReactNode} from "react";
 
 export interface ColumnDef<T> {
-  key: string,
+  key: keyof T,
   subKey?: string,
   header: ReactNode,
   sortable?: boolean,

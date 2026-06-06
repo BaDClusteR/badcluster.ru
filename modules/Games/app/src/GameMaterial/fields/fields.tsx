@@ -65,9 +65,6 @@ const FIELDS: FieldDef<GameMaterial, GameMaterialContext>[] = [
         ? `http://bc.local/games/${(selectedGame as MaterialGame).slug}/${slug}`
         : "";
     },
-    validate: (v) => /^[a-z0-9-]+$/.test(v as string)
-      ? null
-      : "Только латиница, цифры и дефис",
     visible: values => values.type === "F"
   },
   {

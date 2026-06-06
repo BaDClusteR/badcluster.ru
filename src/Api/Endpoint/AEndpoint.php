@@ -201,4 +201,33 @@ abstract class AEndpoint {
                 )
             );
     }
+
+    /**
+     * @template T of AEntity
+     * @param class-string<T> $modelFQN
+     *
+     * @return T|null
+     */
+    protected function getEntityBySlug(
+        string $modelFQN,
+        string $slug,
+        ?int $id = null,
+        ?IQueryBuilder $qb = null
+    ): ?AEntity {
+        $qb ??= $modelFQN::getQueryBuilder();
+
+        $qb->andWhere('slug = :slug')
+           ->setVariable('slug', $slug);
+
+        if ($id) {
+            $qb->andWhere('id != :id')
+               ->setVariable('id', $id);
+        }
+
+        try {
+            return $qb->getFirstEntity();
+        } catch (Exception) {
+            return null;
+        }
+    }
 }

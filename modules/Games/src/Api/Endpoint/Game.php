@@ -192,22 +192,7 @@ class Game extends AEndpoint {
             $errors['title'] = 'Игра с таким названием уже есть.';
         }
 
-        /** @var GameModel|null $gameBySlug */
-        if (
-            $gameBySlug = $this->handleWithException(
-                static function () use ($slug, $id) {
-                    $qb = GameModel::getQueryBuilder()
-                                   ->where('slug = :slug')
-                                   ->setVariable('slug', $slug);
-                    if ($id) {
-                        $qb = $qb->andWhere('id != :id')
-                                 ->setVariable('id', $id);
-                    }
-
-                    return $qb->getFirstEntity();
-                }
-            )
-        ) {
+        if ($gameBySlug = $this->getEntityBySlug(GameModel::class, $slug, $id)) {
             $errors['slug'] = sprintf('Этот слаг уже занят игрой %s', $gameBySlug->getTitle());
         }
 

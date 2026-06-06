@@ -10,18 +10,25 @@ use RuntimeException;
 class AppSettingsDTO {
     /**
      * @param NavigationDTO[] $nav
-     * @param ModuleDTO[] $modules
+     * @param ModuleDTO[]     $modules
      */
     public function __construct(
         public array $nav,
         public array $modules,
         public string $webRoot,
-        public string $staticRoot
+        public string $staticRoot,
+        public array $extra
     ) {
     }
 
     public function addNavItem(NavigationDTO $navItem): self {
         $this->nav[] = $navItem;
+
+        return $this;
+    }
+
+    public function addExtra(string $key, mixed $value): self {
+        $this->extra[$key] = $value;
 
         return $this;
     }
@@ -44,6 +51,7 @@ class AppSettingsDTO {
             ),
             'webRoot'    => $this->webRoot,
             'staticRoot' => $this->staticRoot,
+            ...$this->extra
         ];
     }
 

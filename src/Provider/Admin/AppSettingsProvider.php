@@ -22,7 +22,8 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
             nav: $this->getNav(),
             modules: $this->getModules(),
             webRoot: $this->websiteSettings->getWebRoot(),
-            staticRoot: $this->pathsProvider->getStaticWebPath()
+            staticRoot: $this->pathsProvider->getStaticWebPath(),
+            extra: []
         );
     }
 

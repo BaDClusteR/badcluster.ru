@@ -131,6 +131,7 @@ function updateFileContent(string $content, array $methods): string {
 
     $docBlock = "/**\n";
     $docBlock .= " * @generated-model-helpers\n";
+
     foreach ($methods as $method) {
         $docBlock .= " * $method\n";
     }
@@ -183,16 +184,18 @@ function collectMethods(ReflectionClass $ref): array {
             if (!$hasNoSetter && !$ref->hasMethod($setterName)) {
                 $methods[] = "@method self $setterName($typeStr \$$propName)";
             }
+
         }
 
         if ($isRef) {
             $refAttr = $prop->getAttributes(DS\Reference::class)[0]->newInstance();
+            $refShort = '\\' . $refAttr->refModel;
 
             $getterName = "get$capitalizedName";
             if (!$hasNoGetter && !$ref->hasMethod($getterName)) {
-                $refShort = '\\' . $refAttr->refModel;
                 $methods[] = "@method {$refShort}[] $getterName()";
             }
+
         }
     }
 

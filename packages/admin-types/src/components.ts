@@ -37,6 +37,18 @@ export interface NotifyApi {
 /** convertListStateToQueryParameters function type. */
 export type ConvertListStateFn = (state: ListState) => Record<string, any>;
 
+/** Picture component props. */
+export interface PictureProps {
+  media: any;
+  width?: number;
+  fallback?: ReactNode;
+  className?: string;
+  imgClassName?: string;
+}
+
+/** Picture component type. */
+export type PictureComponent = ComponentType<PictureProps>;
+
 /** All core components/utilities available to remote modules via useAdminCore(). */
 export interface AdminCore {
   EntityForm: EntityFormComponent,
@@ -48,5 +60,6 @@ export interface AdminCore {
   notify: NotifyApi,
   appSettings: AppSettingsApi,
   buildAdminUrl: BuildAdminUrlFn,
-  createEntityFormDataProvider: CreateEntityFormDataProviderFn
+  createEntityFormDataProvider: CreateEntityFormDataProviderFn,
+  Picture: PictureComponent
 }

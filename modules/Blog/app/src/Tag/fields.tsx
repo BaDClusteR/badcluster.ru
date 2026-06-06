@@ -18,10 +18,7 @@ const FIELDS: FieldDef<Tag>[] = [
     role: "primary",
     required: true,
     placeholder: "url-friendly-name",
-    url: (slug: string) => `http://bc.local/blog/tag/${slug}`,
-    validate: (v) => /^[a-z0-9-]+$/.test(v as string)
-      ? null
-      : "Только латиница, цифры и дефис"
+    url: (slug: string) => `http://bc.local/blog/tag/${slug}`
   },
   {
     name: "description",
