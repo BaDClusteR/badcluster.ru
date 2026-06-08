@@ -39,7 +39,7 @@ class GameMaterialPage extends APageWithBlocks implements IPageWithComments {
     }
 
     public function getTitle(): string {
-        return $this->material->getTitle() . ' :: ' . $this->game->getTitle() . ' :: ' . parent::getTitle();
+        return $this->material->getTitle() . ' :: ' . $this->game->getTitle() . ' :: ' . $this->getTitleBase();
     }
 
     public function getMetaDescription(): string {
@@ -58,7 +58,7 @@ class GameMaterialPage extends APageWithBlocks implements IPageWithComments {
     }
 
     public function getMetaTitle(): string {
-        return $this->material->getTitle() . ' - ' . $this->game->getTitle() . ' - ' . parent::getMetaTitle();
+        return $this->material->getTitle() . ' — ' . $this->game->getTitle() . ' — ' . $this->getMetaTitleBase();
     }
 
     public function getMainWidget(): AWidget {

@@ -63,7 +63,7 @@ readonly class ImageProcessor implements IImageProcessor {
         }
 
         if ($purpose === 'book_cover_bg') {
-            $image->tryGenerateThumbnails([130]);
+            $image->tryGenerateThumbnails([40]);
         }
 
         if ($purpose === 'chapter') {

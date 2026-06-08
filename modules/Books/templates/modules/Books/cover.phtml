@@ -1,0 +1,51 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Modules\Books\Widget\BookCover $this */
+
+use BC\Widget\Common\Picture;
+
+$book = $this->getBook();
+?><span class="material__icon">
+    <?php if ($cover = $book->getCover()): ?>
+        <span class="book__cover">
+            <?=new Picture([
+                'image'        => $cover,
+                'pictureClass' => 'book__cover-bg',
+                'class'        => 'book__cover-bg-img',
+                'alt'          => $book->getTitle(),
+                'retina'       => false,
+                'lazy'         => true,
+                'breakpoints'  => [
+                    -1 => 260,
+                ],
+            ])->render()?>
+        </span>
+    <?php else : ?>
+        <span class="book__cover book__cover--css" aria-hidden="true">
+            <?php if ($coverBg = $book->getCoverBg()): ?>
+                <?=new Picture([
+                    'image'        => $coverBg,
+                    'pictureClass' => 'book__cover-bg',
+                    'class'        => 'book__cover-bg-img',
+                    'alt'          => $book->getTitle(),
+                    'retina'       => false,
+                    'lazy'         => true,
+                    'breakpoints'  => [
+                        -1 => 40,
+                    ],
+                ])->render()?>
+            <?php endif; ?>
+            <span class="book__title"><?=$book->getTitle()?></span>
+            <span class="book__authors">
+                <?php foreach ($book->getAuthors() as $i => $author): ?>
+                    <?php if ($i > 0) : ?>, <?php endif; ?>
+                    <span class="book__author"><?=$author?></span>
+                <?php endforeach; ?>
+            </span>
+            <?php if ($book->isTranslation()) : ?>
+                <span class="book__translator">Перевел BaD ClusteR</span>
+            <?php endif; ?>
+        </span>
+    <?php endif; ?>
+</span>

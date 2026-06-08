@@ -34,7 +34,7 @@ class File extends AWidget implements IAssetProvider {
         return [
             new AssetDTO(
                 'file',
-                'css/modules/Games/file.css'
+                'css/common/file.css'
             ),
         ];
     }

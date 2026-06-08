@@ -21,16 +21,19 @@ import {useQuery} from "@tanstack/react-query";
 import {HttpError} from "@/utils/errors";
 import {notify} from "@/lib/notify";
 import {IconError, IconEmpty} from "@/components/List/components/Icons";
-import type {EntityCreatedResponse, EntityFormProps, FieldDef, FieldDefNamed} from "@admin/types";
+import type {
+  EntityCreatedResponse,
+  EntityFormProps,
+  FieldDef,
+  FieldDefNamed,
+  Optional,
+  StringKeyObject
+} from "@admin/types";
 import classes from "./EntityForm.module.css";
 import Button from "@/components/primitives/Button.tsx";
 import Slug from "@/components/primitives/Slug.tsx";
 import {ImageField} from "./fields/ImageField";
 import {FileField} from "./fields/FileField";
-
-const JsonField = lazy(() =>
-  import("./fields/JsonField").then((m) => ({default: m.JsonField}))
-);
 import FieldGroup from "./FieldGroup";
 import type {EntityFormComponents} from "@admin/types";
 import dtClasses from "./fields/DateTimePicker.module.css";
@@ -38,6 +41,10 @@ import clsx from "clsx";
 import {useNavigate} from "react-router";
 import {buildAdminUrl} from "@/utils/buildAdminUrl.ts";
 import apiCall from "@/utils/apiCall";
+
+const JsonField = lazy(() =>
+  import("./fields/JsonField").then((m) => ({default: m.JsonField}))
+);
 
 const BlocksField = lazy(() =>
   import("./fields/BlocksField").then((m) => ({default: m.BlocksField}))
@@ -122,7 +129,8 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
     title,
     labels,
     webPath,
-    apiEndpoint
+    apiEndpoint,
+    preprocessValues
   }: EntityFormProps<T, C>
 ) {
   const isCreateMode = !dataProvider;
@@ -147,7 +155,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
         if (f.visible && !f.visible(values)) continue;
 
         const name = (f as FieldDefNamed<T>).name as string;
-        const value = values[name];
+        const value: unknown = values[name];
 
         if (f.required) {
           if (value == null) {
@@ -312,7 +320,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
       case "number":
         return <NumberInput
           {...common}
-          value={form.values[field.name] as number ?? ''}
+          value={form.values[field.name] as number ?? ""}
           onChange={(val) => form.setFieldValue(field.name as string, val as never)}
           error={form.errors[field.name as string]}
         />;
@@ -524,7 +532,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
 
     return (
       <Stack gap={4}>
-        {field.label && <Skeleton height={16} width={120}/>}
+        {(field as Optional<StringKeyObject>)?.label && <Skeleton height={16} width={120}/>}
         <Skeleton height={heights[field.type] ?? 36}/>
       </Stack>
     );
@@ -543,8 +551,12 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
       {titleNode}
       <form ref={formRef} className="entity-form" onSubmit={form.onSubmit(async (values) => {
         try {
+          const submitData = preprocessValues
+            ? preprocessValues(values, context, isCreateMode)
+            : values;
+
           if (isCreateMode) {
-            const result = await apiCall("POST", `${apiEndpoint}`, values) as EntityCreatedResponse;
+            const result = await apiCall("POST", `${apiEndpoint}`, submitData) as EntityCreatedResponse;
             form.resetDirty(values);
             navigate(
               buildAdminUrl(`${webPath}/${result.id}`),
@@ -554,7 +566,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
               notify.success("Создано", labels.messages.onCreate);
             }
           } else {
-            await apiCall("PUT", `${apiEndpoint}/${dataProvider?.entityId}`, values);
+            await apiCall("PUT", `${apiEndpoint}/${dataProvider?.entityId}`, submitData);
             form.resetDirty(values);
             if (labels.messages.onUpdate) {
               notify.success("Сохранено", labels.messages.onUpdate);

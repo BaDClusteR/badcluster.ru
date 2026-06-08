@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Books\Api\DataBuilder\Book;
 
 use BC\Core\Converter\IDateConverter;
@@ -9,8 +11,10 @@ use BC\Modules\Books\Api\DTO\Book\BookFormatDTO;
 use BC\Modules\Books\Api\DTO\Book\BookRowDTO;
 use BC\Modules\Books\Model\Book;
 use BC\Modules\Books\Model\BookFormat;
+use BC\Modules\Books\Model\Chapter;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
+use Runway\Exception\Exception;
 use Runway\Model\Exception\ModelException;
 
 readonly class BookDataBuilder implements IBookDataBuilder {
@@ -21,6 +25,15 @@ readonly class BookDataBuilder implements IBookDataBuilder {
     }
 
     public function buildRow(Book $book): BookRowDTO {
+        try {
+            $chapterCount = Chapter::getQueryBuilder()
+                                   ->where('book_id = :book_id')
+                                   ->setVariable('book_id', $book->getId())
+                                   ->count();
+        } catch (Exception) {
+            $chapterCount = 0;
+        }
+
         return new BookRowDTO(
             id: $book->getId(),
             cover: $book->getCover()?->toMediaDTO(),
@@ -29,8 +42,24 @@ readonly class BookDataBuilder implements IBookDataBuilder {
             type: $book->getType(),
             lastUpdateDate: $this->dateConverter->toShortForm(
                 $book->getLastUpdateDate()
-            )
+            ),
+            chapterCount: $this->getChapterCountText($chapterCount)
         );
+    }
+
+    public function getChapterCountText(int $count): string {
+        $countMod100 = $count % 100;
+        if ($countMod100 >= 10 && $countMod100 <= 20) {
+            $postfix = 'глав';
+        } else {
+            $postfix = match ($count % 10) {
+                1 => 'глава',
+                2, 3, 4 => 'главы',
+                default => 'глав'
+            };
+        }
+
+        return "$count $postfix";
     }
 
     /**

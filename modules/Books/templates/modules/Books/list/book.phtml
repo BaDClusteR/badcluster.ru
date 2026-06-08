@@ -1,0 +1,47 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Modules\Books\Widget\List\Book $this */
+
+$book = $this->getBook();
+$lastUpdateDate = $book->getLastUpdateDate();
+$dateConverter = $this->getDateConverter();
+$formats = $this->getBookFormats();
+?>
+<li class="material">
+    <a href="<?=$book->getUrl()?>" class="material__link">
+        <?=new \BC\Modules\Books\Widget\BookCover()->render(['book' => $book])?>
+        <div class="material__title-area">
+            <h3 class="material__title"><?=$book->getTitle()?></h3>
+            <?php if ($book->isTranslation()) : ?>
+                <span class="tag book__tag">Перевод</span>
+            <?php else : ?>
+                <span class="tag tag--accent book__tag book__tag--original">Авторское</span>
+            <?php endif; ?>
+        </div>
+        <span class="material__description"><?=$book->getShortAnnotation()?></span>
+        <span class="material__update text-faded">
+            Обновлено: <time
+                class="material__update-date"
+                datetime="<?=$dateConverter->toIsoFormat($lastUpdateDate)?>"
+            >
+                <?=$dateConverter->toShortForm($lastUpdateDate)?>
+            </time>
+        </span>
+        <?php if ($formats) : ?>
+            <div class="material__actions">
+                <?php foreach ($formats as $format) : ?>
+                    <?php $formatTypeUpperCase = strtoupper($format->getType()) ?>
+                    <a
+                        href="<?=$format->getUrl()?>"
+                        class="icon-button material__action material__action--<?=$format->getType()?>"
+                        title="Скачать в формате <?=$formatTypeUpperCase?>"
+                    >
+                        <?=$this->getSvgContent('images/modules/Books/download.svg')?>
+                        <?=$formatTypeUpperCase?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </a>
+</li>

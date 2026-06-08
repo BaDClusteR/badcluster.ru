@@ -31,6 +31,7 @@ export interface AdminCore {
   appSettings: typeof appSettings;
   buildAdminUrl: typeof buildAdminUrl;
   createEntityFormDataProvider: typeof createEntityFormDataProvider;
+  Picture: typeof Picture;
 }
 
 // Expose context on a global so remote modules can access the same reference.

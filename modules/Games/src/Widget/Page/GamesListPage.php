@@ -19,10 +19,6 @@ class GamesListPage extends APage {
         return 'Личная коллекция сейвов для пройденных игр, пара статей с разбором игровых секретов и лора.';
     }
 
-    public function getTitle(): string {
-        return $this->getHeader() . ' :: ' . parent::getTitle();
-    }
-
     public function getCanonicalUrl(): string {
         return $this->getWebRoot() . '/games';
     }
@@ -34,10 +30,6 @@ class GamesListPage extends APage {
         return [
             'Нычка с полезным лутом: личная коллекция сейвов для пройденных игр, пара статей с разбором игровых секретов и лора.',
         ];
-    }
-
-    public function getMetaTitle(): string {
-        return $this->getHeader() . ' — ' . parent::getMetaTitle();
     }
 
     public function getMainWidget(): AWidget {

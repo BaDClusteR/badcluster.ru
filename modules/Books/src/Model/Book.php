@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Books\Model;
 
+use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Model\Media;
 use BC\Modules\Books\Core\Trait\BookFormatProviderTrait;
 use DateTime;
@@ -45,6 +46,7 @@ use Runway\Model\Exception\ModelException;
 #[DS\Table('books')]
 class Book extends AEntity {
     use BookFormatProviderTrait;
+    use WebsiteSettingsTrait;
 
     public const string TYPE_AUTEUR = 'A';
 
@@ -103,12 +105,14 @@ class Book extends AEntity {
         $storedFormats = BookFormat::find(['book' => $this]);
 
         foreach ($availableFormats as $format) {
-            if (!(
-            $foundFormat = array_find(
-                $storedFormats,
-                static fn (BookFormat $bFormat): bool => $bFormat->getType() === $format->type
-            )
-            )) {
+            if (
+                !(
+                $foundFormat = array_find(
+                    $storedFormats,
+                    static fn (BookFormat $bFormat): bool => $bFormat->getType() === $format->type
+                )
+                )
+            ) {
                 $foundFormat = new BookFormat();
                 $foundFormat->setType($format->type)
                             ->setAllowed(false)
@@ -155,5 +159,56 @@ class Book extends AEntity {
         $this->coverBg?->remove();
 
         parent::remove();
+    }
+
+    /**
+     * @throws ModelException
+     * @throws DBException
+     * @throws QueryBuilderException
+     */
+    public function bumpLastUpdateDate(): static {
+        $this->setLastUpdateDate(
+            new DateTime('now')
+        );
+
+        $this->persist();
+
+        return $this;
+    }
+
+    public function getUrl(): string {
+        return $this->getWebsiteSettings()->getWebRoot() . '/books/' . $this->getSlug();
+    }
+
+    public function isTranslation(): bool {
+        return $this->type === self::TYPE_TRANSLATION;
+    }
+
+    public function isAuteur(): bool {
+        return $this->type === self::TYPE_AUTEUR;
+    }
+
+    public function getAuthors(): array {
+        if ($this->isTranslation()) {
+            $authors = explode(',', $this->getAuthor());
+        } else {
+            $authors = ['BaD ClusteR'];
+        }
+
+        return array_map(
+            static fn (string $author): string => trim($author),
+            $authors
+        );
+    }
+
+    /**
+     * @return Chapter[]
+     *
+     * @throws DBException
+     * @throws ModelException
+     * @throws QueryBuilderException
+     */
+    public function getChapters(): array {
+        return Chapter::find(['book' => $this], ['position', 'ASC']);
     }
 }

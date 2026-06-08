@@ -1,7 +1,3 @@
-.post {
-  --post-max-image-width: 900px;
-}
-
 .post__header {
   display: flex;
   flex-wrap: wrap;

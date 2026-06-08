@@ -18,14 +18,24 @@ use Runway\Model\Exception\ModelException;
  * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
- * @method Book|null getBook()
- * @method self setBook(Book|null $book)
+ * @method Book getBook()
+ * @method self setBook(Book $book)
  * @method string getTitle()
  * @method self setTitle(string $title)
  * @method array getContent()
  * @method self setContent(array $content)
  * @method int getPosition()
  * @method self setPosition(int $position)
+ * @method bool getPublished()
+ * @method self setPublished(bool $published)
+ * @method DateTime getAddedDate()
+ * @method self setAddedDate(DateTime $addedDate)
+ * @method DateTime getUpdateDate()
+ * @method self setUpdateDate(DateTime $updateDate)
+ * @method string getSlug()
+ * @method self setSlug(string $slug)
+ * @method string getPart()
+ * @method self setPart(string $part)
  */
 #[DS\Table('chapters')]
 class Chapter extends AEntity {
@@ -33,7 +43,7 @@ class Chapter extends AEntity {
     protected int $id;
 
     #[DS\Column]
-    protected ?Book $book;
+    protected Book $book;
 
     #[DS\Column]
     protected string $title = '';
@@ -43,4 +53,23 @@ class Chapter extends AEntity {
 
     #[DS\Column]
     protected int $position = 0;
+
+    #[DS\Column]
+    protected bool $published = false;
+
+    #[DS\Column]
+    protected DateTime $addedDate;
+
+    #[DS\Column]
+    protected DateTime $updateDate;
+
+    #[DS\Column]
+    protected string $slug = '';
+
+    #[DS\Column]
+    protected string $part = '';
+
+    public function getUrl(): string {
+        return $this->getBook()->getUrl() . '/' . $this->getSlug();
+    }
 }

@@ -1,3 +1,6 @@
 services:
   BC\Modules\Books\Api\DataBuilder\Book\IBookDataBuilder:
     class: BC\Modules\Books\Api\DataBuilder\Book\BookDataBuilder
+
+  BC\Modules\Books\Api\DataBuilder\Chapter\IChapterDataBuilder:
+    class: BC\Modules\Books\Api\DataBuilder\Chapter\ChapterDataBuilder

@@ -13,6 +13,7 @@ import {CodeInlineTool} from "./inlineTools/CodeInlineTool";
 import {SpoilerInlineTool} from "./inlineTools/SpoilerInlineTool";
 import {NowrapInlineTool} from "./inlineTools/NowrapInlineTool";
 import {SupInlineTool} from "./inlineTools/SupInlineTool";
+import {ParagraphBlock} from "./paragraph/ParagraphBlock";
 import classes from "./BlocksField.module.css";
 import "./editorjs.css";
 import {Optional} from "@admin/types";
@@ -99,6 +100,10 @@ export function BlocksField(
       data: value ?? undefined,
       placeholder: placeholder ?? false,
       tools: {
+        paragraph: {
+          class: ParagraphBlock as unknown as ToolConstructable,
+          inlineToolbar: true,
+        },
         header: {
           class: HeadingBlock as unknown as ToolConstructable,
           config: {

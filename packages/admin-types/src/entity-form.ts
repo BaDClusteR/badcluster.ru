@@ -2,7 +2,7 @@ import type {ComponentType, ReactNode} from "react";
 // noinspection TypeScriptCheckImport
 // @ts-ignore
 import type {FormErrors, UseFormReturnType} from "@mantine/form";
-import {Optional} from "./common";
+import {Optional, StringKeyObject} from "./common";
 
 export type CommonFieldType =
   | "number"
@@ -171,6 +171,7 @@ export interface EntityFormProps<T, C = unknown> {
   title?: string | ((data: Optional<T>, context: Optional<C>) => ReactNode),
   webPath: string,
   apiEndpoint: string,
+  preprocessValues?: (values: T, context: Optional<C>, isCreateMode: boolean) => StringKeyObject,
   labels: {
     notFound: {
       text: string,

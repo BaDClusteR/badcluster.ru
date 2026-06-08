@@ -1,0 +1,23 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\List\BookList $this */
+
+$groups = $this->getBookGroups();
+$bookWidget = new \BC\Modules\Books\Widget\List\Book();
+?>
+<ul class="materials list--block">
+    <?php foreach ($groups as $title => $group): ?>
+        <?php if ($group) : ?>
+            <?php if ($title) : ?>
+                <li class="material__series-title-area">
+                    <h2 class="material__series-title">
+                        <span><?=$title?></span>
+                    </h2>
+                </li>
+            <?php endif; ?>
+            <?php foreach ($group as $book): ?>
+                <?=$bookWidget->render(['book' => $book])?>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</ul>

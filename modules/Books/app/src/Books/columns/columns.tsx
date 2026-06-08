@@ -20,6 +20,12 @@ const columns: ColumnDef<BookRow>[] = [
     header: "Краткая аннотация"
   },
   {
+    key: "chapterCount",
+    header: "Главы",
+    nowrap: true,
+    link: row => `/admin/books/${row.id}/chapters`
+  },
+  {
     key: "type",
     header: "Тип произведения",
     render: row => <BookTypeBadge type={row.type}/>

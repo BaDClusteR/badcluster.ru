@@ -1,0 +1,45 @@
+<?php
+
+use BC\Widget\Blocks;
+
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Modules\Books\Widget\Chapter $this */
+$refs = $this->getRefs();
+$nav = $this->getNavLinks();
+?><?=new Blocks($this->getChapter()->getContent())->render()?>
+<?php if ($refs) : ?>
+    <section class="chapter__refs">
+        <?php $i = 1; ?>
+        <?php foreach ($refs as $anchor => $ref) : ?>
+            <p id="<?=$anchor?>">
+                <a href="#<?=$anchor?>_link">↑</a>
+                <sup><?=$i++?></sup> <?=$ref?>
+            </p>
+        <?php endforeach; ?>
+    </section>
+<?php endif; ?>
+<nav class="chapter__nav">
+    <span class="chapter__nav-cell chapter__nav-cell--prev">
+        <?php if ($nav['prev']) : ?>
+            <a href="<?=$nav['prev'][0]?>" class="chapter__nav-link chapter__nav-link--prev">
+                <?=$this->getSvgContent('images/icons/back-arrow.svg')?>
+                <?=$nav['prev'][1]?>
+            </a>
+        <?php endif; ?>
+    </span>
+    <span class="chapter__nav-cell chapter__nav-cell--toc">
+        <a href="<?=$nav['toc'][0]?>" class="chapter__nav-link chapter__nav-link--toc">
+            <?=$this->getSvgContent('images/modules/Books/toc.svg')?>
+            <?=$nav['toc'][1]?>
+        </a>
+    </span>
+    <span class="chapter__nav-cell chapter__nav-cell--next">
+        <?php if ($nav['next']) : ?>
+            <a href="<?=$nav['next'][0]?>" class="chapter__nav-link chapter__nav-link--next">
+                <?=$nav['next'][1]?>
+                <?=$this->getSvgContent('images/icons/back-arrow.svg')?>
+            </a>
+        <?php endif; ?>
+    </span>
+</nav>

@@ -1,8 +1,12 @@
 routes:
-#  games:
-#    path: /games
-#    controller: BC\Modules\Games\Controller\Games::renderGamesList
-#
-#  games_game:
-#    path: /games/{game}/{material}
-#    controller: BC\Modules\Games\Controller\Games::renderMaterialPage
+  books:
+    path: /books
+    controller: BC\Modules\Books\Controller\Books::renderBookList
+
+  books_book:
+    path: /books/{book}
+    controller: BC\Modules\Books\Controller\Books::renderBook
+
+  books_chapter_or_download:
+    path: /books/{book}/{slug}
+    controller: BC\Modules\Books\Controller\Books::renderChapterOrDownload

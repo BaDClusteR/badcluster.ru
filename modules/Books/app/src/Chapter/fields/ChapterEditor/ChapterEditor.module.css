@@ -1,0 +1,37 @@
+.contentInline {
+  padding: 0;
+  border: none;
+
+  :global(.codex-editor .ce-header) {
+    font-variation-settings: 'wdth' 100;
+    margin: 0;
+    color: var(--color-contrast);
+  }
+
+  :global(.codex-editor__redactor) {
+    font-family: var(--font-family-serif), sans-serif;
+    row-gap: calc(.25 * var(--rhythmic-unit));
+
+    :global(> .ce-block .ce-paragraph) {
+      font-size: var(--font-size-big);
+      text-indent: 1.5em;
+    }
+
+    :global(> .ce-block:has(.ce-paragraph[data-empty='true'])) {
+      padding-block: calc(.25 * var(--rhythmic-unit));
+    }
+
+    :global(> .ce-block:has(.ce-paragraph[data-empty='true']) + .ce-block .ce-paragraph) {
+      text-indent: 0;
+    }
+
+    :global(> .ce-block:first-child .ce-paragraph) {
+      text-indent: 0;
+    }
+  }
+}
+
+.chapterTitle {
+  font-family: var(--font-family-serif), sans-serif;
+  margin-bottom: calc(1.5 * var(--rhythmic-unit));
+}

@@ -84,10 +84,6 @@ class BlogPage extends APage {
             : [];
     }
 
-    public function getMetaTitle(): string {
-        return $this->getHeader() . ' — ' . parent::getMetaTitle();
-    }
-
     public function getMainWidget(): AWidget {
         return new Posts([
             'pageNum' => $this->page,

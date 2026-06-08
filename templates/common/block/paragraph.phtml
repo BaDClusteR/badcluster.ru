@@ -1,4 +1,9 @@
 <?php
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Block\Paragraph $this */
-?><p><?=$this->getContent()?></p>
+$content = $this->getContent();
+?><?php if ($content) : ?>
+    <p><?=$content?></p>
+<?php else : ?>
+    <p class="empty" aria-hidden="true">&nbsp;</p>
+<?php endif; ?>

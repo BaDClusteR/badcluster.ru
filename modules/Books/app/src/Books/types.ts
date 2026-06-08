@@ -5,5 +5,6 @@ export interface BookRow extends EntityRow {
   title: string,
   shortAnnotation: string,
   type: "A" | "T",
-  lastUpdateDate: string
+  lastUpdateDate: string,
+  chapterCount: string,
 }

@@ -630,6 +630,10 @@ picture,
   white-space: nowrap;
 }
 
+body {
+  --post-max-image-width: 900px;
+}
+
 @media (width >= 768px) {
   .container:has(.header) {
     margin-top: 0;

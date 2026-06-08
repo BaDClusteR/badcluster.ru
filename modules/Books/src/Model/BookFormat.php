@@ -53,4 +53,8 @@ class BookFormat extends AEntity {
 
     #[DS\Column]
     protected DateTime $dateGenerated;
+
+    public function getUrl(): string {
+        return dirname($this->getBook()->getUrl()) . '/' . $this->getFilename();
+    }
 }

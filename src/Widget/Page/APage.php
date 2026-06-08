@@ -43,10 +43,28 @@ abstract class APage extends AWidget implements IAssetProvider {
     }
 
     public function getTitle(): string {
+        $title = '';
+        if ($header = $this->getHeader()) {
+            $title = "$header :: ";
+        }
+
+        return $title . $this->getTitleBase();
+    }
+
+    protected function getTitleBase(): string {
         return 'BaD ClusteR';
     }
 
     public function getMetaTitle(): string {
+        $metaTitle = '';
+        if ($header = $this->getHeader()) {
+            $metaTitle = "$header — ";
+        }
+
+        return $metaTitle . $this->getMetaTitleBase();
+    }
+
+    protected function getMetaTitleBase(): string {
         return 'Цифровой архив BaD ClusteR\'а';
     }
 

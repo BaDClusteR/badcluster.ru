@@ -15,3 +15,5 @@ services:
     class: BC\Modules\Books\Provider\BookFormat\BookFormatProvider
 
   BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg: ~
+
+  BC\Modules\Books\Controller\Books: ~

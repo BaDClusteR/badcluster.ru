@@ -2,3 +2,7 @@ services:
   BC\Modules\Books\Api\Endpoint\Book:
     tags:
       - name: api_endpoint_collection
+
+  BC\Modules\Books\Api\Endpoint\Chapter:
+    tags:
+      - name: api_endpoint_collection

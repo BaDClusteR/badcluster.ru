@@ -1,0 +1,105 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Modules\Books\Widget\Book $this */
+
+use BC\Widget\Common\Comments;
+
+$book = $this->getBook();
+$authors = $book->getAuthors();
+$dateConverter = $this->getDateConverter();
+$lastUpdateDate = $book->getLastUpdateDate();
+$formats = $this->getBookFormats();
+$formatter = $this->getFormatter();
+$chapterGroups = $this->getBookChapters();
+?>
+<header class="book-header">
+    <div class="book-header__cover">
+        <?=new \BC\Modules\Books\Widget\BookCover()->render(['book' => $book])?>
+    </div>
+    <div class="book-header__info">
+        <h1><?=$book->getTitle()?></h1>
+        <div class="book__participants">
+            <div class="book__participant">
+                <span class="book__participant-role">
+                    <?php if (count($authors) > 1): ?>
+                        Авторы:
+                    <?php else: ?>
+                        Автор:
+                    <?php endif; ?>
+                </span>
+                <span class="book__participant-names">
+                    <span class="book__participant-name">
+                        <?=implode('</span><span class="book__participant-name">', $authors)?>
+                    </span>
+                </span>
+            </div>
+            <?php if ($book->isTranslation()) : ?>
+                <div class="book__participant">
+                    <span class="book__participant-role">Перевод: </span>
+                    <span class="book__participant-name">BaD ClusteR</span>
+                </div>
+            <?php endif; ?>
+        </div>
+        <time class="book__updated text-faded" datetime="<?=$dateConverter->toIsoFormat($lastUpdateDate)?>">
+            Обновлено: <?=$dateConverter->toShortForm($lastUpdateDate)?>
+        </time>
+    </div>
+</header>
+<?=$this->getBookAnnotation()?>
+<?php if ($formats) : ?>
+    <div class="file file--book">
+        <div class="file__info">
+            <span class="file__name">Скачать книгу целиком</span>
+        </div>
+        <div class="file__actions">
+            <?php foreach ($formats as $format) : ?>
+                <a href="<?=$format->getUrl()?>" class="btn btn--secondary btn--big file__action">
+                    <?=$this->getSvgContent("modules/Books/format/{$format->getType()}.svg")?>
+                    <div class="file__info">
+                        <span class="file__ext"><?=strtoupper($format->getType())?></span>
+                        <span class="file__size"><?=$formatter->formatAsHumanReadableSize($format->getSize())?></span>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
+<div class="chapters">
+    <h2>Читать онлайн</h2>
+    <nav class="chapters__list">
+        <ul class="chapters__list-element list--block">
+            <?php if (count($chapterGroups) === 1 && array_keys($chapterGroups)[0] === '') : ?>
+                <?php foreach ($chapterGroups[''] as $chapter) : ?>
+                    <li class="chapters__list-item">
+                        <a href="<?=$chapter->getUrl()?>" class="chapter__link">
+                            <span class="chapter__name"><?=$chapter->getTitle()?></span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <?php foreach ($chapterGroups as $title => $group) : ?>
+                    <li class="chapters__list-item chapters__list-item--has-children">
+                        <?php if ($title) : ?>
+                            <h3 class="chapter__section"><?=$title?></h3>
+                        <?php endif; ?>
+                        <ul class="chapters__list-element list--block">
+                            <?php foreach ($group as $chapter) : ?>
+                                <li class="chapters__list-item">
+                                    <a href="<?=$chapter->getUrl()?>" class="chapter__link">
+                                        <span class="chapter__name"><?=$chapter->getTitle()?></span>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </li>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </ul>
+    </nav>
+</div>
+<footer class="comments__area">
+    <?=new Comments([
+        'page' => $this->getPage(),
+    ])->render()?>
+</footer>

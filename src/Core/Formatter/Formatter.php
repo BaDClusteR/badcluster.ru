@@ -12,7 +12,12 @@ class Formatter implements IFormatter {
 
         foreach (static::SIZE_POSTFIXES as $i => $postfix) {
             if ($size < 1024 || $i === count(static::SIZE_POSTFIXES) - 1) {
-                return sprintf('%.2f %s', $size, $postfix);
+                $sizeStr = rtrim(number_format($size, 2), '0.');
+                if (!$sizeStr) {
+                    $sizeStr = '0';
+                }
+
+                return sprintf('%s %s', $sizeStr, $postfix);
             }
 
             $size /= 1024;

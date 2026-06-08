@@ -346,14 +346,4 @@ class Book extends AEndpoint {
             throw new UnprocessableEntityException($errors, $errorTitle);
         }
     }
-
-    #[API\Endpoint(path: 'games', method: 'DELETE')]
-    public function deletePosts(
-        #[API\Parameter(source: 'body', name: 'rows')]
-        array $rows
-    ): SuccessfulResultDTO {
-        $this->deleteEntities(BookModel::class, $rows);
-
-        return new SuccessfulResultDTO();
-    }
 }

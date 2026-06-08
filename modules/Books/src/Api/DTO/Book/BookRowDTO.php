@@ -12,7 +12,8 @@ readonly class BookRowDTO {
         public string $title,
         public string $shortAnnotation,
         public string $type,
-        public string $lastUpdateDate
+        public string $lastUpdateDate,
+        public string $chapterCount
     ) {
     }
 }

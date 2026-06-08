@@ -4,7 +4,7 @@ import {type Book, BookContext} from "./types";
 import fields from "./fields";
 import {useQuery} from "@tanstack/react-query";
 
-export function Book() {
+export default function Book() {
   const {id} = useParams<{ id: string }>();
   const {EntityForm, buildAdminUrl, createEntityFormDataProvider, apiCall} = useAdminCore();
 
@@ -83,7 +83,7 @@ export function Book() {
         }
       }}
       title={(values) => <>
-        <Link to={buildAdminUrl("books")}>Книги</Link> :: {
+        <Link to={buildAdminUrl("books")}>Библиотека</Link> :: {
         isCreateMode
           ? "Новое произведение"
           : values?.title ?? "[Безымянное произведение]"
