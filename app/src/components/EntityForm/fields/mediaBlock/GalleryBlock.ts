@@ -51,10 +51,13 @@ export class GalleryBlock implements BlockTool {
   private addBtn!: HTMLButtonElement;
   private batchIndicatorEl!: HTMLElement;
 
-  private config: { getDefaultAlt?: () => string };
+  private config: { getDefaultAlt?: () => string; uploadPurpose?: string };
 
   constructor({data, config}: { data: BlockToolData<GalleryBlockData>; config?: Record<string, unknown> }) {
-    this.config = { getDefaultAlt: config?.getDefaultAlt as (() => string) | undefined };
+    this.config = {
+      getDefaultAlt: config?.getDefaultAlt as (() => string) | undefined,
+      uploadPurpose: config?.uploadPurpose as string | undefined,
+    };
     this.data = {
       slides: Array.isArray(data?.slides) ? data.slides : [],
       captions: Array.isArray(data?.captions) ? data.captions : [],
@@ -518,7 +521,7 @@ export class GalleryBlock implements BlockTool {
 
     this.upload = uploadMedia(file, ({fraction}) => {
       progressBar.style.width = `${Math.round(fraction * 100)}%`;
-    });
+    }, this.config.uploadPurpose);
 
     try {
       const media = await this.upload.promise;

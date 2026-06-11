@@ -1,0 +1,52 @@
+.paragraph {
+  outline: none;
+  line-height: 1.5;
+  padding: 0;
+  margin: 0;
+}
+
+.paragraph[data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+/* Settings */
+.alignRow {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+}
+
+.alignBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--border-radius);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.alignBtn:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.alignBtnActive {
+  background: var(--color-surface);
+  color: var(--color-link);
+}

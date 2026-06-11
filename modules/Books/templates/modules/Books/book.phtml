@@ -46,7 +46,7 @@ $chapterGroups = $this->getBookChapters();
         </time>
     </div>
 </header>
-<?=$this->getBookAnnotation()?>
+<?=$formatter->formatAsHtml($book->getAnnotation())?>
 <?php if ($formats) : ?>
     <div class="file file--book">
         <div class="file__info">
@@ -73,7 +73,7 @@ $chapterGroups = $this->getBookChapters();
                 <?php foreach ($chapterGroups[''] as $chapter) : ?>
                     <li class="chapters__list-item">
                         <a href="<?=$chapter->getUrl()?>" class="chapter__link">
-                            <span class="chapter__name"><?=$chapter->getTitle()?></span>
+                            <span class="chapter__name"><?=$chapter->getPublicTitle()?></span>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -87,7 +87,7 @@ $chapterGroups = $this->getBookChapters();
                             <?php foreach ($group as $chapter) : ?>
                                 <li class="chapters__list-item">
                                     <a href="<?=$chapter->getUrl()?>" class="chapter__link">
-                                        <span class="chapter__name"><?=$chapter->getTitle()?></span>
+                                        <span class="chapter__name"><?=$chapter->getPublicTitle()?></span>
                                     </a>
                                 </li>
                             <?php endforeach; ?>

@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace BC\Modules\Books\Model;
 
+use BC\Modules\Books\Core\Trait\BookFormatProviderTrait;
 use DateTime;
 use Runway\DataStorage\Attribute as DS;
+use Runway\DataStorage\Exception\DBException;
+use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\AEntity;
+use Runway\Model\Exception\ModelException;
 
 /**
  * @generated-model-helpers
@@ -27,9 +31,13 @@ use Runway\Model\AEntity;
  * @method self setDump(string $dump)
  * @method DateTime getDateGenerated()
  * @method self setDateGenerated(DateTime $dateGenerated)
+ * @method string getPostfix()
+ * @method self setPostfix(string $postfix)
  */
 #[DS\Table('book_formats')]
 class BookFormat extends AEntity {
+    use BookFormatProviderTrait;
+
     #[DS\Id]
     protected int $id;
 
@@ -54,7 +62,39 @@ class BookFormat extends AEntity {
     #[DS\Column]
     protected DateTime $dateGenerated;
 
+    #[DS\Column]
+    protected string $postfix = '';
+
     public function getUrl(): string {
         return dirname($this->getBook()->getUrl()) . '/' . $this->getFilename();
+    }
+
+    /**
+     * @throws DBException
+     * @throws ModelException
+     * @throws QueryBuilderException
+     */
+    public function generateDump(): void {
+        $renderer = $this->getBookFormatProvider()->getFormat($this->getType());
+
+        if ($renderer) {
+            $dump = $renderer->generateBook($this->getBook());
+            $this->setDump($dump)
+                 ->setSize(strlen($dump))
+                 ->persist();
+        } else {
+            $this->clearDump();
+        }
+    }
+
+    /**
+     * @throws DBException
+     * @throws ModelException
+     * @throws QueryBuilderException
+     */
+    public function clearDump(): void {
+        $this->setDump('')
+             ->setSize(0)
+             ->persist();
     }
 }

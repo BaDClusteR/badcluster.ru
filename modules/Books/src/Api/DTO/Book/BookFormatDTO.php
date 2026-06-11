@@ -9,7 +9,8 @@ readonly class BookFormatDTO {
         public string $filename,
         public int $size,
         public string $sizeHumanReadable,
-        public string $dateGenerated
+        public string $dateGenerated,
+        public string $postfix
     ) {
     }
 }

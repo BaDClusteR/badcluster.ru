@@ -10,9 +10,9 @@ export interface Book {
   shortAnnotation: string,
   type: "A" | "T",
   lastUpdateDate: string,
-  technicalInfo: string | StringKeyObject, // StringKeyObject or JSON-encoded StringKeyObject
   group: string,
   position: number,
+  fb2Genre: string,
   formats: {
     [key: string]: BookFormat
   }
@@ -28,5 +28,6 @@ export interface BookFormat {
   filename: string,
   size: number,
   sizeHumanReadable: string,
-  dateGenerated: string
+  dateGenerated: string,
+  postfix: string
 }

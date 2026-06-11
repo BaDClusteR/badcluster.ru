@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Modules\Books\Controller;
 
 use BC\Core\Response\SuccessfulHtmlResponse;
+use BC\Core\Trait\AuthTrait;
 use BC\Core\Trait\Controller404Trait;
 use BC\Modules\Books\Model\Book;
 use BC\Modules\Books\Model\BookFormat;
@@ -20,6 +21,7 @@ use Runway\Request\Response;
 
 readonly class Books {
     use Controller404Trait;
+    use AuthTrait;
 
     public function renderBookList(): Response {
         return new SuccessfulHtmlResponse(
@@ -27,6 +29,35 @@ readonly class Books {
                 ['groups' => $this->getBookGroups()]
             )
         );
+    }
+
+    /**
+     * @throws ModelException
+     * @throws DBException
+     * @throws QueryBuilderException
+     */
+    public function download(string $basename, string $ext): Response {
+        $format = BookFormat::findOne([
+            'filename' => "$basename.$ext"
+        ]);
+
+        if ($format?->getAllowed()) {
+            if ($format->getSize() === 0) {
+                $format->generateDump();
+            }
+
+            return new Response(
+                200,
+                $format->getDump(),
+                [
+                    'Content-Type'        => 'application/octet-stream',
+                    'Content-Disposition' => 'attachment; filename="' . $basename . '.' . $ext . '"',
+                    'Content-Length'      => $format->getSize()
+                ]
+            );
+        }
+
+        return $this->get404Controller()->run();
     }
 
     /**
@@ -51,26 +82,23 @@ readonly class Books {
      * @throws QueryBuilderException
      * @throws ModelException
      */
-    public function renderChapterOrDownload(string $book, string $slug): Response {
+    public function renderChapter(string $book, string $slug): Response {
         $bookModel = Book::findOne(['slug' => $book]);
 
         if (!$bookModel) {
             return $this->get404Controller()->run();
         }
 
-        $format = BookFormat::findOne([
-            'book'     => $book,
-            'filename' => $slug
-        ]);
-
-        if ($format) {
-            return new SuccessfulHtmlResponse('Here the book will be downloaded.');
-        }
-
-        $chapter = Chapter::findOne([
+        $conditions = [
             'book' => $bookModel,
             'slug' => $slug
-        ]);
+        ];
+
+        if (!$this->getAuth()->isAuthenticated()) {
+            $conditions['published'] = true;
+        }
+
+        $chapter = Chapter::findOne($conditions);
 
         if (!$chapter) {
             return $this->get404Controller()->run();

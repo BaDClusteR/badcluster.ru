@@ -83,18 +83,10 @@ const FIELDS: FieldDef<Book, BookContext>[] = [
     name: "coverBg",
     type: "image",
     label: "Картинка на заднем фоне",
-    hint: "Придает цвет заблюренному фону книги, если у нее нет обложки",
+    hint: "Придает цвет заблюренному фону книги, если у нее нет обложки. 40 пикселей в ширину.",
     span: "full",
     role: "primary",
     uploadPurpose: "book_cover_bg"
-  },
-  {
-    name: "technicalInfo",
-    type: "json",
-    label: "Техническая информация",
-    hint: "В данный момент нужна только при генерации FB2",
-    span: "full",
-    role: "primary"
   },
   {
     name: "group",
@@ -118,11 +110,24 @@ const FIELDS: FieldDef<Book, BookContext>[] = [
     role: "primary"
   },
   {
+    name: "fb2Genre",
+    type: "text",
+    span: "full",
+    role: "primary",
+    label: "Жанр (для FB2)",
+    hint: <a
+      href="http://www.fictionbook.org/index.php/Eng:FictionBook_2.1_genres"
+      target="_blank"
+    >
+      Список всех жанров на fictionbook.org
+    </a>
+  },
+  {
     type: "group",
     span: "full",
     render: (form, options, values) =>
       <BookFormats formats={options.context?.formats ?? []} generatedFormats={values?.formats} onChange={
-        (format: string, allowed: boolean, filename: string) => {
+        (format: string, allowed: boolean, filename: string, postfix: string) => {
           const current = form.values.formats ?? {};
           form.setFieldValue(
             "formats",
@@ -130,7 +135,8 @@ const FIELDS: FieldDef<Book, BookContext>[] = [
               ...current,
               [format]: {
                 allowed,
-                filename
+                filename,
+                postfix
               }
             } as never
           );

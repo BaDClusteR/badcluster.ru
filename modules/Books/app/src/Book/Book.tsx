@@ -25,45 +25,7 @@ export default function Book() {
       fields={fields}
       context={(data as BookContext | undefined) ?? {formats: []}}
       initialValues={{
-        type: "A",
-        technicalInfo: {
-          "genre": "[book_genre]",
-          "authors": [
-            {
-              "firstName": "[Иван]",
-              "middleName": "[Иванович]",
-              "lastName": "[Иванов]"
-            },
-            {
-              "firstName": "[Петр]",
-              "lastName": "[Петров]"
-            }
-          ],
-          "title": "[Моя книга]",
-          "lang": "ru",
-          "srcLang": "en",
-          "translators": [
-            {
-              "nickname": "[N@g1b2T0R_666]",
-              "homePage": "[https://google.com]",
-              "email": "[admin@google.com]"
-            }
-          ],
-          "sequence": {
-            "name": "[sequence_name]",
-            "number": "[42]"
-          },
-          "documentInfo": {
-            "authors": [
-              {
-                "nickname": "[N@g1b2T0R_666]",
-                "homePage": "[https://google.com]",
-                "email": "[admin@google.com]"
-              }
-            ]
-          },
-          "version": "1.1"
-        }
+        type: "A"
       }}
       dataProvider={createEntityFormDataProvider<Book>("book", id, isCreateMode)}
       webPath="books"

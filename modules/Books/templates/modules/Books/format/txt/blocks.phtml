@@ -1,0 +1,11 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\Format\Txt\Blocks $this */
+
+$blocks = $this->getBlocks();
+foreach ($blocks as $block) {
+    echo $this->renderBlock(
+        (string) ($block['type'] ?? ''),
+        (array) ($block['data'] ?? '')
+    );
+}

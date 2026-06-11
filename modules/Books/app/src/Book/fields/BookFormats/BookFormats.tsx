@@ -1,10 +1,10 @@
 import {type BookFormat} from "../../types";
-import {Button, Skeleton, Switch, TextInput} from "@mantine/core";
+import {Button, Skeleton, Switch, Textarea, TextInput} from "@mantine/core";
 import {useEffect, useState} from "react";
 import {Optional} from "@admin/types";
 import classes from "./BookFormats.module.css";
 
-export type BookFormatChangeCallback = (format: string, allowed: boolean, filename: string) => void;
+export type BookFormatChangeCallback = (format: string, allowed: boolean, filename: string, postfix: string) => void;
 
 function BookFormat(props: { format: Optional<BookFormat>, type?: string, onChange: BookFormatChangeCallback }) {
   const {format, type} = props;
@@ -31,23 +31,37 @@ function BookFormat(props: { format: Optional<BookFormat>, type?: string, onChan
         props.onChange(
           String(format?.type ?? type),
           e.target.checked,
-          format?.filename || ""
+          format?.filename || "",
+          String(format?.postfix ?? "")
         );
       }}
     />
     {
-      isAllowed && (
+      isAllowed && <>
         <TextInput
           label="Имя файла:"
           required
+          withAsterisk
           value={format?.filename ?? ""}
           onChange={(e) => props.onChange(
             String(format?.type ?? type),
             true,
+            e.target.value,
+            String(format?.postfix ?? "")
+          )}
+        />
+        <Textarea
+          label="Текст после глав:"
+          description="Если оставить пустым, будет стандартный текст после глав. Плейсхолдеры: {{start_year}}, {{end_year}}."
+          value={format?.postfix ?? ""}
+          onChange={(e) => props.onChange(
+            String(format?.type ?? type),
+            true,
+            String(format?.filename ?? ""),
             e.target.value
           )}
         />
-      )
+      </>
     }
     {
       isAllowed && (format?.size ?? 0) > 0 && (

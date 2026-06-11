@@ -1,0 +1,13 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\Format\Fb2\Block\Media $this */
+?>
+<?php if ($this->isImage()) : ?>
+    <?php $addedImageId = $this->getBook()->addImage($this->getImageThumbnailPath()); ?>
+    <image l:href="#<?=$addedImageId?>"></image>
+    <?php if ($this->caption) : ?>
+        <p>
+            <emphasis><?=$this->caption?></emphasis>
+        </p>
+    <?php endif; ?>
+<?php endif; ?>

@@ -7,11 +7,13 @@ namespace BC\Widget\Common;
 use BC\Core\DTO\CommentDTO;
 use BC\Core\Trait\AuthTrait;
 use BC\Core\Trait\DateConverterTrait;
+use BC\Core\Trait\FormatterTrait;
 use BC\Widget\AWidget;
 
 class Comment extends AWidget {
     use DateConverterTrait;
     use AuthTrait;
+    use FormatterTrait;
 
     protected function getTemplatePath(): string {
         return 'common/comment.phtml';
@@ -60,12 +62,7 @@ class Comment extends AWidget {
     }
 
     protected function prepareCommentText(string $text): string {
-        $lines = explode(
-            "\n",
-            str_replace("\n\n", "\n", $text)
-        );
-
-        return '<p>' . implode('</p><p>', $lines) . '</p>';
+        return $this->getFormatter()->formatAsHtml($text);
     }
 
     protected function isAuthenticated(): bool {

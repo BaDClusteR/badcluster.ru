@@ -135,9 +135,6 @@ class Book extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'author')]
         ?string $author = null,
 
-        #[API\Parameter(source: 'body', name: 'technicalInfo')]
-        ?string $technicalInfo = '',
-
         #[API\Parameter(source: 'body', name: 'group')]
         string $group = '',
 
@@ -145,15 +142,12 @@ class Book extends AEndpoint {
         int $position = 0,
 
         #[API\Parameter(source: 'body', name: 'formats')]
-        array $formats = []
+        array $formats = [],
+
+        #[API\Parameter(source: 'body', name: 'fb2Genre')]
+        string $fb2Genre = ''
     ): CreatedDTO {
         $this->validateEntity($slug, $type, null, 'Ошибки при добавлении произведения.');
-
-        try {
-            $techInfoArray = json_decode($technicalInfo, true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException) {
-            $techInfoArray = [];
-        }
 
         $book = $this->handleWithException(
             fn () => new BookModel()
@@ -165,7 +159,6 @@ class Book extends AEndpoint {
                     )
                 )->setAnnotation($annotation)
                 ->setAuthor($author)
-                ->setTechnicalInfo($techInfoArray)
                 ->setCoverBg(
                     Media::findByUniqueIdentifier(
                         (int) ($coverBg['id'] ?? 0)
@@ -176,6 +169,7 @@ class Book extends AEndpoint {
                     $this->dateConverter->toDateTime($lastUpdateDate)
                 )->setShortAnnotation($shortAnnotation)
                 ->setType($type)
+                ->setFb2Genre($fb2Genre)
         );
 
         $allowedFormats = array_map(
@@ -191,7 +185,8 @@ class Book extends AEndpoint {
                         ->setType($format)
                         ->setBook($book)
                         ->setFilename((string) ($formats[$format]['filename'] ?? ''))
-                        ->setAllowed((bool) ($formats[$format]['allowed'] ?? false));
+                        ->setAllowed((bool) ($formats[$format]['allowed'] ?? false))
+                        ->setPostfix((string) ($formats[$format]['postfix'] ?? ''));
 
                     $format->persist();
                 }
@@ -245,9 +240,6 @@ class Book extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'author')]
         ?string $author = null,
 
-        #[API\Parameter(source: 'body', name: 'technicalInfo')]
-        ?string $technicalInfo = '',
-
         #[API\Parameter(source: 'body', name: 'group')]
         string $group = '',
 
@@ -255,15 +247,12 @@ class Book extends AEndpoint {
         int $position = 0,
 
         #[API\Parameter(source: 'body', name: 'formats')]
-        array $formats = []
+        array $formats = [],
+
+        #[API\Parameter(source: 'body', name: 'fb2Genre')]
+        string $fb2Genre = ''
     ): SuccessfulResultDTO {
         $this->validateEntity($slug, $type, $id, 'Ошибки при редактировании произведения.');
-
-        try {
-            $techInfoArray = json_decode($technicalInfo, true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException) {
-            $techInfoArray = [];
-        }
 
         /** @var BookModel|null $book */
         $book = $this->handleWithException(
@@ -283,7 +272,6 @@ class Book extends AEndpoint {
                               )
                           )->setAnnotation($annotation)
                           ->setAuthor($author)
-                          ->setTechnicalInfo($techInfoArray)
                           ->setCoverBg(
                               Media::findByUniqueIdentifier(
                                   (int) ($coverBg['id'] ?? 0)
@@ -294,6 +282,7 @@ class Book extends AEndpoint {
                               $this->dateConverter->toDateTime($lastUpdateDate)
                           )->setShortAnnotation($shortAnnotation)
                           ->setType($type)
+                          ->setFb2Genre($fb2Genre)
         );
 
         $this->handleWithException(
@@ -318,11 +307,16 @@ class Book extends AEndpoint {
                         ->setType($format)
                         ->setBook($book)
                         ->setFilename((string) ($formats[$format]['filename'] ?? ''))
-                        ->setAllowed((bool) ($formats[$format]['allowed'] ?? false));
+                        ->setAllowed((bool) ($formats[$format]['allowed'] ?? false))
+                        ->setPostfix((string) ($formats[$format]['postfix'] ?? ''));
 
                     $formatModel->persist();
                 }
             }
+        );
+
+        $this->handleWithException(
+            static fn () => $book->generateFormats()
         );
 
         return new SuccessfulResultDTO();

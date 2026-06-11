@@ -18,9 +18,9 @@ readonly class BookDTO {
         public string $shortAnnotation,
         public string $type,
         public string $lastUpdateDate,
-        public array $technicalInfo,
         public string $group,
         public int $position,
+        public string $fb2Genre,
         public array $formats
     ) {
     }

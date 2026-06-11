@@ -1,0 +1,9 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\Format\Fb2\Block\Paragraph $this */
+$content = $this->getContent();
+?><?php if ($content) : ?>
+    <p><?=$content?></p>
+<?php else : ?>
+    <?='<empty-line />'?>
+<?php endif; ?>

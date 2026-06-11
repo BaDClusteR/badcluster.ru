@@ -26,37 +26,18 @@ readonly class ImageProcessor implements IImageProcessor {
         if ($purpose === 'book_cover') {
             $image->tryGenerateThumbnails([260]);
 
-            $imagesPath = $this->pathProvider->getImagesPath();
-
-            try {
-                $thumbnail = $this->jpgProcessor->getThumbnail(
-                    "$imagesPath/{$image->getPath()}",
-                    1000,
-                    $image->getWidth()
-                );
-
-                $path = mb_substr(
-                    $thumbnail->path,
-                    mb_strlen("$imagesPath/")
-                );
-
-                new Media()
-                    ->setParent($image)
-                    ->setSize($thumbnail->size)
-                    ->setPath($path)
-                    ->setMime($thumbnail->mime)
-                    ->setWidth($thumbnail->width)
-                    ->setHeight($thumbnail->height)
-                    ->setMd5($thumbnail->md5)
-                    ->persist();
-            } catch (Exception $e) {
-                $this->logger->error(
-                    "Cannot generate thumbnail for the book cover: {$e->getMessage()}",
-                    [
-                        'path' => $image->getPath(),
-                        'id'   => $image->getId(),
-                    ]
-                );
+            if ($image->getWidth() > 1000) {
+                try {
+                    $this->makeJpgThumbnail($image, 1000);
+                } catch (Exception $e) {
+                    $this->logger->error(
+                        "Cannot generate thumbnail for the book cover: {$e->getMessage()}",
+                        [
+                            'path' => $image->getPath(),
+                            'id'   => $image->getId(),
+                        ]
+                    );
+                }
             }
 
             return $image;
@@ -69,9 +50,54 @@ readonly class ImageProcessor implements IImageProcessor {
         if ($purpose === 'chapter') {
             $image->tryGenerateThumbnails([500, 1000, 2000]);
 
+            if ($image->getWidth() > 1800) {
+                try {
+                    $this->makeJpgThumbnail($image, 1500);
+                } catch (Exception $e) {
+                    $this->logger->error(
+                        "Cannot generate thumbnail for the book image: {$e->getMessage()}",
+                        [
+                            'path' => $image->getPath(),
+                            'id'   => $image->getId(),
+                        ]
+                    );
+                }
+            }
+
             return $image;
         }
 
         return $this->inner->process($image, $purpose);
+    }
+
+    /**
+     * @throws ModelException
+     * @throws DBException
+     * @throws QueryBuilderException
+     * @throws ImageException
+     */
+    private function makeJpgThumbnail(Media $image, int $width): void {
+        $imagesPath = $this->pathProvider->getImagesPath();
+
+        $thumbnail = $this->jpgProcessor->getThumbnail(
+            "$imagesPath/{$image->getPath()}",
+            $width,
+            $image->getWidth()
+        );
+
+        $path = mb_substr(
+            $thumbnail->path,
+            mb_strlen("$imagesPath/")
+        );
+
+        new Media()
+            ->setParent($image)
+            ->setSize($thumbnail->size)
+            ->setPath($path)
+            ->setMime($thumbnail->mime)
+            ->setWidth($thumbnail->width)
+            ->setHeight($thumbnail->height)
+            ->setMd5($thumbnail->md5)
+            ->persist();
     }
 }

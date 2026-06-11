@@ -7,6 +7,10 @@ routes:
     path: /books/{book}
     controller: BC\Modules\Books\Controller\Books::renderBook
 
+  books_download:
+    path: /books/{basename}\.{ext}
+    controller: BC\Modules\Books\Controller\Books::download
+
   books_chapter_or_download:
     path: /books/{book}/{slug}
-    controller: BC\Modules\Books\Controller\Books::renderChapterOrDownload
+    controller: BC\Modules\Books\Controller\Books::renderChapter

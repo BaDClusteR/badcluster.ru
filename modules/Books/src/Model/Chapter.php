@@ -72,4 +72,10 @@ class Chapter extends AEntity {
     public function getUrl(): string {
         return $this->getBook()->getUrl() . '/' . $this->getSlug();
     }
+
+    public function getPublicTitle(): string {
+        return $this->getPublished()
+            ? $this->getTitle()
+            : "[Черновик] {$this->getTitle()}";
+    }
 }

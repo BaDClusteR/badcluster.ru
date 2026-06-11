@@ -40,6 +40,7 @@ export default function ChapterEditor(
         />
         <BlocksField
           showSettings={false}
+          uploadPurpose="chapter"
           className={classes.contentInline}
           value={form.values.content as never}
           onChange={(data) => {

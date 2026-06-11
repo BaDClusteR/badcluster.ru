@@ -25,4 +25,14 @@ class Formatter implements IFormatter {
 
         return '';
     }
+
+    public function formatAsHtml(string $plainText): string {
+        $plainText = str_replace(
+            "\n\n",
+            "\n",
+            $plainText
+        );
+
+        return '<p>' . implode('</p><p>', explode("\n", $plainText)) . '</p>';
+    }
 }

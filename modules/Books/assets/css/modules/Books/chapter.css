@@ -12,7 +12,9 @@
   }
 
   h1 + p,
-  .empty + p {
+  .empty + p,
+  p:has(> br:only-child) + p,
+  figure + p {
     text-indent: 0;
   }
 

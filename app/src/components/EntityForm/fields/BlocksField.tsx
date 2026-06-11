@@ -27,6 +27,8 @@ interface BlocksFieldProps {
   onChange: (data: OutputData) => void,
   className?: string,
   showSettings?: boolean,
+  /** Upload purpose for images (e.g. 'content'). Passed to MediaBlock/GalleryBlock. */
+  uploadPurpose?: string,
 }
 
 /**
@@ -46,7 +48,8 @@ export function BlocksField(
     value,
     onChange,
     className,
-    showSettings
+    showSettings,
+    uploadPurpose
   }: BlocksFieldProps
 ) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -103,6 +106,9 @@ export function BlocksField(
         paragraph: {
           class: ParagraphBlock as unknown as ToolConstructable,
           inlineToolbar: true,
+          config: {
+            placeholder: placeholder || undefined,
+          },
         },
         header: {
           class: HeadingBlock as unknown as ToolConstructable,
@@ -117,11 +123,11 @@ export function BlocksField(
         },
         media: {
           class: MediaBlock as unknown as ToolConstructable,
-          config: {getDefaultAlt: () => defaultAltRef.current}
+          config: {getDefaultAlt: () => defaultAltRef.current, uploadPurpose}
         },
         gallery: {
           class: GalleryBlock as unknown as ToolConstructable,
-          config: {getDefaultAlt: () => defaultAltRef.current}
+          config: {getDefaultAlt: () => defaultAltRef.current, uploadPurpose}
         },
         terminal: {
           class: TerminalBlock as unknown as ToolConstructable,

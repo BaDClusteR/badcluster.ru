@@ -34,6 +34,7 @@ export interface EntityFormComponents {
     onChange: (data: unknown) => void;
     className?: string;
     showSettings?: boolean;
+    uploadPurpose?: string;
   }>;
   FieldGroup: ComponentType<{
     children: ReactNode,

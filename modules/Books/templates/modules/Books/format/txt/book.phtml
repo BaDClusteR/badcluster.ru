@@ -1,0 +1,26 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\Format\Txt\Book $this */
+
+$book = $this->getBook();
+$chapters = $this->getChapters();
+
+if ($book->isTranslation()) {
+    echo "{$book->getAuthor()}.\n\n";
+}
+echo $book->getTitle();
+echo "\n\n\n{$this->getBookAnnotation()}";
+
+foreach ($chapters as $chapter) {
+    echo "\n\n\n {$chapter->getTitle()}\n\n";
+    echo $this->getChapterContent($chapter);
+}
+
+echo "\n\n\n{$this->getPostfix()}";
+
+if ($notes = $this->getNotes()) {
+    echo "\n\n\n Примечания\n\n";
+    foreach ($notes as $i => $note) {
+        echo '[' . ($i + 1) . "] — {$note['content']}\n";
+    }
+}

@@ -87,9 +87,9 @@ readonly class BookDataBuilder implements IBookDataBuilder {
             lastUpdateDate: $this->dateConverter->toPickerValue(
                 $book->getLastUpdateDate()
             ),
-            technicalInfo: $book->getTechnicalInfo(),
             group: $book->getGroup(),
             position: $book->getPosition(),
+            fb2Genre: $book->getFb2Genre(),
             formats: $formats
         );
     }
@@ -106,7 +106,8 @@ readonly class BookDataBuilder implements IBookDataBuilder {
             dateGenerated: $this->dateConverter->toFullForm(
                 $format->getDateGenerated(),
                 true
-            )
+            ),
+            postfix: $format->getPostfix()
         );
     }
 }

@@ -176,6 +176,8 @@ html {
 }
 
 body {
+  --post-max-image-width: 900px;
+
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-family), sans-serif;
@@ -630,8 +632,8 @@ picture,
   white-space: nowrap;
 }
 
-body {
-  --post-max-image-width: 900px;
+p kbd {
+  font-size: revert;
 }
 
 @media (width >= 768px) {

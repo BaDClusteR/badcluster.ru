@@ -36,12 +36,12 @@ use Runway\Model\Exception\ModelException;
  * @method self setType(string $type)
  * @method DateTime getLastUpdateDate()
  * @method self setLastUpdateDate(DateTime $lastUpdateDate)
- * @method array getTechnicalInfo()
- * @method self setTechnicalInfo(array $technicalInfo)
  * @method string|null getGroup()
  * @method self setGroup(string|null $group)
  * @method int getPosition()
  * @method self setPosition(int $position)
+ * @method string getFb2Genre()
+ * @method self setFb2Genre(string $fb2Genre)
  */
 #[DS\Table('books')]
 class Book extends AEntity {
@@ -83,13 +83,13 @@ class Book extends AEntity {
     protected DateTime $lastUpdateDate;
 
     #[DS\Column]
-    protected array $technicalInfo = [];
-
-    #[DS\Column]
     protected ?string $group = null;
 
     #[DS\Column]
     protected int $position = 0;
+
+    #[DS\Column]
+    protected string $fb2Genre = '';
 
     /**
      * @return BookFormat[]
@@ -106,12 +106,10 @@ class Book extends AEntity {
 
         foreach ($availableFormats as $format) {
             if (
-                !(
-                $foundFormat = array_find(
+                !($foundFormat = array_find(
                     $storedFormats,
                     static fn (BookFormat $bFormat): bool => $bFormat->getType() === $format->type
-                )
-                )
+                ))
             ) {
                 $foundFormat = new BookFormat();
                 $foundFormat->setType($format->type)
@@ -208,7 +206,33 @@ class Book extends AEntity {
      * @throws ModelException
      * @throws QueryBuilderException
      */
-    public function getChapters(): array {
-        return Chapter::find(['book' => $this], ['position', 'ASC']);
+    public function getChapters(bool $onlyPublished = false): array {
+        $conditions = ['book' => $this];
+        if ($onlyPublished) {
+            $conditions['published'] = true;
+        }
+
+        return Chapter::find($conditions, ['position', 'ASC']);
+    }
+
+    /**
+     * @throws DBException
+     * @throws ModelException
+     * @throws QueryBuilderException
+     */
+    public function generateFormats(): void {
+        if (count($this->getChapters(true)) === 0) {
+            foreach ($this->getFormats() as $format) {
+                $format->clearDump();
+            }
+        } else {
+            foreach ($this->getFormats() as $format) {
+                if ($format->getAllowed()) {
+                    $format->generateDump();
+                } else {
+                    $format->clearDump();
+                }
+            }
+        }
     }
 }

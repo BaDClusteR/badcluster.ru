@@ -14,6 +14,9 @@ services:
   BC\Modules\Books\Provider\BookFormat\IBookFormatProvider:
     class: BC\Modules\Books\Provider\BookFormat\BookFormatProvider
 
+  BC\Modules\Books\Core\Extractor\INotesExtractor:
+    class: BC\Modules\Books\Core\Extractor\NotesExtractor
+
   BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg: ~
 
   BC\Modules\Books\Controller\Books: ~

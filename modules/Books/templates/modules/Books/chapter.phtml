@@ -5,16 +5,18 @@ use BC\Widget\Blocks;
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 
 /** @var \BC\Modules\Books\Widget\Chapter $this */
-$refs = $this->getRefs();
 $nav = $this->getNavLinks();
-?><?=new Blocks($this->getChapter()->getContent())->render()?>
-<?php if ($refs) : ?>
+$content = new Blocks($this->getChapter()->getContent())->render();
+$extractedNotes = $this->extractNotes($content);
+$content = $extractedNotes->content;
+$notes = $extractedNotes->notes;
+?><?=$content?>
+<?php if ($notes) : ?>
     <section class="chapter__refs">
-        <?php $i = 1; ?>
-        <?php foreach ($refs as $anchor => $ref) : ?>
-            <p id="<?=$anchor?>">
-                <a href="#<?=$anchor?>_link">↑</a>
-                <sup><?=$i++?></sup> <?=$ref?>
+        <?php foreach ($notes as $i => $note) : ?>
+            <p id="<?=$note->id?>">
+                <a href="#<?=$note->id?>_link">↑</a>
+                <sup><?=($i + 1)?></sup> <?=$note->content?>
             </p>
         <?php endforeach; ?>
     </section>

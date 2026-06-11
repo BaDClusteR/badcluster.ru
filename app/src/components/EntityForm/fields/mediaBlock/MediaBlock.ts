@@ -32,11 +32,14 @@ export class MediaBlock implements BlockTool {
   private upload: UploadHandle | null = null;
   private imageId: Nullable<number> = null;
 
-  private config: { getDefaultAlt?: () => string };
+  private config: { getDefaultAlt?: () => string; uploadPurpose?: string };
 
   constructor({data, api, config}: { data: BlockToolData<MediaBlockData>; api: API; config?: Record<string, unknown> }) {
     this.api = api;
-    this.config = { getDefaultAlt: config?.getDefaultAlt as (() => string) | undefined };
+    this.config = {
+      getDefaultAlt: config?.getDefaultAlt as (() => string) | undefined,
+      uploadPurpose: config?.uploadPurpose as string | undefined,
+    };
     this.data = {
       media: data?.media,
       lazy: data?.lazy ?? true,
@@ -324,7 +327,7 @@ export class MediaBlock implements BlockTool {
 
     this.upload = uploadMedia(file, ({fraction}) => {
       progressBar.style.width = `${Math.round(fraction * 100)}%`;
-    });
+    }, this.config.uploadPurpose);
 
     this.upload.promise
       .then((media: MediaData) => {

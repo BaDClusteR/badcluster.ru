@@ -1,0 +1,100 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\Format\Fb2\Book $this */
+
+$book = $this->getBook();
+$websiteSettings = $this->getWebsiteSettings();
+$website = $websiteSettings->getWebRoot();
+$email = $websiteSettings->getAdminContacts()->email;
+$dateConverter = $this->getDateConverter();
+$ts = time();
+$chapters = $this->getChapters();
+?>
+<?='<?xml version="1.0" encoding="UTF-8"?>' . "\n"?>
+<FictionBook
+    xmlns:l="http://www.w3.org/1999/xlink"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns="http://www.gribuser.ru/xml/fictionbook/2.0"
+>
+    <description>
+        <title-info>
+            <?php if ($genre = $book->getFb2Genre()) : ?>
+                <genre><?=$genre?></genre>
+            <?php endif; ?>
+            <?php if ($book->isTranslation()) : ?>
+                <?php foreach ($this->getBookAuthors() as $author) : ?>
+                    <author>
+                        <?php if (!empty($author['firstname'])) : ?>
+                            <first-name><?=$author['firstname']?></first-name>
+                        <?php endif; ?>
+                        <?php if (!empty($author['lastname'])) : ?>
+                            <last-name><?=$author['lastname']?></last-name>
+                        <?php endif; ?>
+                    </author>
+                <?php endforeach; ?>
+            <?php else : ?>
+                <author>
+                    <nickname>BaD ClusteR</nickname>
+                    <homepage><?=$website?></homepage>
+                    <email><?=$email?></email>
+                </author>
+            <?php endif; ?>
+            <book-title><?=$book->getTitle()?></book-title>
+            <annotation><?=$this->getBookAnnotation()?></annotation>
+            <?php if ($cover = $book->getCover()) : ?>
+                <?php $coverId = $this->addImage($this->getImageThumbnailPath($cover)); ?>
+                <coverpage>
+                    <image l:href="#<?=$coverId?>"></image>
+                </coverpage>
+            <?php endif; ?>
+            <lang>ru</lang>
+            <?php if ($book->isTranslation()) : ?>
+                <src-lang>en</src-lang>
+                <translator>
+                    <nickname>BaD ClusteR</nickname>
+                    <homepage><?=$website?></homepage>
+                    <email><?=$email?></email>
+                </translator>
+            <?php else : ?>
+                <scr-lang>ru</scr-lang>
+            <?php endif; ?>
+        </title-info>
+        <document-info>
+            <author>
+                <nickname>BaD ClusteR</nickname>
+                <homepage><?=$website?></homepage>
+                <email><?=$email?></email>
+            </author>
+            <date
+                value="<?=$dateConverter->toIsoFormat($ts)?>"
+            >
+                <?=$dateConverter->toDateTime($ts)->format('Y-m-d')?>
+            </date>
+        </document-info>
+    </description>
+    <body>
+    <title><p><?=$book->getTitle()?></p></title>
+    <?php foreach ($chapters as $chapter) : ?>
+        <section>
+            <title><p><?=$chapter->getTitle()?></p></title>
+            <?=$this->getChapterContent($chapter)?>
+        </section>
+    <?php endforeach; ?>
+    <section>
+        <?=$this->getPostfix()?>
+    </section>
+    </body>
+    <?php if ($notes = $this->getNotes()) : ?>
+        <body name="notes">
+        <title><p>Примечания</p></title>
+        <?php foreach ($notes as $i => $note) : ?>
+            <section id="<?=$note['id']?>">
+                <p><?=$note['content']?></p>
+            </section>
+        <?php endforeach; ?>
+        </body>
+    <?php endif; ?>
+    <?php foreach ($this->getImages() as $image) : ?>
+        <binary id="<?=$image['id']?>" content-type="image/jpeg"><?=base64_encode($image['content'])?></binary>
+    <?php endforeach; ?>
+</FictionBook>

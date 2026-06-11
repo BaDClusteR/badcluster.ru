@@ -158,6 +158,7 @@ class Chapter extends AEndpoint {
                 $chapter->persist();
 
                 $book->bumpLastUpdateDate();
+                $book->generateFormats();
             }
         );
 
@@ -236,6 +237,7 @@ class Chapter extends AEndpoint {
                 $chapter->persist();
 
                 $book->bumpLastUpdateDate();
+                $book->generateFormats();
             }
         );
 

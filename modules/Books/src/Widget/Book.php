@@ -3,6 +3,7 @@
 namespace BC\Modules\Books\Widget;
 
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Core\Trait\AuthTrait;
 use BC\Core\Trait\DateConverterTrait;
 use BC\Core\Trait\FormatterTrait;
 use BC\Modules\Books\Model\Book as BookModel;
@@ -16,6 +17,7 @@ use Runway\Exception\Exception;
 class Book extends AWidget implements IAssetProvider {
     use DateConverterTrait;
     use FormatterTrait;
+    use AuthTrait;
 
     protected function getTemplatePath(): string {
         return 'modules/Books/book.phtml';
@@ -27,16 +29,6 @@ class Book extends AWidget implements IAssetProvider {
 
     protected function getPage(): APage {
         return $this->context['page'];
-    }
-
-    protected function getBookAnnotation(): string {
-        $rawAnnotation = str_replace(
-            "\n\n",
-            "\n",
-            $this->getBook()->getAnnotation()
-        );
-
-        return '<p>' . implode('</p><p>', explode("\n", $rawAnnotation)) . '</p>';
     }
 
     /**
@@ -60,11 +52,8 @@ class Book extends AWidget implements IAssetProvider {
      */
     protected function getBookChapters(): array {
         try {
-            $allChapters = array_values(
-                array_filter(
-                    $this->getBook()->getChapters(),
-                    static fn (Chapter $chapter): bool => $chapter->getPublished()
-                )
+            $allChapters = $this->getBook()->getChapters(
+                !$this->getAuth()->isAuthenticated()
             );
 
             $result = [

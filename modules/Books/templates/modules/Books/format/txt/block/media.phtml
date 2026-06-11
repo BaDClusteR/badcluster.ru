@@ -1,0 +1,9 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\Format\Txt\Block\Media $this */
+
+if ($this->isImage()) {
+    echo "\n  [Изображение: {$this->media->getWebPath()}]\n\n";
+} else {
+    echo "\n  [Видео: {$this->media->getWebPath()}]\n\n";
+}

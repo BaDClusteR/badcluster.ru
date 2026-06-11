@@ -36,8 +36,8 @@ use Throwable;
  * @method self setMime(string $mime)
  * @method string getAlt()
  * @method self setAlt(string $alt)
- * @method \BC\Model\Media|null getParent()
- * @method self setParent(\BC\Model\Media|null $parent)
+ * @method Media|null getParent()
+ * @method self setParent(Media|null $parent)
  * @method string getMd5()
  * @method self setMd5(string $md5)
  */
@@ -171,6 +171,10 @@ class Media extends AEntity {
 
     public function getWebPath(): string {
         return $this->getPathsProvider()->getImagesWebPath() . '/' . $this->getPath();
+    }
+
+    public function getLocalPath(): string {
+        return $this->getPathsProvider()->getImagesPath() . '/' . $this->getPath();
     }
 
     protected function getPathsProvider(): IPathsProvider {
