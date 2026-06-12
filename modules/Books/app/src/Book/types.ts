@@ -23,6 +23,7 @@ export interface BookContext {
 }
 
 export interface BookFormat {
+  id: number,
   type: string,
   allowed: boolean,
   filename: string,

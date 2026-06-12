@@ -1,7 +1,9 @@
-import type {ComponentType, ReactNode} from "react";
+import {ComponentType, ReactNode} from "react";
 import type {EntityFormProps} from "./entity-form";
 import type {ListProps, EntityRow, ListState} from "./list";
 import type {AppSettingsApi, BuildAdminUrlFn, CreateEntityFormDataProviderFn} from "./app-settings";
+import {StringKeyObject} from "./common";
+import * as React from "react";
 
 // --- Component types for AdminCore ---
 
@@ -49,6 +51,37 @@ export interface PictureProps {
 /** Picture component type. */
 export type PictureComponent = ComponentType<PictureProps>;
 
+/** Button component type. */
+export type ButtonComponent = ComponentType<{
+  children?: ReactNode;
+  leftSection?: ReactNode;
+  rightSection?: ReactNode;
+  className?: string;
+  classNames?: StringKeyObject;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  loading?: boolean;
+  fullWidth?: boolean;
+  disabled?: boolean;
+  variant?: "default" | "filled" | "subtle" | "outline" | "light" | "gradient" | "transparent" | "white";
+  color?: string;
+  type?: "button" | "submit" | "reset";
+}>;
+
+/** Checkbox component type. */
+export type CheckboxComponent = ComponentType<{
+  checked: boolean;
+  onChange: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void;
+}>;
+
+/** Modal component type. */
+export type ModalComponent = ComponentType<{
+  opened: boolean;
+  onClose: () => void;
+  withCloseButton?: boolean;
+  title?: ReactNode;
+  children?: ReactNode;
+}>;
+
 /** All core components/utilities available to remote modules via useAdminCore(). */
 export interface AdminCore {
   EntityForm: EntityFormComponent,
@@ -56,6 +89,9 @@ export interface AdminCore {
   convertListStateToQueryParameters: ConvertListStateFn,
   BadgeGray: BadgeComponent,
   BadgeGreen: BadgeComponent,
+  Button: ButtonComponent,
+  Checkbox: CheckboxComponent,
+  Modal: ModalComponent,
   apiCall: ApiCallFn,
   notify: NotifyApi,
   appSettings: AppSettingsApi,

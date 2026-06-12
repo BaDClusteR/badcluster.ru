@@ -2,6 +2,53 @@
   display: flex;
   flex-direction: column;
   gap: var(--rhythmic-unit);
+
+  table th {
+    width: 250px;
+    text-align: right;
+    padding-right: var(--rhythmic-unit);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: calc(.5 * var(--rhythmic-unit));
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  padding: 0;
+  height: auto;
+  background: transparent;
+
+  &[disabled] {
+    opacity: .3;
+  }
+
+  span {
+    width: calc(1.25 * var(--rhythmic-unit));
+    color: var(--color-link);
+  }
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    &[disabled],
+    &:not([disabled]) {
+      background: transparent;
+    }
+
+    span {
+      color: var(--color-link-hover);
+      background: transparent;
+    }
+  }
+}
+
+.actionLoader {
+  --button-height: 28px;
+  --button-color: var(--color-link);
 }
 
 .header {
@@ -37,4 +84,13 @@
 
 .formatInput {
   cursor: pointer;
+}
+
+.formatDownload {
+  display: flex;
+
+  svg {
+    width: calc(1.25 * var(--rhythmic-unit));
+    height: auto;
+  }
 }

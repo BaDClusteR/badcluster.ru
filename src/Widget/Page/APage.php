@@ -101,6 +101,7 @@ abstract class APage extends AWidget implements IAssetProvider {
             new AssetDTO('core', 'css/core/reset.css', -100),
             new AssetDTO('core', 'css/core/font.css', -50),
             new AssetDTO('core', 'css/core/style.css', 0),
+            new AssetDTO('core', 'css/core/tooltip.css', 100),
 
             new AssetDTO('footer', 'css/footer.css'),
         ];

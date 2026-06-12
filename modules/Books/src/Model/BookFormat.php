@@ -81,6 +81,7 @@ class BookFormat extends AEntity {
             $dump = $renderer->generateBook($this->getBook());
             $this->setDump($dump)
                  ->setSize(strlen($dump))
+                 ->setDateGenerated(new DateTime('now'))
                  ->persist();
         } else {
             $this->clearDump();
@@ -95,6 +96,7 @@ class BookFormat extends AEntity {
     public function clearDump(): void {
         $this->setDump('')
              ->setSize(0)
+             ->setDateGenerated(new DateTime('now'))
              ->persist();
     }
 }

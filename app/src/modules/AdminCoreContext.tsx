@@ -18,6 +18,9 @@ import * as appSettings from "@/providers/AppSettingsProvider";
 import {buildAdminUrl} from "@/utils/buildAdminUrl";
 import {createEntityFormDataProvider} from "@/utils/createDataProvider";
 import Picture from "@/components/primitives/Picture";
+import Button from "@/components/primitives/Button";
+import Checkbox from "@/components/primitives/Checkbox";
+import Modal from "@/components/primitives/Modal";
 
 /** All core components/utilities available to remote modules. */
 export interface AdminCore {
@@ -52,7 +55,10 @@ const coreValue: AdminCore = {
   appSettings,
   buildAdminUrl,
   createEntityFormDataProvider,
-  Picture
+  Picture,
+  Button,
+  Checkbox,
+  Modal,
 };
 
 export function AdminCoreProvider({children}: { children: ReactNode }) {

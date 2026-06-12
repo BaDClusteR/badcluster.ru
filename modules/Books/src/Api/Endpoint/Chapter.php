@@ -102,11 +102,11 @@ class Chapter extends AEndpoint {
         int $bookId,
         #[API\Parameter(source: 'body', name: 'content')]
         array $content,
-        #[API\Parameter(source: 'body', name: 'published')]
-        bool $published,
         #[API\Parameter(source: 'body', name: 'slug')]
         #[API\Assert\NotEmpty]
         string $slug,
+        #[API\Parameter(source: 'body', name: 'published')]
+        bool $published = false,
         #[API\Parameter(source: 'body', name: 'part')]
         string $part = '',
         #[API\Parameter(source: 'body', name: 'position')]
@@ -180,11 +180,11 @@ class Chapter extends AEndpoint {
         string $title,
         #[API\Parameter(source: 'body', name: 'content')]
         array $content,
-        #[API\Parameter(source: 'body', name: 'published')]
-        bool $published,
         #[API\Parameter(source: 'body', name: 'slug')]
         #[API\Assert\NotEmpty]
         string $slug,
+        #[API\Parameter(source: 'body', name: 'published')]
+        bool $published = false,
         #[API\Parameter(source: 'body', name: 'part')]
         string $part = '',
         #[API\Parameter(source: 'body', name: 'position')]

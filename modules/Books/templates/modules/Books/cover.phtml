@@ -6,8 +6,9 @@
 use BC\Widget\Common\Picture;
 
 $book = $this->getBook();
+$coverBg = $book->getCoverBg();
 ?><span class="material__icon">
-    <?php if ($cover = $book->getCover()): ?>
+    <?php if (!$coverBg && ($cover = $book->getCover())): ?>
         <span class="book__cover">
             <?=new Picture([
                 'image'        => $cover,
@@ -23,7 +24,7 @@ $book = $this->getBook();
         </span>
     <?php else : ?>
         <span class="book__cover book__cover--css" aria-hidden="true">
-            <?php if ($coverBg = $book->getCoverBg()): ?>
+            <?php if ($coverBg): ?>
                 <?=new Picture([
                     'image'        => $coverBg,
                     'pictureClass' => 'book__cover-bg',

@@ -13,10 +13,12 @@ use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
+use BC\Core\Formatter\IFormatter;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Modules\Books\Api\DataBuilder\Book\IBookDataBuilder;
 use BC\Modules\Books\Api\DTO\Book\BookDTO;
+use BC\Modules\Books\Api\DTO\Book\BookFormatGenerateDTO;
 use BC\Modules\Books\Api\DTO\Book\BookFormatsDTO;
 use BC\Modules\Books\Api\DTO\Book\BookRowDTO;
 use BC\Modules\Books\Core\DTO\BookFormatDTO;
@@ -30,7 +32,8 @@ class Book extends AEndpoint {
     public function __construct(
         private readonly IBookDataBuilder $dataBuilder,
         private readonly IBookFormatProvider $formatProvider,
-        private readonly IDateConverter $dateConverter
+        private readonly IDateConverter $dateConverter,
+        private readonly IFormatter $formatter
     ) {
     }
 
@@ -317,6 +320,60 @@ class Book extends AEndpoint {
 
         $this->handleWithException(
             static fn () => $book->generateFormats()
+        );
+
+        return new SuccessfulResultDTO();
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    #[API\Endpoint(path: 'book_format_generate', method: 'GET')]
+    public function generate(
+        #[API\Parameter(source: 'query')]
+        int $formatId
+    ): BookFormatGenerateDTO {
+        /** @var BookFormat|null $format */
+        $format = $this->handleWithException(
+            static fn () => BookFormat::findByUniqueIdentifier($formatId)
+        );
+
+        if (!$format) {
+            throw new NotFoundException("Не могу найти формат #$formatId");
+        }
+
+        $this->handleWithException(
+            static fn () => $format->generateDump()
+        );
+
+        $newSize = $format->getSize();
+
+        return new BookFormatGenerateDTO(
+            date: $this->dateConverter->toFullForm($format->getDateGenerated(), true),
+            size: $newSize,
+            sizeHumanReadable: $this->formatter->formatAsHumanReadableSize($newSize)
+        );
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    #[API\Endpoint(path: 'book_format_clear', method: 'GET')]
+    public function clearDump(
+        #[API\Parameter(source: 'query')]
+        int $formatId
+    ): SuccessfulResultDTO {
+        /** @var BookFormat|null $format */
+        $format = $this->handleWithException(
+            static fn () => BookFormat::findByUniqueIdentifier($formatId)
+        );
+
+        if (!$format) {
+            throw new NotFoundException("Не могу найти формат #$formatId");
+        }
+
+        $this->handleWithException(
+            static fn () => $format->clearDump()
         );
 
         return new SuccessfulResultDTO();

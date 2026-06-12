@@ -30,7 +30,7 @@ $chapterGroups = $this->getBookChapters();
                 </span>
                 <span class="book__participant-names">
                     <span class="book__participant-name">
-                        <?=implode('</span><span class="book__participant-name">', $authors)?>
+                        <?=implode('</span>, <span class="book__participant-name">', $authors)?>
                     </span>
                 </span>
             </div>
@@ -55,7 +55,7 @@ $chapterGroups = $this->getBookChapters();
         <div class="file__actions">
             <?php foreach ($formats as $format) : ?>
                 <a href="<?=$format->getUrl()?>" class="btn btn--secondary btn--big file__action">
-                    <?=$this->getSvgContent("modules/Books/format/{$format->getType()}.svg")?>
+                    <?=$this->getSvgContent("images/modules/Books/formats/{$format->getType()}.svg")?>
                     <div class="file__info">
                         <span class="file__ext"><?=strtoupper($format->getType())?></span>
                         <span class="file__size"><?=$formatter->formatAsHumanReadableSize($format->getSize())?></span>

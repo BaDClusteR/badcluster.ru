@@ -98,6 +98,7 @@ readonly class BookDataBuilder implements IBookDataBuilder {
         $size = $format->getSize();
 
         return new BookFormatDTO(
+            id: $format->getId(),
             type: $format->getType(),
             allowed: $format->getAllowed(),
             filename: $format->getFilename(),

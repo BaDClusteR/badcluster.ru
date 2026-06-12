@@ -24,14 +24,18 @@ class Paragraph extends AWidget {
             $content
         );
 
-        $content = trim(strip_tags($content, ['sup']));
+        $content = strip_tags($content, ['sup']);
 
-        $content = str_replace(
-            '&nbsp;',
-            ' ',
-            $content
+        $content = trim(
+            str_replace(
+                '&nbsp;',
+                ' ',
+                $content
+            )
         );
 
-        return "  $content";
+        return $content
+            ? "  $content"
+            : '';
     }
 }

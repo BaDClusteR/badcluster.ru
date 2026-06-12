@@ -2,6 +2,7 @@ import {Button as MantineButton} from "@mantine/core";
 import classes from "./Button.module.css";
 import React from "react";
 import clsx from "clsx";
+import {StringKeyObject} from "@admin/types";
 
 export default function Button(
   {
@@ -9,6 +10,7 @@ export default function Button(
     children,
     rightSection,
     className,
+    classNames,
     onClick,
     loading,
     fullWidth,
@@ -22,6 +24,7 @@ export default function Button(
     rightSection?: React.ReactNode,
     children?: React.ReactNode,
     className?: string,
+    classNames?: StringKeyObject,
     onClick?: React.MouseEventHandler<HTMLButtonElement>,
     loading?: boolean,
     fullWidth?: boolean,
@@ -38,6 +41,7 @@ export default function Button(
     leftSection={leftSection}
     rightSection={rightSection}
     className={clsx(classes.button, color && classes[`color${color}`], variant && classes[`variant${variant}`], className)}
+    classNames={classNames}
     onClick={onClick}
     loading={loading}
     fullWidth={fullWidth}
@@ -46,5 +50,5 @@ export default function Button(
     {...props}
   >
     {children}
-  </MantineButton>
+  </MantineButton>;
 }
