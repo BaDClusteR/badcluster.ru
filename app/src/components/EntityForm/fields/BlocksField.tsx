@@ -16,7 +16,7 @@ import {SupInlineTool} from "./inlineTools/SupInlineTool";
 import {ParagraphBlock} from "./paragraph/ParagraphBlock";
 import classes from "./BlocksField.module.css";
 import "./editorjs.css";
-import {Optional} from "@admin/types";
+import {Optional, ParagraphClassRule} from "@admin/types";
 import clsx from "clsx";
 
 interface BlocksFieldProps {
@@ -29,6 +29,8 @@ interface BlocksFieldProps {
   showSettings?: boolean,
   /** Upload purpose for images (e.g. 'content'). Passed to MediaBlock/GalleryBlock. */
   uploadPurpose?: string,
+  /** Rules for auto-applying CSS classes to paragraphs based on text content. */
+  paragraphClassRules?: ParagraphClassRule[],
 }
 
 /**
@@ -49,7 +51,8 @@ export function BlocksField(
     onChange,
     className,
     showSettings,
-    uploadPurpose
+    uploadPurpose,
+    paragraphClassRules
   }: BlocksFieldProps
 ) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -108,7 +111,8 @@ export function BlocksField(
           inlineToolbar: true,
           config: {
             placeholder: placeholder || undefined,
-          },
+            classRules: paragraphClassRules
+          }
         },
         header: {
           class: HeadingBlock as unknown as ToolConstructable,

@@ -46,6 +46,9 @@ export default function ChapterEditor(
           onChange={(data) => {
             form.setFieldValue("content", data as never);
           }}
+          paragraphClassRules={[
+            {pattern: /^[\u2014\u2013\-]\s/, className: "speech"}
+          ]}
         />
       </Skeleton>
     </FieldGroup>

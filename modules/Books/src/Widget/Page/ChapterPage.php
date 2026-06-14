@@ -15,7 +15,7 @@ class ChapterPage extends APageWithBlocks {
     protected Chapter $chapter;
 
     public function getHeader(): string {
-        return $this->chapter->getPublicTitle();
+        return '';
     }
 
     public function getMetaTitle(): string {

@@ -11,6 +11,19 @@
   margin: 0;
 }
 
+.comment__part {
+  font-size: var(--font-size-smaller);
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+  white-space: nowrap;
+  font-family: var(--font-family-mono), monospace;
+
+  &::before {
+    content: '•';
+    padding-right: calc(.5 * var(--rhythmic-unit));
+  }
+}
+
 .comments__empty {
   margin: var(--rhythmic-unit) 0 0 0;
   color: var(--color-text-secondary);
@@ -172,7 +185,7 @@
   min-height: 130px;
 }
 
-[data-theme="dark"] .comment__field {
+[data-theme='dark'] .comment__field {
   --field-bg: color-mix(in sRGB, var(--color-contrast), var(--color-bg) 97%);
 
   &:focus {

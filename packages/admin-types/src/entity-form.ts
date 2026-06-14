@@ -35,6 +35,8 @@ export interface EntityFormComponents {
     className?: string;
     showSettings?: boolean;
     uploadPurpose?: string;
+    /** Rules for auto-applying CSS classes to paragraphs based on text content. */
+    paragraphClassRules?: ParagraphClassRule[];
   }>;
   FieldGroup: ComponentType<{
     children: ReactNode,
@@ -222,4 +224,9 @@ export interface File {
   sizeHumanReadable: string,
   mime: string,
   url: string
+}
+
+export interface ParagraphClassRule {
+  pattern: RegExp;
+  className: string;
 }

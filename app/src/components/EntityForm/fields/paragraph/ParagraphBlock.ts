@@ -2,6 +2,7 @@
 
 import type {API, BlockTool, BlockToolData, ToolboxConfig} from "@editorjs/editorjs";
 import classes from "./ParagraphBlock.module.css";
+import {ParagraphClassRule} from "@admin/types";
 
 const ICON_ALIGN_LEFT = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 10H3"/><path d="M21 6H3"/><path d="M21 14H3"/><path d="M17 18H3"/></svg>`;
 const ICON_ALIGN_CENTER = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 10H7"/><path d="M21 6H3"/><path d="M21 14H3"/><path d="M17 18H7"/></svg>`;
@@ -62,18 +63,19 @@ export class ParagraphBlock implements BlockTool {
     };
   }
 
-  private api: API;
   private data: ParagraphBlockData;
   private element!: HTMLParagraphElement;
-  private config: { placeholder?: string };
+  private config: { placeholder?: string; classRules?: ParagraphClassRule[] };
 
-  constructor({data, api, config}: {
+  constructor({data, config}: {
     data: BlockToolData<ParagraphBlockData>;
     api: API;
     config?: Record<string, unknown>
   }) {
-    this.api = api;
-    this.config = {placeholder: config?.placeholder as string | undefined};
+    this.config = {
+      placeholder: config?.placeholder as string | undefined,
+      classRules: config?.classRules as ParagraphClassRule[] | undefined
+    };
     this.data = {
       text: data?.text ?? "",
       alignment: data?.alignment ?? "left"
@@ -90,6 +92,8 @@ export class ParagraphBlock implements BlockTool {
       this.element.dataset.placeholder = this.config.placeholder;
     }
     this.applyAlignment();
+    this.applyClassRules();
+    this.element.addEventListener("input", () => this.applyClassRules());
     return this.element;
   }
 
@@ -100,7 +104,7 @@ export class ParagraphBlock implements BlockTool {
     };
   }
 
-  validate(data: ParagraphBlockData): boolean {
+  validate(): boolean {
     // Allow empty paragraphs
     return true;
   }
@@ -145,6 +149,15 @@ export class ParagraphBlock implements BlockTool {
     if (this.element) {
       this.element.innerHTML = this.data.text;
       this.applyAlignment();
+      this.applyClassRules();
+    }
+  }
+
+  private applyClassRules() {
+    if (!this.config.classRules?.length) return;
+    const text = this.element.textContent ?? "";
+    for (const rule of this.config.classRules) {
+      this.element.classList.toggle(rule.className, rule.pattern.test(text));
     }
   }
 

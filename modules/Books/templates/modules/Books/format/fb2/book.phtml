@@ -75,6 +75,11 @@ $chapters = $this->getChapters();
     <body>
     <title><p><?=$book->getTitle()?></p></title>
     <?php foreach ($chapters as $chapter) : ?>
+        <?php if ($part = $chapter->getPart()) : ?>
+            <section>
+                <title><p><?=$part?></p></title>
+            </section>
+        <?php endif; ?>
         <section>
             <title><p><?=$chapter->getTitle()?></p></title>
             <?=$this->getChapterContent($chapter)?>

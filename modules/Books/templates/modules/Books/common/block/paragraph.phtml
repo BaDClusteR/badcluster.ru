@@ -1,0 +1,18 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\Common\Block\Paragraph $this */
+$content = $this->getContent();
+$align = $this->getAlignment();
+$classes = [];
+if ($this->isDirectSpeech($content)) {
+    $classes[] = 'speech';
+}
+
+if ($align = $this->getAlignment()) {
+    $classes[] = "align-$align";
+}
+?><?php if ($content) : ?>
+    <p<?php if ($classes) : ?> class="<?=implode(' ', $classes)?>"<?php endif; ?>><?=$content?></p>
+<?php else : ?>
+    <p class="empty" aria-hidden="true">&nbsp;</p>
+<?php endif; ?>

@@ -198,8 +198,6 @@ body {
   border: 0;
   padding: 0;
   clip-path: inset(100%);
-
-  /* clip: rect(0 0 0 0); */
   overflow: hidden;
 }
 
@@ -634,6 +632,14 @@ picture,
 
 p kbd {
   font-size: revert;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.align-right {
+  text-align: right;
 }
 
 @media (width >= 768px) {

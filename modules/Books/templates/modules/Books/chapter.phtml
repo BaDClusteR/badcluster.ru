@@ -6,11 +6,19 @@ use BC\Modules\Books\Widget\Blocks;
 
 /** @var \BC\Modules\Books\Widget\Chapter $this */
 $nav = $this->getNavLinks();
-$content = new Blocks($this->getChapter()->getContent())->render();
+$chapter = $this->getChapter();
+$content = new Blocks($chapter->getContent())->render();
 $extractedNotes = $this->extractNotes($content);
 $content = $extractedNotes->content;
 $notes = $extractedNotes->notes;
-?><?=$content?>
+?>
+<hgroup class="chapter__hgroup">
+    <?php if ($part = $chapter->getPart()) : ?>
+        <p class="chapter__part"><?=$part?></p>
+    <?php endif; ?>
+    <h1><?=$chapter->getPublicTitle()?></h1>
+</hgroup>
+<?=$content?>
 <?php if ($notes) : ?>
     <section class="chapter__refs">
         <?php foreach ($notes as $i => $note) : ?>

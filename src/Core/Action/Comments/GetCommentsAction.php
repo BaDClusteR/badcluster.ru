@@ -54,7 +54,7 @@ class GetCommentsAction implements IGetCommentsAction {
             $qb->expr()->isNull('parent_id')
         )->andWhere(
             $qb->expr()->in('status', $statuses)
-        )->orderBy('date', 'ASC');
+        )->orderBy('date', 'DESC');
 
         if ($request->pageType) {
             $qb->andWhere('page_type = :pageType')
@@ -98,7 +98,8 @@ class GetCommentsAction implements IGetCommentsAction {
                         static fn (Comment $comment): bool => in_array($comment->getStatus(), $allowedStatuses, true)
                     )
                 )
-            )
+            ),
+            part: $comment->getPart()
         );
     }
 }

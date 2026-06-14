@@ -19,7 +19,8 @@ readonly class CommentDTO {
         public string $ip,
         public bool $isApproved,
         public bool $isDeclined,
-        public array $children
+        public array $children,
+        public string $part
     ) {
     }
 }

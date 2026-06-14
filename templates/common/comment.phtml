@@ -6,11 +6,12 @@ $comment = $this->getComment();
 $level = $this->getLevel();
 $children = $comment?->children;
 $isPending = !$comment->isDeclined && !$comment->isApproved;
-?><article class="<?=$this->getCssClass()?>">
+?>
+<article class="<?=$this->getCssClass()?>">
     <section class="comment__meta">
-        <?php if ($comment->name) :?>
+        <?php if ($comment->name) : ?>
             <span class="comment__author"><?=$comment->name?></span>
-        <?php else :?>
+        <?php else : ?>
             <span class="comment__author comment__author--anonymous">[ДАННЫЕ УДАЛЕНЫ]</span>
         <?php endif; ?>
         <time
@@ -20,35 +21,38 @@ $isPending = !$comment->isDeclined && !$comment->isApproved;
         >
             <?=$this->getCommentDateRelative()?>
         </time>
+        <?php if ($comment->part) : ?>
+            <span class="comment__part">[<?=$comment->part?>]</span>
+        <?php endif; ?>
 
-        <?php if ($comment->isDeclined) :?>
+        <?php if ($comment->isDeclined) : ?>
             <span class="comment__status-badge">Отклонен</span>
-        <?php elseif ($isPending) :?>
+        <?php elseif ($isPending) : ?>
             <span class="comment__status-badge">На модерации</span>
         <?php endif; ?>
 
-        <?php if ($this->isAuthenticated()) :?>
-          <div class="comment__menu" data-comment-id="<?=$comment->id?>">
-              <button class="comment__menu-button comment__menu-button--reply">
-                  <span class="visually-hidden">Ответить</span>
-              </button>
-              <span class="comment__menu-separator" aria-hidden="true"></span>
-              <?php if ($isPending) :?>
-                  <button class="comment__menu-button comment__menu-button--approve">
-                      <span class="visually-hidden">Подтвердить</span>
-                  </button>
-                  <button class="comment__menu-button comment__menu-button--reject">
-                      <span class="visually-hidden">Отклонить</span>
-                  </button>
-                  <span class="comment__menu-separator" aria-hidden="true"></span>
-              <?php endif; ?>
-              <a href="/admin/comments/<?=$comment->id?>" class="comment__menu-button comment__menu-button--edit">
-                  <span class="visually-hidden">Редактировать</span>
-              </a>
-              <button class="comment__menu-button comment__menu-button--delete">
-                  <span class="visually-hidden">Удалить</span>
-              </button>
-          </div>
+        <?php if ($this->isAuthenticated()) : ?>
+            <div class="comment__menu" data-comment-id="<?=$comment->id?>">
+                <button class="comment__menu-button comment__menu-button--reply">
+                    <span class="visually-hidden">Ответить</span>
+                </button>
+                <span class="comment__menu-separator" aria-hidden="true"></span>
+                <?php if ($isPending) : ?>
+                    <button class="comment__menu-button comment__menu-button--approve">
+                        <span class="visually-hidden">Подтвердить</span>
+                    </button>
+                    <button class="comment__menu-button comment__menu-button--reject">
+                        <span class="visually-hidden">Отклонить</span>
+                    </button>
+                    <span class="comment__menu-separator" aria-hidden="true"></span>
+                <?php endif; ?>
+                <a href="/admin/comments/<?=$comment->id?>" class="comment__menu-button comment__menu-button--edit">
+                    <span class="visually-hidden">Редактировать</span>
+                </a>
+                <button class="comment__menu-button comment__menu-button--delete">
+                    <span class="visually-hidden">Удалить</span>
+                </button>
+            </div>
         <?php endif; ?>
     </section>
     <section class="comment__text"><?=$this->prepareCommentText($comment->comment)?></section>
@@ -57,7 +61,7 @@ $isPending = !$comment->isDeclined && !$comment->isApproved;
     <?php foreach ($children as $child) : ?>
         <?=new \BC\Widget\Common\Comment([
             'comment' => $child,
-            'level' => $level + 1
+            'level'   => $level + 1
         ])->render()?>
     <?php endforeach; ?>
 <?php endif; ?>

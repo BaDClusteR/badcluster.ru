@@ -39,10 +39,8 @@ $coverBg = $book->getCoverBg();
             <?php endif; ?>
             <span class="book__title"><?=$book->getTitle()?></span>
             <span class="book__authors">
-                <?php foreach ($book->getAuthors() as $i => $author): ?>
-                    <?php if ($i > 0) : ?>, <?php endif; ?>
-                    <span class="book__author"><?=$author?></span>
-                <?php endforeach; ?>
+                <?php foreach ($book->getAuthors() as $i => $author): ?><?php if ($i > 0) : ?>, <?php endif; ?><span
+                    class="book__author"><?=$author?></span><?php endforeach; ?>
             </span>
             <?php if ($book->isTranslation()) : ?>
                 <span class="book__translator">Перевел BaD ClusteR</span>

@@ -12,6 +12,10 @@ echo $book->getTitle();
 echo "\n\n\n{$this->getBookAnnotation()}";
 
 foreach ($chapters as $chapter) {
+    if ($part = $chapter->getPart()) {
+        echo "\n\n\n $part\n";
+    }
+
     echo "\n\n\n {$chapter->getTitle()}\n\n";
     echo $this->getChapterContent($chapter);
 }

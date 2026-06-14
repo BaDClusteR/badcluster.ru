@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Modules\Books\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Core\Trait\AuthTrait;
 use BC\DTO\CommentsConfigDTO;
 use BC\Modules\Books\Model\Book;
 use BC\Modules\Books\Widget\Book as BookWidget;
@@ -14,6 +15,8 @@ use BC\Widget\Page\APage;
 use BC\Widget\Page\IPageWithComments;
 
 class BookPage extends APage implements IPageWithComments {
+    use AuthTrait;
+
     protected Book $book;
 
     public function getHeader(): string {
@@ -76,6 +79,19 @@ class BookPage extends APage implements IPageWithComments {
         $list[] = 'file';
         $list[] = 'book';
         $list[] = 'book-cover';
+
+        return $list;
+    }
+
+    public function getJsBundles(): array {
+        $list = parent::getJsBundles();
+
+        $list[] = 'comments';
+        $list[] = 'toast';
+
+        if ($this->getAuth()->isAuthenticated()) {
+            $list[] = 'comments-admin';
+        }
 
         return $list;
     }

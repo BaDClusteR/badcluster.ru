@@ -2,8 +2,9 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Block\Paragraph $this */
 $content = $this->getContent();
+$align = $this->getAlignment();
 ?><?php if ($content) : ?>
-    <p><?=$content?></p>
+    <p<?php if ($align) : ?> class="align-<?=$align?>"<?php endif; ?>><?=$content?></p>
 <?php else : ?>
     <p class="empty" aria-hidden="true">&nbsp;</p>
 <?php endif; ?>

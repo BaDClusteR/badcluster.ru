@@ -21,17 +21,21 @@
       padding-block: calc(.25 * var(--rhythmic-unit));
     }
 
-    :global(> .ce-block:has(.ce-paragraph[data-empty='true']) + .ce-block .ce-paragraph) {
+    :global(> .ce-block:has(.ce-paragraph[data-empty='true']) + .ce-block .ce-paragraph:not(.speech)) {
       text-indent: 0;
     }
 
-    :global(> .ce-block:first-child .ce-paragraph) {
+    :global(> .ce-block:first-child .ce-paragraph:not(.speech)) {
       text-indent: 0;
     }
   }
 }
 
 .chapterTitle {
-  font-family: var(--font-family-serif), sans-serif;
-  margin-bottom: calc(1.5 * var(--rhythmic-unit));
+  font-family: var(--font-family-serif), serif;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin: 0 0 calc(2 * var(--rhythmic-unit));
+  line-height: 1;
 }

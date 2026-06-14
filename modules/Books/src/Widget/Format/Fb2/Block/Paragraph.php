@@ -17,6 +17,14 @@ class Paragraph extends AWidget {
         );
     }
 
+    protected function getAlignment(): string {
+        $align = (string) ($this->context['alignment'] ?? '');
+
+        return (in_array($align, ['center', 'right'], true))
+            ? $align
+            : '';
+    }
+
     /** @noinspection CascadeStringReplacementInspection */
     private function prepareContent(string $content): string {
         $content = str_replace(

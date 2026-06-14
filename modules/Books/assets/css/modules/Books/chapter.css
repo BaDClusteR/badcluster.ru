@@ -11,7 +11,7 @@
     }
   }
 
-  h1 + p,
+  hgroup + p:not(.speech),
   .empty + p:not(.speech),
   p:has(> br:only-child) + p:not(.speech),
   figure + p:not(.speech) {
@@ -103,9 +103,10 @@
 }
 
 .note {
+  anchor-scope: --tooltip;
+
   &:hover,
   &:focus-visible,
-  &:focus-within,
   &:active {
     .tooltip {
       opacity: 1;
@@ -119,6 +120,41 @@
   white-space: normal;
   text-indent: 0;
   max-width: min(400px, calc(100% - 2 * var(--gutter-size)));
+}
+
+.content-container.text-block .chapter__hgroup {
+  margin-block-start: var(--rhythmic-unit);
+
+  h1 {
+    text-align: center;
+    font-weight: 300;
+    font-size: 2.5rem;
+    font-family: var(--font-family-serif), serif;
+    line-height: 1;
+    margin: 0 0 calc(2 * var(--rhythmic-unit));
+  }
+}
+
+.chapter__part {
+  text-align: center;
+  font-family: var(--font-family-mono), monospace;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-text-secondary);
+  margin: 0 0 calc(2 * var(--rhythmic-unit));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before,
+  &::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--color-border);
+    margin: 0 var(--rhythmic-unit);
+  }
 }
 
 :dir(rtl) {

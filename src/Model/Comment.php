@@ -17,8 +17,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setId(int $id)
  * @method int|null getParentId()
  * @method self setParentId(int|null $parentId)
- * @method \DateTime getDate()
- * @method self setDate(\DateTime $date)
+ * @method DateTime getDate()
+ * @method self setDate(DateTime $date)
  * @method string getName()
  * @method self setName(string $name)
  * @method string|null getEmail()
@@ -33,6 +33,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setPageId(int $pageId)
  * @method string getStatus()
  * @method self setStatus(string $status)
+ * @method string getPart()
+ * @method self setPart(string $part)
  */
 #[DS\Table('comments')]
 class Comment extends AEntity {
@@ -70,6 +72,9 @@ class Comment extends AEntity {
     #[DS\Column]
     protected string $status = self::STATUS_ON_MODERATION;
 
+    #[DS\Column]
+    protected string $part = '';
+
     /**
      * @throws ModelException
      * @throws DBException
@@ -90,6 +95,7 @@ class Comment extends AEntity {
     public function getChildren(): array {
         return self::getQueryBuilder()->where('parent_id = :id')
                    ->setVariable('id', $this->id)
+                   ->orderBy('date', 'ASC')
                    ->getEntities();
     }
 
