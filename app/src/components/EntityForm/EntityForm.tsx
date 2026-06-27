@@ -408,6 +408,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
             uploadEndpoint={field.uploadEndpoint}
             uploadFields={field.uploadFields}
             accept={field.accept}
+            subtitle={field.subtitle as any}
           />
         );
       case "json":

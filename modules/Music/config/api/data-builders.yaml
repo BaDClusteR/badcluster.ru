@@ -1,0 +1,6 @@
+services:
+  BC\Modules\Music\Api\DataBuilder\Album\IAlbumDataBuilder:
+    class: BC\Modules\Music\Api\DataBuilder\Album\AlbumDataBuilder
+
+  BC\Modules\Music\Api\DataBuilder\Track\ITrackDataBuilder:
+    class: BC\Modules\Music\Api\DataBuilder\Track\TrackDataBuilder

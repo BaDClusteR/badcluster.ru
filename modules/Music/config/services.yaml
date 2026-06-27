@@ -1,0 +1,12 @@
+services:
+  BC\Modules\Music\Provider\Admin\AppSettingsProvider:
+    decorates: BC\Provider\Admin\IAppSettingsProvider
+
+  BC\Modules\Music\Provider\Admin\PageProvider:
+    decorates: BC\Provider\Admin\IPageProvider
+
+  BC\Modules\Music\Provider\CommentsProvider:
+    decorates: BC\Provider\ICommentsProvider
+
+  BC\Modules\Music\Provider\MenuItemsProvider:
+    decorates: BC\Provider\IMenuItemsProvider

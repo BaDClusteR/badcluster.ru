@@ -129,6 +129,8 @@ export interface FieldDefFile<T> extends FieldDefBase<T>, FieldDefNamed<T> {
   uploadFields?: Record<string, string>;
   /** Accepted file types (e.g. ".zip,.pdf"). */
   accept?: string;
+  /** Custom function to render subtitle (shown after size). By default shows mime type. */
+  subtitle?: (file: Record<string, any>) => string;
 }
 
 export interface FieldDefJson<T> extends FieldDefBase<T>, FieldDefNamed<T> {

@@ -231,6 +231,14 @@
   grid-column: 2;
 }
 
+.release__track-annotation {
+  grid-column: 1 / -1;
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin-block-start: calc(.5 * var(--rhythmic-unit));
+  order: 3;
+}
+
 .release__track-badge {
   display: inline-flex;
   align-items: center;
@@ -472,6 +480,10 @@
   .release__track-time {
     font-size: var(--font-size-smaller);
   }
+
+  .release__track-annotation {
+    grid-column: 2 / -1;
+  }
 }
 
 @media (width <= 499px) {
@@ -497,7 +509,8 @@
 
 @media (width >= 550px) {
   .release__track-controls,
-  .release__track-panel {
+  .release__track-panel,
+  .release__track-annotation {
     padding-inline-start: 55px;
   }
 }

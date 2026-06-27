@@ -21,7 +21,8 @@
       "BC\\": "src/",
       "BC\\Modules\\Blog\\": "modules/Blog/src/",
       "BC\\Modules\\Games\\": "modules/Games/src/",
-      "BC\\Modules\\Books\\": "modules/Books/src/"
+      "BC\\Modules\\Books\\": "modules/Books/src/",
+      "BC\\Modules\\Music\\": "modules/Music/src/"
     },
     "files": [
       "bootstrap.php"

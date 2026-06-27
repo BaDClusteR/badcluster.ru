@@ -1,0 +1,8 @@
+services:
+  BC\Modules\Music\Api\Endpoint\Album:
+    tags:
+      - name: api_endpoint_collection
+
+  BC\Modules\Music\Api\Endpoint\TrackEndpoint:
+    tags:
+      - name: api_endpoint_collection

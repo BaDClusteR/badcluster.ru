@@ -35,4 +35,26 @@ class Formatter implements IFormatter {
 
         return '<p>' . implode('</p><p>', explode("\n", $plainText)) . '</p>';
     }
+
+    public function formatAsHumanReadableDuration(int $durationInSeconds): string {
+        $hours = 0;
+        $minutes = 0;
+        $seconds = 0;
+
+        if ($durationInSeconds > 3600) {
+            $hours = (int) floor($durationInSeconds / 3600);
+            $durationInSeconds -= ($hours * 3600);
+        }
+
+        if ($durationInSeconds > 60) {
+            $minutes = (int) floor($durationInSeconds / 60);
+            $durationInSeconds -= ($minutes * 60);
+        }
+
+        $seconds = $durationInSeconds;
+
+        return $hours > 0
+            ? sprintf('%d:%02d:%02d', $hours, $minutes, $seconds)
+            : sprintf('%d:%02d', $minutes, $seconds);
+    }
 }

@@ -26,6 +26,8 @@ interface FileFieldProps {
   uploadFields?: Record<string, string>;
   /** Accepted file types (e.g. ".zip,.pdf"). Defaults to all. */
   accept?: string;
+  /** Custom function to render subtitle (shown after size). By default shows mime type. */
+  subtitle?: (file: FileData) => string;
 }
 
 export function FileField({
@@ -38,6 +40,7 @@ export function FileField({
   uploadEndpoint = "/admin/api/upload",
   uploadFields,
   accept,
+  subtitle,
 }: FileFieldProps) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -116,7 +119,7 @@ export function FileField({
               {value.filename}
             </Anchor>
             <Text size="xs" c="dimmed">
-              {value.sizeHumanReadable} · {value.mime}
+              {value.sizeHumanReadable} · {subtitle ? subtitle(value) : value.mime}
             </Text>
           </div>
           <div className={classes.fileActions}>

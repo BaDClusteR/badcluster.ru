@@ -6,4 +6,6 @@ interface IFormatter {
     public function formatAsHumanReadableSize(int $sizeInBytes): string;
 
     public function formatAsHtml(string $plainText): string;
+
+    public function formatAsHumanReadableDuration(int $durationInSeconds): string;
 }

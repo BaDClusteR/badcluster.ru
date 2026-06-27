@@ -93,10 +93,14 @@ abstract class AFile extends AEntity {
         );
     }
 
+    public function getLocalPath(): string {
+        return $this->getPathsProvider()->getStaticPath() . '/' . $this->path;
+    }
+
     public function remove(): void {
         try {
             $this->getFileSystem()->remove(
-                $this->getPathsProvider()->getStaticPath() . '/' . static::getSubfolder() . '/' . $this->path
+                $this->getLocalPath()
             );
         } catch (FileSystemException) {
         }
