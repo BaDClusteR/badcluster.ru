@@ -1,0 +1,210 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Modules\Music\Widget\Release $this */
+
+use BC\Widget\Common\Picture;
+
+$album = $this->getAlbum();
+$dateConverter = $this->getDateConverter();
+$formatter = $this->getFormatter();
+?><?php if ($album) : ?>
+    <header class="release__header">
+        <div class="release__cover">
+            <?=new Picture([
+                'image'         => $album->getCover(),
+                'class'         => 'release__cover-picture',
+                'pictureClass'  => 'release__cover-img',
+                'lazyLoad'      => false,
+                'fetchPriority' => 'high',
+                'alt'           => $album->getTitle(),
+                'breakpoints'   => [
+                    -1 => 240,
+                ],
+            ])->render()?>
+        </div>
+        <div class="release__info">
+            <h1 class="release__title"><?=$album->getTitle()?></h1>
+            <div class="release__tags">
+                <?php foreach ($album->getGenres() as $genre) : ?>
+                    <span class="tag"><?=$genre?></span>
+                <?php endforeach; ?>
+                <span class="tag tag--type"><?=$album->getTypeAndTracks()?></span>
+            </div>
+            <?php
+            $musicBy = $album->getMusicBy();
+            $visualBy = $album->getVisualBy();
+            $coverBy = $album->getCoverBy();
+            $releaseDate = $album->getReleaseDate();
+
+            if ($musicBy || $visualBy || $coverBy) :?>
+                <div class="release__tools">
+                    <?php if ($musicBy) : ?>
+                        <div class="release__tool">
+                            <span class="release__tool-role">Музыка и вокал:</span>
+                            <span class="release__tool-name"><?=$musicBy?></span>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($visualBy) : ?>
+                        <div class="release__tool">
+                            <span class="release__tool-role">Визуализация:</span>
+                            <span class="release__tool-name"><?=$visualBy?></span>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($coverBy) : ?>
+                        <div class="release__tool">
+                            <span class="release__tool-role">Обложка:</span>
+                            <span class="release__tool-name"><?=$coverBy?></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+            <time class="release__updated text-faded" datetime="<?=$dateConverter->toIsoFormat($releaseDate)?>">
+                Дата релиза: <?=$dateConverter->toShortForm($releaseDate)?>
+            </time>
+        </div>
+    </header>
+    <?=$formatter->formatAsHtml(
+        $album->getAnnotation() ?: $album->getShortAnnotation()
+    )?>
+    <ol class="release__tracklist list--block" type="1">
+        <?php foreach ($album->getTracks() as $i => $track) : ?>
+            <?php
+            $trackNum = $i + 1;
+            $clipUrl = $track->getClipUrl();
+            $sourceUrl = $track->getSourceUrl();
+            $lyrics = $track->getLyrics();
+            ?>
+            <li class="release__track" id="track-<?=$trackNum?>">
+                <audio src="<?=$track->getUrl()?>" preload="metadata"></audio>
+                <div class="release__track-row">
+                    <div class="release__track-left">
+                        <button class="icon-button release__track-play" aria-label="Играть">
+                            <?=$this->getSvgContent('images/modules/Music/track-play.svg')?>
+                            <?=$this->getSvgContent('images/modules/Music/track-pause.svg')?>
+                        </button>
+                        <h2 class="release__track-title"><?=$track->getTitle()?></h2>
+                        <?php if ($track->getExplicitLanguage()) : ?>
+                            <span class="release__track-badge release__track-badge--explicit"
+                                  title="Ненормативная лексика">E</span>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ($clipUrl || $sourceUrl || $lyrics) : ?>
+                        <div class="release__track-right" data-tabs>
+                            <?php if ($sourceUrl) : ?>
+                                <a
+                                    href="<?=$sourceUrl?>"
+                                    target="_blank"
+                                    class="release__track-toggle release__track-toggle--link"
+                                >
+                                    Источник
+                                    <sup>
+                                        <?=$this->getSvgContent('images/modules/Music/open-new.svg')?>
+                                    </sup>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($lyrics) : ?>
+                                <button
+                                    class="release__track-toggle"
+                                    id="track-<?=$trackNum?>-lyrics-switch"
+                                    role="tab"
+                                    aria-selected="false"
+                                    aria-controls="track-<?=$trackNum?>-lyrics"
+                                    title="Текст песни"
+                                    data-closable
+                                >
+                                    Слова
+                                </button>
+                            <?php endif; ?>
+                            <?php if ($clipUrl) : ?>
+                                <button
+                                    class="release__track-toggle"
+                                    id="track-<?=$trackNum?>-video-switch"
+                                    role="tab"
+                                    aria-selected="false"
+                                    aria-controls="track-<?=$trackNum?>-video"
+                                    title="Клип"
+                                    data-closable
+                                >
+                                    Клип
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="release__track-controls">
+                    <?php $duration = $track->getSong()->getDuration(); ?>
+                    <div class="release__track-progress-container">
+                        <input
+                            type="range"
+                            class="slider release__track-progress"
+                            value="0"
+                            max="<?=$duration?>"
+                            aria-label="Перемотка"
+                            style="--progress: 0%;"
+                        />
+                        <div class="release__track-time">
+                            <span class="release__track-time-current">00:00</span>
+                            <span class="release__track-time-divider"> / </span>
+                            <span class="release__track-time-total">
+                                <?=$formatter->formatAsHumanReadableDuration($duration)?>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="release__track-tools">
+                        <div class="release__track-control-volume">
+                            <?=$this->getSvgContent('images/modules/Music/speaker.svg')?>
+                            <div class="release__track-control-volume-slider-container">
+                                <input
+                                    type="range"
+                                    class="slider release__track-control-volume-slider"
+                                    value="100"
+                                    max="100"
+                                    aria-label="Громкость"
+                                    style="--progress: 100%;"
+                                />
+                            </div>
+                        </div>
+                        <a
+                            href="<?=$track->getUrl()?>"
+                            class="icon-button release__track-download"
+                            download
+                            title="Скачать MP3"
+                        >
+                            <?=$this->getSvgContent('images/modules/Music/download.svg')?>
+                        </a>
+                    </div>
+                </div>
+                <?php if ($annotation = $track->getAnnotation()) : ?>
+                    <p class="release__track-annotation"><?=$annotation?></p>
+                <?php endif; ?>
+                <?php if ($lyrics) : ?>
+                    <div
+                        class="release__track-panel"
+                        role="tabpanel"
+                        id="track-<?=$trackNum?>-lyrics"
+                        aria-labelledby="track-<?=$trackNum?>-lyrics-switch"
+                        hidden
+                    >
+                        <div class="release__track-lyrics"><?=$lyrics?></div>
+                    </div>
+                <?php endif; ?>
+                <?php if ($clipUrl) : ?>
+                    <div
+                        class="release__track-panel"
+                        id="track-<?=$trackNum?>-video"
+                        role="tabpanel"
+                        aria-labelledby="track-<?=$trackNum?>>-video-switch"
+                        hidden
+                    >
+                        <div class="release__track-video">
+                            <iframe data-src="<?=$clipUrl?>" allowfullscreen>
+                                Кажется, ваш браузер не поддерживает айфреймы :(
+                            </iframe>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ol>
+<?php endif; ?>

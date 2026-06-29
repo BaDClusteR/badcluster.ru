@@ -63,7 +63,8 @@ const FIELDS: FieldDef<Album>[] = [
     label: "Краткая аннотация",
     type: "textarea",
     role: "primary",
-    span: "full"
+    span: "full",
+    required: true
   },
   {
     name: "annotation",

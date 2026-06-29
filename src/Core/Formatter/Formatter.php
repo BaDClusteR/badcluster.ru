@@ -39,7 +39,6 @@ class Formatter implements IFormatter {
     public function formatAsHumanReadableDuration(int $durationInSeconds): string {
         $hours = 0;
         $minutes = 0;
-        $seconds = 0;
 
         if ($durationInSeconds > 3600) {
             $hours = (int) floor($durationInSeconds / 3600);

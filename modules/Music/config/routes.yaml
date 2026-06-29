@@ -1,0 +1,8 @@
+routes:
+  music:
+    path: /music
+    controller: BC\Modules\Music\Controller\Music::renderAlbumsList
+
+  release:
+    path: /music/{releaseSlug}
+    controller: BC\Modules\Music\Controller\Music::renderReleasePage

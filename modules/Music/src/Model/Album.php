@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace BC\Modules\Music\Model;
 
+use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Model\Media;
+use BC\Modules\Music\Model\Album as AlbumModel;
 use DateTime;
 use Runway\DataStorage\Attribute as DS;
+use Runway\DataStorage\Exception\DBException;
+use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
+use Runway\Exception\Exception;
 use Runway\Model\AEntity;
+use Runway\Model\Exception\ModelException;
 
 /**
  * @generated-model-helpers
@@ -40,6 +46,8 @@ use Runway\Model\AEntity;
  */
 #[DS\Table('albums')]
 class Album extends AEntity {
+    use WebsiteSettingsTrait;
+
     public const string ALBUM_TYPE_SINGLE = 'S';
     public const string ALBUM_TYPE_DOUBLE_SINGLE = 'D';
     public const string ALBUM_TYPE_EXTENDED_PLAY = 'E';
@@ -87,9 +95,81 @@ class Album extends AEntity {
     public function getTypeHumanReadable(): string {
         return match ($this->getType()) {
             self::ALBUM_TYPE_SINGLE => 'Сингл',
+            self::ALBUM_TYPE_DOUBLE_SINGLE => 'Двойной сингл',
             self::ALBUM_TYPE_EXTENDED_PLAY => 'EP',
             self::ALBUM_TYPE_ALBUM => 'Альбом',
             default => ''
+        };
+    }
+
+    /**
+     * @return Track[]
+     * @throws DBException
+     * @throws QueryBuilderException
+     *
+     * @throws ModelException
+     */
+    public function getTracks(): array {
+        return Track::find(
+            ['album' => $this->id],
+            ['position', 'ASC']
+        );
+    }
+
+    /**
+     * @throws DBException
+     * @throws ModelException
+     * @throws QueryBuilderException
+     */
+    public function hasExplicitLanguage(): bool {
+        return array_any(
+            $this->getTracks(),
+            static fn ($track) => $track->getExplicitLanguage()
+        );
+    }
+
+    public function getUrl(): string {
+        return $this->getWebsiteSettings()->getWebRoot() . '/music/' . $this->getSlug();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getGenres(): array {
+        return array_map(
+            static fn (string $genre): string => trim($genre),
+            explode(',', $this->getGenre())
+        );
+    }
+
+    public function getTypeAndTracks(): string {
+        $type = $this->getType();
+        $typeHumanReadable = $this->getTypeHumanReadable();
+
+        if (in_array($type, [AlbumModel::ALBUM_TYPE_SINGLE, AlbumModel::ALBUM_TYPE_DOUBLE_SINGLE], true)) {
+            return $typeHumanReadable;
+        }
+        try {
+            $tracksCount = count($this->getTracks());
+        } catch (Exception) {
+            return '';
+        }
+
+        return sprintf('%s • %s %s', $typeHumanReadable, $tracksCount, $this->getTrackWordForm($tracksCount));
+    }
+
+    protected function getTrackWordForm(int $tracksCount): string {
+        $tracksMod100 = $tracksCount % 100;
+        if ($tracksMod100 >= 10 && $tracksMod100 <= 20) {
+            return 'треков';
+        }
+
+        $tracksMod10 = $tracksCount % 10;
+
+        return match ($tracksMod10) {
+            1 => 'трек',
+            2, 3, 4 => 'трека',
+            default => 'треков'
         };
     }
 }

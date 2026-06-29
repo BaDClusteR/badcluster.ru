@@ -1,0 +1,56 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Modules\Music\Widget\AlbumsList\Album $this */
+
+use BC\Widget\Common\Picture;
+
+$album = $this->getAlbum();
+$dateConverter = $this->getDateConverter();
+$releaseDate = $album?->getReleaseDate();
+?>
+<?php if ($album) : ?>
+    <li class="music__item">
+        <a href="<?=$album->getUrl()?>" class="music__link">
+            <?php if ($cover = $album->getCover()) : ?>
+                <span class="music__cover">
+                    <?=new Picture([
+                        'image'        => $album->getCover(),
+                        'class'        => 'music__cover-img',
+                        'pictureClass' => 'music__cover-picture',
+                        'lazyLoad'     => true,
+                        'breakpoints'  => [
+                            -1 => 240,
+                        ],
+                        'retina'       => false
+                    ])->render()?>
+                    <span class="music__cover-overlay">
+                        <?=$this->getSvgContent('images/modules/Music/play.svg')?>
+                    </span>
+                </span>
+            <?php endif; ?>
+            <div class="music__content">
+                <div class="music__header">
+                    <div class="music__header-title-container">
+                        <h2 class="music__title"><?=$album->getTitle()?></h2>
+                        <?php if ($this->hasExplicitLanguage()) : ?>
+                            <span class="music__badge music__badge--explicit" title="Ненормативная лексика">E</span>
+                        <?php endif; ?>
+                    </div>
+                    <time datetime="<?=$dateConverter->toIsoFormat($releaseDate)?>" class="music__year">
+                        <?=date('Y', $releaseDate->getTimestamp())?>
+                    </time>
+                </div>
+                <div class="tags music__tags">
+                    <?php foreach ($album->getGenres() as $genre) : ?>
+                        <span class="tag"><?=$genre?></span>
+                    <?php endforeach; ?>
+                    <?php if ($type = $album->getTypeAndTracks()) : ?>
+                        <span class="tag tag--type"><?=$type?></span>
+                    <?php endif; ?>
+                </div>
+                <p class="music__desc"><?=$album->getShortAnnotation()?></p>
+            </div>
+        </a>
+    </li>
+<?php endif; ?>

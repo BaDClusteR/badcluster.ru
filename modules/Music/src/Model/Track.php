@@ -93,4 +93,8 @@ class Track extends AEntity {
 
         parent::remove();
     }
+
+    public function getUrl(): string {
+        return $this->getSong()->getUrl();
+    }
 }

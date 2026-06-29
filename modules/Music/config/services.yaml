@@ -10,3 +10,5 @@ services:
 
   BC\Modules\Music\Provider\MenuItemsProvider:
     decorates: BC\Provider\IMenuItemsProvider
+
+  BC\Modules\Music\Controller\Music: ~

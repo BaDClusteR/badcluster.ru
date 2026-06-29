@@ -17,7 +17,6 @@ use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
 use BC\Core\Formatter\IFormatter;
 use BC\Exception\UnprocessableEntityException;
-use BC\Modules\Games\Model\GameMaterialFile;
 use BC\Modules\Music\Api\DataBuilder\Track\ITrackDataBuilder;
 use BC\Modules\Music\Api\DTO\Track\SongDTO;
 use BC\Modules\Music\Api\DTO\Track\TrackDTO;

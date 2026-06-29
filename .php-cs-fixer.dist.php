@@ -3,8 +3,7 @@
 $finder = new PhpCsFixer\Finder()
     ->in([
         __DIR__ . '/src',
-        __DIR__ . '/modules',
-        __DIR__ . '/templates',
+        __DIR__ . '/modules'
     ])
     ->name(['*.php'])
     ->ignoreDotFiles(true)

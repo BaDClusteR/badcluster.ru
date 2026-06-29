@@ -1,0 +1,10 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Music\Widget\AlbumsList\AlbumsList $this */
+$albumWidget = new \BC\Modules\Music\Widget\AlbumsList\Album();
+?>
+<ul class="music list--block">
+    <?php foreach ($this->getAlbums() as $album) : ?>
+        <?=$albumWidget->render(['album' => $album])?>
+    <?php endforeach; ?>
+</ul>
