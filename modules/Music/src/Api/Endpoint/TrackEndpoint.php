@@ -8,13 +8,11 @@ use ApiPlatform\Attribute as API;
 use ApiPlatform\DTO\ApiEndpointArgumentFileDTO;
 use ApiPlatform\Exception\BadRequestException;
 use BC\Api\DTO\CreatedDTO;
-use BC\Api\DTO\FileDTO;
 use BC\Api\DTO\GetEntitiesListRequest;
 use BC\Api\DTO\ListResponseDTO;
 use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
-use BC\Core\Converter\IDateConverter;
 use BC\Core\Formatter\IFormatter;
 use BC\Exception\UnprocessableEntityException;
 use BC\Modules\Music\Api\DataBuilder\Track\ITrackDataBuilder;
@@ -30,7 +28,6 @@ use getID3;
 class TrackEndpoint extends AEndpoint {
     public function __construct(
         private readonly ITrackDataBuilder $dataBuilder,
-        private readonly IDateConverter $dateConverter,
         private readonly IFormatter $formatter
     ) {
     }

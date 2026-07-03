@@ -20,10 +20,10 @@ use BC\Widget\Common\Picture;
                 'class'        => 'block__image-img',
                 'pictureClass' => 'block__image-picture',
                 'lazyLoad'     => $this->lazy,
-                'caption'      => $this->caption,
+                'caption'      => $this->alt ?: $this->caption,
                 'breakpoints'  => [
                     470 => 500,
-                    - 1 => 1000,
+                    -1  => 1000,
                 ],
             ])->render()?>
             <?php if ($this->lightbox) : ?>

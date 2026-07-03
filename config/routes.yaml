@@ -14,3 +14,15 @@ routes:
   admin_index:
     path: /admin
     controller: BC\Controller\Admin::index
+
+  about:
+    path: /me
+    controller: BC\Controller\About::renderAboutMe
+
+  history:
+    path: /history
+    controller: BC\Controller\About::renderHistory
+
+  cringe_museum:
+    path: /cringe
+    controller: BC\Controller\About::renderCringeMuseum

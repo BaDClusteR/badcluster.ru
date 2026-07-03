@@ -38,8 +38,10 @@ readonly class Admin {
     }
 
     private function isInDevMode(): bool {
+        return false;
+
         return $this->request->getGetParameter('dev')->asString() === '1'
-            || file_exists(PROJECT_ROOT . '/app/node_modules/.vite');
+               || file_exists(PROJECT_ROOT . '/app/node_modules/.vite');
     }
 
     /**

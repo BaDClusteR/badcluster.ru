@@ -6,7 +6,7 @@ import showApiError from "@/utils/showApiError.tsx";
 export default async function apiCall(
     method: ApiCallMethod,
     endpoint: string,
-    data: StringKeyObject,
+    data: StringKeyObject = {},
     options?: ApiCallOptions
 ): Promise<StringKeyObject> {
     const headers: {[key: string]: string} = {};

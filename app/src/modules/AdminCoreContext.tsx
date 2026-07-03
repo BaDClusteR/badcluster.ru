@@ -8,7 +8,7 @@ import type {
   FieldDef
 } from "@/components/EntityForm";
 import {List} from "@/components/List/List";
-import type {ListDataProvider, ListDataProviderRequestOptions, ListState, EntityRow} from "@admin/types";
+import type {ListDataProvider, ListDataProviderRequestOptions, ListState, EntityRow, AdminCore} from "@admin/types";
 import convertListStateToQueryParameters from "@/components/List/utils/convertListStateToQueryParameters";
 import type {ColumnDef} from "@/components/DataTable";
 import {BadgeGray, BadgeGreen} from "@/components/primitives/Badge";
@@ -21,21 +21,6 @@ import Picture from "@/components/primitives/Picture";
 import Button from "@/components/primitives/Button";
 import Checkbox from "@/components/primitives/Checkbox";
 import Modal from "@/components/primitives/Modal";
-
-/** All core components/utilities available to remote modules. */
-export interface AdminCore {
-  EntityForm: typeof EntityForm;
-  List: typeof List;
-  convertListStateToQueryParameters: typeof convertListStateToQueryParameters;
-  BadgeGray: typeof BadgeGray;
-  BadgeGreen: typeof BadgeGreen;
-  apiCall: typeof apiCall;
-  notify: typeof notify;
-  appSettings: typeof appSettings;
-  buildAdminUrl: typeof buildAdminUrl;
-  createEntityFormDataProvider: typeof createEntityFormDataProvider;
-  Picture: typeof Picture;
-}
 
 // Expose context on a global so remote modules can access the same reference.
 // React context identity must be shared — createContext() in a different bundle
@@ -58,7 +43,7 @@ const coreValue: AdminCore = {
   Picture,
   Button,
   Checkbox,
-  Modal,
+  Modal
 };
 
 export function AdminCoreProvider({children}: { children: ReactNode }) {

@@ -2,7 +2,7 @@ import type {ComponentType, ReactNode} from "react";
 // noinspection TypeScriptCheckImport
 // @ts-ignore
 import type {FormErrors, UseFormReturnType} from "@mantine/form";
-import {Optional, StringKeyObject} from "./common";
+import {Optional, SelectOption, StringKeyObject} from "./common";
 
 export type CommonFieldType =
   | "number"
@@ -19,11 +19,6 @@ export type FieldType =
   | "group"
   | "slug"
   | "image";
-
-export interface SelectOption {
-  value: string;
-  label: string;
-}
 
 export interface EntityFormComponents {
   BlocksField: ComponentType<{

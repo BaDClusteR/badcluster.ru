@@ -43,23 +43,8 @@ readonly class BookDataBuilder implements IBookDataBuilder {
             lastUpdateDate: $this->dateConverter->toShortForm(
                 $book->getLastUpdateDate()
             ),
-            chapterCount: $this->getChapterCountText($chapterCount)
+            chapterCount: $this->formatter->formatAsWordForm($chapterCount, 'глава', 'главы', 'глав')
         );
-    }
-
-    public function getChapterCountText(int $count): string {
-        $countMod100 = $count % 100;
-        if ($countMod100 >= 10 && $countMod100 <= 20) {
-            $postfix = 'глав';
-        } else {
-            $postfix = match ($count % 10) {
-                1 => 'глава',
-                2, 3, 4 => 'главы',
-                default => 'глав'
-            };
-        }
-
-        return "$count $postfix";
     }
 
     /**

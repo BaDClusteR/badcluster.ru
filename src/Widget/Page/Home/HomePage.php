@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BC\Widget\Page;
+namespace BC\Widget\Page\Home;
 
+use BC\Core\Asset\DTO\AssetDTO;
 use BC\Widget\AWidget;
-use BC\Widget\Page\Home\Pulse;
+use BC\Widget\Page\APage;
 
-class Home extends APage {
+class HomePage extends APage {
     public function getHeader(): string {
         return 'Привет!';
     }
@@ -33,5 +34,25 @@ class Home extends APage {
 
     public function getCanonicalUrl(): string {
         return $this->getWebRoot();
+    }
+
+    public static function getAssets(): array {
+        return [
+            new AssetDTO('critical', 'js/critical/singleton.js', -100),
+            new AssetDTO('critical', 'js/critical/event-dispatcher.js', -50),
+            new AssetDTO('critical', 'js/critical/theme.js'),
+
+            new AssetDTO('scripts', 'js/common/theme-switcher.js'),
+            new AssetDTO('scripts', 'js/common/header.js'),
+            new AssetDTO('scripts', 'js/common/scripts.js'),
+            new AssetDTO('scripts', 'js/common/tabs.js'),
+
+            new AssetDTO('core', 'css/core/reset.css', -100),
+            new AssetDTO('core', 'css/core/font.css', -50),
+            new AssetDTO('core', 'css/core/style.css', 0),
+            new AssetDTO('core', 'css/core/tooltip.css', 100),
+
+            new AssetDTO('footer', 'css/footer.css')
+        ];
     }
 }

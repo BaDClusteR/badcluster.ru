@@ -48,13 +48,11 @@ class BookListPage extends APage {
     }
 
     public static function getAssets(): array {
-        $list = parent::getAssets();
-
-        $list[] = new AssetDTO('books', 'css/modules/Books/books.css');
-        $list[] = new AssetDTO('book-cover', 'css/modules/Books/book-cover.css');
-        $list[] = new AssetDTO('materials', 'css/common/materials.css');
-
-        return $list;
+        return [
+            new AssetDTO('books', 'css/modules/Books/books.css'),
+            new AssetDTO('book-cover', 'css/modules/Books/book-cover.css'),
+            new AssetDTO('materials', 'css/common/materials.css')
+        ];
     }
 
     public function getCssBundles(): array {

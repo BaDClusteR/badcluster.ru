@@ -25,4 +25,8 @@ class GameMaterialFile extends AFile {
     protected static function getSubfolder(): string {
         return 'games';
     }
+
+    protected static function getFolderRelativePath(): string {
+        return static::getSubfolder();
+    }
 }

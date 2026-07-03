@@ -1,0 +1,27 @@
+.snapshot-link {
+  display: inline-flex;
+  gap: calc(.5 * var(--rhythmic-unit));
+  align-items: center;
+
+  &::after {
+    content: '';
+    width: .875em;
+    height: .875em;
+    mask: url('/static/images/about/external.svg') no-repeat center;
+    mask-size: contain;
+    background-color: currentColor;
+    margin-block-start: calc(-.25 * var(--rhythmic-unit));
+    margin-inline-start: calc(-.25 * var(--rhythmic-unit));
+  }
+}
+
+.lead {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+}
+
+.block__image-picture {
+  border: var(--border);
+}

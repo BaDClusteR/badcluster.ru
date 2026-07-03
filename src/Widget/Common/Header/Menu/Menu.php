@@ -20,7 +20,11 @@ class Menu extends AWidget {
      * @return MenuItemDTO[]
      */
     public function getMenuItems(): array {
-        return $this->getMenuItemsProvider()->getMenuItems();
+        $menuProvider = $this->getMenuItemsProvider();
+
+        return $menuProvider->sortMenuItems(
+            $menuProvider->getMenuItems()
+        );
     }
 
     protected function getMenuItemsProvider(): IMenuItemsProvider {

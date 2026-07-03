@@ -27,6 +27,12 @@ class Media extends AWidget {
         }
     }
 
+    protected string $alt = '' {
+        get {
+            return $this->alt;
+        }
+    }
+
     protected bool $lightbox = false {
         get {
             return $this->lightbox;
@@ -45,6 +51,7 @@ class Media extends AWidget {
                 $this->media = MediaModel::findByUniqueIdentifier(
                     (int) $this->context['media']['id']
                 );
+                $this->alt = (string) ($this->context['alt'] ?? '');
 
                 $this->lazy = (bool) ($this->context['lazy'] ?? false);
                 $this->caption = (string) ($this->context['caption'] ?? '');

@@ -83,7 +83,7 @@ export function DataTable<T extends EntityRow>(
     };
 
     if (state.sortBy !== col.key) {
-      newSort.sortBy = col.key;
+      newSort.sortBy = String(col.key);
     } else if (state.sortDir === "asc") {
       newSort.sortBy = state.sortBy;
       newSort.sortDir = "desc";
@@ -104,12 +104,12 @@ export function DataTable<T extends EntityRow>(
       ? col.render(row)
       : col.accessor
         ? col.accessor(row)
-        : (row as Record<string, unknown>)[col.key] as React.ReactNode;
+        : (row as Record<string, unknown>)[col.key as string] as React.ReactNode;
 
     let subContent = col.subRender
       ? col.subRender(row)
       : col.subKey
-        ? (row as Record<string, unknown>)[col.subKey] as React.ReactNode
+        ? (row as Record<string, unknown>)[col.subKey as string] as React.ReactNode
         : null;
 
     if (subContent) {
@@ -187,7 +187,7 @@ export function DataTable<T extends EntityRow>(
                 const isSorted = state.sortBy === col.key;
                 return (
                   <th
-                    key={col.key}
+                    key={String(col.key)}
                     style={{
                       width: col.width,
                       textAlign: col.align ?? "left"
@@ -265,7 +265,7 @@ export function DataTable<T extends EntityRow>(
                       </td>
                     }
                     {columns.map((col, colIndex) => (
-                      <td key={col.key ?? `${rowIndex}-${colIndex}`} style={{textAlign: col.align ?? "left"}}>
+                      <td key={String(col.key ?? `${rowIndex}-${colIndex}`)} style={{textAlign: col.align ?? "left"}}>
                         {renderCell(col, row)}
                       </td>
                     ))}

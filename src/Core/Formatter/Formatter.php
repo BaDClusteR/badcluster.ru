@@ -56,4 +56,21 @@ class Formatter implements IFormatter {
             ? sprintf('%d:%02d:%02d', $hours, $minutes, $seconds)
             : sprintf('%d:%02d', $minutes, $seconds);
     }
+
+    public function formatAsWordForm(int $count, string $firstForm, string $secondForm, string $thirdForm): string {
+        $absCount = abs($count);
+        $countMod100 = $absCount % 100;
+
+        if ($countMod100 >= 10 && $countMod100 <= 20) {
+            $postfix = $thirdForm;
+        } else {
+            $postfix = match ($absCount % 10) {
+                1 => $firstForm,
+                2, 3, 4 => $secondForm,
+                default => $thirdForm
+            };
+        }
+
+        return "$count $postfix";
+    }
 }

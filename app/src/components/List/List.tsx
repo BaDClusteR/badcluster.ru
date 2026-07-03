@@ -2,7 +2,7 @@ import {ReactNode} from "react";
 import {ActionIcon, Group, TextInput, Title} from "@mantine/core";
 import {IconPencil, IconTrash, IconPlus, IconSearch} from "@tabler/icons-react";
 import {DataTable, TableState} from "@/components/DataTable";
-import type {ColumnDef, EntityRow, ListProps} from "@admin/types";
+import type {EntityRow, ListProps} from "@admin/types";
 import classes from "./List.module.css";
 import Button from "@/components/primitives/Button";
 import clsx from "clsx";
@@ -18,7 +18,7 @@ export function List<T extends EntityRow>(
     columns,
     labels,
     webPath,
-    apiEndpoint,
+    apiEndpoint
   }: ListProps<T>
 ) {
   const ctrl = useListController<T>({
@@ -27,7 +27,7 @@ export function List<T extends EntityRow>(
     labels,
     webPath,
     dataProvider,
-    apiEndpoint,
+    apiEndpoint
   });
 
   const renderActions = (row: T): ReactNode => {
@@ -47,7 +47,7 @@ export function List<T extends EntityRow>(
           className={clsx(classes.action, classes.actionEdit)}
         >
           <IconPencil size={16}/>
-        </ActionIcon>,
+        </ActionIcon>
       );
     }
 
@@ -65,7 +65,7 @@ export function List<T extends EntityRow>(
           }}
         >
           <IconTrash size={16}/>
-        </ActionIcon>,
+        </ActionIcon>
       );
     }
 
@@ -104,7 +104,8 @@ export function List<T extends EntityRow>(
     <>
       <Modal
         opened={ctrl.isConfirmDeletion}
-        onClose={ctrl.isDeleting ? () => {} : ctrl.closeDeletionConfirmation}
+        onClose={ctrl.isDeleting ? () => {
+        } : ctrl.closeDeletionConfirmation}
         withCloseButton={!ctrl.isDeleting}
         title="Действительно удалить?"
       >

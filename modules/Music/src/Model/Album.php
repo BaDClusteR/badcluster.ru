@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Music\Model;
 
+use BC\Core\Trait\FormatterTrait;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Model\Media;
 use BC\Modules\Music\Model\Album as AlbumModel;
@@ -47,6 +48,7 @@ use Runway\Model\Exception\ModelException;
 #[DS\Table('albums')]
 class Album extends AEntity {
     use WebsiteSettingsTrait;
+    use FormatterTrait;
 
     public const string ALBUM_TYPE_SINGLE = 'S';
     public const string ALBUM_TYPE_DOUBLE_SINGLE = 'D';
@@ -155,21 +157,11 @@ class Album extends AEntity {
             return '';
         }
 
-        return sprintf('%s • %s %s', $typeHumanReadable, $tracksCount, $this->getTrackWordForm($tracksCount));
-    }
-
-    protected function getTrackWordForm(int $tracksCount): string {
-        $tracksMod100 = $tracksCount % 100;
-        if ($tracksMod100 >= 10 && $tracksMod100 <= 20) {
-            return 'треков';
-        }
-
-        $tracksMod10 = $tracksCount % 10;
-
-        return match ($tracksMod10) {
-            1 => 'трек',
-            2, 3, 4 => 'трека',
-            default => 'треков'
-        };
+        return sprintf(
+            '%s • %s %s',
+            $typeHumanReadable,
+            $tracksCount,
+            $this->getFormatter()->formatAsWordForm($tracksCount, 'трек', 'трека', 'треков')
+        );
     }
 }

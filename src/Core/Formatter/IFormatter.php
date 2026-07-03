@@ -8,4 +8,6 @@ interface IFormatter {
     public function formatAsHtml(string $plainText): string;
 
     public function formatAsHumanReadableDuration(int $durationInSeconds): string;
+
+    public function formatAsWordForm(int $count, string $firstForm, string $secondForm, string $thirdForm): string;
 }

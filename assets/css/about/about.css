@@ -1,10 +1,14 @@
+h1::after {
+  content: ' 👋';
+}
+
 .about__me {
   --me-photo-margin: calc(1.5 * var(--rhythmic-unit));
 
   float: right;
   margin: var(--me-photo-margin) 0 var(--me-photo-margin) var(--me-photo-margin);
   border-radius: var(--border-radius);
-  max-width: 45%;
+  max-width: 38%;
   height: auto;
 
   @media (width < 540px) {
@@ -27,5 +31,22 @@
   .about__book--mind {
     float: right;
     margin: 0 0 calc(.5 * var(--rhythmic-unit)) calc(1.5 * var(--rhythmic-unit));
+  }
+
+  .about__book--emotions {
+    float: left;
+    margin: 0 calc(1.5 * var(--rhythmic-unit)) calc(.5 * var(--rhythmic-unit)) 0;
+  }
+}
+
+@media (width >= 560px) {
+  .about__book--emotions {
+    margin: 0;
+  }
+
+  p:has(.about__book--emotions) {
+    display: flex;
+    align-items: center;
+    gap: calc(1.5 * var(--rhythmic-unit));
   }
 }

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace BC\Controller;
 
 use BC\Core\Response\HtmlResponse;
-use BC\Widget\Page\Home;
+use BC\Widget\Page\Home\HomePage;
 use Runway\Request\Response;
 
 readonly class Index {
     public function run(): Response {
         return new HtmlResponse(
             200,
-            new Home()->render()
+            new HomePage()->render()
         );
     }
 }

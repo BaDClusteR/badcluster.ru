@@ -11,4 +11,11 @@ interface IMenuItemsProvider {
      * @return MenuItemDTO[]
      */
     public function getMenuItems(): array;
+
+    /**
+     * @param MenuItemDTO[] $menuItems
+     *
+     * @return MenuItemDTO[]
+     */
+    public function sortMenuItems(array $menuItems): array;
 }

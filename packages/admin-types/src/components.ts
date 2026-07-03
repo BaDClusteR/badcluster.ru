@@ -8,7 +8,7 @@ import * as React from "react";
 // --- Component types for AdminCore ---
 
 /** EntityForm component type — generic over form values T and context C. */
-export type EntityFormComponent = <T, C = unknown>(
+export type EntityFormComponent = <T extends Record<string, any>, C = unknown>(
   props: EntityFormProps<T, C>
 ) => ReactNode;
 
@@ -26,7 +26,7 @@ export type ApiCallFn = (
   endpoint: string,
   data?: Record<string, any>,
   options?: { signal?: AbortSignal }
-) => Promise<Record<string, any>>;
+) => Promise<StringKeyObject>;
 
 /** Notification helpers. */
 export interface NotifyApi {

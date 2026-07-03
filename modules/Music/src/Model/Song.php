@@ -30,4 +30,8 @@ class Song extends AFile {
     protected static function getSubfolder(): string {
         return 'music';
     }
+
+    protected static function getFolderRelativePath(): string {
+        return static::getSubfolder();
+    }
 }

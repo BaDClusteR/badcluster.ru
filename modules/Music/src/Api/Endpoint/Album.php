@@ -13,20 +13,17 @@ use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
-use BC\Core\Formatter\IFormatter;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Modules\Music\Api\DataBuilder\Album\IAlbumDataBuilder;
 use BC\Modules\Music\Api\DTO\Album\AlbumDTO;
 use BC\Modules\Music\Api\DTO\Album\AlbumRowDTO;
 use BC\Modules\Music\Model\Album as AlbumModel;
-use DateTime;
 
 class Album extends AEndpoint {
     public function __construct(
         private readonly IAlbumDataBuilder $dataBuilder,
-        private readonly IDateConverter $dateConverter,
-        private readonly IFormatter $formatter
+        private readonly IDateConverter $dateConverter
     ) {
     }
 

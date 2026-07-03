@@ -28,4 +28,13 @@ readonly class MenuItemsProvider implements IMenuItemsProvider {
 
         return $items;
     }
+
+    /**
+     * @param MenuItemDTO[] $menuItems
+     *
+     * @return MenuItemDTO[]
+     */
+    public function sortMenuItems(array $menuItems): array {
+        return $this->inner->sortMenuItems($menuItems);
+    }
 }
