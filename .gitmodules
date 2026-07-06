@@ -1,0 +1,3 @@
+[submodule "modules/Secret"]
+	path = modules/Secret
+	url = git@github.com:BaDClusteR/badcluster.ru-secret.git

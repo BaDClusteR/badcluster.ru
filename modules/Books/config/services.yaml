@@ -20,3 +20,7 @@ services:
   BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg: ~
 
   BC\Modules\Books\Controller\Books: ~
+
+  BC\Modules\Books\Provider\SitemapPagesProvider:
+    tags:
+      - name: sitemap

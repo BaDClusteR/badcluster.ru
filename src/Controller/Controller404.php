@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BC\Controller;
 
 use BC\Core\Response\HtmlResponse;
-use BC\Widget\Page\Home\HomePage;
-use BC\Widget\Page404;
+use BC\Widget\Page\Page404;
+use Runway\Controller\IController404;
 use Runway\Request\Response;
 
-readonly class Index {
+class Controller404 implements IController404 {
     public function run(): Response {
         return new HtmlResponse(
-            200,
-            new HomePage()->render()
+            404,
+            new Page404()->render()
         );
     }
 }

@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 use Runway\Singleton\Kernel;
 
-require_once __DIR__ . "/vendor/autoload.php";
+require_once __DIR__ . '/vendor/autoload.php';
 
 $kernel = Kernel::getInstance();
 $kernel->processRequest();

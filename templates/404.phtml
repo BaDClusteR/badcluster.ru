@@ -1,0 +1,24 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Page404 $this */
+$phrase = $this->getRandomPhrase();
+?>
+<div class="p404__bg-code">404</div>
+<div class="p404__content">
+    <span class="p404__label">Error 404</span>
+    <h1 class="p404__title"><?=$phrase[0] ?? ''?></h1>
+    <p class="p404__desc"><?=$phrase[1] ?? ''?></p>
+    <div class="p404__buttons">
+        <a href="#" class="btn btn--big btn--secondary btn--back ">Назад</a>
+        <a href="/" class="btn btn--big p404__btn">На домашнюю<span> страницу</span></a>
+    </div>
+    <script>
+        if (document.referrer && new URL(document.referrer).host === window.location.host) {
+            document.querySelector('.p404__buttons')?.classList.add('p404__buttons--has-history');
+        }
+        document.querySelector('.btn--back').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.history.back();
+        });
+    </script>
+</div>

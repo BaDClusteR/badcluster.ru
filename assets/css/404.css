@@ -93,6 +93,14 @@ a.btn.btn--back:not([disabled]) {
   }
 }
 
+.btn--back {
+  display: none;
+}
+
+.p404__buttons--has-history .btn--back {
+  display: unset;
+}
+
 @media (width < 370px) {
   .p404__btn > span {
     display: none;

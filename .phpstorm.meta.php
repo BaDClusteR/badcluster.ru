@@ -66,6 +66,8 @@ namespace PHPSTORM_META
         'BC\Core\Converter\IDateConverter' => \BC\Core\Converter\DateConverter::class,
         'BC\Provider\Admin\IAppSettingsProvider' => \BC\Provider\Admin\AppSettingsProvider::class,
         'BC\Core\Helper\IGeoIpHelper' => \BC\Core\Helper\GeoIpHelper::class,
+        'BC\Provider\Admin\IPageProvider' => \BC\Provider\Admin\PageProvider::class,
+        'BC\Core\Formatter\IFormatter' => \BC\Core\Formatter\Formatter::class,
         'BC\Provider\IMenuItemsProvider' => \BC\Provider\MenuItemsProvider::class,
         'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
         'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
@@ -77,6 +79,12 @@ namespace PHPSTORM_META
         'BC\Controller\Admin' => \BC\Controller\Admin::class,
         'BC\Controller\Comment' => \BC\Controller\Comment::class,
 
+        // config/api/data-builders.yaml
+        'BC\Api\DataBuilder\Comment\ICommentDataBuilder' => \BC\Api\DataBuilder\Comment\CommentDataBuilder::class,
+
+        // config/api/services.yaml
+        'BC\Api\Processor\IImageProcessor' => \BC\Api\Processor\ImageProcessor::class,
+
         // config/actions.yaml
         'BC\Core\Action\Comments\IGetCommentsAction' => \BC\Core\Action\Comments\GetCommentsAction::class,
 
@@ -86,6 +94,13 @@ namespace PHPSTORM_META
         'Runway\Console\Output\IOutput' => \Runway\Console\Output\Output::class,
         'Runway\Console\Output\Formatter\IOutputFormatter' => \Runway\Console\Output\Formatter\OutputFormatter::class,
         'Runway\Console\Output\Table\ITable' => \Runway\Console\Output\Table\Table::class,
+
+        // modules/Blog/config/services.yaml
+        'BC\Modules\Blog\Provider\IPostsProvider' => \BC\Modules\Blog\Provider\PostsProvider::class,
+
+        // modules/Blog/config/api/data-builders.yaml
+        'BC\Modules\Blog\Api\DataBuilder\Post\IBlogPostDataBuilder' => \BC\Modules\Blog\Api\DataBuilder\Post\BlogPostDataBuilder::class,
+        'BC\Modules\Blog\Api\DataBuilder\Tag\ITagDataBuilder' => \BC\Modules\Blog\Api\DataBuilder\Tag\TagDataBuilder::class,
 
         // modules/Blog/config/actions.yaml
         'BC\Modules\Blog\Core\Action\Post\ISavePostAction' => \BC\Modules\Blog\Core\Action\Post\SavePostAction::class,
@@ -97,6 +112,30 @@ namespace PHPSTORM_META
 
         // modules/Blog/config/routes.yaml
         'BC\Modules\Blog\Controller\Blog' => \BC\Modules\Blog\Controller\Blog::class,
+
+        // modules/Books/config/services.yaml
+        'BC\Modules\Books\Provider\BookFormat\IBookFormatProvider' => \BC\Modules\Books\Provider\BookFormat\BookFormatProvider::class,
+        'BC\Modules\Books\Core\Extractor\INotesExtractor' => \BC\Modules\Books\Core\Extractor\NotesExtractor::class,
+        'BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg' => \BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg::class,
+        'BC\Modules\Books\Controller\Books' => \BC\Modules\Books\Controller\Books::class,
+
+        // modules/Books/config/api/data-builders.yaml
+        'BC\Modules\Books\Api\DataBuilder\Book\IBookDataBuilder' => \BC\Modules\Books\Api\DataBuilder\Book\BookDataBuilder::class,
+        'BC\Modules\Books\Api\DataBuilder\Chapter\IChapterDataBuilder' => \BC\Modules\Books\Api\DataBuilder\Chapter\ChapterDataBuilder::class,
+
+        // modules/Games/config/services.yaml
+        'BC\Modules\Games\Controller\Games' => \BC\Modules\Games\Controller\Games::class,
+
+        // modules/Games/config/api/data-builders.yaml
+        'BC\Modules\Games\Api\DataBuilder\Game\IGameDataBuilder' => \BC\Modules\Games\Api\DataBuilder\Game\GameDataBuilder::class,
+        'BC\Modules\Games\Api\DataBuilder\GameMaterial\IGameMaterialDataBuilder' => \BC\Modules\Games\Api\DataBuilder\GameMaterial\GameMaterialDataBuilder::class,
+
+        // modules/Music/config/services.yaml
+        'BC\Modules\Music\Controller\Music' => \BC\Modules\Music\Controller\Music::class,
+
+        // modules/Music/config/api/data-builders.yaml
+        'BC\Modules\Music\Api\DataBuilder\Album\IAlbumDataBuilder' => \BC\Modules\Music\Api\DataBuilder\Album\AlbumDataBuilder::class,
+        'BC\Modules\Music\Api\DataBuilder\Track\ITrackDataBuilder' => \BC\Modules\Music\Api\DataBuilder\Track\TrackDataBuilder::class,
     ]));
 
     override(\Runway\Singleton\Container::tryGetService(0), map([
@@ -163,6 +202,8 @@ namespace PHPSTORM_META
         'BC\Core\Converter\IDateConverter' => \BC\Core\Converter\DateConverter::class,
         'BC\Provider\Admin\IAppSettingsProvider' => \BC\Provider\Admin\AppSettingsProvider::class,
         'BC\Core\Helper\IGeoIpHelper' => \BC\Core\Helper\GeoIpHelper::class,
+        'BC\Provider\Admin\IPageProvider' => \BC\Provider\Admin\PageProvider::class,
+        'BC\Core\Formatter\IFormatter' => \BC\Core\Formatter\Formatter::class,
         'BC\Provider\IMenuItemsProvider' => \BC\Provider\MenuItemsProvider::class,
         'BC\Provider\IPulseItemsProvider' => \BC\Provider\PulseItemsProvider::class,
         'BC\Provider\IPathsProvider' => \BC\Provider\PathsProvider::class,
@@ -174,6 +215,12 @@ namespace PHPSTORM_META
         'BC\Controller\Admin' => \BC\Controller\Admin::class,
         'BC\Controller\Comment' => \BC\Controller\Comment::class,
 
+        // config/api/data-builders.yaml
+        'BC\Api\DataBuilder\Comment\ICommentDataBuilder' => \BC\Api\DataBuilder\Comment\CommentDataBuilder::class,
+
+        // config/api/services.yaml
+        'BC\Api\Processor\IImageProcessor' => \BC\Api\Processor\ImageProcessor::class,
+
         // config/actions.yaml
         'BC\Core\Action\Comments\IGetCommentsAction' => \BC\Core\Action\Comments\GetCommentsAction::class,
 
@@ -183,6 +230,13 @@ namespace PHPSTORM_META
         'Runway\Console\Output\IOutput' => \Runway\Console\Output\Output::class,
         'Runway\Console\Output\Formatter\IOutputFormatter' => \Runway\Console\Output\Formatter\OutputFormatter::class,
         'Runway\Console\Output\Table\ITable' => \Runway\Console\Output\Table\Table::class,
+
+        // modules/Blog/config/services.yaml
+        'BC\Modules\Blog\Provider\IPostsProvider' => \BC\Modules\Blog\Provider\PostsProvider::class,
+
+        // modules/Blog/config/api/data-builders.yaml
+        'BC\Modules\Blog\Api\DataBuilder\Post\IBlogPostDataBuilder' => \BC\Modules\Blog\Api\DataBuilder\Post\BlogPostDataBuilder::class,
+        'BC\Modules\Blog\Api\DataBuilder\Tag\ITagDataBuilder' => \BC\Modules\Blog\Api\DataBuilder\Tag\TagDataBuilder::class,
 
         // modules/Blog/config/actions.yaml
         'BC\Modules\Blog\Core\Action\Post\ISavePostAction' => \BC\Modules\Blog\Core\Action\Post\SavePostAction::class,
@@ -194,5 +248,29 @@ namespace PHPSTORM_META
 
         // modules/Blog/config/routes.yaml
         'BC\Modules\Blog\Controller\Blog' => \BC\Modules\Blog\Controller\Blog::class,
+
+        // modules/Books/config/services.yaml
+        'BC\Modules\Books\Provider\BookFormat\IBookFormatProvider' => \BC\Modules\Books\Provider\BookFormat\BookFormatProvider::class,
+        'BC\Modules\Books\Core\Extractor\INotesExtractor' => \BC\Modules\Books\Core\Extractor\NotesExtractor::class,
+        'BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg' => \BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg::class,
+        'BC\Modules\Books\Controller\Books' => \BC\Modules\Books\Controller\Books::class,
+
+        // modules/Books/config/api/data-builders.yaml
+        'BC\Modules\Books\Api\DataBuilder\Book\IBookDataBuilder' => \BC\Modules\Books\Api\DataBuilder\Book\BookDataBuilder::class,
+        'BC\Modules\Books\Api\DataBuilder\Chapter\IChapterDataBuilder' => \BC\Modules\Books\Api\DataBuilder\Chapter\ChapterDataBuilder::class,
+
+        // modules/Games/config/services.yaml
+        'BC\Modules\Games\Controller\Games' => \BC\Modules\Games\Controller\Games::class,
+
+        // modules/Games/config/api/data-builders.yaml
+        'BC\Modules\Games\Api\DataBuilder\Game\IGameDataBuilder' => \BC\Modules\Games\Api\DataBuilder\Game\GameDataBuilder::class,
+        'BC\Modules\Games\Api\DataBuilder\GameMaterial\IGameMaterialDataBuilder' => \BC\Modules\Games\Api\DataBuilder\GameMaterial\GameMaterialDataBuilder::class,
+
+        // modules/Music/config/services.yaml
+        'BC\Modules\Music\Controller\Music' => \BC\Modules\Music\Controller\Music::class,
+
+        // modules/Music/config/api/data-builders.yaml
+        'BC\Modules\Music\Api\DataBuilder\Album\IAlbumDataBuilder' => \BC\Modules\Music\Api\DataBuilder\Album\AlbumDataBuilder::class,
+        'BC\Modules\Music\Api\DataBuilder\Track\ITrackDataBuilder' => \BC\Modules\Music\Api\DataBuilder\Track\TrackDataBuilder::class,
     ]));
 }

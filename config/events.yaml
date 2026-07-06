@@ -8,3 +8,8 @@ services:
     events:
       - event: 'kernel.init'
         method: onInit
+
+  BC\Event\Redirect:
+    events:
+      - event: 'kernel.init'
+        method: redirectIfNeeded

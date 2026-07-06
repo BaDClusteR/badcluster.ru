@@ -12,3 +12,7 @@ services:
     decorates: BC\Provider\IMenuItemsProvider
 
   BC\Modules\Music\Controller\Music: ~
+
+  BC\Modules\Music\Provider\SitemapPagesProvider:
+    tags:
+      - name: sitemap

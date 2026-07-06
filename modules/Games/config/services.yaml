@@ -12,3 +12,7 @@ services:
     decorates: BC\Provider\Admin\IPageProvider
 
   BC\Modules\Games\Controller\Games: ~
+
+  BC\Modules\Games\Provider\SitemapPagesProvider:
+    tags:
+      - name: sitemap

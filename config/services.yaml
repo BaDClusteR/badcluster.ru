@@ -85,6 +85,14 @@ services:
   BC\Provider\ICommentsProvider:
     class: BC\Provider\CommentsProvider
 
+  BC\Provider\ISitemapPagesProvider:
+    class: BC\Provider\SitemapPagesProvider
+    tags:
+      - name: sitemap
+
+  BC\Controller\Controller404:
+    decorates: Runway\Controller\IController404
+
 
   # Controllers
   BC\Controller\Index: ~

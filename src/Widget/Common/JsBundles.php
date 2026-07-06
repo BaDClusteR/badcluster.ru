@@ -9,6 +9,7 @@ use BC\Core\Trait\AssetBuilderTrait;
 use BC\Widget\Attribute\WidgetList;
 use BC\Widget\AWidget;
 use BC\Widget\Page\APage;
+use BC\Widget\Page\Page404;
 use Runway\Singleton\Container;
 
 #[WidgetList('body', priority: 100000)]
@@ -30,8 +31,14 @@ class JsBundles extends AWidget {
     }
 
     protected function getJsBundles(): array {
+        $coreScripts = [];
+
+        if (!($this->page instanceof Page404)) {
+            $coreScripts[] = 'scripts';
+        }
+
         return array_merge(
-            ['scripts'],
+            $coreScripts,
             (array) $this->page?->getJsBundles()
         );
     }

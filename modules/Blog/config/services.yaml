@@ -16,3 +16,7 @@ services:
 
   BC\Modules\Blog\Provider\IPostsProvider:
     class: BC\Modules\Blog\Provider\PostsProvider
+
+  BC\Modules\Blog\Provider\SitemapPagesProvider:
+    tags:
+      - name: sitemap
