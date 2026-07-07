@@ -131,7 +131,10 @@ export function useListController<T extends EntityRow>(options: ListControllerOp
   };
 
   const executeDeletion = async () => {
-    if (!apiEndpoint) return;
+    if (!apiEndpoint) {
+      notify.error("Ошибка", "Не задан apiEndpoint — удаление невозможно.");
+      return;
+    }
     setIsDeleting(true);
     try {
       await apiCall("DELETE", apiEndpoint, {

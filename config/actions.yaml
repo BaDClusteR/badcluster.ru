@@ -1,3 +1,18 @@
 services:
   BC\Core\Action\Comments\IGetCommentsAction:
     class: BC\Core\Action\Comments\GetCommentsAction
+
+  BC\Core\Action\Screenshot\ICreateScreenshotAction:
+    class: BC\Core\Action\Screenshot\CreateScreenshotAction
+
+  BC\Core\Action\Screenshot\ISaveScreenshotAction:
+    class: BC\Core\Action\Screenshot\SaveScreenshotAction
+
+  BC\Core\Action\Photo\ICreatePhotoAction:
+    class: BC\Core\Action\Photo\CreatePhotoAction
+
+  BC\Core\Action\Photo\ISavePhotoAction:
+    class: BC\Core\Action\Photo\SavePhotoAction
+
+  BC\Core\Action\Media\ISaveMediaAction:
+    class: BC\Core\Action\Media\SaveMediaAction

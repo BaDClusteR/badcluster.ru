@@ -23,7 +23,7 @@ readonly class ThumbnailGenerator implements IThumbnailGenerator {
      */
     public function generateThumbnails(Media $image, int $width, bool $force = false): array {
         $result = [];
-        $imagesPath = $this->pathProvider->getImagesPath();
+        $imagesPath = $image::getSubfolderPath();
         $fullPath = "$imagesPath/{$image->getPath()}";
         $sourceWidth = $image->getWidth();
 
@@ -61,7 +61,9 @@ readonly class ThumbnailGenerator implements IThumbnailGenerator {
                         mb_strlen("$imagesPath/")
                     );
 
-                    $model = new Media()
+                    // Тамбнейл создаем той же моделью (и в той же таблице), что и оригинал:
+                    // у Screenshot, например, своя таблица и своя папка
+                    $model = new ($image::class)()
                         ->setPath($path)
                         ->setWidth($thumbnailDTO->width)
                         ->setHeight($thumbnailDTO->height)

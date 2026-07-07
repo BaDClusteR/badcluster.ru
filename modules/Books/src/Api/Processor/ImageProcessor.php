@@ -77,7 +77,7 @@ readonly class ImageProcessor implements IImageProcessor {
      * @throws ImageException
      */
     private function makeJpgThumbnail(Media $image, int $width): void {
-        $imagesPath = $this->pathProvider->getImagesPath();
+        $imagesPath = $image::getSubfolderPath();
 
         $thumbnail = $this->jpgProcessor->getThumbnail(
             "$imagesPath/{$image->getPath()}",

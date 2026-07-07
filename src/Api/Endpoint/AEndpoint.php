@@ -74,7 +74,9 @@ abstract class AEndpoint {
                 $columnsToFind
             );
 
-            $qb->andWhere(implode(' OR ', $filterParts))
+            // Скобки обязательны: перед фильтром в запросе уже может стоять
+            // другое условие, и OR без скобок сломает приоритет
+            $qb->andWhere('(' . implode(' OR ', $filterParts) . ')')
                ->setVariable('filter', "%$filter%");
         }
 

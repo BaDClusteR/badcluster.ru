@@ -7,12 +7,10 @@ namespace BC\Model;
 use BC\Core\DTO\MediaDTO;
 use BC\Core\DTO\MediaThumbnailDTO;
 use BC\Core\Media\IThumbnailGenerator;
-use BC\Core\Media\PostProcessor\IImagePostprocessor;
 use BC\Core\Trait\FileSystemTrait;
 use BC\Core\Trait\LoggerTrait;
 use BC\Core\Trait\PathsProviderTrait;
 use BC\Generator\IThumbnailsGenerator;
-use BC\Provider\IPathsProvider;
 use Runway\DataStorage\Attribute as DS;
 use Runway\Exception\Exception;
 use Runway\FileSystem\Exception\CannotDeleteFileException;
@@ -89,19 +87,31 @@ class Media extends AEntity {
 
     protected static ?string $imagesPath = null;
 
+    public static function getSubfolder(): string {
+        return 'media';
+    }
+
+    public static function getSubfolderPath(): string {
+        return static::getPathsProviderStatic()->getStaticPath() . '/' . static::getSubfolder();
+    }
+
+    public static function getSubfolderUrl(): string {
+        return static::getPathsProviderStatic()->getStaticWebPath() . '/' . static::getSubfolder();
+    }
+
     /**
      * @return self[][]
      */
-    public function generateThumbnails(array $widths, bool $force = false): array {
-        return $this->getThumbnailsGenerator()->generateThumbnails($this, $widths, $force);
+    public function generateThumbnails(array $widths, bool $force = false, bool $postprocess = true): array {
+        return $this->getThumbnailsGenerator()->generateThumbnails($this, $widths, $force, $postprocess);
     }
 
     /**
      * @param int[] $widths
      */
-    public function tryGenerateThumbnails(array $widths): void {
+    public function tryGenerateThumbnails(array $widths, bool $force = false, bool $postprocess = true): void {
         try {
-            $this->generateThumbnails($widths);
+            $this->generateThumbnails($widths, $force, $postprocess);
         } catch (Throwable $e) {
             $this->getLogger()->warning(
                 "Thumbnail generation failed for media {$this->getPath()}: {$e->getMessage()}",
@@ -117,22 +127,27 @@ class Media extends AEntity {
         return $this->getThumbnailGenerator()->generateThumbnails($this, $width, $force);
     }
 
-    protected function getImagesPath(): string {
-        static::$imagesPath ??= $this->getPathsProvider()->getImagesPath();
-
-        return static::$imagesPath;
-    }
-
-    protected function getFullPath(): string {
-        return "{$this->getImagesPath()}/{$this->getPath()}";
-    }
-
     /**
      * @return self[]
      */
     public function getThumbnails(): array {
         try {
-            return static::find(['parent' => $this]);
+            // parent_id не выбираем намеренно: при гидрации ссылка на родителя
+            // резолвится по объявленному типу (Media), и для наследников с другой
+            // таблицей (Screenshot) родитель ищется не в той таблице
+            $columns = array_map(
+                static fn ($prop): string => $prop->getColumn(),
+                array_filter(
+                    $this->getProps(),
+                    static fn ($prop): bool => $prop->getPropName() !== 'parent'
+                )
+            );
+
+            return static::getQueryBuilder()
+                         ->select(implode(', ', $columns))
+                         ->where('parent_id = :parentId')
+                         ->setVariable('parentId', $this->getId())
+                         ->getEntities();
         } catch (Exception $e) {
             $this->getLogger()->warning("Cannot get thumbnails for image #{$this->getId()}: {$e->getMessage()}");
 
@@ -153,9 +168,9 @@ class Media extends AEntity {
         }
 
         try {
-            $this->getFileSystem()->remove($this->getFullPath());
+            $this->getFileSystem()->remove($this->getLocalPath());
         } catch (CannotDeleteFileException $e) {
-            $this->getLogger()->warning("Cannot delete media file {$this->getFullPath()}: {$e->getMessage()}");
+            $this->getLogger()->warning("Cannot delete media file {$this->getLocalPath()}: {$e->getMessage()}");
         }
 
         parent::remove();
@@ -170,15 +185,11 @@ class Media extends AEntity {
     }
 
     public function getWebPath(): string {
-        return $this->getPathsProvider()->getImagesWebPath() . '/' . $this->getPath();
+        return static::getSubfolderUrl() . '/' . $this->getPath();
     }
 
     public function getLocalPath(): string {
-        return $this->getPathsProvider()->getImagesPath() . '/' . $this->getPath();
-    }
-
-    protected function getPathsProvider(): IPathsProvider {
-        return Container::getInstance()->getService(IPathsProvider::class);
+        return static::getSubfolderPath() . '/' . $this->getPath();
     }
 
     protected function getThumbnailsGenerator(): IThumbnailsGenerator {
@@ -187,10 +198,6 @@ class Media extends AEntity {
 
     protected function getThumbnailGenerator(): IThumbnailGenerator {
         return Container::getInstance()->getService(IThumbnailGenerator::class);
-    }
-
-    protected function getImagePostprocessor(): IImagePostprocessor {
-        return Container::getInstance()->getService(IImagePostprocessor::class);
     }
 
     public function toMediaDTO(): MediaDTO {

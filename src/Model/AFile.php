@@ -62,7 +62,7 @@ abstract class AFile extends AEntity {
         $newFilename = $fileSystem->copy($filePath, "$dir/$filename");
 
         return new static()
-            ->setPath(static::getFolderRelativePath() . '/' . basename($newFilename))
+            ->setPath(basename($newFilename))
             ->setMime($mime ?: mime_content_type($filePath))
             ->setSize(filesize($filePath))
             ->setHash(md5_file($filePath));
@@ -73,11 +73,15 @@ abstract class AFile extends AEntity {
     }
 
     protected static function getFolderRelativePath(): string {
-        return static::getSubfolder() . '/' . date('Y');
+        return static::getSubfolder();
+    }
+
+    protected static function getFolderUrl(): string {
+        return static::getPathsProviderStatic()->getStaticWebPath() . '/' . static::getFolderRelativePath();
     }
 
     public function getUrl(): string {
-        return $this->getPathsProvider()->getStaticWebPath() . '/' . $this->getPath();
+        return static::getFolderUrl() . '/' . $this->getPath();
     }
 
     public function toFileDTO(): FileDTO {
@@ -94,7 +98,7 @@ abstract class AFile extends AEntity {
     }
 
     public function getLocalPath(): string {
-        return $this->getPathsProvider()->getStaticPath() . '/' . $this->path;
+        return static::getFolderPath() . '/' . $this->path;
     }
 
     public function remove(): void {

@@ -2,6 +2,7 @@ import {lazy, type ReactNode, useEffect, useRef, useState} from "react";
 import {
   Grid,
   Group,
+  MultiSelect,
   NumberInput,
   Paper,
   Select,
@@ -33,6 +34,7 @@ import classes from "./EntityForm.module.css";
 import Button from "@/components/primitives/Button.tsx";
 import Slug from "@/components/primitives/Slug.tsx";
 import {ImageField} from "./fields/ImageField";
+import {SimpleImageField} from "./fields/SimpleImageField";
 import {FileField} from "./fields/FileField";
 import FieldGroup from "./FieldGroup";
 import type {EntityFormComponents} from "@admin/types";
@@ -334,6 +336,25 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
             error={form.errors[field.name as string]}
           />
         );
+      case "multiselect": {
+        const options = (
+          typeof field.options === "function"
+            ? field.options(context)
+            : field.options
+        ) ?? [];
+        const value = form.values[field.name] as string[] ?? [];
+        return (
+          <MultiSelect
+            {...common}
+            data={options}
+            // Пока опции не подгрузились, value отдаем пустым — иначе Mantine
+            // не отрисует пиллы для значений, которых нет в data
+            value={options.length ? value : []}
+            onChange={(val) => form.setFieldValue(field.name as string, val as never)}
+            error={form.errors[field.name as string]}
+          />
+        );
+      }
       case "switch":
         return (
           <Switch
@@ -394,6 +415,18 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
             thumbnailHeight={field.thumbnailHeight}
             uploadPurpose={field.uploadPurpose}
             showAlt={field.showAlt}
+          />
+        );
+      case "simpleImage":
+        return (
+          <SimpleImageField
+            label={field.label}
+            description={field.hint}
+            withAsterisk={field.required}
+            error={form.errors[field.name as string]}
+            value={form.values[field.name] as any}
+            onChange={(media) => form.setFieldValue(field.name as string, media as never)}
+            uploadPurpose={field.uploadPurpose}
           />
         );
       case "file":
@@ -522,11 +555,13 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
       text: 36,
       number: 36,
       select: 36,
+      multiselect: 36,
       textarea: 80,
       switch: 24,
       blocks: 200,
       datetime: 36,
       image: 120,
+      simpleImage: 120,
       file: 48,
       json: 200
     };

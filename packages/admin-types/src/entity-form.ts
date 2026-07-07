@@ -18,7 +18,9 @@ export type FieldType =
   | "datetime"
   | "group"
   | "slug"
-  | "image";
+  | "image"
+  | "simpleImage"
+  | "multiselect";
 
 export interface EntityFormComponents {
   BlocksField: ComponentType<{
@@ -90,6 +92,13 @@ export interface FieldDefSelect<T> extends FieldDefBase<T>, FieldDefNamed<T> {
   options?: SelectOption[];
 }
 
+export interface FieldDefMultiSelect<T, C = unknown> extends FieldDefBase<T>, FieldDefNamed<T> {
+  type: "multiselect";
+  placeholder?: string;
+  /** Статичный список опций или функция от контекста формы (для динамически подгружаемых списков). */
+  options?: SelectOption[] | ((context: Optional<C>) => SelectOption[] | undefined);
+}
+
 export interface FieldDefHeading<T> extends FieldDefBase<T> {
   type: "heading";
   label: string;
@@ -114,6 +123,11 @@ export interface FieldDefImage<T> extends FieldDefBase<T>, FieldDefNamed<T> {
   thumbnailHeight?: number;
   uploadPurpose?: string;
   showAlt?: boolean;
+}
+
+export interface FieldDefSimpleImage<T> extends FieldDefBase<T>, FieldDefNamed<T> {
+  type: "simpleImage";
+  uploadPurpose?: string;
 }
 
 export interface FieldDefFile<T> extends FieldDefBase<T>, FieldDefNamed<T> {
@@ -142,10 +156,12 @@ export type FieldDef<T, C = unknown> =
   | FieldDefCommon<T>
   | FieldDefGroup<T, C>
   | FieldDefSelect<T>
+  | FieldDefMultiSelect<T, C>
   | FieldDefHeading<T>
   | FieldDefDateTime<T>
   | FieldDefSlug<T, C>
   | FieldDefImage<T>
+  | FieldDefSimpleImage<T>
   | FieldDefFile<T>
   | FieldDefJson<T>
   | FieldDefSpacer<T>

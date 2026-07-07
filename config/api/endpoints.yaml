@@ -10,3 +10,19 @@ services:
   BC\Api\Endpoint\CommentsModeration:
     tags:
       - name: api_endpoint_collection
+
+  BC\Api\Endpoint\Screenshots:
+    tags:
+      - name: api_endpoint_collection
+
+  BC\Api\Endpoint\Photos:
+    tags:
+      - name: api_endpoint_collection
+
+  BC\Api\Endpoint\PhotoTags:
+    tags:
+      - name: api_endpoint_collection
+
+  BC\Api\Endpoint\MediaLibrary:
+    tags:
+      - name: api_endpoint_collection

@@ -21,18 +21,20 @@ interface ImageFieldProps {
   showAlt?: boolean;
 }
 
-export function ImageField({
-                             label,
-                             description,
-                             withAsterisk,
-                             error,
-                             value,
-                             onChange,
-                             thumbnailWidth,
-                             thumbnailHeight,
-                             showAlt = false,
-                             uploadPurpose
-                           }: ImageFieldProps) {
+export function ImageField(
+  {
+    label,
+    description,
+    withAsterisk,
+    error,
+    value,
+    onChange,
+    thumbnailWidth,
+    thumbnailHeight,
+    showAlt = false,
+    uploadPurpose
+  }: ImageFieldProps
+) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);

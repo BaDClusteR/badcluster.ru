@@ -25,7 +25,6 @@ use Throwable;
 class Upload extends AEndpoint {
     public function __construct(
         private readonly IFileSystem $fileSystem,
-        private readonly IPathsProvider $pathsProvider,
         private readonly ILogger $logger,
         private readonly IMediaConverter $mediaConverter,
         private readonly IImageProcessor $imageProcessor
@@ -138,7 +137,7 @@ class Upload extends AEndpoint {
     }
 
     private function getImagesFolder(): string {
-        $imagesRoot = $this->pathsProvider->getImagesPath();
+        $imagesRoot = Media::getSubfolderPath();
 
         $relativePath = $this->getRelativeImagesFolder();
         $result = "$imagesRoot/$relativePath";

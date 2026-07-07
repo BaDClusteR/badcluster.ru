@@ -107,7 +107,6 @@ class Picture extends AWidget {
         }
 
         $thumbnail = $this->image->getThumbnail($width, $mime);
-        $imagesWebRoot = $this->getPathsProvider()->getImagesWebPath();
 
         if ($this->retina) {
             $thumbnail2x = $this->image->getThumbnail($width * 2, $mime);
@@ -123,14 +122,14 @@ class Picture extends AWidget {
             }
 
             $srcset = $thumbnail
-                ? "$imagesWebRoot/{$thumbnail->getPath()} 1x, $imagesWebRoot/{$thumbnail2x->getPath()} 2x"
-                : "$imagesWebRoot/{$thumbnail2x->getPath()}";
+                ? "{$thumbnail->getWebPath()} 1x, {$thumbnail2x->getWebPath()} 2x"
+                : $thumbnail2x->getWebPath();
         } else {
             if (!$thumbnail) {
                 return '';
             }
 
-            $srcset = "$imagesWebRoot/{$thumbnail->getPath()}";
+            $srcset = $thumbnail->getWebPath();
         }
 
         $media = '';

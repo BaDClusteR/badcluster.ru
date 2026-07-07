@@ -9,3 +9,52 @@
   color: var(--color-text-secondary);
   font-style: italic;
 }
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-md);
+  flex-wrap: wrap;
+  min-height: calc(2.25 * var(--rhythmic-unit));
+  margin-top: var(--mantine-spacing-lg);
+}
+
+.footerInfo {
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+}
+
+.skeletonPagination {
+  width: auto;
+}
+
+button.paginationButton {
+  background: transparent;
+  border: var(--border-width) solid var(--color-accent);
+  color: var(--color-accent);
+
+  &:not([disabled]) {
+    &:hover,
+    &:focus,
+    &:active {
+      border-color: var(--color-accent);
+      background-color: var(--color-accent);
+      color: var(--color-anti-contrast);
+    }
+  }
+
+  &[disabled] {
+    opacity: .2;
+  }
+
+  &[data-active="true"] {
+    &,
+    &:hover,
+    &:focus-visible,
+    &:active {
+      border-color: var(--color-accent);
+      background-color: var(--color-accent);
+      color: var(--color-button-text);
+    }
+  }
+}

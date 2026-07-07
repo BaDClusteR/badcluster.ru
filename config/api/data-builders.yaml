@@ -1,3 +1,12 @@
 services:
   BC\Api\DataBuilder\Comment\ICommentDataBuilder:
     class: BC\Api\DataBuilder\Comment\CommentDataBuilder
+
+  BC\Api\DataBuilder\Screenshot\IScreenshotDataBuilder:
+    class: BC\Api\DataBuilder\Screenshot\ScreenshotDataBuilder
+
+  BC\Api\DataBuilder\Photo\IPhotoDataBuilder:
+    class: BC\Api\DataBuilder\Photo\PhotoDataBuilder
+
+  BC\Api\DataBuilder\Media\IMediaDataBuilder:
+    class: BC\Api\DataBuilder\Media\MediaDataBuilder

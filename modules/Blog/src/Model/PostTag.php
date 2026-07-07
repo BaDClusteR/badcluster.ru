@@ -11,10 +11,10 @@ use Runway\Model\AEntity;
  * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
- * @method \BC\Modules\Blog\Model\Post getPost()
- * @method self setPost(\BC\Modules\Blog\Model\Post $post)
- * @method \BC\Modules\Blog\Model\Tag getTag()
- * @method self setTag(\BC\Modules\Blog\Model\Tag $tag)
+ * @method Post getPost()
+ * @method self setPost(Post $post)
+ * @method Tag getTag()
+ * @method self setTag(Tag $tag)
  */
 #[DS\Table('post_tags')]
 class PostTag extends AEntity {

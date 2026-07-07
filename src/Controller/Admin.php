@@ -67,9 +67,7 @@ readonly class Admin {
             return $this->jsonResponse(400, ['error' => "Unsupported MIME type: $mime"]);
         }
 
-        /** @var IPathsProvider $paths */
-        $paths = Container::getInstance()->getService(IPathsProvider::class);
-        $imagesRoot = $paths->getImagesPath();
+        $imagesRoot = Media::getSubfolderPath();
 
         $year = date('Y');
         $yearDir = "$imagesRoot/$year";
