@@ -1,4 +1,4 @@
-import Lightbox from './lightbox.js';
+import Lightbox from '../lib/lightbox.min.js';
 
 class PhotoStorage extends Singleton {
     /**

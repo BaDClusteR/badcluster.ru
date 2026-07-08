@@ -26,10 +26,6 @@ class HistoryPage extends APageNoIndexed {
         return "История одного сайта: $age эволюции badcluster.ru";
     }
 
-    public function getMetaDescription(): string {
-        return '';
-    }
-
     public function getCanonicalUrl(): string {
         return '/history';
     }

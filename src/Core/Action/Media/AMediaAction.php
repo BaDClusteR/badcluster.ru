@@ -18,7 +18,7 @@ abstract class AMediaAction {
     use FileSystemTrait;
 
     /** Ширины тамбнейлов, которые генерируются для каждой картинки. */
-    protected const array THUMBNAIL_WIDTHS = [500, 1000];
+    protected const array THUMBNAIL_WIDTHS = [500, 1000, 2000];
 
     /**
      * Принудительно генерирует тамбнейлы. Postprocess отключен,

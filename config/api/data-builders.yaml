@@ -10,3 +10,15 @@ services:
 
   BC\Api\DataBuilder\Media\IMediaDataBuilder:
     class: BC\Api\DataBuilder\Media\MediaDataBuilder
+
+  BC\Api\DataBuilder\Redirect\IRedirectDataBuilder:
+    class: BC\Api\DataBuilder\Redirect\RedirectDataBuilder
+
+  BC\Api\DataBuilder\Fact\IFactDataBuilder:
+    class: BC\Api\DataBuilder\Fact\FactDataBuilder
+
+  BC\Api\DataBuilder\PhotoTag\IPhotoTagDataBuilder:
+    class: BC\Api\DataBuilder\PhotoTag\PhotoTagDataBuilder
+
+  BC\Api\DataBuilder\PulseItem\IPulseItemDataBuilder:
+    class: BC\Api\DataBuilder\PulseItem\PulseItemDataBuilder

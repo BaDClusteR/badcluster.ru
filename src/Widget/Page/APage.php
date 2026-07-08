@@ -92,7 +92,7 @@ abstract class APage extends AWidget implements IAssetProvider {
     }
 
     public function getCssBundles(): array {
-        return ['core'];
+        return ['core', 'noscript'];
     }
 
     public function getCriticalJsBundles(): array {

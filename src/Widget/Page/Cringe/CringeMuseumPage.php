@@ -12,10 +12,6 @@ class CringeMuseumPage extends APageNoIndexed {
         return '';
     }
 
-    public function getMetaDescription(): string {
-        return '';
-    }
-
     public function getCanonicalUrl(): string {
         return '/cringe';
     }

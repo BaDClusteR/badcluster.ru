@@ -38,10 +38,39 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 icon: 'dashboard',
             ),
             new NavigationDTO(
+                label: 'Медиа',
+                path: '',
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/media.svg'),
+                position: 9900,
+                children: [
+                    new NavigationDTO(
+                        label: 'Скриншоты',
+                        path: '/admin/screenshots',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/joystick.svg')
+                    ),
+                    new NavigationDTO(
+                        label: 'Фотки',
+                        path: '/admin/photos',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/photo.svg')
+                    ),
+                    new NavigationDTO(
+                        label: 'Медиатека',
+                        path: '/admin/media',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/media.svg')
+                    )
+                ]
+            ),
+            new NavigationDTO(
                 label: 'Комментарии',
                 path: '/admin/comments',
                 icon: 'message',
-                position: 1000
+                position: 10000
+            ),
+            new NavigationDTO(
+                label: 'Редиректы',
+                path: '/admin/redirects',
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/redirect.svg'),
+                position: 11000
             )
         ];
     }

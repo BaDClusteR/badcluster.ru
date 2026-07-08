@@ -8,19 +8,22 @@ const FIELDS: FieldDef<Screenshot>[] = [
     type: "simpleImage",
     uploadPurpose: "screenshot",
     required: true,
-    span: "full"
+    span: "full",
+    role: "primary"
   },
   {
     name: "alt",
     label: "Подпись",
     type: "text",
-    span: "full"
+    span: "full",
+    role: "primary"
   },
   {
     name: "position",
     label: "Позиция",
     type: "number",
-    hint: "Если не указывать, скриншот встанет в начало"
+    hint: "Если не указывать, скриншот встанет в начало",
+    role: "primary"
   }
 ];
 

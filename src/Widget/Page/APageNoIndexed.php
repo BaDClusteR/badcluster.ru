@@ -12,4 +12,8 @@ abstract class APageNoIndexed extends APage {
 
         return $tags;
     }
+
+    public function getMetaDescription(): string {
+        return '';
+    }
 }

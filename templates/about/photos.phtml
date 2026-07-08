@@ -1,0 +1,20 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Widget\Page\Photos\Photos $this */
+$photoWidget = new \BC\Widget\Page\Photos\Photo();
+?>
+<div class="photo__filters">
+    <button class="photo__filter active" data-filter="all">Все</button>
+    <?php foreach ($this->getPhotoTagsIterator() as $tag) : ?>
+        <button class="photo__filter" data-filter="<?=$tag->getId()?>"><?=$tag->getTitle()?></button>
+    <?php endforeach; ?>
+</div>
+<ul class="photos photos--real list--block">
+    <?php foreach ($this->getPhotosIterator() as $i => $photo): ?>
+        <?=$photoWidget->render([
+            'photo'    => new \BC\Model\Photo()->map($photo),
+            'position' => $i
+        ])?>
+    <?php endforeach; ?>
+</ul>

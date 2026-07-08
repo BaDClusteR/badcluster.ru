@@ -149,6 +149,19 @@ class Theme extends Singleton {
             }
         );
 
+        // При возврате на страницу из BF cache DOM восстанавливается с тем
+        // data-theme, который был на момент ухода — переприменяем актуальную тему
+        window.addEventListener(
+            'pageshow',
+            (event) => {
+                if (event.persisted) {
+                    this.set(
+                        this.get(true)
+                    );
+                }
+            }
+        );
+
         autoSetTheme(this.#mediaMatcher.matches);
     }
 

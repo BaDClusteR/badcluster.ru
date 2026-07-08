@@ -7,6 +7,7 @@ export default function Comments() {
   return <List<CommentRow>
     name="comments"
     columns={columns}
+    permissions={{add: false, edit: true, delete: true, select: true, filter: true}}
     labels={{
       title: "Комментарии",
       deleteConfirmation: {

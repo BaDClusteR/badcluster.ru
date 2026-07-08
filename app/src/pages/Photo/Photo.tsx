@@ -13,10 +13,10 @@ export default function PhotoPage() {
   const isCreateMode = !id;
 
   const {data} = useQuery({
-    queryKey: ["photo_tags"],
+    queryKey: ["photo_tag_options"],
     queryFn: ({signal}) => apiCall(
       "GET",
-      "photo_tags",
+      "photo_tag_options",
       {},
       {signal}
     )

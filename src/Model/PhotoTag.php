@@ -13,6 +13,8 @@ use Runway\Model\AEntity;
  * @method self setId(int $id)
  * @method string getTitle()
  * @method self setTitle(string $title)
+ * @method int getPosition()
+ * @method self setPosition(int $position)
  */
 #[DS\Table('photo_tags')]
 class PhotoTag extends AEntity {
@@ -21,4 +23,7 @@ class PhotoTag extends AEntity {
 
     #[DS\Column]
     protected string $title = '';
+
+    #[DS\Column]
+    protected int $position = 0;
 }

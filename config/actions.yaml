@@ -16,3 +16,27 @@ services:
 
   BC\Core\Action\Media\ISaveMediaAction:
     class: BC\Core\Action\Media\SaveMediaAction
+
+  BC\Core\Action\Redirect\ICreateRedirectAction:
+    class: BC\Core\Action\Redirect\CreateRedirectAction
+
+  BC\Core\Action\Redirect\ISaveRedirectAction:
+    class: BC\Core\Action\Redirect\SaveRedirectAction
+
+  BC\Core\Action\Fact\ICreateFactAction:
+    class: BC\Core\Action\Fact\CreateFactAction
+
+  BC\Core\Action\Fact\ISaveFactAction:
+    class: BC\Core\Action\Fact\SaveFactAction
+
+  BC\Core\Action\PhotoTag\ICreatePhotoTagAction:
+    class: BC\Core\Action\PhotoTag\CreatePhotoTagAction
+
+  BC\Core\Action\PhotoTag\ISavePhotoTagAction:
+    class: BC\Core\Action\PhotoTag\SavePhotoTagAction
+
+  BC\Core\Action\PulseItem\ICreatePulseItemAction:
+    class: BC\Core\Action\PulseItem\CreatePulseItemAction
+
+  BC\Core\Action\PulseItem\ISavePulseItemAction:
+    class: BC\Core\Action\PulseItem\SavePulseItemAction

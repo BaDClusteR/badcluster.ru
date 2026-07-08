@@ -22,7 +22,7 @@ class Header extends AWidget implements IAssetProvider {
 
     public static function getAssets(): array {
         return [
-            new AssetDTO('core', 'css/header.css')
+            new AssetDTO('core', 'css/common/header.css')
         ];
     }
 

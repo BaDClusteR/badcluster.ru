@@ -1,0 +1,71 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Widget\Page\Photos\Photo $this */
+$photo = $this->getPhoto();
+if ($photo) {
+    $localPath = $photo->getLocalPath();
+    $webDir = dirname($photo->getWebPath());
+    $basename = pathinfo($localPath, PATHINFO_FILENAME);
+    $ext = pathinfo($localPath, PATHINFO_EXTENSION);
+    $position = $this->getPosition();
+    $caption = $photo->getAlt();
+}
+?>
+<?php if ($photo) : ?>
+    <?php $tags = $photo->getTags(); ?>
+    <li
+        class="photo"
+        id="photo-<?=$position + 1?>"
+        <?php if ($tags) : ?>
+            data-category="<?=implode(',', array_map(static fn (\BC\Model\PhotoTag $tag) => $tag->getId(), $tags))?>"
+        <?php endif; ?>
+    >
+        <figure class="photo__figure">
+            <a
+                href="<?=$photo->getWebPath()?>"
+                class="photo__link lightbox"
+                data-pswp-width="<?=$photo->getWidth()?>"
+                data-pswp-height="<?=$photo->getHeight()?>"
+            >
+                <picture class="photo__picture">
+                    <source
+                        srcset="<?=$webDir?>/<?=$basename?>-w500.avif 1x, <?=$webDir?>/<?=$basename?>-w1000.avif 2x"
+                        type="image/avif"
+                        media="(width < 470px)"
+                    />
+                    <source
+                        srcset="<?=$webDir?>/<?=$basename?>-w500.webp 1x, <?=$webDir?>/<?=$basename?>-w1000.webp 2x"
+                        type="image/webp"
+                        media="(width < 470px)"
+                    />
+                    <source
+                        srcset="<?=$webDir?>/<?=$basename?>-w1000.avif 1x, <?=$webDir?>/<?=$basename?>-w2000.avif 2x"
+                        type="image/avif"
+                        media="(width >= 470px)"
+                    />
+                    <source
+                        srcset="<?=$webDir?>/<?=$basename?>-w1000.webp 1x, <?=$webDir?>/<?=$basename?>-w2000.webp 2x"
+                        type="image/webp"
+                        media="(width >= 470px)"
+                    />
+                    <img
+                        src="<?=$photo->getWebPath()?>"
+                        width="<?=$photo->getWidth()?>"
+                        height="<?=$photo->getHeight()?>"
+                        alt="<?=$caption?>"
+                        <?php if ($position >= 3) : ?>
+                            loading="lazy"
+                        <?php elseif ($position === 0) : ?>
+                            fetchpriority="high"
+                        <?php endif; ?>
+                    />
+                </picture>
+            </a>
+            <figcaption class="photo__overlay">
+                <span class="photo__title"><?=$caption?></span>
+            </figcaption>
+        </figure>
+    </li>
+    <!-- /photo-<?=$position + 1?> -->
+<?php endif; ?>

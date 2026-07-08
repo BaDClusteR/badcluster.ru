@@ -30,3 +30,11 @@ routes:
   sitemap:
     path: /sitemap.xml
     controller: BC\Controller\Sitemap::renderSitemap
+
+  screenshots:
+    path: /screenshots
+    controller: BC\Controller\About::renderScreenshots
+
+  photos:
+    path: /photo
+    controller: BC\Controller\About::renderPhotos

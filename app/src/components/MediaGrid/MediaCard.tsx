@@ -29,7 +29,17 @@ export function MediaCard<T extends MediaItem>({item, ctrl, info}: MediaCardProp
         style={{cursor: "pointer"}}
         onClick={() => ctrl.navigateToEdit(item)}
       >
-        <Image src={item.url} height={140} alt={`#${item.id}`}/>
+        {item.mime?.startsWith("video/") ? (
+          <video
+            src={item.url}
+            preload="metadata"
+            muted
+            playsInline
+            style={{display: "block", width: "100%", height: 140, objectFit: "cover"}}
+          />
+        ) : (
+          <Image src={item.url} height={140} alt={`#${item.id}`}/>
+        )}
       </Card.Section>
 
       <Group justify="space-between" mt="xs">

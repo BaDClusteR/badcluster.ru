@@ -52,7 +52,9 @@ class HomePage extends APage {
             new AssetDTO('core', 'css/core/style.css', 0),
             new AssetDTO('core', 'css/core/tooltip.css', 100),
 
-            new AssetDTO('footer', 'css/footer.css')
+            new AssetDTO('noscript', 'css/noscript.css'),
+
+            new AssetDTO('footer', 'css/common/footer.css')
         ];
     }
 }

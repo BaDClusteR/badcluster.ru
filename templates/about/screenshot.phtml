@@ -1,0 +1,63 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Widget\Page\Screenshots\Screenshot $this */
+$screenshot = $this->getScreenshot();
+if ($screenshot) {
+    $localPath = $screenshot->getLocalPath();
+    $webDir = dirname($screenshot->getWebPath());
+    $basename = pathinfo($localPath, PATHINFO_FILENAME);
+    $ext = pathinfo($localPath, PATHINFO_EXTENSION);
+    $position = $this->getPosition();
+    $caption = $screenshot->getAlt();
+}
+?>
+<?php if ($screenshot) : ?>
+    <li class="photo">
+        <figure class="photo__figure">
+            <a
+                href="<?=$screenshot->getWebPath()?>"
+                class="photo__link lightbox"
+                data-pswp-width="<?=$screenshot->getWidth()?>"
+                data-pswp-height="<?=$screenshot->getHeight()?>"
+            >
+                <picture class="photo__picture">
+                    <source
+                        srcset="<?=$webDir?>/<?=$basename?>-w500.avif 1x, <?=$webDir?>/<?=$basename?>-w1000.avif 2x"
+                        type="image/avif"
+                        media="(width < 470px)"
+                    />
+                    <source
+                        srcset="<?=$webDir?>/<?=$basename?>-w500.webp 1x, <?=$webDir?>/<?=$basename?>-w1000.webp 2x"
+                        type="image/webp"
+                        media="(width < 470px)"
+                    />
+                    <source
+                        srcset="<?=$webDir?>/<?=$basename?>-w1000.avif 1x, <?=$webDir?>/<?=$basename?>-w2000.avif 2x"
+                        type="image/avif"
+                        media="(width >= 470px)"
+                    />
+                    <source
+                        srcset="<?=$webDir?>/<?=$basename?>-w1000.webp 1x, <?=$webDir?>/<?=$basename?>-w2000.webp 2x"
+                        type="image/webp"
+                        media="(width >= 470px)"
+                    />
+                    <img
+                        src="<?=$screenshot->getWebPath()?>"
+                        width="<?=$screenshot->getWidth()?>"
+                        height="<?=$screenshot->getHeight()?>"
+                        alt="<?=$caption?>"
+                        <?php if ($position >= 3) : ?>
+                            loading="lazy"
+                        <?php elseif ($position === 0) : ?>
+                            fetchpriority="high"
+                        <?php endif; ?>
+                    />
+                </picture>
+            </a>
+            <figcaption class="photo__overlay">
+                <span class="photo__title"><?=$caption?></span>
+            </figcaption>
+        </figure>
+    </li>
+<?php endif; ?>

@@ -100,11 +100,11 @@ export function SimpleImageField(
       <div className={classes.container}>
         {hasImage ? (
           /* Image preview with overlay */
-          <div className={classes.preview}>
+          <div className={`${classes.preview} ${classes.previewFit}`}>
             <img
               src={previewSrc}
               alt=""
-              className={uploading ? classes.imgUploading : classes.img}
+              className={`${uploading ? classes.imgUploading : classes.img} ${classes.imgFit}`}
             />
 
             {/* Upload progress */}

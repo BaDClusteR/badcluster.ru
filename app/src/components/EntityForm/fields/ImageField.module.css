@@ -74,6 +74,18 @@
   transition: filter var(--transition);
 }
 
+/* SimpleImageField: превью обнимает картинку — оверлей и контролы
+   не разъезжаются на всю ширину формы, если картинка узкая */
+.previewFit {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.imgFit {
+  width: auto;
+  max-width: 100%;
+}
+
 /* Progress bar */
 .progressBar {
   position: absolute;
@@ -102,15 +114,31 @@
   background: rgb(0 0 0 / 50%);
   border: none;
   border-radius: var(--border-radius);
-  color: #fff;
   cursor: pointer;
   opacity: 0;
   transition: opacity var(--transition-fast);
   z-index: 1;
+  text-decoration: none;
+
+  &,
+  &:visited {
+    &,
+    &:hover,
+    &:focus-visible {
+      color: #FFF;
+    }
+  }
 }
 
-.preview:hover .overlay {
-  opacity: 1;
+.preview:hover,
+.preview:has(:focus-visible) {
+  .overlay {
+    opacity: 1;
+  }
+
+  .topActions {
+    opacity: 1;
+  }
 }
 
 .overlayIcon svg {
@@ -135,10 +163,6 @@
   z-index: 2;
 }
 
-.preview:hover .topActions {
-  opacity: 1;
-}
-
 .topActionBtn {
   display: flex;
   align-items: center;
@@ -149,13 +173,15 @@
   border: none;
   border-radius: var(--border-radius-small);
   background: rgb(0 0 0 / 60%);
-  color: #fff;
+  color: #FFF;
   cursor: pointer;
   transition: background var(--transition-fast);
   text-decoration: none;
 }
 
-.topActionBtn:hover {
+.topActionBtn:hover,
+.topActionBtn:focus-visible,
+.topActionBtn:active {
   background: rgb(0 0 0 / 85%);
 }
 

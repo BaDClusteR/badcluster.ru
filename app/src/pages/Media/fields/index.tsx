@@ -8,18 +8,21 @@ const FIELDS: FieldDef<MediaFile, MediaContext>[] = [
   {
     type: "group",
     span: "full",
-    render: (_form, options) => <MediaPreview url={options.context?.url} mime={options.context?.mime}/>
+    render: (_form, options) => <MediaPreview url={options.context?.url} mime={options.context?.mime}/>,
+    role: "primary"
   },
   {
     type: "group",
     span: "full",
+    role: "primary",
     render: (form) => <MediaDimensions form={form}/>
   },
   {
     name: "alt",
     label: "Alt текст",
     type: "text",
-    span: "full"
+    span: "full",
+    role: "primary"
   },
   {
     type: "group",

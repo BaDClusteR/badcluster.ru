@@ -1,0 +1,16 @@
+.image {
+  display: block;
+  width: 64px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.text {
+  display: -webkit-box;
+  overflow-wrap: break-word;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

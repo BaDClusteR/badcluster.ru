@@ -26,3 +26,15 @@ services:
   BC\Api\Endpoint\MediaLibrary:
     tags:
       - name: api_endpoint_collection
+
+  BC\Api\Endpoint\Redirects:
+    tags:
+      - name: api_endpoint_collection
+
+  BC\Api\Endpoint\Facts:
+    tags:
+      - name: api_endpoint_collection
+
+  BC\Api\Endpoint\PulseItems:
+    tags:
+      - name: api_endpoint_collection

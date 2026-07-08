@@ -1,0 +1,14 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Widget\Page\Screenshots\Screenshots $this */
+$screenshotWidget = new \BC\Widget\Page\Screenshots\Screenshot();
+?>
+<ul class="photos list--block">
+    <?php foreach ($this->getScreenshotsIterator() as $i => $screenshot): ?>
+        <?=$screenshotWidget->render([
+            'screenshot' => new \BC\Model\Screenshot()->map($screenshot),
+            'position'   => $i
+        ])?>
+    <?php endforeach; ?>
+</ul>

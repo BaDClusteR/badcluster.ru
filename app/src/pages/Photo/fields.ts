@@ -8,7 +8,8 @@ const FIELDS: FieldDef<Photo, PhotoContext>[] = [
     type: "simpleImage",
     uploadPurpose: "photo",
     required: true,
-    span: "full"
+    span: "full",
+    role: "primary"
   },
   {
     name: "tags",
@@ -16,13 +17,15 @@ const FIELDS: FieldDef<Photo, PhotoContext>[] = [
     type: "multiselect",
     placeholder: "Тэги",
     options: (context) => context?.tags,
-    span: "full"
+    span: "full",
+    role: "primary"
   },
   {
     name: "position",
     label: "Позиция",
     type: "number",
-    hint: "Если не указывать, фотка встанет в начало"
+    hint: "Если не указывать, фотка встанет в начало",
+    role: "primary"
   }
 ];
 
