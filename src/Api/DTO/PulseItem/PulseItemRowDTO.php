@@ -8,7 +8,9 @@ readonly class PulseItemRowDTO {
         public ?string $image,
         public string $title,
         public string $text,
-        public int $position
+        public int $position,
+        /** Элемент добавлен автоматически (из IPulseItemsProvider), в админке не редактируется */
+        public bool $isAuto = false
     ) {
     }
 }

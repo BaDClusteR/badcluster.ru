@@ -110,6 +110,12 @@
   line-height: 1;
   pointer-events: none;
   transition: var(--transition) opacity, var(--transition) transform;
+
+  /* Firefox/WebRender: статичный transform не применяется к цветным emoji-глифам,
+     поэтому после конца transition emoji «сбрасывается». Любой filter заставляет
+     рисовать элемент в промежуточную поверхность, к которой transform применяется
+     как к картинке. saturate(1.01) визуально неотличим от нормы. */
+  filter: saturate(1.01);
 }
 
 :dir(rtl) .grid__icon {

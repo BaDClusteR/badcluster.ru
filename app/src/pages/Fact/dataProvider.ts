@@ -3,6 +3,7 @@ import type {EntityFormDataProvider} from "@admin/types";
 import {Fact} from "./types";
 
 interface FactApiCallResult {
+  title: string;
   content: string;
 }
 
@@ -18,6 +19,7 @@ const getDataProvider = (id: string | undefined): EntityFormDataProvider<Fact> |
       const raw = await apiCall("GET", `fact/${id}`, {}, {signal}) as FactApiCallResult;
 
       return {
+        title: raw.title,
         content: raw.content
       };
     }

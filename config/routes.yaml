@@ -11,6 +11,10 @@ routes:
     path: /admin/.*
     controller: BC\Controller\Admin::index
 
+  login:
+    path: /login/notbot
+    controller: BC\Controller\Admin::renderPublicPage
+
   admin_index:
     path: /admin
     controller: BC\Controller\Admin::index
@@ -38,3 +42,7 @@ routes:
   photos:
     path: /photo
     controller: BC\Controller\About::renderPhotos
+
+  random_fact:
+    path: /fact
+    controller: BC\Controller\Index::renderRandomFact

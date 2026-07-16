@@ -9,26 +9,32 @@ use ApiPlatform\Model\Token;
 
 readonly class ApiAuth implements IAuth {
     public function __construct(
-        private \BC\Core\Auth\IAuth $auth
+        private \BC\Core\Auth\IAuth $auth,
+        private IAuth $inner
     ) {
     }
 
     public function isTokenValid(string $token): bool {
-        return $this->auth->isAuthenticated();
+        if (!$token) {
+            return false;
+        }
+
+        return $this->inner->isTokenValid($token);
     }
 
     public function isAuthenticated(string $token): bool {
-        return $this->auth->isAuthenticated();
+        return $token && $this->isTokenValid($token);
     }
 
     public function isCredentialsCorrect(string $login, string $password): bool {
-        return true;
+        return $this->auth->isCredentialsCorrect($login, $password);
     }
 
     public function generateToken(): Token {
-        return new Token();
+        return $this->inner->generateToken();
     }
 
     public function updateTokenLastActiveDate(string $token): void {
+        $this->inner->updateTokenLastActiveDate($token);
     }
 }

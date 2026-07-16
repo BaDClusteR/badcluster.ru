@@ -45,7 +45,15 @@ abstract class AWidget {
             include $fullPath;
             $result = ob_get_clean();
         } catch (Throwable $e) {
-            die($e->getMessage());
+            // Не гасим ошибку через die($e->getMessage()): это светит сырое
+            // сообщение клиенту без единой строчки в логах. Логируем и пробрасываем.
+            ob_end_clean();
+            $this->getLogger()->error(
+                sprintf('Error while rendering %s: %s', static::class, $e->getMessage()),
+                ['exception' => $e]
+            );
+
+            throw $e;
         }
 
         if ($result === false) {

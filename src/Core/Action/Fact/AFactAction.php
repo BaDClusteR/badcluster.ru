@@ -14,13 +14,24 @@ abstract class AFactAction {
      * @throws ActionValidationException
      */
     protected function validate(CreateFactRequest|SaveFactRequest $request): void {
+        $errors = [];
+
+        if (trim($request->title) === '') {
+            $errors['title'] = 'Укажите название факта';
+        }
+
         if (trim($request->content) === '') {
-            throw new ActionValidationException(['content' => 'Укажите текст факта']);
+            $errors['content'] = 'Укажите текст факта';
+        }
+
+        if ($errors) {
+            throw new ActionValidationException($errors);
         }
     }
 
     protected function syncModel(Fact $fact, CreateFactRequest|SaveFactRequest $request): void {
-        $fact->setContent(trim($request->content))
+        $fact->setTitle(trim($request->title))
+             ->setContent(trim($request->content))
              ->persist();
     }
 }

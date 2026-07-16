@@ -169,12 +169,16 @@ class Photos extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'rows')]
         array $rows
     ): SuccessfulResultDTO {
+        // id из тела приводим к int: find() кладет массив в expr()->in(),
+        // который подставляет значения в SQL без биндинга
+        $ids = array_map('intval', $rows);
+
         // Удаляем через remove() каждой модели, а не bulk-запросом:
         // Media::remove() заодно удаляет файл с диска.
         // Связи с тэгами чистит каскад в базе.
         $this->handleWithException(
-            static function () use ($rows) {
-                foreach (Photo::find(['id' => $rows]) as $photo) {
+            static function () use ($ids) {
+                foreach (Photo::find(['id' => $ids]) as $photo) {
                     $photo->remove();
                 }
             }

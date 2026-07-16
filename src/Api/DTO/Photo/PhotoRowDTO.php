@@ -10,7 +10,8 @@ readonly class PhotoRowDTO {
         public int $height,
         public int $position,
         public string $uploadedAt,
-        public string $alt
+        public string $alt,
+        public string $filename
     ) {
     }
 }

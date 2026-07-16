@@ -24,13 +24,14 @@ readonly class ScreenshotDataBuilder implements IScreenshotDataBuilder {
             $screenshot->getHeight(),
             $screenshot->getPosition(),
             $this->dateConverter->toShortForm($screenshot->getUploadedAt()),
-            $screenshot->getAlt()
+            $screenshot->getAlt(),
+            basename($screenshot->getPath())
         );
     }
 
     public function buildEntity(Screenshot $screenshot): ScreenshotDTO {
         return new ScreenshotDTO(
-            // id 0 = "существующая картинка скриншота", а не свежая загрузка из media
+        // id 0 = "существующая картинка скриншота", а не свежая загрузка из media
             image: new MediaDTO(
                 id: 0,
                 url: $screenshot->getWebPath(),

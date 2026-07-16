@@ -65,11 +65,22 @@ class BlogPage extends APage {
             $result .= ' :: Блог';
         }
 
-        return $result . ' :: ' . parent::getTitle();
+        return $result . ' :: ' . $this->getTitleBase();
+    }
+
+    public function getMetaTitle(): string {
+        $result = $this->getHeader();
+
+        if ($this->getTag()) {
+            $result .= ' — Блог';
+        }
+
+        return $result . ' — ' . $this->getMetaTitleBase();
     }
 
     public function getMetaDescription(): string {
-        return 'Мысли о фильмах, играх и цифровая археология. Пишу о пройденном, копаюсь в игровом лоре, разбираю секреты, которые разработчики оставили за кадром.';
+        return $this->getTag()?->getDescription()
+               ?? 'Мысли о фильмах, играх и цифровая археология. Пишу о пройденном, копаюсь в игровом лоре, разбираю секреты, которые разработчики оставили за кадром.';
     }
 
     public function getDescription(): array {

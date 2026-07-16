@@ -11,6 +11,18 @@ use DateTime;
 class HistoryPage extends APageNoIndexed {
     use FormatterTrait;
 
+    public function getTitle(): string {
+        return 'История одного сайта :: ' . $this->getTitleBase();
+    }
+
+    public function getMetaTitle(): string {
+        return 'История одного сайта — ' . $this->getMetaTitleBase();
+    }
+
+    public function getMetaDescription(): string {
+        return 'История эволюции badcluster.ru — а заодно и его автора.';
+    }
+
     public function getHeader(): string {
         $ageYears = new DateTime()->diff(new DateTime('2005-08-02'))->y;
 

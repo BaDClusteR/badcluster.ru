@@ -5,6 +5,7 @@ export interface Photo {
   image: MediaData | null;
   position: number | string;
   tags: string[];
+  alt: string;
 }
 
 export interface PhotoContext {

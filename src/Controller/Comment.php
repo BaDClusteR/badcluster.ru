@@ -23,7 +23,7 @@ readonly class Comment {
     public function __construct(
         private IRequest $request,
         private ILogger $logger,
-        private IAuth $auth,
+        private IAuth $auth
     ) {
     }
 
@@ -104,16 +104,16 @@ readonly class Comment {
         $model = new CommentModel();
 
         $model->setPageType($pageType)
-            ->setPageId($pageId)
-            ->setName(strip_tags($nickname))
-            ->setComment(strip_tags($comment))
-            ->setDate(new DateTime('now'))
-            ->setIp($this->request->getIpAddress())
-            ->setParentId(
-                $parentId
-                    ? CommentModel::findByUniqueIdentifier($parentId)?->getId()
-                    : null
-            );
+              ->setPageId($pageId)
+              ->setName(strip_tags($nickname))
+              ->setComment(strip_tags($comment))
+              ->setDate(new DateTime('now'))
+              ->setIp($this->request->getIpAddress())
+              ->setParentId(
+                  $parentId
+                      ? CommentModel::findByUniqueIdentifier($parentId)?->getId()
+                      : null
+              );
 
         if ($this->auth->isAuthenticated()) {
             $model->setStatus(CommentModel::STATUS_APPROVED);

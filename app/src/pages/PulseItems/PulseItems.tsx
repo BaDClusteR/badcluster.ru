@@ -19,5 +19,6 @@ export default function PulseItems() {
     }}
     webPath="pulse_item"
     apiEndpoint="pulse_items"
+    isRowReadonly={row => row.isAuto}
   />;
 }

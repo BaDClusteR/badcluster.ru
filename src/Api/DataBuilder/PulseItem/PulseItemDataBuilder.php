@@ -7,6 +7,7 @@ namespace BC\Api\DataBuilder\PulseItem;
 use BC\Api\DTO\PulseItem\PulseItemDTO;
 use BC\Api\DTO\PulseItem\PulseItemRowDTO;
 use BC\Core\Converter\Media\IMediaConverter;
+use BC\DTO\PulseItemDTO as ProviderPulseItemDTO;
 use BC\Model\PulseItem;
 
 readonly class PulseItemDataBuilder implements IPulseItemDataBuilder {
@@ -22,6 +23,17 @@ readonly class PulseItemDataBuilder implements IPulseItemDataBuilder {
             $item->getTitle(),
             $item->getText(),
             $item->getPosition()
+        );
+    }
+
+    public function buildAutoRow(ProviderPulseItemDTO $item, int $id): PulseItemRowDTO {
+        return new PulseItemRowDTO(
+            id: $id,
+            image: $item->image?->getWebPath(),
+            title: $item->title,
+            text: $item->text,
+            position: $item->position,
+            isAuto: true
         );
     }
 

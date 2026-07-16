@@ -12,6 +12,13 @@ const FIELDS: FieldDef<Photo, PhotoContext>[] = [
     role: "primary"
   },
   {
+    name: "alt",
+    label: "Подпись",
+    type: "text",
+    span: "full",
+    role: "primary"
+  },
+  {
     name: "tags",
     label: "Тэги",
     type: "multiselect",

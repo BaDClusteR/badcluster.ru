@@ -41,8 +41,6 @@ class ThemeSwitcher {
             this.#theme.get(),
             true
         );
-
-        this.#switcher.classList.remove('header__nav-action-button--initializing');
     }
 
     #initListeners() {
@@ -53,10 +51,10 @@ class ThemeSwitcher {
         this.#eventDispatcher.listen(
             'theme:set',
             /**
-             * @param {string} theme
+             * @param {{theme: string, immediate?: boolean}} payload
              */
-            ({theme}) => {
-                this.#doSetTheme(theme);
+            ({theme, immediate}) => {
+                this.#doSetTheme(theme, immediate);
             }
         );
     }
@@ -89,12 +87,27 @@ class ThemeSwitcher {
     #doSetTheme(theme, isImmediately) {
         this.#removeModCssClasses();
         this.#isSwitching = true;
+
+        if (isImmediately) {
+            // Мгновенное применение (первая загрузка / возврат из BF-кэша):
+            // --initializing убирает transform-transition у иконок, иначе
+            // скрытая иконка проедет из центра к границе кнопки.
+            this.#switcher.classList.add('header__nav-action-button--initializing');
+        }
+
         this.#switcher.classList.add(`header__nav-action-button--mode-to-${theme}`);
 
         const handler = () => {
             this.#switcher.classList.remove(`header__nav-action-button--mode-to-${theme}`);
             this.#switcher.classList.add(`header__nav-action-button--mode-${theme}`);
             this.#isSwitching = false;
+
+            if (isImmediately) {
+                // Форсим reflow, чтобы финальное положение зафиксировалось без
+                // transition, и только потом возвращаем анимацию (снимаем класс).
+                void this.#switcher.offsetWidth;
+                this.#switcher.classList.remove('header__nav-action-button--initializing');
+            }
         };
 
         if (isImmediately) {

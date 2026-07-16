@@ -61,7 +61,7 @@ class Meta extends AWidget {
         $result = [
             new MetaTagDTO(
                 name: 'og:site_name',
-                content: 'BaD ClusteR — цифровой архив'
+                content: 'BaD ClusteR'
             ),
             new MetaTagDTO(
                 name: 'og:type',

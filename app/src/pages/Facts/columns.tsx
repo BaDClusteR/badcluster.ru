@@ -4,11 +4,10 @@ import classes from "./Facts.module.css";
 
 const columns: ColumnDef<FactRow>[] = [
   {
-    key: "id",
-    header: "ID",
-    sortable: true,
+    key: "title",
+    header: "Название",
     link: true,
-    nowrap: true
+    render: row => row.title || `#${row.id}`
   },
   {
     key: "content",

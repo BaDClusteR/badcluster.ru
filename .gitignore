@@ -17,3 +17,5 @@ node_modules
 .mf
 
 .php-cs-fixer.cache
+.claude
+.dev

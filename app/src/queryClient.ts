@@ -9,7 +9,7 @@ const globalErrorHandler = (error: any) => {
       error.isHandled = true;
     }
   } else {
-    error.status(`Случилось что-то странное: ${error.message}`);
+    notify.error("Случилось что-то странное", error?.message);
   }
 };
 

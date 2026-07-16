@@ -39,7 +39,7 @@ export default function PhotoPage() {
     <EntityForm<Photo, PhotoContext>
       fields={fields}
       dataProvider={createEntityFormDataProvider<Photo>("photo", id, isCreateMode)}
-      initialValues={isCreateMode ? {image: null, position: "", tags: []} : undefined}
+      initialValues={isCreateMode ? {image: null, alt: "", position: "", tags: []} : undefined}
       context={context}
       webPath="photos"
       apiEndpoint="photo"
@@ -48,6 +48,7 @@ export default function PhotoPage() {
       </>}
       preprocessValues={(values) => ({
         image: values.image ? {id: values.image.id} : null,
+        alt: values.alt,
         position: Number(values.position) || 0,
         tags: (values.tags ?? []).map(Number)
       })}

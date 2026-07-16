@@ -116,11 +116,15 @@ class MediaLibrary extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'rows')]
         array $rows
     ): SuccessfulResultDTO {
+        // id из тела приводим к int: find() кладет массив в expr()->in(),
+        // который подставляет значения в SQL без биндинга
+        $ids = array_map('intval', $rows);
+
         // Удаляем через remove() каждой модели: заодно удаляются
         // тамбнейлы и файлы с диска
         $this->handleWithException(
-            static function () use ($rows) {
-                foreach (Media::find(['id' => $rows]) as $media) {
+            static function () use ($ids) {
+                foreach (Media::find(['id' => $ids]) as $media) {
                     $media->remove();
                 }
             }

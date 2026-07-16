@@ -7,6 +7,7 @@ namespace BC\Core\Action\DTO;
 readonly class SaveFactRequest {
     public function __construct(
         public int $id,
+        public string $title,
         public string $content
     ) {
     }

@@ -44,6 +44,11 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 position: 9900,
                 children: [
                     new NavigationDTO(
+                        label: 'Медиатека',
+                        path: '/admin/media',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/media.svg')
+                    ),
+                    new NavigationDTO(
                         label: 'Скриншоты',
                         path: '/admin/screenshots',
                         icon: file_get_contents(__DIR__ . '/../../../app/assets/joystick.svg')
@@ -54,9 +59,9 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                         icon: file_get_contents(__DIR__ . '/../../../app/assets/photo.svg')
                     ),
                     new NavigationDTO(
-                        label: 'Медиатека',
-                        path: '/admin/media',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/media.svg')
+                        label: 'Тэги фоток',
+                        path: '/admin/photo-tags',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/photo-tag.svg')
                     )
                 ]
             ),
@@ -71,6 +76,18 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 path: '/admin/redirects',
                 icon: file_get_contents(__DIR__ . '/../../../app/assets/redirect.svg'),
                 position: 11000
+            ),
+            new NavigationDTO(
+                label: 'Фан-факты',
+                path: '/admin/facts',
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/fun-fact.svg'),
+                position: 12000
+            ),
+            new NavigationDTO(
+                label: 'Пульс',
+                path: '/admin/pulse',
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/pulse.svg'),
+                position: 13000
             )
         ];
     }

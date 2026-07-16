@@ -22,6 +22,11 @@
   }
 }
 
+.toast--removing {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .toast__close {
   appearance: none;
   border: none;
@@ -120,7 +125,7 @@
   font-size: var(--font-size-smaller);
   font-weight: 440;
   font-optical-sizing: auto;
-  font-variation-settings: "wdth" 95;
+  font-variation-settings: 'wdth' 95;
 }
 
 @media (width <= 600px) {

@@ -76,7 +76,7 @@ class Toast extends Singleton {
             }
         }
 
-        if (this.#canDoViewTransition()) {
+        if (this.#canDoViewTransition(container)) {
             container.startViewTransition(
                 () => {
                     addHandler();
@@ -94,8 +94,8 @@ class Toast extends Singleton {
         );
     }
 
-    #canDoViewTransition() {
-        return 'startViewTransition' in document
+    #canDoViewTransition(element) {
+        return 'startViewTransition' in element
             && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     }
 
@@ -128,11 +128,11 @@ class Toast extends Singleton {
     #doRemove(toast, isLatest) {
         if (toast && !toast.classList.contains('toast--removing')) {
             if (
-                this.#canDoViewTransition()
+                this.#canDoViewTransition(toast)
                 && !isLatest
                 && this.#getContainer().childElementCount > 1
             ) {
-                if (toast.parentNode) {
+                if (toast.parentNode && this.#canDoViewTransition(toast.parentNode)) {
                     toast.parentNode.startViewTransition(
                         () => {
                             toast.remove();

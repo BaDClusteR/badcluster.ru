@@ -1,3 +1,34 @@
+.footer {
+  --facts-button-border-color: #FCD34D;
+  --facts-button-shadow: 0 0 15px color-mix(in sRGB, var(--facts-button-border-color), transparent 60%);
+}
+
+@property --fact-scroll-shadow-color {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+.footer__social-link--facts {
+  border-color: transparent;
+  filter: grayscale(1);
+  position: relative;
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    border-color: var(--facts-button-border-color);
+    box-shadow: var(--facts-button-shadow);
+    background: color-mix(in sRGB, var(--facts-button-border-color), transparent 90%);
+    /* rotate(.02deg) и filter != none — оба обязательны: без фильтра Firefox
+       не рисует emoji через промежуточную поверхность, а без поворота
+       scale-only трансформ идёт по пути, где bitmap-глиф emoji квантуется
+       к базовому размеру после конца transition (см. .grid__icon в grid.css) */
+    transform: scale(1.1) rotate(.02deg);
+    filter: grayscale(0.001);
+  }
+}
+
 .fact__bulb {
   font-size: 3rem;
   display: block;
@@ -8,6 +39,27 @@
 .fact__title,
 .fact__text {
   margin: 0;
+
+  a[target='_blank'] {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(.375 * var(--rhythmic-unit));
+
+    &::after {
+      content: '';
+      width: .75em;
+      height: .75em;
+      background-color: currentColor;
+      margin-block-start: calc(-.25 * var(--rhythmic-unit));
+      margin-inline-start: calc(-.25 * var(--rhythmic-unit));
+      mask: url('/static/images/about/external.svg') 50% / contain no-repeat;
+      display: inline-block;
+    }
+  }
+}
+
+.fact__link {
+  text-align: center;
 }
 
 .fact__next {
@@ -15,4 +67,145 @@
   width: auto;
   padding: calc(.5 * var(--rhythmic-unit)) var(--rhythmic-unit);
   color: var(--color-text);
+}
+
+.fact__content {
+  --fact-scroll-shadow-size: 27px;
+  --fact-scroll-shadow-color: var(--modal-bg);
+
+  position: relative;
+  overflow: auto;
+  transition: var(--transition-mode) --fact-scroll-shadow-color;
+  width: 100%;
+
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+    position: sticky;
+    height: var(--fact-scroll-shadow-size);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &::before {
+    top: 0;
+    margin-bottom: calc(-1 * var(--fact-scroll-shadow-size));
+    background: linear-gradient(to bottom, var(--fact-scroll-shadow-color), color-mix(in sRGB, var(--fact-scroll-shadow-color), transparent 10%) 25%, color-mix(in sRGB, var(--fact-scroll-shadow-color), transparent 50%) 70%, transparent);
+  }
+
+  &::after {
+    bottom: 0;
+    margin-top: calc(-1 * var(--fact-scroll-shadow-size));
+    background: linear-gradient(to top, var(--fact-scroll-shadow-color), color-mix(in sRGB, var(--fact-scroll-shadow-color), transparent 10%) 25%, color-mix(in sRGB, var(--fact-scroll-shadow-color), transparent 50%) 70%, transparent);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    &::before,
+    &::after {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(nearest);
+    }
+
+    &::before {
+      animation-name: fact-scroll-shadow-in;
+      animation-range: 0 calc(2 * var(--fact-scroll-shadow-size));
+    }
+
+    &::after {
+      animation-name: fact-scroll-shadow-out;
+      animation-range: calc(100% - 2 * var(--fact-scroll-shadow-size)) 100%;
+    }
+  }
+
+  &.fact__content--loading {
+    .fact__text {
+      opacity: 0;
+    }
+
+    .fact__loader {
+      opacity: 1;
+    }
+
+    ~ .fact__next {
+      opacity: .3;
+      pointer-events: none;
+
+      .fact__next-text {
+        opacity: 0;
+        transform: translateY(calc(-1 * var(--rhythmic-unit)));
+      }
+
+      .fact__next-loader {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+}
+
+.fact__loader {
+  position: absolute;
+  width: auto;
+  height: 1.5em;
+  top: 50%;
+  left: 50%;
+  stroke: color-mix(in sRGB, var(--color-text-secondary), transparent 40%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: var(--transition-mode) opacity, var(--transition-mode) stroke;
+}
+
+.fact__text {
+  transition: var(--transition-mode) opacity, var(--transition-mode) color;
+  text-align: left;
+}
+
+.fact__title {
+  text-align: center;
+  font-weight: bold;
+  margin-block-start: calc(.5 * var(--rhythmic-unit));
+}
+
+[dir='rtl'] .fact__text {
+  text-align: right;
+}
+
+.fact__next-loader {
+  opacity: 0;
+  transform: translateY(var(--rhythmic-unit));
+  position: absolute;
+}
+
+.fact__next-loader,
+.fact__next-text {
+  transition: var(--transition) opacity, var(--transition) transform;
+}
+
+@media (height < 600px) {
+  .fact__bulb {
+    display: none;
+  }
+}
+
+@keyframes fact-scroll-shadow-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fact-scroll-shadow-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }

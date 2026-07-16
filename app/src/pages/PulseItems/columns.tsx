@@ -15,7 +15,8 @@ const columns: ColumnDef<PulseItemRow>[] = [
     key: "title",
     header: "Заголовок",
     sortable: true,
-    link: true
+    link: true,
+    subRender: row => row.isAuto ? "добавляется автоматически" : null
   },
   {
     key: "text",

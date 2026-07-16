@@ -1,16 +1,21 @@
-:root {
+:root, [data-theme='light'] {
   --modal-padding: var(--gutter-size);
   --modal-border-radius: var(--border-radius-big);
   --modal-max-width: 600px;
   --modal-backdrop: rgb(0 0 0 / 60%);
+  --modal-bg: var(--color-bg--no-animation);
 
   @media (width >= 420px) {
     --modal-padding: calc(2 * var(--gutter-size));
   }
 }
 
+[data-theme='dark'] {
+  --modal-bg: var(--color-surface);
+}
+
 .modal {
-  transition: var(--transition) opacity, var(--transition) transform, var(--transition) translate, var(--transition) overlay allow-discrete, var(--transition) display allow-discrete;
+  transition: var(--transition) opacity, var(--transition) transform, var(--transition) translate, var(--transition) overlay allow-discrete, var(--transition) display allow-discrete, var(--transition-mode) background-color;
   opacity: 0;
   padding: var(--modal-padding);
   border-radius: 0;
@@ -20,6 +25,7 @@
   height: 100vh;
   min-height: 100vh;
   left: var(--scrollbar-width, 0);
+  background: var(--modal-bg);
 
   &::backdrop {
     background: transparent;
@@ -30,6 +36,7 @@
     opacity: 1;
     transform: none;
     left: 0;
+    display: flex;
   }
 }
 
@@ -66,13 +73,14 @@
 
 .modal__content {
   height: auto;
-  overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   row-gap: var(--rhythmic-unit);
-  justify-content: center;
   text-align: center;
+  overflow: visible;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 @media (width >= 420px) {

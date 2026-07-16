@@ -6,6 +6,7 @@ namespace BC\Core\Action\DTO;
 
 readonly class CreateFactRequest {
     public function __construct(
+        public string $title,
         public string $content
     ) {
     }

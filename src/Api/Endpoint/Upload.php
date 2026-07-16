@@ -44,7 +44,10 @@ class Upload extends AEndpoint {
         #[API\Parameter(source: 'query', name: 'purpose')]
         ?string $purpose = null,
     ): MediaDTO {
-        $mime = $file->mimeType;
+        // MIME берём из содержимого файла (finfo), а не из клиентского
+        // Content-Type — он спуфится. По нему же выбираем расширение,
+        // чтобы под видом картинки нельзя было залить, например, .php.
+        $mime = $this->detectMimeType($file->tmpName);
 
         if (!in_array($mime, Media::ALLOWED_IMAGE_MIME_TYPES, true)) {
             throw new BadRequestException("Unsupported MIME type: $mime");
@@ -54,7 +57,7 @@ class Upload extends AEndpoint {
         $imagePath = $this->handleWithException(
             fn () => $this->fileSystem->copy(
                 $file->tmpName,
-                "$folder/{$this->sanitizeFilename($file->name)}",
+                "$folder/{$this->buildSafeFilename($file->name, $mime)}",
             )
         );
 
@@ -127,13 +130,20 @@ class Upload extends AEndpoint {
         return str_starts_with($mime, 'video/');
     }
 
-    private function sanitizeFilename(string $filename): string {
-        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    /**
+     * Расширение выводим из просниференного MIME, а не из имени файла:
+     * имя клиентское и может нести любое расширение (.php, .phtml, .svg).
+     */
+    private function buildSafeFilename(string $filename, string $mime): string {
         $base = pathinfo($filename, PATHINFO_FILENAME);
         $slug = preg_replace('/[^a-zA-Z0-9_-]+/', '-', $base);
         $slug = trim((string) $slug, '-') ?: 'file';
 
-        return "$slug.$ext";
+        return "$slug." . Media::MIME_TO_EXTENSION[$mime];
+    }
+
+    private function detectMimeType(string $path): string {
+        return (string) (new \finfo(FILEINFO_MIME_TYPE)->file($path) ?: '');
     }
 
     private function getImagesFolder(): string {

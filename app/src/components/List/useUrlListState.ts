@@ -25,7 +25,7 @@ export interface ListStateOptions {
  *
  * - Only non-default values are written to the URL (clean URLs).
  * - Changing filter/sort resets page to 1 automatically.
- * - Navigation uses { replace: true } so the back button isn't spammed.
+ * - Navigation pushes a history entry ({ replace: false }).
  */
 export function useUrlListState(options: ListStateOptions = {}): ListStateManager {
     const { defaults: userDefaults } = options;
@@ -55,10 +55,12 @@ export function useUrlListState(options: ListStateOptions = {}): ListStateManage
         (patch: PartialListState) => {
             const merged = deepMerge(state, patch) as ListState;
 
-            // Reset page whenever filter/sort changes (unless page is in the same patch)
+            // Reset page whenever filter/sort changes (unless page is in the same patch).
+            // page/sortBy/sortDir live under patch.table, not at the top level.
+            const patchTable = patch.table ?? {};
             const resetPage =
-                !('page' in patch) &&
-                ('filter' in patch || 'sortBy' in patch || 'sortDir' in patch);
+                !('page' in patchTable) &&
+                ('filter' in patch || 'sortBy' in patchTable || 'sortDir' in patchTable);
 
             if (resetPage) {
                 merged.table.page = 1;

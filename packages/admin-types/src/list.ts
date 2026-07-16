@@ -71,6 +71,8 @@ export interface ListProps<T extends EntityRow> {
   webPath?: string,
   dataProvider?: ListDataProvider<T>,
   apiEndpoint?: string,
+  /** Rows the user cannot edit, delete or select (e.g. auto-generated items). */
+  isRowReadonly?: (row: T) => boolean,
 }
 
 export interface ListLabels<T extends EntityRow> {
@@ -109,7 +111,9 @@ export interface DataTableProps<T> {
   selectedRows?: boolean[],
   onSelectionChange?: (selectedRows: boolean[]) => void,
   bulkActions?: ReactNode,
-  webPath?: string
+  webPath?: string,
+  /** Rows rendered dimmed, without selection checkbox and auto edit-link. */
+  isRowReadonly?: (row: T) => boolean
 }
 
 export interface TableSort {

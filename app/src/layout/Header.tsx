@@ -3,6 +3,7 @@ import {ActionIcon, AppShell, Burger, Group, useMantineColorScheme} from "@manti
 import {IconLogout, IconMoon, IconSun} from "@tabler/icons-react";
 import {notify} from "@/lib/notify.ts";
 import {useNavigate} from "react-router";
+import apiCall from "@/utils/apiCall";
 
 export default function Header(
   {
@@ -17,19 +18,20 @@ export default function Header(
     toggleDesktop: () => void,
   }
 ) {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme({
+  const {colorScheme, toggleColorScheme} = useMantineColorScheme({
     keepTransitions: true
   });
   const navigate = useNavigate();
 
   async function handleLogout() {
     try {
-      await fetch('/api/admin/logout', { method: 'POST' });
+      // The server expires the HttpOnly "token" cookie on this response.
+      await apiCall("GET", "logoff");
     } catch {
-      // Network error — still log out on the client
+      // Network error — still leave the admin area on the client
     }
-    notify.success('Signed out');
-    navigate('/admin/login', { replace: true });
+    notify.success("Signed out");
+    navigate("/login/notbot", {replace: true});
   }
 
   return <AppShell.Header className={classes.header}>
@@ -57,7 +59,7 @@ export default function Header(
           onClick={toggleColorScheme}
           aria-label="Toggle theme"
         >
-          {colorScheme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
+          {colorScheme === "dark" ? <IconSun size={18}/> : <IconMoon size={18}/>}
         </ActionIcon>
         <ActionIcon
           variant="subtle"
@@ -66,9 +68,9 @@ export default function Header(
           onClick={handleLogout}
           aria-label="Logout"
         >
-          <IconLogout size={18} />
+          <IconLogout size={18}/>
         </ActionIcon>
       </Group>
     </Group>
-  </AppShell.Header>
+  </AppShell.Header>;
 }

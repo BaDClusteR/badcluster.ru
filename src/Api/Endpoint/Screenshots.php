@@ -133,7 +133,7 @@ class Screenshots extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'position')]
         int $position = 0
     ): SuccessfulResultDTO {
-        // image.id = 0 приходит для существующей картинки скриншота (см. ScreenshotDataBuilder),
+        // Image.id = 0 приходит для существующей картинки скриншота (см. ScreenshotDataBuilder),
         // media ищем только для свежей загрузки
         $media = ($image !== null) && ((int) ($image['id'] ?? 0) > 0)
             ? $this->requireMedia($image, 'Ошибки при сохранении скриншота')
@@ -162,11 +162,15 @@ class Screenshots extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'rows')]
         array $rows
     ): SuccessfulResultDTO {
+        // id из тела приводим к int: find() кладет массив в expr()->in(),
+        // который подставляет значения в SQL без биндинга
+        $ids = array_map('intval', $rows);
+
         // Удаляем через remove() каждой модели, а не bulk-запросом:
         // Media::remove() заодно удаляет файл с диска
         $this->handleWithException(
-            static function () use ($rows) {
-                foreach (Screenshot::find(['id' => $rows]) as $screenshot) {
+            static function () use ($ids) {
+                foreach (Screenshot::find(['id' => $ids]) as $screenshot) {
                     $screenshot->remove();
                 }
             }

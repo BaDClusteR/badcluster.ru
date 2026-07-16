@@ -25,13 +25,14 @@ readonly class PhotoDataBuilder implements IPhotoDataBuilder {
             $photo->getHeight(),
             $photo->getPosition(),
             $this->dateConverter->toShortForm($photo->getUploadedAt()),
-            $photo->getAlt()
+            $photo->getAlt(),
+            basename($photo->getPath())
         );
     }
 
     public function buildEntity(Photo $photo): PhotoDTO {
         return new PhotoDTO(
-            // id 0 = "существующая картинка фотки", а не свежая загрузка из media
+        // id 0 = "существующая картинка фотки", а не свежая загрузка из media
             image: new MediaDTO(
                 id: 0,
                 url: $photo->getWebPath(),

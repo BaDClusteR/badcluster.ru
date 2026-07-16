@@ -1,0 +1,29 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Footer\Facts $this */
+?>
+<button
+    commandfor="facts"
+    command="show-modal"
+    class="tooltip-container button--link-like footer__social-link icon-button footer__social-link--facts"
+>
+    <span aria-hidden="true">🎲</span>
+</button>
+<span class="tooltip"><?=$this->getRandomTooltip()?></span>
+<dialog class="modal modal--fact" id="facts">
+    <button class="modal__close button--link-like" commandfor="facts" command="close">×</button>
+    <div class="modal__content">
+        <span class="fact__bulb">🎲</span>
+        <h3 class="fact__title">Рандомный факт</h3>
+        <div class="fact__content">
+            <div class="fact__text">
+                <?=new \BC\Widget\Common\Footer\Fact()->render(['fact' => $this->getRandomFact()])?>
+            </div>
+            <?=$this->getSvgContent('images/icons/fact-loader.svg')?>
+        </div>
+        <button class="fact__next icon-button icon-button--contrast">
+            <span class="fact__next-text">Узнать еще один</span>
+            <span class="fact__next-loader" aria-hidden="true">Загружаю...</span>
+        </button>
+    </div>
+</dialog>

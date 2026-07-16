@@ -113,8 +113,9 @@ class Post extends AEntity {
            ->setVariable('postId', $this->id);
 
         if (!empty($tagIds)) {
-            $qb->andWhere('tag_id NOT IN (:tagIds)')
-               ->setVariable('tagIds', implode(', ', $tagIds));
+            // Список int'ов вставляем прямо в SQL: :tagIds забиндил бы весь
+            // массив как одну строку ("1, 2, 3"), и NOT IN не сработал бы
+            $qb->andWhere('tag_id NOT IN (' . implode(', ', array_map('intval', $tagIds)) . ')');
         }
 
         $qb->execute();

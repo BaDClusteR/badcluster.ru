@@ -13,7 +13,7 @@ class ActionValidationException extends Exception {
         ?Throwable $previous = null
     ) {
         parent::__construct(
-            print_r($errors, true),
+            'Validation failed',
             0,
             $previous
         );

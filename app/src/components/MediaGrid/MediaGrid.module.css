@@ -9,6 +9,7 @@
   color: var(--color-text-secondary);
   font-style: italic;
 }
+
 .footer {
   display: flex;
   align-items: center;

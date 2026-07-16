@@ -13,6 +13,14 @@ class HomePage extends APage {
         return 'Привет!';
     }
 
+    public function getTitle(): string {
+        return $this->getTitleBase();
+    }
+
+    public function getMetaTitle(): string {
+        return $this->getMetaTitleBase();
+    }
+
     public function getDescription(): array {
         $contacts = $this->getWebsiteSettings()->getAdminContacts();
 

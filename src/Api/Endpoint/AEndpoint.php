@@ -125,6 +125,9 @@ abstract class AEndpoint {
      * @param int[]                 $entityIds
      */
     protected function deleteEntities(string $entityFQN, array $entityIds): void {
+        // expr()->in() подставляет значения в SQL без биндинга, поэтому id
+        // из тела запроса приводим к int — иначе тут SQL-инъекция
+        $entityIds = array_map('intval', $entityIds);
         $qb = $entityFQN::getQueryBuilder();
 
         $this->handleWithException(

@@ -22,7 +22,7 @@ function ScreenshotCard({item, ctrl}: { item: ScreenshotRow; ctrl: MediaGridCont
       ctrl={ctrl}
       info={
         <>
-          <Text size="sm" fw={500}>#{item.id}</Text>
+          <Text size="sm" fw={500}>{item.filename}</Text>
           <Text size="xs" c="dimmed">{item.width}×{item.height} · {item.uploadedAt}</Text>
           {item.alt && <Text size="xs" lineClamp={1}>{item.alt}</Text>}
         </>

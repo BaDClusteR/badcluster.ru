@@ -4,5 +4,6 @@ export interface PulseItemRow extends EntityRow {
   image: string | null,
   title: string,
   text: string,
-  position: number
+  position: number,
+  isAuto: boolean
 }

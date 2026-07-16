@@ -50,14 +50,14 @@ class Facts extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
-                qb: Fact::getQueryBuilder()->orderBy('id', 'ASC'),
+                qb: Fact::getQueryBuilder()->orderBy('id', 'DESC'),
                 filter: $filter,
-                columnsToFind: ['content'],
+                columnsToFind: ['title', 'content'],
                 sortBy: $sortBy,
                 sortDir: $sortDir,
                 page: $page,
                 perPage: $perPage,
-                sortableColumns: ['id']
+                sortableColumns: []
             ),
             fn (Fact $fact): FactRowDTO => $this->dataBuilder->buildRow($fact)
         );
@@ -84,15 +84,18 @@ class Facts extends AEndpoint {
      */
     #[API\Endpoint(path: 'fact', method: 'POST')]
     public function createFact(
+        #[API\Parameter(source: 'body', name: 'title')]
+        string $title,
         #[API\Parameter(source: 'body', name: 'content')]
         string $content
     ): CreatedDTO {
         $response = null;
         $this->handleActionWithException(
-            function () use (&$response, $content) {
+            function () use (&$response, $title, $content) {
                 $action = Container::getInstance()->getService(ICreateFactAction::class);
                 $response = $action->run(
                     new CreateFactRequest(
+                        title: $title,
                         content: $content
                     )
                 );
@@ -112,15 +115,18 @@ class Facts extends AEndpoint {
     public function updateFact(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,
+        #[API\Parameter(source: 'body', name: 'title')]
+        string $title,
         #[API\Parameter(source: 'body', name: 'content')]
         string $content
     ): SuccessfulResultDTO {
         $this->handleActionWithException(
-            static function () use ($id, $content) {
+            static function () use ($id, $title, $content) {
                 $action = Container::getInstance()->getService(ISaveFactAction::class);
                 $action->run(
                     new SaveFactRequest(
                         id: $id,
+                        title: $title,
                         content: $content
                     )
                 );

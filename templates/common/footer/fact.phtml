@@ -1,0 +1,11 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Widget\Common\Footer\Fact $this */
+
+$fact = $this->getFact();
+?><?php if ($fact) : ?>
+    <?php if ($title = $fact->title) : ?>
+        <h4 class="fact__title"><?=$fact->title?></h4>
+    <?php endif; ?>
+    <?=$this->formatFactContent($fact->content)?>
+<?php endif; ?>

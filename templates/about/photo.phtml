@@ -10,6 +10,9 @@ if ($photo) {
     $ext = pathinfo($localPath, PATHINFO_EXTENSION);
     $position = $this->getPosition();
     $caption = $photo->getAlt();
+    $w2000 = $photo->getWidth() <= 2000
+        ? "$webDir/$basename"
+        : "$webDir/$basename-w2000";
 }
 ?>
 <?php if ($photo) : ?>
@@ -40,12 +43,12 @@ if ($photo) {
                         media="(width < 470px)"
                     />
                     <source
-                        srcset="<?=$webDir?>/<?=$basename?>-w1000.avif 1x, <?=$webDir?>/<?=$basename?>-w2000.avif 2x"
+                        srcset="<?=$webDir?>/<?=$basename?>-w1000.avif 1x, <?=$w2000?>.avif 2x"
                         type="image/avif"
                         media="(width >= 470px)"
                     />
                     <source
-                        srcset="<?=$webDir?>/<?=$basename?>-w1000.webp 1x, <?=$webDir?>/<?=$basename?>-w2000.webp 2x"
+                        srcset="<?=$webDir?>/<?=$basename?>-w1000.webp 1x, <?=$w2000?>.webp 2x"
                         type="image/webp"
                         media="(width >= 470px)"
                     />

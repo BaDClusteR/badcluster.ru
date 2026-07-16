@@ -11,6 +11,21 @@ services:
   BC\Controller\System\APIExceptionResponseController:
     decorates: ApiPlatform\Controller\System\IApiExceptionResponseController
 
+  BC\Controller\System\APIResponseController:
+    decorates: ApiPlatform\Controller\System\IApiResponseController
+
+  BC\Logger\MaskingLogger:
+    decorates: Runway\Logger\ILogger
+    arguments:
+      sensitiveKeys:
+        - 'login'
+        - 'password'
+        - 'token'
+        - 'X-BC-Token'
+        # Positional call arguments in logged stack traces can contain credentials
+        # (e.g. Auth::authenticate("login", "password")), so mask them entirely.
+        - 'args'
+
   BC\Core\Config\IWebsiteSettings:
     class: BC\Core\Config\WebsiteSettings
     arguments:
@@ -42,9 +57,16 @@ services:
 
   BC\Core\Auth\IAuth:
     class: BC\Core\Auth\Auth
+    arguments:
+      tokenStorage: '@BC\Core\Storage\CookieTokenStorage'
 
   BC\Core\Auth\ApiAuth:
     decorates: ApiPlatform\Core\Singleton\IAuth
+
+  BC\Core\Storage\CookieTokenStorage: ~
+
+  BC\Core\Storage\ApiTokenStorage:
+    decorates: ApiPlatform\Core\Storage\ITokenStorage
 
   BC\Core\Converter\IDateConverter:
     class: BC\Core\Converter\DateConverter
@@ -92,6 +114,9 @@ services:
 
   BC\Controller\Controller404:
     decorates: Runway\Controller\IController404
+
+  BC\Provider\IRandomFactProvider:
+    class: BC\Provider\RandomFactProvider
 
 
   # Controllers

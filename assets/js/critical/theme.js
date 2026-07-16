@@ -45,18 +45,18 @@ class Theme extends Singleton {
     /**
      * @param {string} theme
      */
-    set(theme) {
-        this.#doSet(theme, !!theme);
+    set(theme, immediate = false) {
+        this.#doSet(theme, !!theme, immediate);
     }
 
-    #doSet(theme, isPredefined) {
+    #doSet(theme, isPredefined, immediate = false) {
         if (!theme) {
             theme = this.#detectCurrentTheme();
         }
 
         this.#eventDispatcher.trigger(
             'theme:set',
-            {theme, isPredefined}
+            {theme, isPredefined, immediate}
         );
     }
 
@@ -150,13 +150,16 @@ class Theme extends Singleton {
         );
 
         // При возврате на страницу из BF cache DOM восстанавливается с тем
-        // data-theme, который был на момент ухода — переприменяем актуальную тему
+        // data-theme, который был на момент ухода — переприменяем актуальную
+        // тему. immediate=true: переключатель применяет её без анимации, иначе
+        // скрытая иконка проезжает из центра к границе кнопки.
         window.addEventListener(
             'pageshow',
             (event) => {
                 if (event.persisted) {
                     this.set(
-                        this.get(true)
+                        this.get(true),
+                        true
                     );
                 }
             }

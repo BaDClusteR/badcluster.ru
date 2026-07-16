@@ -9,7 +9,6 @@ use ApiPlatform\Attribute\Docs;
 use ApiPlatform\Exception\BadRequestException;
 use BC\Api\DataBuilder\PulseItem\IPulseItemDataBuilder;
 use BC\Api\DTO\CreatedDTO;
-use BC\Api\DTO\GetEntitiesListRequest;
 use BC\Api\DTO\ListResponseDTO;
 use BC\Api\DTO\PulseItem\PulseItemDTO;
 use BC\Api\DTO\PulseItem\PulseItemRowDTO;
@@ -22,12 +21,14 @@ use BC\Core\Action\PulseItem\ISavePulseItemAction;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Model\PulseItem;
+use BC\Provider\IPulseItemsProvider;
 use Runway\Singleton\Container;
 
 #[Docs\Group('Pulse')]
 class PulseItems extends AEndpoint {
     public function __construct(
-        private readonly IPulseItemDataBuilder $dataBuilder
+        private readonly IPulseItemDataBuilder $dataBuilder,
+        private readonly IPulseItemsProvider $pulseItemsProvider
     ) {
     }
 
@@ -49,18 +50,87 @@ class PulseItems extends AEndpoint {
         #[API\Parameter(source: 'query')]
         int $perPage = self::PER_PAGE_DEFAULT
     ): ListResponseDTO {
-        return $this->getEntitiesList(
-            new GetEntitiesListRequest(
-                qb: PulseItem::getQueryBuilder()->orderBy('position', 'ASC'),
-                filter: $filter,
-                columnsToFind: ['title', 'text'],
-                sortBy: $sortBy,
-                sortDir: $sortDir,
-                page: $page,
-                perPage: $perPage,
-                sortableColumns: ['title', 'position']
-            ),
-            fn (PulseItem $item): PulseItemRowDTO => $this->dataBuilder->buildRow($item)
+        if ($sortBy && !in_array($sortBy, ['title', 'position'], true)) {
+            throw new BadRequestException(
+                sprintf("Не могу сортировать по '%s'.", $sortBy)
+            );
+        }
+
+        // К ручным элементам из базы подмешиваются автоматические из
+        // IPulseItemsProvider, поэтому фильтр, сортировка и страницы
+        // считаются в PHP по объединенному списку — элементов пульса
+        // в любом случае единицы
+        $rows = [
+            ...$this->getManualRows($filter),
+            ...$this->getAutoRows($filter),
+        ];
+
+        $this->sortRows($rows, $sortBy ?: 'position', $this->sanitizeSortDirection($sortDir));
+
+        $page = max(1, $page);
+        $perPage = max(1, min(100, $perPage));
+
+        return new ListResponseDTO(
+            items: array_slice($rows, ($page - 1) * $perPage, $perPage),
+            total: count($rows)
+        );
+    }
+
+    /**
+     * @return PulseItemRowDTO[]
+     */
+    private function getManualRows(string $filter): array {
+        $qb = PulseItem::getQueryBuilder();
+        $this->addFilter($qb, $filter, ['title', 'text']);
+
+        return array_map(
+            fn (PulseItem $item): PulseItemRowDTO => $this->dataBuilder->buildRow($item),
+            $this->handleWithException(
+                static fn (): array => $qb->getEntities()
+            )
+        );
+    }
+
+    /**
+     * У авто-элементов нет записей в базе — id им раздаются отрицательные,
+     * чтобы фронт мог отличить их от ручных и не пытаться редактировать.
+     *
+     * @return PulseItemRowDTO[]
+     */
+    private function getAutoRows(string $filter): array {
+        $items = $this->handleWithException(
+            fn (): array => $this->pulseItemsProvider->getPulseItems()
+        );
+
+        $filter = mb_strtolower(trim($filter));
+        $rows = [];
+
+        foreach (array_values($items) as $i => $item) {
+            $matchesFilter = !$filter
+                || str_contains(mb_strtolower($item->title), $filter)
+                || str_contains(mb_strtolower($item->text), $filter);
+
+            if ($matchesFilter) {
+                $rows[] = $this->dataBuilder->buildAutoRow($item, -($i + 1));
+            }
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @param PulseItemRowDTO[] $rows
+     */
+    private function sortRows(array &$rows, string $sortBy, string $sortDir): void {
+        usort(
+            $rows,
+            static function (PulseItemRowDTO $a, PulseItemRowDTO $b) use ($sortBy, $sortDir): int {
+                $result = $sortBy === 'title'
+                    ? mb_strtolower($a->title) <=> mb_strtolower($b->title)
+                    : $a->position <=> $b->position;
+
+                return $sortDir === 'DESC' ? -$result : $result;
+            }
         );
     }
 

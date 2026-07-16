@@ -16,6 +16,18 @@ class CringeMuseumPage extends APageNoIndexed {
         return '/cringe';
     }
 
+    public function getTitle(): string {
+        return 'Музей кринжа :: ' . $this->getTitleBase();
+    }
+
+    public function getMetaTitle(): string {
+        return 'Музей Кринжа — ' . $this->getMetaTitleBase();
+    }
+
+    public function getMetaDescription(): string {
+        return 'Стыдный уголок. Здесь хранятся мои ранние творческие потуги, которые слишком стыдно показывать, но жаль удалять насовсем.';
+    }
+
     /**
      * @inheritDoc
      */

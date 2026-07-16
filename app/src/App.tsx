@@ -28,7 +28,7 @@ export function App() {
 
   return (
     <Routes>
-      <Route path="/admin/login" element={<LoginPage/>}/>
+      <Route path="/login/notbot" element={<LoginPage/>}/>
       <Route path="/admin" element={<AdminLayout nav={nav} loading={loading}/>}>
         <Route index element={<DashboardPage/>}/>
         <Route key="comments-list" path="comments" element={<Comments/>}/>

@@ -24,5 +24,13 @@ use Runway\Singleton\Kernel;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+// Базовые security-заголовки для всех динамических ответов.
+// Строгий CSP пока не ставим: его надо отдельно выверять под админ-SPA
+// (module federation, инлайновые стили Mantine), иначе поломает приложение.
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header_remove('X-Powered-By');
+
 $kernel = Kernel::getInstance();
 $kernel->processRequest();

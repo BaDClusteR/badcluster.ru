@@ -9,6 +9,8 @@ use Runway\Model\AEntity;
  * @generated-model-helpers
  * @method int getId()
  * @method self setId(int $id)
+ * @method string getTitle()
+ * @method self setTitle(string $title)
  * @method string getContent()
  * @method self setContent(string $content)
  */
@@ -16,6 +18,9 @@ use Runway\Model\AEntity;
 class Fact extends AEntity {
     #[DS\Id]
     protected int $id;
+
+    #[DS\Column]
+    protected string $title = '';
 
     #[DS\Column]
     protected string $content = '';

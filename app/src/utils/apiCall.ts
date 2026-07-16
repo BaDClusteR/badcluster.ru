@@ -2,6 +2,7 @@ import {StringKeyObject} from "@admin/types";
 import {ApiCallMethod, ApiCallOptions} from "./types";
 import {HttpError} from "@/utils/errors.ts";
 import showApiError from "@/utils/showApiError.tsx";
+import showAuthExpiredWarning from "@/utils/showAuthExpiredWarning.tsx";
 
 export default async function apiCall(
     method: ApiCallMethod,
@@ -39,7 +40,10 @@ export default async function apiCall(
 
         // 422 = validation errors — don't show generic toast,
         // let the caller (e.g. EntityForm) handle field-level errors.
-        if (response.status !== 422 && errorPayload) {
+        if (response.status === 401) {
+            showAuthExpiredWarning();
+            error.isHandled = true;
+        } else if (response.status !== 422 && errorPayload) {
             showApiError(errorPayload);
             error.isHandled = true;
         }

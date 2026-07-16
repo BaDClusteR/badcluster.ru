@@ -41,18 +41,21 @@ export function DataTable<T extends EntityRow>(
     selectedRows,
     onSelectionChange,
     bulkActions,
-    webPath
+    webPath,
+    isRowReadonly
   }: DataTableProps<T>
 ) {
   const totalPages = Math.max(1, Math.ceil(total / state.perPage));
   const from = total === 0 ? 0 : (state.page - 1) * state.perPage + 1;
   const to = Math.min(total, state.page * state.perPage);
-  let isSelectedAll = rows.length > 0;
-  rows.forEach((_row, i) => {
-    if (isSelectedAll && !selectedRows?.[i]) {
-      isSelectedAll = false;
-    }
-  });
+  const isReadonly = (row: T) => !!isRowReadonly?.(row);
+  // Readonly-строки не участвуют ни в выделении, ни в "выбрать все"
+  const selectableIndexes = rows.reduce<number[]>(
+    (acc, row, i) => isReadonly(row) ? acc : [...acc, i],
+    []
+  );
+  const isSelectedAll = selectableIndexes.length > 0
+    && selectableIndexes.every((i) => !!selectedRows?.[i]);
 
   if (!rows.length && loading) {
     // @ts-expect-error EntityRow does not allow empty lines, we add them here just to force rendering placeholder rows
@@ -118,11 +121,14 @@ export function DataTable<T extends EntityRow>(
       </span>;
     }
 
-    if (col.link) {
-      const url = (col.link === true)
+    // link: true ведет на страницу редактирования — readonly-строкам она не положена
+    const url = typeof col.link === "function"
+      ? col.link(row)
+      : col.link && !isReadonly(row)
         ? buildAdminUrl(`${webPath}/${row.id}`)
-        : col.link(row);
+        : null;
 
+    if (url) {
       content = (
         <Link to={url} className={classes.cellLink}>
           {content}
@@ -172,8 +178,8 @@ export function DataTable<T extends EntityRow>(
                       (value) => {
                         if (onSelectionChange) {
                           const newSelectedRows: boolean[] = [];
-                          rows.forEach((_row, i) => {
-                            newSelectedRows[i] = value;
+                          rows.forEach((row, i) => {
+                            newSelectedRows[i] = value && !isReadonly(row);
                           });
 
                           onSelectionChange(newSelectedRows);
@@ -244,24 +250,29 @@ export function DataTable<T extends EntityRow>(
                 (row, rowIndex) => (
                   <tr
                     key={`${row.id}-${rowIndex}-${!!selectedRows?.[rowIndex]}`}
-                    className={clsx(!!selectedRows?.[rowIndex] && classes.selectedRow)}
+                    className={clsx(
+                      !!selectedRows?.[rowIndex] && classes.selectedRow,
+                      isReadonly(row) && classes.readonlyRow
+                    )}
                   >
                     {
                       selectable &&
                       <td key={`${rowIndex}-select`}>
-                        <Checkbox
-                          checked={!!selectedRows?.[rowIndex]}
-                          onChange={
-                            (value) => {
-                              if (onSelectionChange) {
-                                const newSelectedRows = Array.from(selectedRows ?? []);
-                                newSelectedRows[rowIndex] = value;
+                        {!isReadonly(row) && (
+                          <Checkbox
+                            checked={!!selectedRows?.[rowIndex]}
+                            onChange={
+                              (value) => {
+                                if (onSelectionChange) {
+                                  const newSelectedRows = Array.from(selectedRows ?? []);
+                                  newSelectedRows[rowIndex] = value;
 
-                                onSelectionChange(newSelectedRows);
+                                  onSelectionChange(newSelectedRows);
+                                }
                               }
                             }
-                          }
-                        />
+                          />
+                        )}
                       </td>
                     }
                     {columns.map((col, colIndex) => (

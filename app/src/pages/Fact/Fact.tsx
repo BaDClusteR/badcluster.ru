@@ -14,7 +14,7 @@ export default function FactPage() {
     <EntityForm<Fact>
       fields={fields}
       dataProvider={getDataProvider(id)}
-      initialValues={isCreateMode ? {content: ""} : undefined}
+      initialValues={isCreateMode ? {title: "", content: ""} : undefined}
       webPath="facts"
       apiEndpoint="fact"
       title={() => <>

@@ -55,6 +55,21 @@ class Media extends AEntity {
         'video/webm',
     ];
 
+    /**
+     * Каноничное расширение по MIME. Ключи — то, что реально возвращает
+     * finfo (image/jpg, например, не вернётся никогда), значения — расширение,
+     * которое присваивается загруженному файлу.
+     */
+    public const array MIME_TO_EXTENSION = [
+        'image/jpeg' => 'jpg',
+        'image/jpg'  => 'jpg',
+        'image/png'  => 'png',
+        'image/webp' => 'webp',
+        'image/avif' => 'avif',
+        'video/mp4'  => 'mp4',
+        'video/webm' => 'webm',
+    ];
+
     #[DS\Id]
     protected int $id;
 

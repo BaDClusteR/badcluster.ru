@@ -3,13 +3,6 @@ import {PhotoTagRow} from "./types.ts";
 
 const columns: ColumnDef<PhotoTagRow>[] = [
   {
-    key: "id",
-    header: "ID",
-    sortable: true,
-    link: true,
-    nowrap: true
-  },
-  {
     key: "title",
     header: "Название",
     sortable: true,
@@ -17,7 +10,13 @@ const columns: ColumnDef<PhotoTagRow>[] = [
   },
   {
     key: "photosCount",
-    header: "Фотки",
+    header: "Фоток с тэгом",
+    nowrap: true
+  },
+  {
+    key: "id",
+    header: "ID",
+    sortable: true,
     nowrap: true
   }
 ];

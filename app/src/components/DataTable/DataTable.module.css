@@ -70,6 +70,14 @@
   background: var(--selected-row-bg);
 }
 
+.readonlyRow td {
+  color: var(--mantine-color-dimmed);
+
+  img {
+    opacity: .6;
+  }
+}
+
 .sortable {
   cursor: pointer;
 

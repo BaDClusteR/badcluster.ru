@@ -12,12 +12,14 @@ readonly class FactDataBuilder implements IFactDataBuilder {
     public function buildRow(Fact $fact): FactRowDTO {
         return new FactRowDTO(
             $fact->getId(),
+            $fact->getTitle(),
             $fact->getContent()
         );
     }
 
     public function buildEntity(Fact $fact): FactDTO {
         return new FactDTO(
+            title: $fact->getTitle(),
             content: $fact->getContent()
         );
     }

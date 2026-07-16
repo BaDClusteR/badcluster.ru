@@ -18,7 +18,8 @@ export function List<T extends EntityRow>(
     columns,
     labels,
     webPath,
-    apiEndpoint
+    apiEndpoint,
+    isRowReadonly
   }: ListProps<T>
 ) {
   const ctrl = useListController<T>({
@@ -31,6 +32,10 @@ export function List<T extends EntityRow>(
   });
 
   const renderActions = (row: T): ReactNode => {
+    if (isRowReadonly?.(row)) {
+      return null;
+    }
+
     const actions = [];
 
     if (ctrl.permissions.edit) {
@@ -153,6 +158,7 @@ export function List<T extends EntityRow>(
         onSelectionChange={ctrl.setSelectedRows}
         bulkActions={renderBulkActions()}
         webPath={webPath}
+        isRowReadonly={isRowReadonly}
       />
     </>
   );

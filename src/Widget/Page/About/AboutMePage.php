@@ -11,6 +11,14 @@ class AboutMePage extends APage {
         return 'Привет!';
     }
 
+    public function getTitle(): string {
+        return 'Об авторе :: ' . $this->getTitleBase();
+    }
+
+    public function getMetaTitle(): string {
+        return 'Об авторе — ' . $this->getMetaTitleBase();
+    }
+
     public function getMetaDescription(): string {
         return '';
     }

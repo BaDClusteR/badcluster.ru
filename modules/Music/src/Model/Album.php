@@ -158,9 +158,8 @@ class Album extends AEntity {
         }
 
         return sprintf(
-            '%s • %s %s',
+            '%s • %s',
             $typeHumanReadable,
-            $tracksCount,
             $this->getFormatter()->formatAsWordForm($tracksCount, 'трек', 'трека', 'треков')
         );
     }

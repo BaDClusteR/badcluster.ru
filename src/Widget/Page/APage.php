@@ -92,7 +92,7 @@ abstract class APage extends AWidget implements IAssetProvider {
     }
 
     public function getCssBundles(): array {
-        return ['core', 'noscript'];
+        return ['core'];
     }
 
     public function getCriticalJsBundles(): array {
@@ -103,7 +103,7 @@ abstract class APage extends AWidget implements IAssetProvider {
      * @return string[]
      */
     public function getJsBundles(): array {
-        return [];
+        return ['facts'];
     }
 
     protected function getWebRoot(): string {
