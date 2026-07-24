@@ -1,0 +1,49 @@
+services:
+  BC\Modules\Backup\Config\IBackupConfigProvider:
+    class: BC\Modules\Backup\Config\BackupConfigProvider
+
+  BC\Modules\Backup\Service\IBackupService:
+    class: BC\Modules\Backup\Service\BackupService
+
+  BC\Modules\Backup\Dumper\IDatabaseDumper:
+    class: BC\Modules\Backup\Dumper\MysqldumpDatabaseDumper
+
+  BC\Modules\Backup\Archiver\IArchiveBuilder:
+    class: BC\Modules\Backup\Archiver\ZipArchiveBuilder
+
+  BC\Modules\Backup\Period\IPeriodResolver:
+    class: BC\Modules\Backup\Period\PeriodResolver
+
+  BC\Modules\Backup\Repository\IBackupLogRepository:
+    class: BC\Modules\Backup\Repository\BackupLogRepository
+
+  BC\Modules\Backup\Uploader\IUploaderResolver:
+    class: BC\Modules\Backup\Uploader\UploaderResolver
+
+  # Uploaders are discovered by tag and matched to a destination via supports().
+  BC\Modules\Backup\Uploader\FtpUploader:
+    tags:
+      - name: backup.uploader
+
+  BC\Modules\Backup\Uploader\SftpUploader:
+    tags:
+      - name: backup.uploader
+
+  BC\Modules\Backup\Uploader\GoogleDriveUploader:
+    tags:
+      - name: backup.uploader
+
+  # SFTP wire transports, probed at runtime (PHP builds differ between machines).
+  # Lower priority = preferred.
+  BC\Modules\Backup\Uploader\Sftp\ISftpTransportProvider:
+    class: BC\Modules\Backup\Uploader\Sftp\SftpTransportProvider
+
+  BC\Modules\Backup\Uploader\Sftp\CurlSftpTransport:
+    tags:
+      - name: backup.sftp_transport
+        priority: 10
+
+  BC\Modules\Backup\Uploader\Sftp\Ssh2SftpTransport:
+    tags:
+      - name: backup.sftp_transport
+        priority: 20

@@ -1,0 +1,8 @@
+services:
+  BC\Modules\Backup\Command\BackupRunCommand:
+    tags:
+      - name: console.command
+
+  BC\Modules\Backup\Command\GdriveAuthCommand:
+    tags:
+      - name: console.command
