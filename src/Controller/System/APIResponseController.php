@@ -8,7 +8,7 @@ use ApiPlatform\DTO\ApiResponseDTO;
 use Runway\Request\IResponse;
 use Runway\Request\Parameters\DTO\CookieDTO;
 
-class APIResponseController extends \ApiPlatform\Controller\System\APIResponseController {
+class APIResponseController extends \ApiPlatform\Controller\System\ApiResponseController {
     public function getResponse(ApiResponseDTO $response): IResponse {
         $result = parent::getResponse($response);
 
