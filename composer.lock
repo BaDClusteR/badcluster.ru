@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "afc0ddb6120c655947747eb7edf337d7",
+    "content-hash": "b13f259af61d318484b3f31d6a954ac5",
     "packages": [
         {
             "name": "bad_cluster/runway",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/BaDClusteR/runway.git",
-                "reference": "f46cfd73ac43597af4e405f439ccab047ac4db33"
+                "reference": "d132391990616cf446b3c840b96618d4d319c297"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BaDClusteR/runway/zipball/f46cfd73ac43597af4e405f439ccab047ac4db33",
-                "reference": "f46cfd73ac43597af4e405f439ccab047ac4db33",
+                "url": "https://api.github.com/repos/BaDClusteR/runway/zipball/d132391990616cf446b3c840b96618d4d319c297",
+                "reference": "d132391990616cf446b3c840b96618d4d319c297",
                 "shasum": ""
             },
             "require": {
@@ -62,7 +62,7 @@
                 "issues": "https://github.com/BaDClusteR/runway/issues",
                 "source": "https://github.com/BaDClusteR/runway/tree/main"
             },
-            "time": "2026-04-14T13:42:46+00:00"
+            "time": "2026-07-06T02:49:20+00:00"
         },
         {
             "name": "bad_cluster/runway-api-platform",
@@ -4537,11 +4537,12 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.5",
+        "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-mbstring": "*",
         "ext-yaml": "*",
         "ext-zip": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }
