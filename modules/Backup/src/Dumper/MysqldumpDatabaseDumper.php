@@ -20,7 +20,8 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
     public function __construct(
         private readonly IDataStorageDriver $driver,
         private readonly IEnvVariablesProvider $env,
-    ) {}
+    ) {
+    }
 
     public function dump(DatabaseConfig $config, string $outputFile): void {
         $options = $this->driver->getConnectOptions();
@@ -99,7 +100,7 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
         string $prefix,
         string $charset,
     ): array {
-        $binary = (string)($this->env->getEnvVariable('BACKUP_MYSQLDUMP_BIN') ?: 'mysqldump');
+        $binary = (string) ($this->env->getEnvVariable('BACKUP_MYSQLDUMP_BIN') ?: 'mysqldump');
 
         $command = [
             $binary,
@@ -113,9 +114,10 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
 
         // The app's PDO DSN connects without TLS, so by default we disable it for the dump too
         // (avoids "SSL connection error" against servers that don't offer SSL). Set BACKUP_DB_SSL=1
-        // to keep the client's default SSL behaviour instead.
+        // to keep the client's default SSL behaviour instead. MySQL and MariaDB binaries spell
+        // "no TLS" differently, and each rejects the other's option.
         if (!$this->isSslEnabled()) {
-            $command[] = '--ssl-mode=DISABLED';
+            $command[] = $this->isMariaDbBinary($binary) ? '--skip-ssl' : '--ssl-mode=DISABLED';
         }
 
         foreach ($this->extraArgs() as $arg) {
@@ -151,13 +153,19 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
         return $value !== null && $value !== '' && filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
+    private function isMariaDbBinary(string $binary): bool {
+        $version = (string) shell_exec(escapeshellarg($binary) . ' --version 2>/dev/null');
+
+        return stripos($version, 'mariadb') !== false;
+    }
+
     /**
      * Extra, verbatim mysqldump arguments from BACKUP_MYSQLDUMP_EXTRA_ARGS (whitespace-separated).
      *
      * @return string[]
      */
     private function extraArgs(): array {
-        $raw = trim((string)($this->env->getEnvVariable('BACKUP_MYSQLDUMP_EXTRA_ARGS') ?? ''));
+        $raw = trim((string) ($this->env->getEnvVariable('BACKUP_MYSQLDUMP_EXTRA_ARGS') ?? ''));
 
         if ($raw === '') {
             return [];
@@ -198,7 +206,7 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
 
         if ($exitCode !== 0) {
             throw new BackupException(
-                'mysqldump failed (exit code ' . $exitCode . '): ' . trim((string)$stderr)
+                'mysqldump failed (exit code ' . $exitCode . '): ' . trim((string) $stderr)
             );
         }
     }
