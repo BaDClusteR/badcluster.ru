@@ -100,6 +100,14 @@ class Media extends AEntity {
     //    #[DS\Reference(refModel: self::class, refProp: "id")]
     //    protected ?array $children = null;
 
+    /**
+     * Кэш getThumbnails() на время запроса: без него каждый рендер Picture
+     * делает несколько одинаковых SELECT'ов. Без DS-атрибута — ORM его не видит.
+     *
+     * @var self[]|null
+     */
+    protected ?array $__thumbnails = null;
+
     protected static ?string $imagesPath = null;
 
     public static function getSubfolder(): string {
@@ -118,6 +126,8 @@ class Media extends AEntity {
      * @return self[][]
      */
     public function generateThumbnails(array $widths, bool $force = false, bool $postprocess = true): array {
+        $this->__thumbnails = null;
+
         return $this->getThumbnailsGenerator()->generateThumbnails($this, $widths, $force, $postprocess);
     }
 
@@ -139,6 +149,8 @@ class Media extends AEntity {
     }
 
     public function generateThumbnail(int $width, bool $force = false): array {
+        $this->__thumbnails = null;
+
         return $this->getThumbnailGenerator()->generateThumbnails($this, $width, $force);
     }
 
@@ -146,6 +158,10 @@ class Media extends AEntity {
      * @return self[]
      */
     public function getThumbnails(): array {
+        if ($this->__thumbnails !== null) {
+            return $this->__thumbnails;
+        }
+
         try {
             // parent_id не выбираем намеренно: при гидрации ссылка на родителя
             // резолвится по объявленному типу (Media), и для наследников с другой
@@ -158,7 +174,7 @@ class Media extends AEntity {
                 )
             );
 
-            return static::getQueryBuilder()
+            return $this->__thumbnails = static::getQueryBuilder()
                          ->select(implode(', ', $columns))
                          ->where('parent_id = :parentId')
                          ->setVariable('parentId', $this->getId())
@@ -167,6 +183,57 @@ class Media extends AEntity {
             $this->getLogger()->warning("Cannot get thumbnails for image #{$this->getId()}: {$e->getMessage()}");
 
             return [];
+        }
+    }
+
+    /**
+     * Загружает тумбнейлы для пачки медиа одним запросом и раскладывает их
+     * по кэшам инстансов — вместо отдельного SELECT'а на каждую картинку
+     * при рендере списков.
+     *
+     * @param self[] $medias
+     */
+    public static function preloadThumbnails(array $medias): void {
+        $mediasById = [];
+
+        foreach ($medias as $media) {
+            if ($media->getId()) {
+                $mediasById[$media->getId()] = $media;
+            }
+        }
+
+        if (!$mediasById) {
+            return;
+        }
+
+        $thumbnailsByParent = array_fill_keys(array_keys($mediasById), []);
+
+        try {
+            $qb = static::getQueryBuilder();
+            $rows = $qb->where(
+                $qb->expr()->in('parent_id', array_keys($mediasById))
+            )->getResults();
+
+            foreach ($rows as $row) {
+                $parentId = (int) ($row['parent_id'] ?? 0);
+
+                // parent_id вырезаем по той же причине, что и в getThumbnails()
+                unset($row['parent_id']);
+
+                if (isset($thumbnailsByParent[$parentId])) {
+                    $thumbnailsByParent[$parentId][] = new static()->map($row);
+                }
+            }
+        } catch (Exception $e) {
+            static::getLoggerStatic()->warning(
+                'Cannot preload thumbnails: ' . $e->getMessage()
+            );
+
+            return;
+        }
+
+        foreach ($mediasById as $id => $media) {
+            $media->__thumbnails = $thumbnailsByParent[$id];
         }
     }
 
