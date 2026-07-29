@@ -21,6 +21,9 @@ readonly class SystemCountersDTO {
         public float $diskWriteOps,
         public float $netRxBytes,
         public float $netTxBytes,
+        public float $uptimeSeconds,
+        public int $diskUsedBytes,
+        public int $diskTotalBytes,
         public string $source
     ) {
     }

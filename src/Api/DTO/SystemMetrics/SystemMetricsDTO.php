@@ -12,6 +12,9 @@ readonly class SystemMetricsDTO {
         public array $points,
         public int $cpuCores,
         public int $ramTotalBytes,
+        public int $uptimeSeconds,
+        public int $diskUsedBytes,
+        public int $diskTotalBytes,
         public string $source
     ) {
     }

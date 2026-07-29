@@ -1,0 +1,16 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(0.5rem * var(--mantine-scale));
+  height: 100%;
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.value {
+  --text-fz: var(--mantine-font-size-xl);
+  --text-lh: var(--mantine-line-height-xl);
+
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}

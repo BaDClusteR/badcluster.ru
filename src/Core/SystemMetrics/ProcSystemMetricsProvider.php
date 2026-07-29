@@ -31,6 +31,7 @@ class ProcSystemMetricsProvider implements ISystemMetricsProvider {
         [$ramUsedBytes, $ramTotalBytes] = $this->readRam();
         [$diskReadOps, $diskWriteOps] = $this->readDiskOps();
         [$netRxBytes, $netTxBytes] = $this->readNetBytes();
+        [$diskUsedBytes, $diskTotalBytes] = $this->readDiskSpace();
 
         return new SystemCountersDTO(
             cpuBusyTicks: $busyTicks,
@@ -42,8 +43,26 @@ class ProcSystemMetricsProvider implements ISystemMetricsProvider {
             diskWriteOps: $diskWriteOps,
             netRxBytes: $netRxBytes,
             netTxBytes: $netTxBytes,
+            uptimeSeconds: $this->readUptime(),
+            diskUsedBytes: $diskUsedBytes,
+            diskTotalBytes: $diskTotalBytes,
             source: self::SOURCE
         );
+    }
+
+    private function readUptime(): float {
+        // /proc/uptime: "<аптайм в секундах> <суммарный idle всех ядер>"
+        return (float) strtok((string) file_get_contents('/proc/uptime'), ' ');
+    }
+
+    /**
+     * @return array{int, int} [занято, всего] байт на разделе с сайтом
+     */
+    private function readDiskSpace(): array {
+        $totalBytes = (int) disk_total_space(PROJECT_ROOT);
+        $freeBytes = (int) disk_free_space(PROJECT_ROOT);
+
+        return [max(0, $totalBytes - $freeBytes), $totalBytes];
     }
 
     /**

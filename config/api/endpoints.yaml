@@ -42,3 +42,7 @@ services:
   BC\Api\Endpoint\SystemMetrics:
     tags:
       - name: api_endpoint_collection
+
+  BC\Api\Endpoint\Attention:
+    tags:
+      - name: api_endpoint_collection

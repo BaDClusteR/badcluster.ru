@@ -54,6 +54,11 @@ class FakeSystemMetricsProvider implements ISystemMetricsProvider {
                 [70_000, 37],
                 [30_000, 6.7],
             ]),
+            uptimeSeconds: 12 * 86_400 + fmod($t, 86_400),
+            // Место на диске — реальное даже в заглушке: disk_*_space()
+            // переносимы и работают без /proc
+            diskUsedBytes: max(0, (int) disk_total_space(PROJECT_ROOT) - (int) disk_free_space(PROJECT_ROOT)),
+            diskTotalBytes: (int) disk_total_space(PROJECT_ROOT),
             source: self::SOURCE
         );
     }

@@ -38,6 +38,9 @@ class SystemMetrics extends AEndpoint {
             ),
             cpuCores: $sample->counters->cpuCores,
             ramTotalBytes: $sample->counters->ramTotalBytes,
+            uptimeSeconds: (int) $sample->counters->uptimeSeconds,
+            diskUsedBytes: $sample->counters->diskUsedBytes,
+            diskTotalBytes: $sample->counters->diskTotalBytes,
             source: $sample->counters->source
         );
     }

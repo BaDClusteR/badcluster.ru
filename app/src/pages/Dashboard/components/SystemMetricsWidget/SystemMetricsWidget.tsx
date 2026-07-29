@@ -30,7 +30,7 @@ type WidgetConfig = {
 
 export const WIDGET_CONFIGS: Record<SystemMetricsWidgetKind, WidgetConfig> = {
   load: {
-    label: "System load",
+    label: "Загрузка системы",
     series: [
       {key: "cpu", name: "CPU", slot: "a"},
       {key: "ram", name: "RAM", slot: "b"}
@@ -44,7 +44,7 @@ export const WIDGET_CONFIGS: Record<SystemMetricsWidgetKind, WidgetConfig> = {
         : null
   },
   disk: {
-    label: "Disk IO",
+    label: "Дисковая активность",
     series: [
       {key: "ioRead", name: "Read", slot: "a"},
       {key: "ioWrite", name: "Write", slot: "b"}
@@ -54,7 +54,7 @@ export const WIDGET_CONFIGS: Record<SystemMetricsWidgetKind, WidgetConfig> = {
     formatTick: formatOpsTick
   },
   net: {
-    label: "Network",
+    label: "Сетевая активность",
     series: [
       {key: "netIn", name: "In", slot: "a"},
       {key: "netOut", name: "Out", slot: "b"}

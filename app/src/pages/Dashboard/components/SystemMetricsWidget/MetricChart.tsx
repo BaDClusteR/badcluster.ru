@@ -63,6 +63,7 @@ function formatTime(time: number, withSeconds = false): string {
   return new Date(time).toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
+    hourCycle: "h23",
     ...(withSeconds ? {second: "2-digit"} : {})
   });
 }

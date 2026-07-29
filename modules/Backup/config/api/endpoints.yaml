@@ -1,0 +1,4 @@
+services:
+  BC\Modules\Backup\Api\Endpoint\BackupStatus:
+    tags:
+      - name: api_endpoint_collection

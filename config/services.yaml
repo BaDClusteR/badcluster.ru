@@ -14,6 +14,14 @@ services:
   BC\Core\SystemMetrics\ISystemMetricsHistory:
     class: BC\Core\SystemMetrics\SystemMetricsHistory
 
+  BC\Core\Attention\Provider\CommentsAttentionProvider:
+    tags:
+      - name: dashboard.attention_provider
+
+  BC\Core\Attention\Provider\LogErrorsAttentionProvider:
+    tags:
+      - name: dashboard.attention_provider
+
   BC\Controller\System\APIExceptionResponseController:
     decorates: ApiPlatform\Controller\System\IApiExceptionResponseController
 

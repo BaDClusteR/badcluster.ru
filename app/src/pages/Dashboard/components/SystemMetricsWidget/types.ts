@@ -12,6 +12,9 @@ export type SystemMetricsResponse = {
     points: SystemMetricsPoint[];
     cpuCores: number;
     ramTotalBytes: number;
+    uptimeSeconds: number;
+    diskUsedBytes: number;
+    diskTotalBytes: number;
     source: "proc" | "fake";
 };
 
