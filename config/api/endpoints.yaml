@@ -38,3 +38,7 @@ services:
   BC\Api\Endpoint\PulseItems:
     tags:
       - name: api_endpoint_collection
+
+  BC\Api\Endpoint\SystemMetrics:
+    tags:
+      - name: api_endpoint_collection

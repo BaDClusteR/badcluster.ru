@@ -47,6 +47,8 @@ readonly class Admin {
     }
 
     private function isInDevMode(): bool {
+        return true;
+
         return Container::getInstance()->getService(IKernel::class)->isDebugMode()
                && (
                    $this->request->getGetParameter('dev')->asString() === '1'

@@ -2,3 +2,7 @@ services:
   BC\Core\Command\AssetsBuildCommand:
     tags:
       - name: console.command
+
+  BC\Core\Command\SystemMetricsSampleCommand:
+    tags:
+      - name: console.command

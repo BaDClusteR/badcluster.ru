@@ -8,6 +8,12 @@ services:
   BC\Core\Asset\IAssetBuilder:
     class: BC\Core\Asset\AssetBuilder
 
+  BC\Core\SystemMetrics\ISystemMetricsProvider:
+    class: BC\Core\SystemMetrics\SystemMetricsProviderFactory
+
+  BC\Core\SystemMetrics\ISystemMetricsHistory:
+    class: BC\Core\SystemMetrics\SystemMetricsHistory
+
   BC\Controller\System\APIExceptionResponseController:
     decorates: ApiPlatform\Controller\System\IApiExceptionResponseController
 

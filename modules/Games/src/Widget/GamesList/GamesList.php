@@ -7,7 +7,7 @@ use BC\Widget\AWidget;
 
 class GamesList extends AWidget {
     protected function getTemplatePath(): string {
-        return 'modules/Games/List/list.phtml';
+        return 'modules/Games/list/list.phtml';
     }
 
     /**

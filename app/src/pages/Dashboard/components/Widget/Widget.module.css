@@ -1,0 +1,56 @@
+/* noinspection CssUnresolvedCustomProperty */
+.cardRoot {
+  --paper-radius: var(--mantine-radius-md);
+  --card-padding: var(--mantine-spacing-lg);
+
+  height: 100%;
+  background: var(--color-surface);
+  border: var(--border);
+}
+
+/*
+ * Именно flex-basis: auto: с basis 0 тело не вносит вклад в auto-высоту
+ * карточки, и низ контента срезается карточным overflow: hidden
+ */
+.cardBody {
+  flex: 1 1 auto;
+  margin-top: calc(0.5rem * var(--mantine-scale));
+}
+
+.cardGroup {
+  justify-content: space-between;
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.cardTitle {
+  --text-fz: var(--mantine-font-size-xs);
+  --text-lh: var(--mantine-line-height-xs);
+
+  color: var(--mantine-color-dimmed);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.cardText {
+  --text-fz: var(--mantine-font-size-xl);
+  --text-lh: var(--mantine-line-height-xl);
+
+  margin-top: calc(0.25rem * var(--mantine-scale));
+  font-weight: bold;
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.cardIconWrapper {
+  --ti-size: calc(3rem * var(--mantine-scale));
+  --ti-radius: var(--mantine-radius-md);
+  --ti-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;
+
+  background: var(--widget-bg);
+  color: var(--widget-color);
+
+  svg {
+    width: calc(1.5 * var(--rhythmic-unit));
+    height: calc(1.5 * var(--rhythmic-unit));
+  }
+}

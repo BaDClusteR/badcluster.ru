@@ -1,0 +1,188 @@
+.root {
+  --series-a: #2A78D6;
+  --series-b: #EB6834;
+
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5rem * var(--mantine-scale));
+  height: 100%;
+}
+
+/* Те же оттенки, пересчитанные под тёмную поверхность */
+:global([data-mantine-color-scheme='dark']) .root {
+  --series-a: #3987E5;
+  --series-b: #D95926;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-md);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendKey {
+  flex-shrink: 0;
+  width: 12px;
+  border-top: 2px solid;
+  border-radius: 1px;
+}
+
+.legendKeyA {
+  border-top-color: var(--series-a);
+}
+
+.legendKeyB {
+  border-top-color: var(--series-b);
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.legendLabel {
+  --text-fz: var(--mantine-font-size-xs);
+  --text-lh: var(--mantine-line-height-xs);
+
+  color: var(--mantine-color-dimmed);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.legendValue {
+  --text-fz: var(--mantine-font-size-sm);
+  --text-lh: var(--mantine-line-height-sm);
+
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+.plot {
+  position: relative;
+  flex: 1;
+  min-height: 180px;
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.placeholder {
+  --text-fz: var(--mantine-font-size-sm);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mantine-color-dimmed);
+}
+
+.gridline {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.baseline {
+  stroke: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+.axisLabel {
+  fill: var(--color-text-secondary);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.lineA {
+  stroke: var(--series-a);
+}
+
+.lineB {
+  stroke: var(--series-b);
+}
+
+.area {
+  stroke: none;
+  fill-opacity: 0.1;
+}
+
+.areaA {
+  fill: var(--series-a);
+}
+
+.areaB {
+  fill: var(--series-b);
+}
+
+.marker {
+  stroke: var(--color-surface);
+  stroke-width: 2;
+}
+
+.markerA {
+  fill: var(--series-a);
+}
+
+.markerB {
+  fill: var(--series-b);
+}
+
+.crosshair {
+  stroke: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 2;
+  min-width: 120px;
+  white-space: nowrap;
+  padding: 6px 10px;
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--border-radius-small);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  pointer-events: none;
+}
+
+.tooltipTime {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 13px;
+}
+
+.tooltipValue {
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltipLabel {
+  color: var(--color-text-secondary);
+}
+
+.tooltipBytes {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
