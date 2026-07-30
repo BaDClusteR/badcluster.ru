@@ -8,13 +8,15 @@ export default function Widget(
     value,
     color,
     icon,
-    children
+    children,
+    postfix
   }: {
     label: ReactNode,
     value?: ReactNode,
     color?: string,
     icon?: ReactNode,
-    children?: ReactNode
+    children?: ReactNode,
+    postfix?: ReactNode
   }
 ) {
   return <Card classNames={{root: classes.cardRoot}}>
@@ -40,6 +42,7 @@ export default function Widget(
             {icon}
           </ThemeIcon>
         }
+        {postfix}
       </Group>}
   </Card>;
 }

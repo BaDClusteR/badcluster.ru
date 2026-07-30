@@ -10,6 +10,8 @@ readonly class BackupStatusDTO {
         public ?int $lastBackupAt,
         public bool $success,
         public int $sizeBytes,
+        public string $archiveName,
+        public string $url,
         public string $error
     ) {
     }

@@ -1,0 +1,33 @@
+/*
+ * Значение виджета рендерится внутри <p> (Mantine Text), поэтому здесь
+ * только span'ы; блочность — через display
+ */
+
+/* noinspection CssUnresolvedCustomProperty */
+.details {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: calc(0.25rem * var(--mantine-scale));
+  font-size: var(--font-size-small);
+  font-weight: normal;
+  line-height: 1.35;
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--mantine-font-size-xl);
+  font-weight: bold;
+}
+
+/* noinspection CssUnresolvedCustomProperty */
+.size {
+  flex-shrink: 0;
+  color: var(--mantine-color-dimmed);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size-tiny);
+}

@@ -25,13 +25,15 @@ class BackupStatus extends AEndpoint {
             // при первом бэкапе; ensureSchema() безопасно вызывать повторно
             $this->backupLogRepository->ensureSchema();
 
-            return BackupLog::findOne([], ['created_at', 'DESC']);
+            return BackupLog::findOne([], ['createdAt', 'DESC']);
         });
 
         return new BackupStatusDTO(
             lastBackupAt: $log?->getCreatedAt()->getTimestamp(),
             success: $log?->getSuccess() ?? false,
             sizeBytes: $log?->getSizeBytes() ?? 0,
+            archiveName: $log?->getArchiveName() ?? '',
+            url: $log?->getUrl() ?? '',
             error: $log?->getError() ?? ''
         );
     }
