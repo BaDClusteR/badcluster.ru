@@ -43,15 +43,15 @@ function formatAge(seconds: number): string {
   let result = "";
 
   if (days > 0) {
-    result = `${days === 1 ? "" : days}${getWordForm(days, "день", "дня", "дней")} назад`;
+    result = `${days === 1 ? "" : `${days} `}${getWordForm(days, "день", "дня", "дней")} назад`;
   }
 
   if (!result && hours > 0) {
-    result = `${hours === 1 ? "" : hours}${getWordForm(hours, "час", "часа", "часов")} назад`;
+    result = `${hours === 1 ? "" : `${hours} `}${getWordForm(hours, "час", "часа", "часов")} назад`;
   }
 
   if (!result && minutes > 0) {
-    result = `${minutes === 1 ? "" : minutes}${getWordForm(hours, "минуту", "минуты", "минут")} назад`;
+    result = `${minutes === 1 ? "" : `${minutes} `}${getWordForm(hours, "минуту", "минуты", "минут")} назад`;
   }
 
   if (!result) {
