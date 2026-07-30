@@ -33,7 +33,7 @@
   font-weight: bold;
   font-size: var(--font-size-big);
   color: var(--color-text);
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .file__meta {

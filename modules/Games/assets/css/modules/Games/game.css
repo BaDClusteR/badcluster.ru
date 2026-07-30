@@ -9,7 +9,7 @@
     background: var(--color-surface);
     padding: calc(.125 * var(--rhythmic-unit)) calc(.375 * var(--rhythmic-unit));
     border-radius: var(--border-radius-small);
-    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   h2.visually-hidden {

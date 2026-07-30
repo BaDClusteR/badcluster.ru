@@ -61,7 +61,7 @@ const FIELDS: FieldDef<Book, BookContext>[] = [
     type: "slug",
     required: true,
     role: "primary",
-    url: () => ""
+    url: (slug: string) => `/books/${slug}`
   },
   {
     name: "lastUpdateDate",
@@ -126,7 +126,8 @@ const FIELDS: FieldDef<Book, BookContext>[] = [
     type: "group",
     span: "full",
     render: (form, options, values) =>
-      <BookFormats formats={options.context?.formats ?? []} generatedFormats={values?.formats} submitting={options.submitting} onChange={
+      <BookFormats formats={options.context?.formats ?? []} generatedFormats={values?.formats}
+                   submitting={options.submitting} onChange={
         (format: string, allowed: boolean, filename: string, postfix: string) => {
           const current = form.values.formats ?? {};
           form.setFieldValue(

@@ -18,7 +18,7 @@ const FIELDS: FieldDef<Chapter, ChapterContext>[] = [
     placeholder: "url-friendly-name",
     url: (slug: string, values, context) => (
       context?.book?.slug
-        ? `http://bc.local/books/${context.book.slug}/${slug}`
+        ? `/books/${context.book.slug}/${slug}`
         : ""
     )
   },

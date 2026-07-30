@@ -19,6 +19,7 @@ $bundler = $this->getAssetBuilder();
 <?php foreach ($this->getCssBundles() as $bundle) : ?>
     <link href="<?=$bundler->getBundleWebPath($bundle, 'css')?>" rel="stylesheet"/>
 <?php endforeach; ?>
+<link href="<?=$bundler->getBundleWebPath('print', 'css')?>" rel="stylesheet" media="print"/>
 <noscript>
     <link href="<?=$bundler->getBundleWebPath('noscript', 'css')?>" rel="stylesheet"/>
 </noscript>

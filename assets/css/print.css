@@ -1,0 +1,9 @@
+footer.footer,
+#comment-form,
+.header__column--menu,
+.back-link,
+div.comment__menu,
+.comments:has(.comments__empty),
+.chapter__nav {
+  display: none;
+}

@@ -62,6 +62,8 @@ class HomePage extends APage {
 
             new AssetDTO('noscript', 'css/noscript.css'),
 
+            new AssetDTO('print', 'css/print.css'),
+
             new AssetDTO('footer', 'css/common/footer.css')
         ];
     }

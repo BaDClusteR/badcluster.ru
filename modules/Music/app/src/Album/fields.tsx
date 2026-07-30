@@ -48,7 +48,7 @@ const FIELDS: FieldDef<Album>[] = [
     role: "primary",
     span: "full",
     required: true,
-    url: slug => `http://bc.local/music/${slug}`
+    url: slug => `/music/${slug}`
   },
   {
     name: "genre",

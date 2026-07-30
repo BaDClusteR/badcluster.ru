@@ -152,6 +152,16 @@ class Post extends AEntity {
         return $this;
     }
 
+    public function remove(): void {
+        $this->getCover()?->remove();
+
+        foreach ($this->getPostTags() as $postTag) {
+            $postTag->remove();
+        }
+
+        parent::remove();
+    }
+
     public function getUrl(): string {
         return sprintf(
             '%s/blog/%s',

@@ -16,7 +16,7 @@ const FIELDS: FieldDef<Post, BlogPostContext>[] = [
     type: "slug",
     required: true,
     placeholder: "url-friendly-name",
-    url: (slug: string) => `http://bc.local/blog/${slug}`
+    url: (slug: string) => `/blog/${slug}`
   },
   {
     name: "published",

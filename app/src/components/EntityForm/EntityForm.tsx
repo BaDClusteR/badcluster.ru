@@ -20,6 +20,7 @@ import "@mantine/dates/styles.layer.css";
 import {useForm} from "@mantine/form";
 import {useQuery} from "@tanstack/react-query";
 import {HttpError} from "@/utils/errors";
+import {getWebRoot} from "@/providers/AppSettingsProvider";
 import {notify} from "@/lib/notify";
 import {IconError, IconEmpty} from "@/components/List/components/Icons";
 import type {
@@ -302,7 +303,10 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
         );
       case "slug":
         return <Slug
-          url={(slug: string) => field.url(slug, form.values, context)}
+          url={(slug: string) => {
+            const url = field.url(slug, form.values, context);
+            return url.startsWith("/") ? getWebRoot() + url : url;
+          }}
           {...common}
           {...form.getInputProps(field.name as string)}
         />;

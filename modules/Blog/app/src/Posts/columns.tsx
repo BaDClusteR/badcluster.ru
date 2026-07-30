@@ -16,7 +16,7 @@ export default function getColumns(BadgeGreen: BadgeComponent, BadgeGray: BadgeC
       render: (row) => <code>{row.slug}</code>
     },
     {
-      key: "publish",
+      key: "published",
       header: "Статус",
       sortable: true,
       render: (row: PostRow) => (
@@ -26,7 +26,7 @@ export default function getColumns(BadgeGreen: BadgeComponent, BadgeGray: BadgeC
       )
     },
     {
-      key: "publish_date",
+      key: "publishDate",
       header: "Дата публикации",
       sortable: true,
       width: 120,

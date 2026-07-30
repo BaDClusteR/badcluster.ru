@@ -131,9 +131,18 @@ abstract class AEndpoint {
         $qb = $entityFQN::getQueryBuilder();
 
         $this->handleWithException(
-            static fn () => $qb->delete()->where(
-                $qb->expr()->in('id', $entityIds)
-            )->execute()
+            static function () use ($qb, $entityIds): void {
+                // Удаляем через remove(), а не bulk-delete'ом: модели
+                // переопределяют remove() для каскадов (обложки, файлы,
+                // материалы), и обход этого метода оставляет сироты
+                $entities = $qb->where(
+                    $qb->expr()->in('id', $entityIds)
+                )->getEntities();
+
+                foreach ($entities as $entity) {
+                    $entity->remove();
+                }
+            }
         );
     }
 

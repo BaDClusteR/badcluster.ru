@@ -113,6 +113,11 @@ export interface FieldDefDateTime<T> extends FieldDefBase<T>, FieldDefNamed<T> {
 export interface FieldDefSlug<T, C = unknown> extends FieldDefBase<T>, FieldDefNamed<T> {
   type: "slug";
   placeholder?: string;
+  /**
+   * Preview URL shown under the field. Return a site-relative path
+   * (e.g. `/blog/${slug}`) — the host prepends the site's web root.
+   * Absolute URLs are passed through unchanged.
+   */
   url: (slug: string, values: T, context?: C) => string;
 }
 

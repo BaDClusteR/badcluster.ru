@@ -62,7 +62,7 @@ const FIELDS: FieldDef<GameMaterial, GameMaterialContext>[] = [
       }
 
       return selectedGame
-        ? `http://bc.local/games/${(selectedGame as MaterialGame).slug}/${slug}`
+        ? `/games/${(selectedGame as MaterialGame).slug}/${slug}`
         : "";
     },
     visible: values => values.type === "F"
