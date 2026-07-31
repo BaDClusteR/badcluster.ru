@@ -31,11 +31,13 @@ $isPending = !$comment->isDeclined && !$comment->isApproved;
             <span class="comment__status-badge">На модерации</span>
         <?php endif; ?>
 
-        <?php if ($this->isAuthenticated()) : ?>
-            <div class="comment__menu" data-comment-id="<?=$comment->id?>">
-                <button class="comment__menu-button comment__menu-button--reply">
-                    <span class="visually-hidden">Ответить</span>
-                </button>
+        <div class="comment__menu" data-comment-id="<?=$comment->id?>">
+            <button class="comment__menu-button comment__menu-button--reply tooltip-container">
+                <span class="visually-hidden">Ответить</span>
+            </button>
+            <span class="tooltip tooltip--bottom">Ответить на комментарий</span>
+
+            <?php if ($this->isAuthenticated()) : ?>
                 <span class="comment__menu-separator" aria-hidden="true"></span>
                 <?php if ($isPending) : ?>
                     <button class="comment__menu-button comment__menu-button--approve">
@@ -52,8 +54,8 @@ $isPending = !$comment->isDeclined && !$comment->isApproved;
                 <button class="comment__menu-button comment__menu-button--delete">
                     <span class="visually-hidden">Удалить</span>
                 </button>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
     </section>
     <section class="comment__text"><?=$this->prepareCommentText($comment->comment)?></section>
 </article>

@@ -30,6 +30,10 @@
   position-anchor: --tooltip;
 }
 
+.tooltip--bottom {
+  position-area: bottom;
+}
+
 .tooltip-container {
   anchor-name: --tooltip;
 }

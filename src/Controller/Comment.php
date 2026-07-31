@@ -30,9 +30,7 @@ readonly class Comment {
     public function run(): Response {
         $pageType = $this->request->getPostParameter('type')->asString();
         $pageId = $this->request->getPostParameter('id')->asInt();
-        $parentId = $this->auth->isAuthenticated()
-            ? $this->request->getPostParameter('parentId')->asInt()
-            : null;
+        $parentId = $this->request->getPostParameter('parentId')->asInt() ?: null;
 
         if (!$this->getCommentsProvider()->isPageExist($pageType, $pageId)) {
             return new JsonResponse(

@@ -1,32 +1,4 @@
 class Comment {
-    static reply(btn) {
-        Comment.clearReply();
-
-        const [root, id] = Comment.#getRootAndIdFromBtn(btn);
-        const nextSibling = Comment.#getReplyTextPlace();
-        const clone = root.cloneNode(true);
-        clone.classList.remove(
-            'comment--loading', 'comment--pending', 'comment--rejected',
-            'comment--level-1', 'comment--level-2', 'comment--level-3',
-            'comment--level-4', 'comment--level-5', 'comment--level-6'
-        );
-        clone.querySelectorAll('.comment__status-badge, .comment__menu').forEach(
-            elem => {
-                elem.remove();
-            }
-        );
-        const clearReplyBtn = document.createElement('button');
-        clearReplyBtn.classList.add('comment__reply-clear');
-        clearReplyBtn.addEventListener('click', () => {
-            Comment.clearReply();
-        });
-        clone.appendChild(clearReplyBtn);
-
-        nextSibling.parentNode.insertBefore(clone, nextSibling);
-        Comment.#getParentNodeInput().value = id;
-        document.getElementById('comment').focus();
-    }
-
     static #getRootAndIdFromBtn(btn) {
         return [btn.closest('.comment'), Comment.getCommentId(btn)];
     }
@@ -39,23 +11,6 @@ class Comment {
         }
 
         return 0;
-    }
-
-    static clearReply() {
-        document.querySelectorAll('.comments__form .comment').forEach(
-            elem => {
-                elem.remove();
-            }
-        );
-        Comment.#getParentNodeInput().value = '';
-    }
-
-    static #getReplyTextPlace() {
-        return document.getElementById('comment-success');
-    }
-
-    static #getParentNodeInput() {
-        return document.querySelector('input[name="parentId"]');
     }
 
     /**
@@ -132,14 +87,6 @@ class Comment {
         });
     }
 }
-
-document.querySelectorAll('.comment__menu-button--reply').forEach(
-    btn => {
-        btn.addEventListener('click', (e) => {
-            Comment.reply(btn);
-        });
-    }
-);
 
 document.querySelectorAll('.comment__menu-button--approve').forEach(
     btn => {

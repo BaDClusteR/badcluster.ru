@@ -173,3 +173,69 @@ class CommentController {
 }
 
 CommentController.autoload();
+
+class Comments {
+    static #getRootAndIdFromBtn(btn) {
+        return [btn.closest('.comment'), Comments.getCommentId(btn)];
+    }
+
+    /**
+     * @param {HTMLElement} elem
+     */
+    static getCommentId(elem) {
+        return elem.closest('[data-comment-id]')?.getAttribute('data-comment-id') || "";
+    }
+
+    static reply(btn) {
+        Comments.clearReply();
+
+        const [root, id] = Comments.#getRootAndIdFromBtn(btn);
+        const nextSibling = Comments.#getReplyTextPlace();
+        const clone = root.cloneNode(true);
+        clone.classList.remove(
+            'comment--loading', 'comment--pending', 'comment--rejected',
+            'comment--level-1', 'comment--level-2', 'comment--level-3',
+            'comment--level-4', 'comment--level-5', 'comment--level-6'
+        );
+        clone.querySelectorAll('.comment__status-badge, .comment__menu').forEach(
+            elem => {
+                elem.remove();
+            }
+        );
+        const clearReplyBtn = document.createElement('button');
+        clearReplyBtn.classList.add('comment__reply-clear');
+        clearReplyBtn.addEventListener('click', () => {
+            Comments.clearReply();
+        });
+        clone.appendChild(clearReplyBtn);
+
+        nextSibling.parentNode.insertBefore(clone, nextSibling);
+        Comments.#getParentNodeInput().value = id;
+        document.getElementById('comment').focus();
+    }
+
+    static clearReply() {
+        document.querySelectorAll('.comments__form .comment').forEach(
+            elem => {
+                elem.remove();
+            }
+        );
+        Comments.#getParentNodeInput().value = '';
+    }
+
+    static #getReplyTextPlace() {
+        return document.getElementById('comment-success');
+    }
+
+    static #getParentNodeInput() {
+        return document.querySelector('input[name="parentId"]');
+    }
+}
+
+document.querySelectorAll('.comment__menu-button--reply').forEach(
+    btn => {
+        btn.addEventListener('click', (e) => {
+            Comments.reply(btn);
+        });
+    }
+);

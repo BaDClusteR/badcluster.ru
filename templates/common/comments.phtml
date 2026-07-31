@@ -5,29 +5,27 @@
 $comments = $this->getComments();
 $nickname = $this->getDefaultNickname();
 ?>
-<link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('comments', 'css')?>" />
-<link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('toast', 'css')?>" />
-<?php if ($this->isAuthenticated()) :?>
-    <link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('comments-admin', 'css')?>" />
+<link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('comments', 'css')?>"/>
+<link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('toast', 'css')?>"/>
+<?php if ($this->isAuthenticated()) : ?>
+    <link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('comments-admin', 'css')?>"/>
 <?php endif; ?>
 <section class="comments">
     <h3 class="comments__title">Комментарии</h3>
-    <?php if ($comments = $this->getComments()) :?>
+    <?php if ($comments = $this->getComments()) : ?>
         <div class="comments__list">
             <?php foreach ($comments as $comment) : ?>
                 <?=new \BC\Widget\Common\Comment(['comment' => $comment])->render()?>
             <?php endforeach; ?>
         </div>
-    <?php else :?>
+    <?php else : ?>
         <p class="comments__empty"><?=$this->getNoCommentsPhrase()?></p>
     <?php endif; ?>
 
     <form action="/comment" class="comments__form" id="comment-form" method="post">
-        <input type="hidden" name="type" value="<?=$this->getPageType()?>" />
-        <input type="hidden" name="id" value="<?=$this->getPageId()?>" />
-        <?php if ($this->isAuthenticated()) :?>
-            <input type="hidden" name="parentId" value="" />
-        <?php endif; ?>
+        <input type="hidden" name="type" value="<?=$this->getPageType()?>"/>
+        <input type="hidden" name="id" value="<?=$this->getPageId()?>"/>
+        <input type="hidden" name="parentId" value=""/>
         <h3>Оставить комментарий</h3>
         <div id="comment-success" class="comments__alert">
             <h3>Сигнал принят! 📡</h3>
@@ -42,7 +40,7 @@ $nickname = $this->getDefaultNickname();
                 name="nickname"
                 class="comment__field comment__field--text comment__field--nickname"
                 placeholder="Имя или никнейм"
-                <?php if ($nickname) :?>
+                <?php if ($nickname) : ?>
                     value="<?=$nickname?>"
                 <?php endif; ?>
             >
