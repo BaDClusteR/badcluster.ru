@@ -1,0 +1,12 @@
+<?php
+/**
+ * @var \BC\Widget\Head\Preload $this
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ */
+
+$staticRoot = $this->getPathsProvider()->getStaticWebPath();
+$fonts = $this->getFonts();
+?>
+<?php foreach ($fonts as $path) : ?>
+    <link rel="preload" href="<?=$staticRoot?>/fonts/<?=$path?>" as="font" type="font/woff2" crossorigin="anonymous"/>
+<?php endforeach; ?>

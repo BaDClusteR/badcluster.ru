@@ -103,6 +103,9 @@ services:
   BC\Core\Formatter\IFormatter:
     class: BC\Core\Formatter\Formatter
 
+  BC\Provider\IPreloadFontProvider:
+    class: BC\Provider\PreloadFontProvider
+
   # Website-specific services
   BC\Provider\IMenuItemsProvider:
     class: BC\Provider\MenuItemsProvider

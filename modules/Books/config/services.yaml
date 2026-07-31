@@ -11,6 +11,9 @@ services:
   BC\Modules\Books\Provider\Admin\PageProvider:
     decorates: BC\Provider\Admin\IPageProvider
 
+  BC\Modules\Books\Provider\PreloadFontProvider:
+    decorates: BC\Provider\IPreloadFontProvider
+
   BC\Modules\Books\Provider\BookFormat\IBookFormatProvider:
     class: BC\Modules\Books\Provider\BookFormat\BookFormatProvider
 

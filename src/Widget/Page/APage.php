@@ -8,6 +8,7 @@ use BC\Core\Action\Comments\IGetCommentsAction;
 use BC\Core\Action\DTO\GetCommentsRequest;
 use BC\Core\Asset\DTO\AssetDTO;
 use BC\Core\DTO\CommentDTO;
+use BC\Core\Trait\PathsProviderTrait;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\DTO\PageImageDTO;
 use BC\Widget\AWidget;
@@ -19,6 +20,7 @@ use Runway\Singleton\Container;
 
 abstract class APage extends AWidget implements IAssetProvider {
     use WebsiteSettingsTrait;
+    use PathsProviderTrait;
 
     abstract public function getHeader(): string;
 
