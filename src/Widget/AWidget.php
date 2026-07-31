@@ -34,6 +34,9 @@ abstract class AWidget {
         );
     }
 
+    /**
+     * @throws Throwable
+     */
     public function render(array $context = []): string {
         $oldContext = $this->context;
         $this->applyContext($context);

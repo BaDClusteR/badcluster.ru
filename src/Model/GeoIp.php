@@ -23,10 +23,10 @@ use Runway\Model\AEntity;
  * @method self setRegion(string $region)
  * @method string getCity()
  * @method self setCity(string $city)
- * @method float getLatitude()
- * @method self setLatitude(float $latitude)
- * @method float getLongitude()
- * @method self setLongitude(float $longitude)
+ * @method string getLatitude()
+ * @method self setLatitude(string $latitude)
+ * @method string getLongitude()
+ * @method self setLongitude(string $longitude)
  */
 #[DS\Table('geoip')]
 class GeoIp extends AEntity {
@@ -52,8 +52,8 @@ class GeoIp extends AEntity {
     protected string $city;
 
     #[DS\Column]
-    protected float $latitude;
+    protected string $latitude;
 
     #[DS\Column]
-    protected float $longitude;
+    protected string $longitude;
 }

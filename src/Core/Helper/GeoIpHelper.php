@@ -27,10 +27,10 @@ readonly class GeoIpHelper implements IGeoIpHelper {
         try {
             /** @var GeoIp|null $info */
             $info = GeoIp::getQueryBuilder()
-                        ->where('ip_start <= :ip')
-                        ->andWhere('ip_end >= :ip')
-                        ->setVariable('ip', $ipAsLong)
-                        ->getFirstEntity();
+                         ->where('ip_start <= :ip')
+                         ->andWhere('ip_end >= :ip')
+                         ->setVariable('ip', $ipAsLong)
+                         ->getFirstEntity();
         } catch (Exception $e) {
             $this->logger->warning(
                 sprintf('[%s] error while getting an IP info: %s', __METHOD__, $e->getMessage()),
@@ -39,6 +39,7 @@ readonly class GeoIpHelper implements IGeoIpHelper {
                     'ipAsLong' => $ipAsLong,
                 ]
             );
+
             return null;
         }
 
@@ -50,8 +51,8 @@ readonly class GeoIpHelper implements IGeoIpHelper {
             country: $info->getCountry(),
             region: $info->getRegion(),
             city: $info->getCity(),
-            latitude: $info->getLatitude(),
-            longitude: $info->getLongitude()
+            latitude: (float) $info->getLatitude(),
+            longitude: (float) $info->getLongitude()
         );
     }
 }
