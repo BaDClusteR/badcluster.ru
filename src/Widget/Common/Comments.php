@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common;
 
+use BC\Controller\Comment as CommentController;
 use BC\Core\Asset\DTO\AssetDTO;
 use BC\Core\DTO\CommentDTO;
 use BC\Core\Trait\AssetBuilderTrait;
@@ -54,6 +55,14 @@ class Comments extends AWidget implements IAssetProvider {
 
     protected function getPageId(): int {
         return (int) $this->config?->pageId;
+    }
+
+    /**
+     * Имя поля-ловушки для ботов — берём из контроллера, чтобы шаблон и проверка
+     * не разъехались
+     */
+    protected function getHoneypotFieldName(): string {
+        return CommentController::HONEYPOT_FIELD;
     }
 
     public static function getAssets(): array {

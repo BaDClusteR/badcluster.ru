@@ -46,3 +46,7 @@ services:
   BC\Api\Endpoint\Attention:
     tags:
       - name: api_endpoint_collection
+
+  BC\Api\Endpoint\Settings:
+    tags:
+      - name: api_endpoint_collection

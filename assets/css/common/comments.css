@@ -241,6 +241,19 @@
   }
 }
 
+/* Поле-ловушка для ботов. Именно position: absolute, а не display: none —
+   часть ботов пропускает поля со скрытым display. Из потока элемент выпадает,
+   поэтому row-gap формы лишнюю строку не рисует. */
+.comments__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .comment__field {
   --field-bg: var(--color-bg);
 

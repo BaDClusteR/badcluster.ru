@@ -8,6 +8,9 @@ services:
   BC\Core\Asset\IAssetBuilder:
     class: BC\Core\Asset\AssetBuilder
 
+  BC\Core\Comment\ICommentSpamFilter:
+    class: BC\Core\Comment\CommentSpamFilter
+
   BC\Core\SystemMetrics\ISystemMetricsProvider:
     class: BC\Core\SystemMetrics\SystemMetricsProviderFactory
 

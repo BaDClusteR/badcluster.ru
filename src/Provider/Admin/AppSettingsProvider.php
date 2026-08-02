@@ -88,6 +88,12 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 path: '/admin/pulse',
                 icon: file_get_contents(__DIR__ . '/../../../app/assets/pulse.svg'),
                 position: 13000
+            ),
+            new NavigationDTO(
+                label: 'Настройки',
+                path: '/admin/settings',
+                icon: 'settings',
+                position: 14000
             )
         ];
     }

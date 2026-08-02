@@ -45,6 +45,21 @@ $nickname = $this->getDefaultNickname();
                 <?php endif; ?>
             >
         </label>
+        <?php /* Ловушка для ботов: прячется стилями, живой человек её не видит и не заполняет.
+                 Заполненное поле — признак бота, коммент молча отбрасывается (см. BC\Controller\Comment).
+                 aria-hidden + tabindex="-1" — чтобы поле не досталось ни скринридеру, ни табу с клавиатуры. */ ?>
+        <div class="comments__honeypot" aria-hidden="true">
+            <label>
+                Не заполняйте это поле
+                <input
+                    type="text"
+                    name="<?=$this->getHoneypotFieldName()?>"
+                    tabindex="-1"
+                    autocomplete="off"
+                    value=""
+                >
+            </label>
+        </div>
         <label>
             <span class="visually-hidden">Текст комментария</span>
             <textarea
