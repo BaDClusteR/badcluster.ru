@@ -23,7 +23,8 @@ readonly class PageProvider implements IPageProvider {
                 return $book
                     ? new PageDTO(
                         $book->getTitle(),
-                        "/admin/books/{$book->getId()}"
+                        "/admin/books/{$book->getId()}",
+                        $book->getUrl()
                     )
                     : new PageDTO('Неизвестное произведение', '');
             } catch (Exception) {

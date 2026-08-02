@@ -24,7 +24,8 @@ readonly class PageProvider implements IPageProvider {
                 return $material
                     ? new PageDTO(
                         sprintf('%s (%s)', $material->getTitle(), $material->getGame()->getTitle()),
-                        "/admin/games/materials/{$material->getId()}"
+                        "/admin/games/materials/{$material->getId()}",
+                        $material->getMaterialUrl()
                     )
                     : new PageDTO('Неизвестный игровой материал', '');
             } catch (Exception) {

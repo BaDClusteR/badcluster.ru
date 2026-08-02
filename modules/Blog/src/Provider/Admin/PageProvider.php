@@ -22,7 +22,8 @@ readonly class PageProvider implements IPageProvider {
                 return $post
                     ? new PageDTO(
                         sprintf('Пост "%s"', $post->getShortTitle() ?: $post->getTitle()),
-                        "/admin/blog/{$post->getId()}"
+                        "/admin/blog/{$post->getId()}",
+                        $post->getUrl()
                     )
                     : new PageDTO('Неизвестный пост', '');
             } catch (Exception) {

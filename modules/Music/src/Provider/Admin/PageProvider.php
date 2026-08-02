@@ -23,7 +23,8 @@ readonly class PageProvider implements IPageProvider {
                 return $album
                     ? new PageDTO(
                         sprintf('Музыкальный сборник "%s"', $album->getTitle()),
-                        "/admin/music/{$album->getId()}"
+                        "/admin/music/{$album->getId()}",
+                        $album->getUrl()
                     )
                     : new PageDTO('Неизвестный музыкальный сборник', '');
             } catch (Exception) {
