@@ -1,15 +1,17 @@
 <?php
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Widget\Common\Footer\Facts $this */
+$tooltip = $this->getRandomTooltip();
 ?>
 <button
     commandfor="facts"
     command="show-modal"
     class="tooltip-container button--link-like footer__social-link icon-button footer__social-link--facts"
 >
+    <span class="visually-hidden"><?=$tooltip?></span>
     <span aria-hidden="true">🎲</span>
 </button>
-<span class="tooltip"><?=$this->getRandomTooltip()?></span>
+<span class="tooltip"><?=$tooltip?></span>
 <dialog class="modal modal--fact" id="facts">
     <button class="modal__close button--link-like" commandfor="facts" command="close">×</button>
     <div class="modal__content">
