@@ -18,7 +18,7 @@ const FIELDS: FieldDef<Tag>[] = [
     role: "primary",
     required: true,
     placeholder: "url-friendly-name",
-    url: (slug: string) => `http://bc.local/blog/tag/${slug}`
+    url: (slug: string) => `/blog/tag/${slug}`
   },
   {
     name: "description",

@@ -39,7 +39,7 @@ export default function BlogPost() {
       dataProvider={createEntityFormDataProvider<Post>("post", id, isCreateMode)}
       initialValues={isCreateMode ? {published: false} : undefined}
       context={context}
-      webPath="post"
+      webPath="blog"
       apiEndpoint="post"
       labels={{
         notFound: {
