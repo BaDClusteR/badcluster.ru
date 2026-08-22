@@ -26,7 +26,7 @@ export default function getColumns(BadgeGreen: BadgeComponent, BadgeGray: BadgeC
       )
     },
     {
-      key: "publishDate",
+      key: "publish_date",
       header: "Дата публикации",
       sortable: true,
       width: 120,
