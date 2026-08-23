@@ -58,6 +58,7 @@ class Posts extends AWidget {
                 'image'        => $miniature,
                 'pictureClass' => 'post__miniature',
                 'lazyLoad'     => true,
+                'retina'       => false,
                 'breakpoints'  => [
                     -1 => 200,
                 ],
