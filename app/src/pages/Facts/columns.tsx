@@ -7,7 +7,7 @@ const columns: ColumnDef<FactRow>[] = [
     key: "title",
     header: "Название",
     link: true,
-    render: row => row.title || `#${row.id}`
+    render: row => <span className={classes.content}>{row.title || `#${row.id}`}</span>
   },
   {
     key: "content",
