@@ -8,6 +8,7 @@ import {MediaBlock} from "./mediaBlock/MediaBlock";
 import {GalleryBlock} from "./mediaBlock/GalleryBlock";
 import {TerminalBlock} from "./terminal/TerminalBlock";
 import {TocBlock} from "./toc/TocBlock";
+import {DelimiterBlock} from "./delimiter/DelimiterBlock";
 import {KbdInlineTool} from "./inlineTools/KbdInlineTool";
 import {CodeInlineTool} from "./inlineTools/CodeInlineTool";
 import {SpoilerInlineTool} from "./inlineTools/SpoilerInlineTool";
@@ -142,6 +143,7 @@ export function BlocksField(
           inlineToolbar: true
         },
         toc: TocBlock as unknown as ToolConstructable,
+        delimiter: DelimiterBlock as unknown as ToolConstructable,
         kbd: KbdInlineTool as unknown as ToolConstructable,
         code: CodeInlineTool as unknown as ToolConstructable,
         spoiler: SpoilerInlineTool as unknown as ToolConstructable,

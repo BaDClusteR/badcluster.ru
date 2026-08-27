@@ -13,3 +13,7 @@ services:
   BC\Modules\Blog\Api\Endpoint\Tag:
     tags:
       - name: api_endpoint_collection
+
+  BC\Modules\Blog\Api\Endpoint\Note:
+    tags:
+      - name: api_endpoint_collection

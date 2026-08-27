@@ -5,6 +5,14 @@ $updateIcon = $this->getSvgContent('images/icons/update.svg');
 $pages = $this->getPages();
 $currPage = $this->getPage();
 ?>
+<div class="content-toggle__container">
+    <nav class="content-toggle" aria-label="Переключение разделов блога">
+        <span class="content-toggle__btn content-toggle__btn--active" aria-current="page">Статьи</span>
+        <a href="/notes" class="content-toggle__btn">Заметки</a>
+        <div class="content-toggle__thumb" aria-hidden="true"></div>
+    </nav>
+</div>
+
 <ul class="posts list--block">
     <?php foreach ($this->getPosts() as $post): ?>
         <?php if ($post) : ?>

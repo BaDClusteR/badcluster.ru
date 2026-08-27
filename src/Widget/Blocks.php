@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Widget;
 
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Widget\Common\Block\Delimiter;
 use BC\Widget\Common\Block\Gallery;
 use BC\Widget\Common\Block\Header;
 use BC\Widget\Common\Block\Media;
@@ -25,6 +26,10 @@ class Blocks extends AWidget implements IAssetProvider {
 
     public static function getAssets(): array {
         return [
+            new AssetDTO(
+                'blocks',
+                'css/blocks/delimiter.css'
+            ),
             new AssetDTO(
                 'blocks',
                 'css/blocks/gallery.css'
@@ -70,6 +75,7 @@ class Blocks extends AWidget implements IAssetProvider {
             'quote'     => new Quote($data),
             'terminal'  => new Terminal($data),
             'gallery'   => new Gallery($data),
+            'delimiter' => new Delimiter($data),
             'toc'       => new TableOfContents($data),
             'list'      => new WList($data),
             default => null
