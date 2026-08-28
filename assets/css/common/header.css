@@ -10,10 +10,6 @@ html {
   }
 }
 
-html[data-theme='dark'] {
-  --header-border: var(--border-width) solid var(--color-border);
-}
-
 .header {
   margin-left: calc(-1 * var(--gutter-size));
   margin-right: calc(-1 * var(--gutter-size));
@@ -23,7 +19,10 @@ html[data-theme='dark'] {
   top: 0;
   left: var(--gutter-size);
   right: var(--gutter-size);
-  background: color-mix(in sRGB, var(--color-bg), transparent 15%);
+  background: light-dark(
+    color-mix(in sRGB, var(--color-bg), transparent 15%),
+    color-mix(in sRGB, var(--color-bg), transparent 30%)
+  );
   z-index: 10;
   box-shadow: 0 0 10px 3px color-mix(in sRGB, var(--color-border), transparent 70%);
 
@@ -53,7 +52,6 @@ html[data-theme='dark'] {
 }
 
 [data-theme='dark'] .header {
-  background: color-mix(in sRGB, var(--color-bg), transparent 30%);
   box-shadow: none;
 
   &::before {
@@ -104,60 +102,58 @@ html[data-theme='dark'] {
   }
 }
 
-.header__nav-action-button--mode-light {
-  .header__nav-action-button-icon {
-    transition: var(--transition-slow) filter;
-  }
+/* Иконки вращаются вокруг точки под кнопкой, поэтому отклонение на ±30°
+   уводит иконку за её пределы. В покое в кадре та иконка, которая
+   соответствует текущей теме, вторая — отведена. */
+.header__nav-action-button--mode {
+  --mode-button-sun-angle: 360deg;
+  --mode-button-moon-angle: 390deg;
+}
 
-  .header__nav-action-button-icon--sun {
-    transform: rotateZ(360deg);
-  }
-
-  .header__nav-action-button-icon--moon {
-    transform: rotateZ(390deg) scaleX(-1);
+@media (prefers-color-scheme: dark) {
+  .header__nav-action-button--mode {
+    --mode-button-sun-angle: 390deg;
+    --mode-button-moon-angle: 360deg;
   }
 }
 
-.header__nav-action-button--mode-to-dark {
-  .header__nav-action-button-icon--sun {
-    transform: rotateZ(330deg);
-  }
-
-  .header__nav-action-button-icon--moon {
-    transform: rotateZ(360deg) scaleX(-1);
-  }
+[data-theme='light'] .header__nav-action-button--mode {
+  --mode-button-sun-angle: 360deg;
+  --mode-button-moon-angle: 390deg;
 }
 
-.header__nav-action-button--mode-dark {
-  .header__nav-action-button-icon {
-    transition: var(--transition-slow) filter;
-  }
-
-  .header__nav-action-button-icon--sun {
-    transform: rotateZ(390deg);
-  }
-
-  .header__nav-action-button-icon--moon {
-    transform: rotateZ(360deg) scaleX(-1);
-  }
+[data-theme='dark'] .header__nav-action-button--mode {
+  --mode-button-sun-angle: 390deg;
+  --mode-button-moon-angle: 360deg;
 }
 
-.header__nav-action-button--mode-to-light {
-  .header__nav-action-button-icon--sun {
-    transform: rotateZ(360deg);
-  }
+/* Промежуточные положения на время переключения. Идут после правил темы:
+   специфичность у них такая же, так что перебивают положение покоя
+   исключительно порядком. */
+.header__nav-action-button--mode.header__nav-action-button--mode-to-dark {
+  --mode-button-sun-angle: 330deg;
+  --mode-button-moon-angle: 360deg;
+}
 
-  .header__nav-action-button-icon--moon {
-    transform: rotateZ(330deg) scaleX(-1);
-  }
+.header__nav-action-button--mode.header__nav-action-button--mode-to-light {
+  --mode-button-sun-angle: 360deg;
+  --mode-button-moon-angle: 330deg;
+}
+
+.header__nav-action-button-icon--sun {
+  transform: rotateZ(var(--mode-button-sun-angle));
+}
+
+.header__nav-action-button-icon--moon {
+  transform: rotateZ(var(--mode-button-moon-angle)) scaleX(-1);
 }
 
 .header__nav-action-button--mode {
-  --mode-button-color: #131415;
-  --mode-button-inactive-color: #71717A;
+  --mode-button-color: light-dark(#131415, #E5E5E5);
+  --mode-button-inactive-color: light-dark(#71717A, #A1A1A1);
   --mode-button-shadow: none;
   --mode-button-hover-bg: transparent;
-  --mode-button-border-color: #E4E4E7;
+  --mode-button-border-color: light-dark(#E4E4E7, #27272A);
 
   position: relative;
   overflow: hidden;
@@ -177,14 +173,6 @@ html[data-theme='dark'] {
     box-shadow: var(--mode-button-shadow);
     background: var(--mode-button-hover-bg);
   }
-}
-
-[data-theme='dark'] .header__nav-action-button--mode {
-  --mode-button-border-color: #27272A;
-  --mode-button-color: #E5E5E5;
-  --mode-button-shadow: none;
-  --mode-button-hover-bg: transparent;
-  --mode-button-inactive-color: #A1A1A1;
 }
 
 .header__container {

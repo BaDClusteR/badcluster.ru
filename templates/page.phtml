@@ -5,9 +5,10 @@ use BC\Widget\Page\APage;
 /** @var APage $this */
 
 $backlink = $this->getBackLink();
+$theme = $this->getPreferredTheme();
 ?>
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru"<?=$theme ? " data-theme=\"$theme\"" : ''?>>
 <head>
     <title><?=$this->getTitle()?></title>
     <?=$this->renderWidgetList('head', ['page' => $this])?>

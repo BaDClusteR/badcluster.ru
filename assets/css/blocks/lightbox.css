@@ -16,7 +16,7 @@
   --pswp-nav-color: #BBB;
   --pswp-nav-hover-color: #F5F5F5;
   --pswp-backdrop: rgb(0 0 0 / 75%);
-  --pswp-top-bar-bg: rgb(0 0 0 / 50%);
+  --pswp-top-bar-bg: light-dark(rgb(0 0 0 / 50%), color-mix(in sRGB, var(--color-surface), transparent 40%));
 
   position: fixed;
   top: 0;
@@ -44,10 +44,6 @@
     z-index: 10;
     pointer-events: none;
   }
-}
-
-[data-theme='dark'] .pswp {
-  --pswp-top-bar-bg: color-mix(in sRGB, var(--color-surface), transparent 40%);
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -282,16 +278,12 @@ div.pswp__img--placeholder,
   -webkit-line-clamp: 3;
   font-size: var(--font-size-small);
   padding: calc(.5 * var(--gutter-size)) var(--gutter-size);
-  border: var(--border-width) solid transparent;
+  border: var(--border-width) solid light-dark(transparent, var(--color-surface));
   transition: var(--transition-mode) border-color;
 
   &:empty {
     display: none;
   }
-}
-
-[data-theme='dark'] .pswp__custom-caption {
-  border-color: var(--color-surface);
 }
 
 .pswp__button--arrow {

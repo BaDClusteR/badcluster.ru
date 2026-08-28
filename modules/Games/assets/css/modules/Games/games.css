@@ -96,7 +96,7 @@
 
     &,
     &:visited {
-      color: var(--color-link--no-animation);
+      color: var(--color-link);
     }
 
     &::after {

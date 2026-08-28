@@ -121,7 +121,7 @@
   &:hover,
   &:focus-visible,
   &:active {
-    color: var(--color-link--no-animation);
+    color: var(--color-link);
   }
 
   &::before {
@@ -255,7 +255,7 @@
 }
 
 .comment__field {
-  --field-bg: var(--color-bg);
+  --field-bg: light-dark(var(--color-bg), color-mix(in sRGB, var(--color-contrast), var(--color-bg) 97%));
 
   width: 100%;
   padding: calc(.75 * var(--rhythmic-unit));
@@ -327,8 +327,6 @@
 }
 
 [data-theme='dark'] .comment__field {
-  --field-bg: color-mix(in sRGB, var(--color-contrast), var(--color-bg) 97%);
-
   &:focus {
     --field-bg: var(--color-surface);
   }

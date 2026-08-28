@@ -16,13 +16,35 @@ use BC\Widget\DTO\BackLinkDTO;
 use BC\Widget\DTO\MetaTagDTO;
 use BC\Widget\IAssetProvider;
 use Runway\Exception\Exception;
+use Runway\Request\IRequestRead;
 use Runway\Singleton\Container;
 
 abstract class APage extends AWidget implements IAssetProvider {
     use WebsiteSettingsTrait;
     use PathsProviderTrait;
 
+    public const string THEME_COOKIE_NAME = 'theme';
+
+    public const string THEME_LIGHT = 'light';
+
+    public const string THEME_DARK = 'dark';
+
     abstract public function getHeader(): string;
+
+    /**
+     * Явно выбранная пользователем тема; пустая строка — тема системная.
+     * Проставляем её в data-theme прямо на бэкенде, чтобы страница отрисовалась
+     * в нужной теме ещё до того, как отработает JS.
+     */
+    public function getPreferredTheme(): string {
+        $theme = Container::getInstance()
+            ->getService(IRequestRead::class)
+            ->getCookie(static::THEME_COOKIE_NAME);
+
+        return in_array($theme, [static::THEME_LIGHT, static::THEME_DARK], true)
+            ? $theme
+            : '';
+    }
 
     abstract public function getMetaDescription(): string;
 

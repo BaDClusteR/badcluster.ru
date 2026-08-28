@@ -1,14 +1,9 @@
 class Theme extends Singleton {
-    static LS_NAME = 'theme';
-    static LS_IS_PREDEFINED = 'theme-defined';
+    static COOKIE_NAME = 'theme';
+    static COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
     static DARK = 'dark';
     static LIGHT = 'light';
-
-    /**
-     * @type MediaQueryList
-     */
-    #mediaMatcher;
 
     /**
      * @type EventDispatcher
@@ -18,45 +13,55 @@ class Theme extends Singleton {
     constructor() {
         super();
 
-        this.#mediaMatcher = window.matchMedia('(prefers-color-scheme: dark)');
         this.#eventDispatcher = EventDispatcher.getInstance();
 
         this.#initListeners();
-
-        this.set(
-            this.get(true)
-        );
     }
 
-    isSystem() {
-        return !localStorage.getItem(Theme.LS_IS_PREDEFINED);
+    /**
+     * Тема, в которой сейчас отрисована страница: выбранная пользователем либо
+     * системная.
+     *
+     * @return {string}
+     */
+    get() {
+        return this.getPreferred() || this.#detectSystemTheme();
     }
 
-    get(returnEmptyOnSystem = false) {
-        const theme = {theme: '', returnEmptyOnSystem: !!returnEmptyOnSystem};
-        this.#eventDispatcher.trigger(
-            'theme:get',
-            theme
-        );
+    /**
+     * Явно выбранная пользователем тема; пустая строка — тема системная.
+     * По этой же куке бэкенд проставляет data-theme на <html>, поэтому тема
+     * применяется ещё до того, как отработает JS.
+     *
+     * @return {string}
+     */
+    getPreferred() {
+        const value = document.cookie
+            .split('; ')
+            .find(item => item.startsWith(`${Theme.COOKIE_NAME}=`))
+            ?.slice(Theme.COOKIE_NAME.length + 1) ?? '';
 
-        return theme.theme;
+        return (value === Theme.DARK || value === Theme.LIGHT)
+            ? value
+            : '';
     }
 
     /**
      * @param {string} theme
+     * @param {boolean} immediate
      */
     set(theme, immediate = false) {
         this.#doSet(theme, !!theme, immediate);
     }
 
-    #doSet(theme, isPredefined, immediate = false) {
-        if (!theme) {
-            theme = this.#detectCurrentTheme();
-        }
-
+    #doSet(theme, isPreferred, immediate = false) {
         this.#eventDispatcher.trigger(
             'theme:set',
-            {theme, isPredefined, immediate}
+            {
+                theme: theme || this.#detectSystemTheme(),
+                isPreferred,
+                immediate
+            }
         );
     }
 
@@ -65,17 +70,12 @@ class Theme extends Singleton {
             'theme:set',
             /**
              * @param {string} theme
-             * @param {boolean} isPredefined
+             * @param {boolean} isPreferred
              */
-            ({theme, isPredefined}) => {
-                localStorage.setItem(
-                    Theme.LS_IS_PREDEFINED,
-                    isPredefined
-                        ? theme
-                        : ''
-                );
-
-                localStorage.setItem(Theme.LS_NAME, theme);
+            ({theme, isPreferred = true}) => {
+                if (isPreferred) {
+                    this.#saveToCookie(theme);
+                }
             }
         );
 
@@ -97,9 +97,12 @@ class Theme extends Singleton {
             'theme:set',
             /**
              * @param {string} theme
+             * @param {boolean} isPreferred
              */
-            ({theme}) => {
-                if (theme) {
+            ({theme, isPreferred = true}) => {
+                // Без data-theme страница живёт на light-dark() и системной
+                // color-scheme, так что атрибут нужен только для явного выбора.
+                if (isPreferred) {
                     document.documentElement.setAttribute('data-theme', theme);
                 } else {
                     document.documentElement.removeAttribute('data-theme');
@@ -107,75 +110,36 @@ class Theme extends Singleton {
             }
         );
 
-        this.#eventDispatcher.listen(
-            'theme:set',
-            /**
-             * @param {string} theme
-             */
-            ({theme}) => {
-                document.documentElement.style.colorScheme = (theme === Theme.DARK)
-                    ? 'dark'
-                    : null;
-            }
-        );
-
-        this.#eventDispatcher.listen(
-            'theme:get',
-            /**
-             * @param {{returnEmptyOnSystem?: boolean, theme: string}} obj
-             */
-            (obj) => {
-                obj.theme = (this.isSystem() && obj.returnEmptyOnSystem)
-                    ? ''
-                    : localStorage.getItem(Theme.LS_NAME);
-            }
-        );
-
-        const autoSetTheme = (isDark) => {
-            if (this.isSystem()) {
-                this.#doSet(
-                    this.#getDarkOrLight(
-                        isDark
-                    ),
-                    false
-                );
-            }
-        }
-
-        this.#mediaMatcher.addEventListener(
-            'change',
-            (event) => {
-                autoSetTheme(event.matches);
-            }
-        );
-
         // При возврате на страницу из BF cache DOM восстанавливается с тем
         // data-theme, который был на момент ухода — переприменяем актуальную
-        // тему. immediate=true: переключатель применяет её без анимации, иначе
-        // скрытая иконка проезжает из центра к границе кнопки.
+        // тему из куки (её могли поменять в другой вкладке). immediate=true:
+        // переключатель применяет её без анимации, иначе скрытая иконка
+        // проезжает из центра к границе кнопки.
         window.addEventListener(
             'pageshow',
             (event) => {
                 if (event.persisted) {
                     this.set(
-                        this.get(true),
+                        this.getPreferred(),
                         true
                     );
                 }
             }
         );
-
-        autoSetTheme(this.#mediaMatcher.matches);
     }
 
-    #detectCurrentTheme() {
-        return this.#getDarkOrLight(
-            this.#mediaMatcher.matches
-        );
+    #saveToCookie(theme) {
+        document.cookie = [
+            `${Theme.COOKIE_NAME}=${theme}`,
+            'path=/',
+            `max-age=${Theme.COOKIE_MAX_AGE}`,
+            'SameSite=Lax',
+            ...(window.location.protocol === 'https:' ? ['Secure'] : [])
+        ].join('; ');
     }
 
-    #getDarkOrLight(isDark) {
-        return isDark
+    #detectSystemTheme() {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches
             ? Theme.DARK
             : Theme.LIGHT;
     }
