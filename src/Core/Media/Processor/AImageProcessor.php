@@ -27,18 +27,22 @@ abstract readonly class AImageProcessor implements IImageProcessor {
         }
 
         $pathInfo = pathinfo($path);
-        $output = ($pathInfo['dirname'] ?? '') . '/' . ($pathInfo['filename'] ?? '');
-        if ($width && $width !== $sourceWidth) {
-            $output .= "-w$width";
-        }
+        $sizeSuffix = ($width && $width !== $sourceWidth)
+            ? "-w$width"
+            : '';
         //        if ($width && !$height) {
-        //            $output .= "-w$width";
+        //            $sizeSuffix = "-w$width";
         //        } elseif (!$width && $height) {
-        //            $output .= "-h$height";
+        //            $sizeSuffix = "-h$height";
         //        } else {
-        //            $output .= "-s{$width}x$height";
+        //            $sizeSuffix = "-s{$width}x$height";
         //        }
-        $output .= '.' . $this->getResultImageExtension();
+
+        $output = $this->getFreeOutputPath(
+            $pathInfo['dirname'] ?? '',
+            $pathInfo['filename'] ?? '',
+            $sizeSuffix
+        );
 
         new ResizeCommand($path, $output, $width, 0, $this->getSaveParameters())->execute();
 
@@ -68,6 +72,29 @@ abstract readonly class AImageProcessor implements IImageProcessor {
 
     public function isApplicable(string $path): bool {
         return $this->isVipsThumbnailEnabled();
+    }
+
+    /**
+     * Оригиналы при совпадении имен разъезжаются суффиксом -1, -2 и т.д.
+     * (см. FileSystem::copy), и тамбнейлы этот суффикс наследуют вместе с
+     * именем файла. Но столкнуться они могут и сами по себе: расширение
+     * оригинала в имя не попадает, так что pic.jpg и pic.png дают один и тот же
+     * pic-w500.webp. Разводим их тем же способом, ставя суффикс перед
+     * -w[size] — ровно там, где он оказался бы, достанься он от оригинала.
+     */
+    private function getFreeOutputPath(string $directory, string $filename, string $sizeSuffix): string {
+        $extension = $this->getResultImageExtension();
+        $index = 0;
+
+        do {
+            $suffix = $index
+                ? "-$index"
+                : '';
+            $output = "$directory/$filename$suffix$sizeSuffix.$extension";
+            $index++;
+        } while (file_exists($output));
+
+        return $output;
     }
 
     private function isVipsThumbnailEnabled(): bool {
