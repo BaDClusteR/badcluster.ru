@@ -19,14 +19,6 @@ routes:
     path: /admin
     controller: BC\Controller\Admin::index
 
-  about:
-    path: /me
-    controller: BC\Controller\About::renderAboutMe
-
-  history:
-    path: /history
-    controller: BC\Controller\About::renderHistory
-
   cringe_museum:
     path: /cringe
     controller: BC\Controller\About::renderCringeMuseum
@@ -46,3 +38,14 @@ routes:
   random_fact:
     path: /fact
     controller: BC\Controller\Index::renderRandomFact
+
+  # Last resort: static pages live at the site root and have no prefix of their
+  # own, so this catch-all runs only after every hardcoded route above has
+  # declined. The high priority puts it at the end of the router's list, and the
+  # controller returns null (not a Response) for an unknown slug, which lets the
+  # router carry on and finish with the regular 404.
+  # The route wildcard is a single segment, so nothing nested is affected.
+  static_page:
+    path: /{slug}
+    priority: 1000
+    controller: BC\Controller\StaticPage::render

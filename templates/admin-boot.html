@@ -1,0 +1,377 @@
+<!--
+    Boot skeleton for the admin SPA.
+
+    Shared by templates/admin.phtml (the page users actually get) and by
+    app/index.html, where the bc:boot-skeleton plugin from app/vite.config.ts
+    injects it. Everything is inline on purpose — this has to keep working when
+    none of the app's own assets load.
+
+    It shows a spinner while the bundle boots and swaps in a diagnostic panel if
+    the app never mounts: Vite dev server down, missing production build, or a
+    fatal error before the first render.
+-->
+<style>
+    .app-boot {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 24px;
+        color-scheme: light dark;
+        background: #F4F4F5;
+        background: light-dark(#F4F4F5, #111);
+        color: light-dark(#71717A, #A1A1A1);
+        font: 400 14px/1.5 'IBM Plex Sans', -apple-system, blinkmacsystemfont, 'Segoe UI', arial, sans-serif;
+        text-align: center;
+
+        /* Delayed fade-in: a fast boot should not flash a spinner. */
+        animation: app-boot-in .2s ease .25s both;
+    }
+
+    .app-boot__spinner {
+        box-sizing: border-box;
+        width: 38px;
+        height: 38px;
+        border: 3px solid light-dark(#E4E4E7, #27272A);
+        border-top-color: light-dark(#16A34A, #22C55E);
+        border-radius: 50%;
+        animation: app-boot-spin .8s linear infinite;
+    }
+
+    .app-boot__icon {
+        color: #EF4444;
+    }
+
+    .app-boot__text,
+    .app-boot__msg {
+        margin: 0;
+        max-width: 46ch;
+        text-wrap: balance;
+    }
+
+    .app-boot__title {
+        margin: 0;
+        color: light-dark(#131415, #E5E5E5);
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .app-boot__code {
+        padding: 1px 6px;
+        border: 1px solid light-dark(#E4E4E7, #27272A);
+        border-radius: 4px;
+        background: #FFF;
+        background: light-dark(#FFF, #1C1C1C);
+        font-family: 'IBM Plex Mono', ui-monospace, sfmono-regular, menlo, monospace;
+        font-size: .9em;
+        white-space: nowrap;
+    }
+
+    .app-boot__btn {
+        appearance: none;
+        padding: 8px 18px;
+        border: 0;
+        border-radius: 8px;
+        background: #26914E;
+        background: light-dark(#26914E, #4ADE80);
+        color: light-dark(#FFF, #111);
+        font: inherit;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .app-boot__btn:hover,
+    .app-boot__btn:focus-visible {
+        background: #166534;
+        background: light-dark(#166534, #86EFAC);
+    }
+
+    .app-boot__details {
+        width: 100%;
+        max-width: 560px;
+        font-size: 12px;
+        text-align: left;
+    }
+
+    .app-boot__details summary {
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .app-boot__list {
+        max-height: 30vh;
+        margin: 10px 0 0;
+        padding: 10px 12px;
+        overflow: auto;
+        border: 1px solid light-dark(#E4E4E7, #27272A);
+        border-radius: 8px;
+        background: #FFF;
+        background: light-dark(#FFF, #1C1C1C);
+        font-family: 'IBM Plex Mono', ui-monospace, sfmono-regular, menlo, monospace;
+        list-style: none;
+        word-break: break-word;
+    }
+
+    .app-boot__list li + li {
+        margin-top: 6px;
+    }
+
+    @keyframes app-boot-in {
+        from { opacity: 0 }
+        to { opacity: 1 }
+    }
+
+    @keyframes app-boot-spin {
+        to { transform: rotate(1turn) }
+    }
+
+    @keyframes app-boot-pulse {
+        50% { opacity: .35 }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .app-boot {
+            animation-duration: 0s;
+            animation-delay: 0s;
+        }
+
+        .app-boot__spinner {
+            animation: app-boot-pulse 1.4s ease-in-out infinite;
+        }
+    }
+</style>
+
+<div id="root">
+    <div class="app-boot" id="app-boot" role="status" aria-live="polite">
+        <div class="app-boot__spinner" aria-hidden="true"></div>
+        <p class="app-boot__text">Гружусь…</p>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var root = document.getElementById('root');
+        var boot = document.getElementById('app-boot');
+
+        if (!root || !boot) {
+            return;
+        }
+
+        // Vite serves its client and the react-refresh preamble only in dev mode.
+        var DEV = !!document.querySelector('script[src*="@vite/client"], script[src*="@react-refresh"]')
+            || location.port === '5173';
+        // Nothing failed, nothing mounted — the app is just stuck. Dev needs a
+        // longer fuse: a cold Vite start re-optimizes deps before serving.
+        var STALL_MS = DEV ? 25000 : 12000;
+        // Errors are not always fatal (a stray 404, a warning-level rejection),
+        // so give the app a moment to mount anyway before crying wolf.
+        var GRACE_MS = 1500;
+
+        var problems = [];
+        var settled = false;
+        var stallTimer = null;
+        var graceTimer = null;
+        var observer = null;
+
+        try {
+            // Mantine's own scheme script runs much later, so match the stored
+            // choice here to avoid a white flash for dark-mode users.
+            var scheme = localStorage.getItem('mantine-color-scheme-value');
+
+            if (scheme === 'dark' || scheme === 'light') {
+                boot.style.colorScheme = scheme;
+            }
+        } catch (e) {
+            // Storage blocked — fall back to the OS colour scheme.
+        }
+
+        // React clears #root on its first render, which takes the skeleton with it.
+        function mounted() {
+            return !boot.isConnected;
+        }
+
+        function stop() {
+            settled = true;
+            clearTimeout(stallTimer);
+            clearTimeout(graceTimer);
+
+            if (observer) {
+                observer.disconnect();
+            }
+
+            window.removeEventListener('error', onError, true);
+            window.removeEventListener('unhandledrejection', onRejection);
+        }
+
+        function note(problem) {
+            if (settled || !problem) {
+                return;
+            }
+
+            if (problems.indexOf(problem) === -1) {
+                problems.push(problem);
+            }
+
+            clearTimeout(graceTimer);
+            graceTimer = setTimeout(function () {
+                if (!settled && !mounted()) {
+                    showError();
+                }
+            }, GRACE_MS);
+        }
+
+        // Resource errors do not bubble, hence the capture phase.
+        function onError(e) {
+            var el = e.target;
+
+            if (el && el !== window && el.tagName) {
+                if (el.tagName === 'SCRIPT') {
+                    note('Не загрузился скрипт: ' + (el.src || '(инлайн)'));
+                } else if (el.tagName === 'LINK') {
+                    note('Не загрузились стили: ' + el.href);
+                }
+
+                return;
+            }
+
+            note(e.message ? 'Ошибка: ' + e.message : 'Неизвестная ошибка при запуске');
+        }
+
+        function onRejection(e) {
+            var reason = e.reason;
+
+            note('Ошибка: ' + ((reason && (reason.message || reason.toString())) || 'необработанный промис'));
+        }
+
+        function el(tag, className, text) {
+            var node = document.createElement(tag);
+
+            if (className) {
+                node.className = className;
+            }
+
+            if (text) {
+                node.textContent = text;
+            }
+
+            return node;
+        }
+
+        function showError() {
+            stop();
+
+            var message = el('p', 'app-boot__msg');
+
+            if (DEV) {
+                message.append(
+                    'Похоже, dev-сервер Vite не запущен или недоступен. Запустите ',
+                    el('code', 'app-boot__code', 'npm run dev'),
+                    ' в папке app и обновите страницу.'
+                );
+            } else {
+                message.textContent = 'Файлы приложения недоступны. Точно выполнили сборку?';
+            }
+
+            var button = el('button', 'app-boot__btn', 'Обновить страницу');
+            button.type = 'button';
+            button.addEventListener('click', function () {
+                location.reload();
+            });
+
+            boot.style.animation = 'none';
+            boot.setAttribute('role', 'alert');
+            boot.replaceChildren(
+                icon(),
+                el('p', 'app-boot__title', 'Ошибка при загрузке'),
+                message,
+                button,
+                details()
+            );
+        }
+
+        function icon() {
+            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+            svg.setAttribute('class', 'app-boot__icon');
+            svg.setAttribute('width', '40');
+            svg.setAttribute('height', '40');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            svg.setAttribute('fill', 'none');
+            svg.setAttribute('stroke', 'currentColor');
+            svg.setAttribute('stroke-width', '1.8');
+            svg.setAttribute('stroke-linecap', 'round');
+            svg.setAttribute('aria-hidden', 'true');
+            svg.innerHTML = '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/>';
+
+            return svg;
+        }
+
+        function details() {
+            var wrapper = el('details', 'app-boot__details');
+            var list = el('ul', 'app-boot__list');
+
+            wrapper.appendChild(el('summary', null, 'Подробности'));
+
+            for (var i = 0; i < problems.length; i++) {
+                list.appendChild(el('li', null, problems[i]));
+            }
+
+            if (!problems.length) {
+                list.appendChild(el('li', null, 'Приложение не запустилось, но браузер не сообщил об ошибке.'));
+            }
+
+            wrapper.appendChild(list);
+
+            return wrapper;
+        }
+
+        function showStall() {
+            // Not necessarily broken — keep the spinner and let it finish if it can.
+            var text = boot.querySelector('.app-boot__text');
+
+            if (text) {
+                text.textContent = 'Загрузка идёт дольше обычного…';
+            }
+
+            var button = el('button', 'app-boot__btn', 'Обновить страницу');
+            button.type = 'button';
+            button.addEventListener('click', function () {
+                location.reload();
+            });
+            boot.appendChild(button);
+        }
+
+        window.addEventListener('error', onError, true);
+        window.addEventListener('unhandledrejection', onRejection);
+
+        observer = new MutationObserver(function () {
+            if (mounted()) {
+                stop();
+            }
+        });
+        observer.observe(root, {childList: true});
+
+        stallTimer = setTimeout(function () {
+            if (settled || mounted()) {
+                return;
+            }
+
+            if (problems.length) {
+                showError();
+            } else {
+                showStall();
+            }
+        }, STALL_MS);
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!document.querySelector('script[type="module"]')) {
+                note('На странице нет ни одного скрипта приложения — сборка не найдена.');
+            }
+        });
+    })();
+</script>

@@ -17,6 +17,14 @@
   }
 }
 
+/* Opt-in per block via the media block's "Рамка" setting. */
+.block__image-figure--bordered {
+  .block__image-picture,
+  .block__image-video {
+    border: var(--border);
+  }
+}
+
 .block__image-figure,
 .block__gallery {
   margin: 0;

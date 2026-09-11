@@ -61,3 +61,8 @@ export const iconUpload = `<svg xmlns="http://www.w3.org/2000/svg" width="24" he
 export const iconAnchor = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
     <path d="M12 9v12m-8-8a8 8 0 0 0 16 0m1 0h-2M5 13H3M9 6a3 3 0 1 0 6 0 3 3 0 1 0-6 0"/>
 </svg>`;
+
+export const iconBorder = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <path d="M7 7h10v10H7z" opacity=".35"/>
+</svg>`;

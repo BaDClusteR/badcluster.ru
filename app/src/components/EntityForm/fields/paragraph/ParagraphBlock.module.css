@@ -12,6 +12,14 @@
   pointer-events: none;
 }
 
+/* Mirrors the public .lead (css/blocks/paragraph.css); em, not rem, so it
+   scales off the editor's own 18px base rather than the admin root. */
+.lead {
+  font-size: 1.1em;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
 .alignCenter {
   text-align: center;
 }
@@ -21,6 +29,12 @@
 }
 
 /* Settings */
+.settingsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: calc(.25 * var(--rhythmic-unit));
+}
+
 .alignRow {
   display: flex;
   gap: 2px;

@@ -4,8 +4,6 @@
 $items = $this->getItems();
 ?>
 <?php if ($items) : ?>
-    <h2>Хайлайты</h2>
-
     <link rel="stylesheet" href="<?=$this->getAssetBuilder()->getBundleWebPath('grid', 'css')?>"/>
     <div class="grid">
         <?php foreach ($items as $item): ?>

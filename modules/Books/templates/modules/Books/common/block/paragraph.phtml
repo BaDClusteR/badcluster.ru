@@ -2,14 +2,15 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Modules\Books\Widget\Common\Block\Paragraph $this */
 $content = $this->getContent();
-$align = $this->getAlignment();
 $classes = [];
+
 if ($this->isDirectSpeech($content)) {
     $classes[] = 'speech';
 }
 
-if ($align = $this->getAlignment()) {
-    $classes[] = "align-$align";
+// lead + alignment, shared with the core paragraph block.
+if ($className = $this->getClassName()) {
+    $classes[] = $className;
 }
 ?><?php if ($content) : ?>
     <p<?php if ($classes) : ?> class="<?=implode(' ', $classes)?>"<?php endif; ?>><?=$content?></p>

@@ -1,0 +1,53 @@
+.html {
+  border: var(--border);
+  border-radius: var(--border-radius);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.label {
+  padding: calc(.25 * var(--rhythmic-unit)) calc(.5 * var(--rhythmic-unit));
+  border-bottom: var(--border);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-tiny);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.code {
+  display: block;
+  width: 100%;
+  min-height: calc(3 * var(--rhythmic-unit));
+  padding: calc(.5 * var(--rhythmic-unit));
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+  tab-size: 2;
+  white-space: pre;
+  overflow-x: auto;
+  overflow-y: hidden;
+  resize: none;
+  outline: none;
+}
+
+.code::placeholder {
+  color: var(--color-text-secondary);
+  opacity: .5;
+}
+
+.preview {
+  padding: calc(.5 * var(--rhythmic-unit));
+  border-top: var(--border);
+}
+
+/* Raw markup can carry anything, including block-level and floated elements. */
+.preview::after {
+  content: '';
+  display: table;
+  clear: both;
+}

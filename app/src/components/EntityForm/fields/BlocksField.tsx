@@ -8,12 +8,14 @@ import {MediaBlock} from "./mediaBlock/MediaBlock";
 import {GalleryBlock} from "./mediaBlock/GalleryBlock";
 import {TerminalBlock} from "./terminal/TerminalBlock";
 import {TocBlock} from "./toc/TocBlock";
+import {BoldInlineTool} from "./inlineTools/BoldInlineTool";
 import {KbdInlineTool} from "./inlineTools/KbdInlineTool";
 import {CodeInlineTool} from "./inlineTools/CodeInlineTool";
 import {SpoilerInlineTool} from "./inlineTools/SpoilerInlineTool";
 import {NowrapInlineTool} from "./inlineTools/NowrapInlineTool";
 import {SupInlineTool} from "./inlineTools/SupInlineTool";
 import {ParagraphBlock} from "./paragraph/ParagraphBlock";
+import {HtmlBlock} from "./html/HtmlBlock";
 import classes from "./BlocksField.module.css";
 import "./editorjs.css";
 import {Optional, ParagraphClassRule} from "@admin/types";
@@ -142,6 +144,9 @@ export function BlocksField(
           inlineToolbar: true
         },
         toc: TocBlock as unknown as ToolConstructable,
+        html: HtmlBlock as unknown as ToolConstructable,
+        // Replaces the built-in bold — see BoldInlineTool for why.
+        bold: BoldInlineTool as unknown as ToolConstructable,
         kbd: KbdInlineTool as unknown as ToolConstructable,
         code: CodeInlineTool as unknown as ToolConstructable,
         spoiler: SpoilerInlineTool as unknown as ToolConstructable,

@@ -22,4 +22,24 @@ class Paragraph extends AWidget {
             ? $align
             : '';
     }
+
+    protected function isLead(): bool {
+        return (bool) ($this->context['lead'] ?? false);
+    }
+
+    protected function getClassName(): string {
+        $classes = [];
+
+        if ($this->isLead()) {
+            $classes[] = 'lead';
+        }
+
+        $align = $this->getAlignment();
+
+        if ($align !== '') {
+            $classes[] = "align-$align";
+        }
+
+        return implode(' ', $classes);
+    }
 }

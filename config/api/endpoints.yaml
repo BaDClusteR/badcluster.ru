@@ -35,6 +35,10 @@ services:
     tags:
       - name: api_endpoint_collection
 
+  BC\Api\Endpoint\StaticPages:
+    tags:
+      - name: api_endpoint_collection
+
   BC\Api\Endpoint\PulseItems:
     tags:
       - name: api_endpoint_collection

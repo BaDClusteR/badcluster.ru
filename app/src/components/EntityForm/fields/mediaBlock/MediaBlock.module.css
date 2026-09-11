@@ -149,3 +149,11 @@
   gap: calc(.25 * var(--rhythmic-unit));
   align-items: center;
 }
+
+/* Preview of the block's "Рамка" setting — mirrors block__image-figure--bordered. */
+.bordered {
+  .media,
+  video {
+    border: var(--border);
+  }
+}
