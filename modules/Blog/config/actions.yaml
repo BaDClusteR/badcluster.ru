@@ -17,3 +17,14 @@ services:
   BC\Modules\Blog\Core\Action\Tag\ISaveTagAction:
     class: BC\Modules\Blog\Core\Action\Tag\SaveTagAction
 
+  BC\Modules\Blog\Core\Action\Note\ICreateNoteAction:
+    class: BC\Modules\Blog\Core\Action\Note\CreateNoteAction
+
+  BC\Modules\Blog\Core\Action\Note\ISaveNoteAction:
+    class: BC\Modules\Blog\Core\Action\Note\SaveNoteAction
+
+  BC\Modules\Blog\Core\Action\Note\IGetNoteAction:
+    class: BC\Modules\Blog\Core\Action\Note\GetNoteAction
+
+  BC\Modules\Blog\Core\Action\Validator\INoteValidator:
+    class: BC\Modules\Blog\Core\Action\Validator\NoteValidator

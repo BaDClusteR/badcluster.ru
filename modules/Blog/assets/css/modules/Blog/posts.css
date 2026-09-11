@@ -64,7 +64,7 @@ h1 + .posts {
 }
 
 .post__date {
-  font-size: .78rem;
+  font-size: var(--font-size-smaller);
   font-family: var(--font-family-mono), monospace;
   color: var(--color-text-secondary);
   transition: var(--transition-mode) color;

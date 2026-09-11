@@ -4,3 +4,6 @@ services:
 
   BC\Modules\Blog\Api\DataBuilder\Tag\ITagDataBuilder:
     class: BC\Modules\Blog\Api\DataBuilder\Tag\TagDataBuilder
+
+  BC\Modules\Blog\Api\DataBuilder\Note\INoteDataBuilder:
+    class: BC\Modules\Blog\Api\DataBuilder\Note\NoteDataBuilder
