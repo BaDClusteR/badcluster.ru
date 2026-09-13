@@ -75,7 +75,7 @@ class LogErrorsAttentionProvider implements IAttentionItemsProvider {
         );
 
         $count = 0;
-        $fp = fopen($logPath, 'r');
+        $fp = fopen($logPath, 'rb');
 
         if ($fp === false) {
             return 0;
@@ -84,7 +84,7 @@ class LogErrorsAttentionProvider implements IAttentionItemsProvider {
         try {
             while (($line = fgets($fp)) !== false) {
                 foreach ($needles as $needle) {
-                    if (str_contains($line, $needle)) {
+                    if (str_contains($line, $needle) && !$this->isFakeErrorLine($line)) {
                         $count++;
 
                         break;
@@ -100,5 +100,10 @@ class LogErrorsAttentionProvider implements IAttentionItemsProvider {
         }
 
         return $count;
+    }
+
+    protected function isFakeErrorLine(string $line): bool {
+        return str_contains($line, '"exceptionType":"ApiPlatform\\\\Exception\\\\EndpointNotFoundException"')
+               || str_contains($line, '"ApiPlatform\\\\Exception\\\\AuthorizationRequiredException"');
     }
 }
