@@ -38,8 +38,8 @@ abstract class APage extends AWidget implements IAssetProvider {
      */
     public function getPreferredTheme(): string {
         $theme = Container::getInstance()
-            ->getService(IRequestRead::class)
-            ->getCookie(static::THEME_COOKIE_NAME);
+                          ->getService(IRequestRead::class)
+                          ->getCookie(static::THEME_COOKIE_NAME);
 
         return in_array($theme, [static::THEME_LIGHT, static::THEME_DARK], true)
             ? $theme
@@ -89,7 +89,7 @@ abstract class APage extends AWidget implements IAssetProvider {
     }
 
     protected function getMetaTitleBase(): string {
-        return 'Цифровой архив BaD ClusteR\'а';
+        return 'BaD ClusteR';
     }
 
     /**
