@@ -6,15 +6,17 @@ namespace BC\Modules\Music\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
 use BC\Core\Trait\AuthTrait;
-use BC\DTO\CommentsConfigDTO;
+use BC\Core\Trait\DateConverterTrait;
 use BC\Modules\Music\Model\Album;
 use BC\Modules\Music\Widget\Release;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\BackLinkDTO;
+use BC\Widget\DTO\MetaTagDTO;
 use BC\Widget\Page\APage;
 
 class ReleasePage extends APage {
     use AuthTrait;
+    use DateConverterTrait;
 
     protected Album $album;
 
@@ -79,6 +81,7 @@ class ReleasePage extends APage {
 
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
+
         $list[] = 'release';
 
         return $list;
@@ -90,5 +93,21 @@ class ReleasePage extends APage {
         $list[] = 'audio';
 
         return $list;
+    }
+
+    public function getMetaTags(): array {
+        $tags = parent::getMetaTags();
+
+        $tags[] = new MetaTagDTO(
+            name: 'music:musician',
+            content: 'https://suno.com/@the_sbc'
+        );
+
+        $tags[] = new MetaTagDTO(
+            name: 'music:release_date',
+            content: $this->album->getReleaseDate()->format('Y-m-d')
+        );
+
+        return $tags;
     }
 }
