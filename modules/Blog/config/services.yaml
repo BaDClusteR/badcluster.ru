@@ -17,6 +17,9 @@ services:
   BC\Modules\Blog\Provider\IPostsProvider:
     class: BC\Modules\Blog\Provider\PostsProvider
 
+  BC\Modules\Blog\Core\Media\IPostPreviewGenerator:
+    class: BC\Modules\Blog\Core\Media\PostPreviewGenerator
+
   BC\Modules\Blog\Provider\SitemapPagesProvider:
     tags:
       - name: sitemap
