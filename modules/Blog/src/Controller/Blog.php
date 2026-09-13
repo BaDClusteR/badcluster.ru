@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace BC\Modules\Blog\Controller;
 
 use BC\Core\Auth\IAuth;
+use BC\Core\Exception\ImageException;
 use BC\Core\Response\RedirectResponse;
 use BC\Core\Response\SuccessfulHtmlResponse;
 use BC\Core\Trait\Controller404Trait;
+use BC\Modules\Blog\Core\Media\IPostPreviewGenerator;
 use BC\Modules\Blog\Model\Post;
 use BC\Modules\Blog\Provider\IPostsProvider;
 use BC\Modules\Blog\Widget\Page\BlogPage;
@@ -23,6 +25,7 @@ readonly class Blog {
     public function __construct(
         private IAuth $auth,
         private IPostsProvider $postsProvider,
+        private IPostPreviewGenerator $previewGenerator,
     ) {
     }
 
@@ -77,12 +80,38 @@ readonly class Blog {
     }
 
     /**
+     * Тестовый эндпоинт: превью поста для соцсетей, рисуется на каждый запрос.
+     *
+     * @throws ModelException
+     * @throws DBException
+     * @throws QueryBuilderException
+     * @throws ImageException
+     */
+    public function renderPreview(string $id): Response {
+        $post = is_numeric($id)
+            ? $this->getPost(id: (int) $id)
+            : null;
+
+        if (!$post) {
+            return $this->get404Controller()->run();
+        }
+
+        return new Response(
+            200,
+            $this->previewGenerator->generate($post),
+            ['Content-Type' => 'image/jpeg']
+        );
+    }
+
+    /**
      * @throws ModelException
      * @throws DBException
      * @throws QueryBuilderException
      */
-    private function getPost(string $slug): ?Post {
-        $conditions = ['slug' => $slug];
+    private function getPost(string $slug = '', int $id = 0): ?Post {
+        $conditions = $id
+            ? ['id' => $id]
+            : ['slug' => $slug];
 
         if (!$this->auth->isAuthenticated()) {
             $conditions['published'] = true;
