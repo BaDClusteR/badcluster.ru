@@ -6,7 +6,7 @@ use BC\Widget\Common\Picture;
 /** @var \BC\Widget\Common\Block\Media $this */
 ?>
 <?php if ($this->isImage()) : ?>
-    <figure class="block__image-figure">
+    <figure class="block__image-figure<?php if ($this->border) : ?> block__image-figure--bordered<?php endif; ?>">
         <?php if ($this->lightbox) : ?>
         <a
             href="<?=$this->media->getWebPath()?>"
@@ -38,7 +38,7 @@ use BC\Widget\Common\Picture;
     $width = $this->media->getWidth();
     $height = $this->media->getHeight();
     ?>
-    <figure class="block__image-figure figure--video<?php if ($this->lazy) : ?>  figure--video-lazy<?php endif; ?>">
+    <figure class="block__image-figure figure--video<?php if ($this->lazy) : ?>  figure--video-lazy<?php endif; ?><?php if ($this->border) : ?> block__image-figure--bordered<?php endif; ?>">
         <video
             class="block__image-video"
             width="<?=$width?>"

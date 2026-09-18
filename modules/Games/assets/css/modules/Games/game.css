@@ -24,7 +24,7 @@
 
 .game__hero {
   --game-hero-miniature-brightness: 1;
-  --game-hero-overlay-color: #000;
+  --game-hero-overlay-color: light-dark(#000, #353535);
   --game-hero-overlay-opacity: .4;
 
   position: relative;
@@ -48,7 +48,6 @@
 }
 
 html[data-theme='dark'] .game__hero {
-  --game-hero-overlay-color: #353535;
   --game-hero-overlay-opacity: .45;
 }
 

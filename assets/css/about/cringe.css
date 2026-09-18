@@ -28,24 +28,14 @@
   initial-value: #000;
 }
 
-:root, [data-theme='light'] {
-  --color-warning: #F59E0B;
-  --color-warning--no-animation: #F59E0B;
-  --color-warning-hover: #D97706;
+:root {
+  --color-warning: light-dark(#F59E0B, #FBBF24);
+  --color-warning--no-animation: light-dark(#F59E0B, #FBBF24);
+  --color-warning-hover: light-dark(#D97706, #FCD34D);
   --color-warning-bg: color-mix(in sRGB, var(--color-warning), transparent 90%);
   --color-warning-border: color-mix(in sRGB, var(--color-warning), transparent 60%);
-  --cringe-bg: #F8FAFC;
-  --cringe-surface: #FFF;
-}
-
-[data-theme='dark'] {
-  --color-warning: #FBBF24;
-  --color-warning--no-animation: #FBBF24;
-  --color-warning-hover: #FCD34D;
-  --color-warning-bg: color-mix(in sRGB, var(--color-warning), transparent 90%);
-  --color-warning-border: color-mix(in sRGB, var(--color-warning), transparent 70%);
-  --cringe-bg: #09090B;
-  --cringe-surface: #18181B;
+  --cringe-bg: light-dark(#F8FAFC, #09090B);
+  --cringe-surface: light-dark(#FFF, #18181B);
 }
 
 .cringe__warning {

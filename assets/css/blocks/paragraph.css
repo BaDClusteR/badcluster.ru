@@ -1,0 +1,12 @@
+/*
+ * Lead paragraph — the `lead` tune of the paragraph block.
+ *
+ * Carries over the .lead declarations from the old hand-written History page,
+ * which is now a static page built from these blocks.
+ */
+.lead {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+}

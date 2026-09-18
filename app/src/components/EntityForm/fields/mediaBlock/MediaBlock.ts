@@ -7,7 +7,7 @@ import TextField from "./settings/TextField/TextField.ts";
 import separator from "./settings/Separator/Separator.ts";
 import Toggle from "./settings/Toggle/Toggle.ts";
 import {Nullable} from "@admin/types";
-import {iconGallerySearch, iconLazyLoad, iconMedia} from "./icons.ts";
+import {iconBorder, iconGallerySearch, iconLazyLoad, iconMedia} from "./icons.ts";
 import heading from "./settings/Heading/Heading.ts";
 import ImageSizes from "@/components/EntityForm/fields/mediaBlock/settings/ImageSizes/ImageSizes.ts";
 
@@ -34,17 +34,22 @@ export class MediaBlock implements BlockTool {
 
   private config: { getDefaultAlt?: () => string; uploadPurpose?: string };
 
-  constructor({data, api, config}: { data: BlockToolData<MediaBlockData>; api: API; config?: Record<string, unknown> }) {
+  constructor({data, api, config}: {
+    data: BlockToolData<MediaBlockData>;
+    api: API;
+    config?: Record<string, unknown>
+  }) {
     this.api = api;
     this.config = {
       getDefaultAlt: config?.getDefaultAlt as (() => string) | undefined,
-      uploadPurpose: config?.uploadPurpose as string | undefined,
+      uploadPurpose: config?.uploadPurpose as string | undefined
     };
     this.data = {
       media: data?.media,
       lazy: data?.lazy ?? true,
       caption: data?.caption ?? "",
-      lightbox: data?.lightbox ?? true
+      lightbox: data?.lightbox ?? true,
+      border: data?.border ?? false
     };
   }
 
@@ -67,7 +72,8 @@ export class MediaBlock implements BlockTool {
       media: this.data.media,
       lazy: this.data.lazy,
       caption: this.data.caption,
-      lightbox: this.data.lightbox
+      lightbox: this.data.lightbox,
+      border: this.data.border
     };
   }
 
@@ -80,7 +86,7 @@ export class MediaBlock implements BlockTool {
     );
 
     if (this.isImage()) {
-      wrapper.appendChild(heading("Альт. текст"))
+      wrapper.appendChild(heading("Альт. текст"));
 
       wrapper.appendChild(
         TextField({
@@ -124,6 +130,18 @@ export class MediaBlock implements BlockTool {
       );
     }
 
+    wrapper.appendChild(
+      Toggle({
+        value: this.data.border ?? false,
+        onChange: (checked: boolean) => {
+          this.data.border = checked;
+          this.quickUpdate();
+        },
+        icon: iconBorder,
+        label: "Рамка"
+      })
+    );
+
     if (this.data.media) {
       wrapper.appendChild(separator());
       wrapper.appendChild(heading("Размеры"));
@@ -161,6 +179,7 @@ export class MediaBlock implements BlockTool {
 
   private fullRepaint() {
     this.wrapper.innerHTML = "";
+    this.applyBorder();
 
     // Uploaded state → native <picture> / <video>
     if (this.data.media) {
@@ -204,7 +223,14 @@ export class MediaBlock implements BlockTool {
     this.imageId = null;
   }
 
+  /** Mirrors the public block__image-figure--bordered modifier in the editor. */
+  private applyBorder() {
+    this.wrapper.classList.toggle(classes.bordered, this.data.border ?? false);
+  }
+
   private quickUpdate() {
+    this.applyBorder();
+
     if (this.isImage()) {
       const img = this.wrapper.querySelector("img");
       if (img) {
@@ -225,7 +251,7 @@ export class MediaBlock implements BlockTool {
         if (this.data.lazy) {
           img.loading = "lazy";
         } else {
-          img.removeAttribute("loading")
+          img.removeAttribute("loading");
         }
       }
     } else if (this.isVideo()) {
@@ -330,21 +356,21 @@ export class MediaBlock implements BlockTool {
     }, this.config.uploadPurpose);
 
     this.upload.promise
-      .then((media: MediaData) => {
-        if (!media.alt && this.config.getDefaultAlt) {
-          media.alt = this.config.getDefaultAlt();
-        }
-        this.data.media = media;
-        URL.revokeObjectURL(blobUrl);
-        this.upload = null;
-        this.paint();
-      })
-      .catch((err: Error) => {
-        URL.revokeObjectURL(blobUrl);
-        this.upload = null;
-        this.notify(err.message || `Не получилось загрузить ${file.name}: ${err.message}`, "error");
-        this.paint();
-      });
+    .then((media: MediaData) => {
+      if (!media.alt && this.config.getDefaultAlt) {
+        media.alt = this.config.getDefaultAlt();
+      }
+      this.data.media = media;
+      URL.revokeObjectURL(blobUrl);
+      this.upload = null;
+      this.paint();
+    })
+    .catch((err: Error) => {
+      URL.revokeObjectURL(blobUrl);
+      this.upload = null;
+      this.notify(err.message || `Не получилось загрузить ${file.name}: ${err.message}`, "error");
+      this.paint();
+    });
   }
 
   private notify(message: string, type: "success" | "error") {

@@ -1,46 +1,42 @@
 @property --color-bg {
   syntax: '<color>';
   inherits: true;
-  initial-value: #000;
+  initial-value: light-dark(#FFF, #111);
 }
 
 @property --color-text {
   syntax: '<color>';
   inherits: true;
-  initial-value: #000;
+  initial-value: light-dark(#131415, #E5E5E5);
 }
 
 @property --color-brand {
   syntax: '<color>';
   inherits: true;
-  initial-value: #000;
+  initial-value: light-dark(#16A34A, #22C55E);
 }
 
 @property --color-surface {
   syntax: '<color>';
   inherits: true;
-  initial-value: #000;
+  initial-value: light-dark(#F4F4F5, #1C1C1C);
 }
 
 @property --color-border {
   syntax: '<color>';
   inherits: true;
-  initial-value: #000;
+  initial-value: light-dark(#E4E4E7, #27272A);
 }
 
 @property --color-contrast {
   syntax: '<color>';
   inherits: true;
-  initial-value: #000;
+  initial-value: light-dark(#000, #FFF);
 }
 
 :root {
+  /* Цвето-независимые переменные */
   --scrollbar-width: 0;
-}
-
-:root, [data-theme='light'] {
-  color-scheme: light;
-
   --rhythmic-unit: 16px;
   --gutter-size: var(--rhythmic-unit);
   --border-width: 1px;
@@ -60,23 +56,6 @@
   --transition-fast: var(--transition-fast-duration) var(--transition-fast-function);
   --transition-mode: var(--transition);
   --icon-size: calc(1.5 * var(--rhythmic-unit));
-  --color-brand: #16A34A;
-  --color-text: #131415;
-  --color-text--no-animation: #131415;
-  --color-accent: #589E64;
-  --color-link: #26914E;
-  --color-link--no-animation: #26914E;
-  --color-link-hover: #166534;
-  --color-link-hover--no-animation: #166534;
-  --color-surface: #F4F4F5;
-  --color-bg: #FFF;
-  --color-bg--no-animation: #FFF;
-  --color-text-secondary: #71717A;
-  --color-border: #E4E4E7;
-  --color-border--no-animation: #E4E4E7;
-  --color-contrast: #000;
-  --color-contrast--no-animation: #000;
-  --color-error: #EF4444;
   --scrollbar-color: var(--color-text-secondary);
   --font-family: 'IBM Plex Sans', 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', arial, sans-serif;
   --font-family-mono: 'IBM Plex Mono', monospace;
@@ -93,26 +72,42 @@
   --icon-button-icon-size: calc(1.25 * var(--rhythmic-unit));
   --icon-button-size: calc(2.5 * var(--rhythmic-unit));
   --icon-button-shadow: 0 4px 12px rgb(0 0 0 / 5%);
+
+  &,
+  [data-theme='light'],
+  [data-theme='dark'] {
+    --color-text: light-dark(#131415, #E5E5E5);
+    --color-text--no-animation: light-dark(#131415, #E5E5E5);
+    --color-accent: #589E64;
+    --color-brand: light-dark(#16A34A, #22C55E);
+    --color-link: light-dark(#26914E, #4ADE80);
+    --color-link-hover: light-dark(#166534, #86EFAC);
+    --color-bg: light-dark(#FFF, #111);
+    --color-bg--no-animation: light-dark(#FFF, #111);
+    --color-text-secondary: light-dark(#71717A, #A1A1A1);
+    --color-border: light-dark(#E4E4E7, #27272A);
+    --color-border--no-animation: light-dark(#E4E4E7, #27272A);
+    --color-contrast: light-dark(#000, #FFF);
+    --color-contrast--no-animation: light-dark(#000, #FFF);
+    --color-surface: light-dark(#F4F4F5, #1C1C1C);
+    --color-error: #EF4444;
+  }
+}
+
+html:not([data-theme='dark'], [data-theme='light']) {
+  color-scheme: light;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}
+
+[data-theme='light'] {
+  color-scheme: light;
 }
 
 [data-theme='dark'] {
   color-scheme: dark;
-
-  --color-brand: #22C55E;
-  --color-bg: #111;
-  --color-bg--no-animation: #111;
-  --color-surface: #1C1C1C;
-  --color-text: #E5E5E5;
-  --color-text--no-animation: #E5E5E5;
-  --color-text-secondary: #A1A1A1;
-  --color-border: #27272A;
-  --color-border--no-animation: #27272A;
-  --color-link: #4ADE80;
-  --color-link--no-animation: #4ADE80;
-  --color-link-hover: #86EFAC;
-  --color-link-hover--no-animation: #86EFAC;
-  --color-contrast: #FFF;
-  --color-contrast--no-animation: #FFF;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -453,7 +448,7 @@ picture,
       &:hover,
       &:focus-visible,
       &:active {
-        color: var(--color-link-hover--no-animation);
+        color: var(--color-link-hover);
         border-color: currentColor;
         background-color: transparent;
       }

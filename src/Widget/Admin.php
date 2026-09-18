@@ -52,6 +52,25 @@ class Admin extends AWidget {
     }
 
     /**
+     * Markup of the #root container: a self-contained spinner plus the boot
+     * watchdog that reports fatal load failures. Shared with app/index.html,
+     * which pulls the same file in at build time — see app/vite.config.ts.
+     */
+    protected function getBootSkeleton(): string {
+        foreach ($this->getPathsProvider()->getTemplatePaths() as $path) {
+            $fullPath = "$path/admin-boot.html";
+
+            if (is_readable($fullPath)) {
+                return (string) file_get_contents($fullPath);
+            }
+        }
+
+        $this->getLogger()->warning('Admin boot skeleton (admin-boot.html) not found');
+
+        return '<div id="root"></div>';
+    }
+
+    /**
      * @return array{js: string[], css: string[]}
      */
     protected function getManifestImports(): array {

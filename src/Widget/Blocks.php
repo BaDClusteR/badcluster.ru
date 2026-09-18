@@ -8,6 +8,7 @@ use BC\Core\Asset\DTO\AssetDTO;
 use BC\Widget\Common\Block\Delimiter;
 use BC\Widget\Common\Block\Gallery;
 use BC\Widget\Common\Block\Header;
+use BC\Widget\Common\Block\Html;
 use BC\Widget\Common\Block\Media;
 use BC\Widget\Common\Block\Paragraph;
 use BC\Widget\Common\Block\Quote;
@@ -37,6 +38,10 @@ class Blocks extends AWidget implements IAssetProvider {
             new AssetDTO(
                 'blocks',
                 'css/blocks/media.css'
+            ),
+            new AssetDTO(
+                'blocks',
+                'css/blocks/paragraph.css'
             ),
             new AssetDTO(
                 'blocks',
@@ -78,6 +83,7 @@ class Blocks extends AWidget implements IAssetProvider {
             'delimiter' => new Delimiter($data),
             'toc'       => new TableOfContents($data),
             'list'      => new WList($data),
+            'html'      => new Html($data),
             default => null
         };
 

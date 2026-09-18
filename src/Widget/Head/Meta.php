@@ -41,10 +41,6 @@ class Meta extends AWidget {
                 content: $description
             ),
             new MetaTagDTO(
-                name: 'author',
-                content: 'BaD ClusteR'
-            ),
-            new MetaTagDTO(
                 name: 'og:title',
                 content: $this->page?->getMetaTitle() ?? $this->page?->getTitle() ?? ''
             ),

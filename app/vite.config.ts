@@ -1,11 +1,38 @@
-import {defineConfig} from "vite";
+import {defineConfig, type Plugin} from "vite";
 import react from "@vitejs/plugin-react";
 import {federation} from "@module-federation/vite";
+import fs from "fs";
 import path from "path";
+
+/**
+ * Injects the loader/error skeleton into index.html so it stays byte-identical
+ * to the one PHP renders. templates/admin.phtml is the real entry point — this
+ * only keeps the standalone Vite page from booting into a blank screen.
+ */
+function bootSkeleton(): Plugin {
+  const skeletonPath = path.resolve(__dirname, "../templates/admin-boot.html");
+
+  return {
+    name: "bc:boot-skeleton",
+    transformIndexHtml: {
+      order: "pre",
+      handler(html) {
+        if (!fs.existsSync(skeletonPath)) {
+          this.warn(`Boot skeleton not found: ${skeletonPath}`);
+
+          return html;
+        }
+
+        return html.replace('<div id="root"></div>', fs.readFileSync(skeletonPath, "utf8"));
+      }
+    }
+  };
+}
 
 export default defineConfig({
   plugins: [
     react(),
+    bootSkeleton(),
     federation({
       name: "admin_host",
       dts: false,

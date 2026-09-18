@@ -24,7 +24,8 @@ export interface MediaBlockData {
   media?: MediaData,
   lazy: boolean,
   caption?: string,
-  lightbox?: boolean
+  lightbox?: boolean,
+  border?: boolean
 }
 
 /** Saved Editor.js block payload for gallery/slideshow. */

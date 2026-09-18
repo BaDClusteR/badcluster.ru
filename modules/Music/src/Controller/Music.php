@@ -14,6 +14,7 @@ use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Logger\ILogger;
 use Runway\Model\Exception\ModelException;
 use Runway\Request\Response;
+use Throwable;
 
 readonly class Music {
     use Controller404Trait;
@@ -24,9 +25,7 @@ readonly class Music {
     }
 
     /**
-     * @throws DBException
-     * @throws ModelException
-     * @throws QueryBuilderException
+     * @throws Throwable
      */
     public function renderAlbumsList(): Response {
         return new SuccessfulHtmlResponse(
@@ -46,9 +45,7 @@ readonly class Music {
     }
 
     /**
-     * @throws ModelException
-     * @throws DBException
-     * @throws QueryBuilderException
+     * @throws Throwable
      */
     public function renderReleasePage(string $releaseSlug): Response {
         $release = Album::findOne(['slug' => $releaseSlug]);

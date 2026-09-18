@@ -84,9 +84,15 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 position: 12000
             ),
             new NavigationDTO(
-                label: 'Пульс',
+                label: 'Страницы',
+                path: '/admin/static-pages',
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/static-page.svg'),
+                position: 12500
+            ),
+            new NavigationDTO(
+                label: 'Новостные блоки',
                 path: '/admin/pulse',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/pulse.svg'),
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/news.svg'),
                 position: 13000
             ),
             new NavigationDTO(

@@ -23,6 +23,8 @@ import PhotoTag from "@/pages/PhotoTag";
 import PulseItems from "@/pages/PulseItems";
 import PulseItem from "@/pages/PulseItem";
 import Settings from "@/pages/Settings";
+import StaticPages from "@/pages/StaticPages";
+import StaticPage from "@/pages/StaticPage";
 
 export function App() {
   const {nav, modules, loading} = useModules();
@@ -55,6 +57,9 @@ export function App() {
         <Route key="pulse-item-index" path="pulse_item" element={<Navigate to="/admin/pulse" replace/>}/>
         <Route key="pulse-item-add" path="pulse_item/new" element={<PulseItem/>}/>
         <Route key="pulse-item-edit" path="pulse_item/:id" element={<PulseItem/>}/>
+        <Route key="static-pages-list" path="static-pages" element={<StaticPages/>}/>
+        <Route key="static-page-add" path="static-pages/new" element={<StaticPage/>}/>
+        <Route key="static-page-edit" path="static-pages/:id" element={<StaticPage/>}/>
         <Route key="settings" path="settings" element={<Settings/>}/>
         {modules.map((mod) => (
           <Route

@@ -29,6 +29,12 @@ services:
   BC\Core\Action\Fact\ISaveFactAction:
     class: BC\Core\Action\Fact\SaveFactAction
 
+  BC\Core\Action\StaticPage\ICreateStaticPageAction:
+    class: BC\Core\Action\StaticPage\CreateStaticPageAction
+
+  BC\Core\Action\StaticPage\ISaveStaticPageAction:
+    class: BC\Core\Action\StaticPage\SaveStaticPageAction
+
   BC\Core\Action\PhotoTag\ICreatePhotoTagAction:
     class: BC\Core\Action\PhotoTag\CreatePhotoTagAction
 

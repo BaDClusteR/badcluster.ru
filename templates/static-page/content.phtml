@@ -1,0 +1,10 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+/** @var \BC\Widget\Page\StaticPage\StaticPageContent $this */
+
+use BC\Widget\Page\StaticPage\StaticPageBlocks;
+
+$staticPage = $this->staticPage;
+?>
+<?=new StaticPageBlocks($staticPage->getContent())->render()?>

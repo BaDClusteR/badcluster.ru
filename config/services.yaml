@@ -136,14 +136,25 @@ services:
     tags:
       - name: sitemap
 
+  BC\Provider\StaticPagesSitemapProvider:
+    tags:
+      - name: sitemap
+
   BC\Controller\Controller404:
     decorates: Runway\Controller\IController404
 
   BC\Provider\IRandomFactProvider:
     class: BC\Provider\RandomFactProvider
 
+  BC\Provider\IStaticPagesProvider:
+    class: BC\Provider\StaticPagesProvider
+
+  BC\Core\Shortcode\IShortcodeResolver:
+    class: BC\Core\Shortcode\ShortcodeResolver
+
 
   # Controllers
   BC\Controller\Index: ~
   BC\Controller\Admin: ~
   BC\Controller\Comment: ~
+  BC\Controller\StaticPage: ~

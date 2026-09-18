@@ -17,6 +17,9 @@ services:
   BC\Api\DataBuilder\Fact\IFactDataBuilder:
     class: BC\Api\DataBuilder\Fact\FactDataBuilder
 
+  BC\Api\DataBuilder\StaticPage\IStaticPageDataBuilder:
+    class: BC\Api\DataBuilder\StaticPage\StaticPageDataBuilder
+
   BC\Api\DataBuilder\PhotoTag\IPhotoTagDataBuilder:
     class: BC\Api\DataBuilder\PhotoTag\PhotoTagDataBuilder
 

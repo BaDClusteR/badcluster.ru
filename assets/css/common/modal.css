@@ -1,17 +1,13 @@
-:root, [data-theme='light'] {
+:root {
   --modal-padding: var(--gutter-size);
   --modal-border-radius: var(--border-radius-big);
   --modal-max-width: 600px;
   --modal-backdrop: rgb(0 0 0 / 60%);
-  --modal-bg: var(--color-bg--no-animation);
+  --modal-bg: light-dark(var(--color-bg--no-animation), var(--color-surface));
 
   @media (width >= 420px) {
     --modal-padding: calc(2 * var(--gutter-size));
   }
-}
-
-[data-theme='dark'] {
-  --modal-bg: var(--color-surface);
 }
 
 .modal {

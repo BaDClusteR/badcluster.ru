@@ -1,13 +1,8 @@
-:root, [data-theme='light'] {
-  --tooltip-bg: var(--color-bg);
+:root {
+  --tooltip-bg: light-dark(var(--color-bg), var(--color-surface));
   --tooltip-color: var(--color-text);
   --tooltip-font-size: .75rem;
   --tooltip-shadow: 0 5px 15px rgb(0 0 0 / 20%);
-}
-
-[data-theme='dark'] {
-  --tooltip-bg: var(--color-surface);
-  --tooltip-color: var(--color-text);
 }
 
 .tooltip {

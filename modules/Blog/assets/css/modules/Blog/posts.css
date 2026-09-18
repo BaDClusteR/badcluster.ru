@@ -138,7 +138,7 @@ h1 + .posts {
   &:focus-visible,
   &:active {
     background: color-mix(in sRGB, currentColor, transparent 90%);
-    color: var(--color-link--no-animation);
+    color: var(--color-link);
   }
 
   &:hover,

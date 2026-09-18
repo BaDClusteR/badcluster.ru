@@ -39,6 +39,13 @@ class Media extends AWidget {
         }
     }
 
+    /** Opt-in border around the image or video. */
+    protected bool $border = false {
+        get {
+            return $this->border;
+        }
+    }
+
     protected function getTemplatePath(): string {
         return 'common/block/media.phtml';
     }
@@ -56,6 +63,7 @@ class Media extends AWidget {
                 $this->lazy = (bool) ($this->context['lazy'] ?? false);
                 $this->caption = (string) ($this->context['caption'] ?? '');
                 $this->lightbox = (bool) ($this->context['lightbox'] ?? false);
+                $this->border = (bool) ($this->context['border'] ?? false);
             } catch (Exception) {
             }
         }

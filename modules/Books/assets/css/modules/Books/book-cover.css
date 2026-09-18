@@ -12,8 +12,8 @@
 
 .book__cover {
   --book-cover-filter: blur(60px) brightness(1.2);
-  --book-cover-gradient-start-color: #1E293B;
-  --book-cover-gradient-end-color: #0F172A;
+  --book-cover-gradient-start-color: light-dark(#1E293B, #0E131C);
+  --book-cover-gradient-end-color: light-dark(#0F172A, #080C16);
 
   width: 100%;
   aspect-ratio: 2 / 3;
@@ -43,8 +43,6 @@
 
 [data-theme='dark'] .book__cover {
   --book-cover-filter: blur(60px) brightness(1.1);
-  --book-cover-gradient-start-color: #0E131C;
-  --book-cover-gradient-end-color: #080C16;
 }
 
 .book__cover-bg {
@@ -104,12 +102,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  border: var(--border-width) solid transparent;
+  border: var(--border-width) solid light-dark(transparent, var(--color-border--no-animation));
   transition: var(--transition-mode) border-color;
-}
-
-[data-theme='dark'] .book__cover::after {
-  border-color: var(--color-border--no-animation);
 }
 
 .book__cover--css {
