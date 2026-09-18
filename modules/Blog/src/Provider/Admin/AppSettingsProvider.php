@@ -43,6 +43,18 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                         path: '/admin/blog/tags',
                         icon: file_get_contents(__DIR__ . '/../../../app/assets/tags.svg'),
                         position: 300
+                    ),
+                    new NavigationDTO(
+                        label: 'Заметки',
+                        path: '/admin/blog/notes',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/notes.svg'),
+                        position: 400
+                    ),
+                    new NavigationDTO(
+                        label: 'Добавить заметку',
+                        path: '/admin/blog/notes/new',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/note.svg'),
+                        position: 500
                     )
                 ]
             )
