@@ -15,7 +15,7 @@ class BookListPage extends APage {
     private array $bookGroups;
 
     public function getHeader(): string {
-        return 'Библиотека';
+        return 'Книги';
     }
 
     public function getMetaDescription(): string {

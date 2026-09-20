@@ -8,31 +8,39 @@ use BC\Core\Auth\IAuth;
 use BC\Core\Response\SuccessfulHtmlResponse;
 use BC\Core\Trait\Controller404Trait;
 use BC\Modules\Blog\Model\Note;
+use BC\Modules\Blog\Provider\INotesProvider;
 use BC\Modules\Blog\Widget\Page\NotePage;
 use BC\Modules\Blog\Widget\Page\NotesPage;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\Exception\ModelException;
 use Runway\Request\Response;
+use Throwable;
 
 readonly class Notes {
     use Controller404Trait;
 
     public function __construct(
-        private IAuth $auth
+        private IAuth $auth,
+        private INotesProvider $notesProvider
     ) {
     }
 
+    /**
+     * @throws Throwable
+     */
     public function renderNoteList(): Response {
+        if (!$this->notesProvider->hasNotes()) {
+            return $this->get404Controller()->run();
+        }
+
         return new SuccessfulHtmlResponse(
             new NotesPage()->render()
         );
     }
 
     /**
-     * @throws ModelException
-     * @throws DBException
-     * @throws QueryBuilderException
+     * @throws Throwable
      */
     public function renderNote(string $slug): Response {
         $note = $this->getNote($slug);

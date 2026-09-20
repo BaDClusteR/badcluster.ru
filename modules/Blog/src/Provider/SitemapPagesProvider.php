@@ -9,16 +9,24 @@ use BC\Modules\Blog\Model\Tag;
 use BC\Provider\ISitemapPagesProvider;
 use Runway\Exception\Exception;
 
-class SitemapPagesProvider implements ISitemapPagesProvider {
+readonly class SitemapPagesProvider implements ISitemapPagesProvider {
+
+    public function __construct(
+        private INotesProvider $notesProvider
+    ) {
+    }
 
     /**
      * @inheritDoc
      */
     public function getSitemapPages(): array {
         $result = [
-            new SitemapEntryDTO('/blog'),
-            new SitemapEntryDTO('/notes'),
+            new SitemapEntryDTO('/blog')
         ];
+
+        if ($this->notesProvider->hasNotes()) {
+            $result[] = new SitemapEntryDTO('/notes');
+        }
 
         try {
             /** @var Tag $tag */
@@ -31,8 +39,7 @@ class SitemapPagesProvider implements ISitemapPagesProvider {
                 $result[] = new SitemapEntryDTO($post->getUrl());
             }
 
-            /** @var Note $note */
-            foreach (Note::iterate(['published' => true]) as $note) {
+            foreach ($this->notesProvider->getNotes(true) as $note) {
                 $result[] = new SitemapEntryDTO($note->getUrl());
             }
         } catch (Exception) {

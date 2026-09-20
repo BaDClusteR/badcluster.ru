@@ -197,6 +197,7 @@ html {
 .header__column--menu.header__column--menu-open {
   opacity: 1;
   transform: none;
+  height: calc(100% - var(--header-height));
 }
 
 .header:has(.header__column--menu.header__column--menu-open)::after {

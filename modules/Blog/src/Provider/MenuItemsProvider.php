@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Blog\Provider;
 
+use BC\Core\Auth\IAuth;
 use BC\Core\DTO\MenuItemDTO;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Provider\IMenuItemsProvider;
@@ -12,7 +13,8 @@ class MenuItemsProvider implements IMenuItemsProvider {
     use WebsiteSettingsTrait;
 
     public function __construct(
-        private readonly IMenuItemsProvider $inner
+        private readonly IMenuItemsProvider $inner,
+        private readonly INotesProvider $notesProvider
     ) {
     }
 
@@ -24,6 +26,14 @@ class MenuItemsProvider implements IMenuItemsProvider {
             url: $this->getWebsiteSettings()->getWebRoot() . '/blog',
             priority: 0
         );
+
+        if ($this->notesProvider->hasNotes()) {
+            $items[] = new MenuItemDTO(
+                title: 'Заметки',
+                url: $this->getWebsiteSettings()->getWebRoot() . '/notes',
+                priority: 5
+            );
+        }
 
         return $items;
     }

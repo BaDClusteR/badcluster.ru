@@ -21,7 +21,7 @@ readonly class MenuItemsProvider implements IMenuItemsProvider {
         $items = $this->inner->getMenuItems();
 
         $items[] = new MenuItemDTO(
-            title: 'Библиотека',
+            title: 'Книги',
             url: $this->getWebsiteSettings()->getWebRoot() . '/books',
             priority: 20
         );

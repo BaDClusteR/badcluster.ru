@@ -2,13 +2,6 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Modules\Blog\Widget\Notes $this */
 ?>
-<div class="content-toggle__container">
-    <nav class="content-toggle" aria-label="Переключение разделов блога">
-        <a href="/blog" class="content-toggle__btn">Статьи</a>
-        <span class="content-toggle__btn content-toggle__btn--active" aria-current="page">Заметки</span>
-        <div class="content-toggle__thumb" aria-hidden="true"></div>
-    </nav>
-</div>
 
 <ul class="notes list--block">
     <?php foreach ($this->getNotes() as $note) : ?>

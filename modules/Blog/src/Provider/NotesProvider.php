@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace BC\Modules\Blog\Provider;
 
+use BC\Core\Auth\IAuth;
 use BC\Modules\Blog\Model\Note;
 use Runway\Exception\Exception;
 use Runway\Logger\ILogger;
 
 readonly class NotesProvider implements INotesProvider {
     public function __construct(
-        private ILogger $logger
+        private ILogger $logger,
+        private IAuth $auth,
     ) {
     }
 
@@ -36,5 +38,15 @@ readonly class NotesProvider implements INotesProvider {
 
             return [];
         }
+    }
+
+    public function hasNotes(): bool {
+        $notes = iterator_to_array(
+            $this->getNotes(
+                !$this->auth->isAuthenticated()
+            )
+        );
+
+        return !empty($notes);
     }
 }

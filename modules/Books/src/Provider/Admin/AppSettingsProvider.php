@@ -22,7 +22,7 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
 
         $settings->addNavItem(
             new NavigationDTO(
-                label: 'Библиотека',
+                label: 'Книги',
                 icon: file_get_contents(__DIR__ . '/../../../app/assets/books.svg'),
                 position: 200,
                 children: [

@@ -37,11 +37,7 @@ class NotesPage extends APage {
             new AssetDTO(
                 'notes',
                 'css/modules/Blog/notes.css'
-            ),
-            new AssetDTO(
-                'toggler',
-                'css/modules/Blog/toggler.css'
-            ),
+            )
         ];
     }
 
@@ -49,7 +45,6 @@ class NotesPage extends APage {
         $list = parent::getCssBundles();
 
         $list[] = 'notes';
-        $list[] = 'toggler';
 
         return $list;
     }

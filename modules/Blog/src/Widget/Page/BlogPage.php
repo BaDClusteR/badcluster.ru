@@ -42,10 +42,6 @@ class BlogPage extends APage {
             new AssetDTO(
                 'posts',
                 'css/modules/Blog/posts.css'
-            ),
-            new AssetDTO(
-                'toggler',
-                'css/modules/Blog/toggler.css'
             )
         ];
     }
@@ -110,7 +106,6 @@ class BlogPage extends APage {
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
         $list[] = 'posts';
-        $list[] = 'toggler';
 
         return $list;
     }
