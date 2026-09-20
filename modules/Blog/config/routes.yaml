@@ -15,6 +15,11 @@ routes:
     path: /blog/tag/{tag}/page/{page}
     controller: BC\Modules\Blog\Controller\Blog::renderPostList
 
+  # Тестовый роут: превью поста для соцсетей, рисуется на лету
+  post_preview:
+    path: /blog/preview/{id}
+    controller: BC\Modules\Blog\Controller\Blog::renderPreview
+
   post:
     path: /blog/{slug}
     controller: BC\Modules\Blog\Controller\Blog::renderPost
