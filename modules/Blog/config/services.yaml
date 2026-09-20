@@ -23,3 +23,6 @@ services:
   BC\Modules\Blog\Provider\SitemapPagesProvider:
     tags:
       - name: sitemap
+
+  BC\Modules\Blog\Provider\INotesProvider:
+    class: BC\Modules\Blog\Provider\NotesProvider

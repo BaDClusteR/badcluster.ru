@@ -1,0 +1,19 @@
+.block__delimiter {
+  border: none;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5em;
+  letter-spacing: 8px;
+  opacity: .8;
+  pointer-events: none;
+  user-select: none;
+  color: var(--color-text);
+  margin: var(--rhythmic-unit) 0;
+
+  &::before {
+    content: '***';
+    transform: translateY(3px);
+    display: block;
+  }
+}
+

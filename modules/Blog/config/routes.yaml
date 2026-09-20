@@ -24,5 +24,15 @@ routes:
     path: /blog/{slug}
     controller: BC\Modules\Blog\Controller\Blog::renderPost
 
+  notes_list:
+    path: /notes
+    controller: BC\Modules\Blog\Controller\Notes::renderNoteList
+
+  note:
+    path: /notes/{slug}
+    controller: BC\Modules\Blog\Controller\Notes::renderNote
+
 services:
   BC\Modules\Blog\Controller\Blog: ~
+
+  BC\Modules\Blog\Controller\Notes: ~

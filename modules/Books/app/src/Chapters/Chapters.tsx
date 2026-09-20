@@ -35,7 +35,7 @@ export default function Chapters() {
     columns={columns}
     dataProvider={dataProvider}
     labels={{
-      title: <><Link to={buildAdminUrl("books")}>Библиотека</Link> :: {
+      title: <><Link to={buildAdminUrl("books")}>Книги</Link> :: {
         (book?.title)
           ? <Link to={buildAdminUrl(`books/${bookId}`)}>
             {(book as Book).title}

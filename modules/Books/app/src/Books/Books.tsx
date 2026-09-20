@@ -9,7 +9,7 @@ export default function Books() {
     name="books"
     columns={columns}
     labels={{
-      title: "Библиотека",
+      title: "Книги",
       add: "Новое произведение",
       deleteConfirmation: {
         multiple: "Точно удалить выбранные произведения ({{count}})? Удалятся также все их главы.",

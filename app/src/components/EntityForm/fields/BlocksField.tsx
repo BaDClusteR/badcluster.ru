@@ -8,6 +8,7 @@ import {MediaBlock} from "./mediaBlock/MediaBlock";
 import {GalleryBlock} from "./mediaBlock/GalleryBlock";
 import {TerminalBlock} from "./terminal/TerminalBlock";
 import {TocBlock} from "./toc/TocBlock";
+import {DelimiterBlock} from "./delimiter/DelimiterBlock";
 import {BoldInlineTool} from "./inlineTools/BoldInlineTool";
 import {KbdInlineTool} from "./inlineTools/KbdInlineTool";
 import {CodeInlineTool} from "./inlineTools/CodeInlineTool";
@@ -144,6 +145,7 @@ export function BlocksField(
           inlineToolbar: true
         },
         toc: TocBlock as unknown as ToolConstructable,
+        delimiter: DelimiterBlock as unknown as ToolConstructable,
         html: HtmlBlock as unknown as ToolConstructable,
         // Replaces the built-in bold — see BoldInlineTool for why.
         bold: BoldInlineTool as unknown as ToolConstructable,

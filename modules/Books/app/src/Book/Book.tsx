@@ -45,7 +45,7 @@ export default function Book() {
         }
       }}
       title={(values) => <>
-        <Link to={buildAdminUrl("books")}>Библиотека</Link> :: {
+        <Link to={buildAdminUrl("books")}>Книги</Link> :: {
         isCreateMode
           ? "Новое произведение"
           : values?.title ?? "[Безымянное произведение]"

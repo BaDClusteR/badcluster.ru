@@ -3,12 +3,18 @@
 namespace BC\Modules\Blog\Provider;
 
 use BC\DTO\SitemapEntryDTO;
+use BC\Modules\Blog\Model\Note;
 use BC\Modules\Blog\Model\Post;
 use BC\Modules\Blog\Model\Tag;
 use BC\Provider\ISitemapPagesProvider;
 use Runway\Exception\Exception;
 
-class SitemapPagesProvider implements ISitemapPagesProvider {
+readonly class SitemapPagesProvider implements ISitemapPagesProvider {
+
+    public function __construct(
+        private INotesProvider $notesProvider
+    ) {
+    }
 
     /**
      * @inheritDoc
@@ -17,6 +23,10 @@ class SitemapPagesProvider implements ISitemapPagesProvider {
         $result = [
             new SitemapEntryDTO('/blog')
         ];
+
+        if ($this->notesProvider->hasNotes()) {
+            $result[] = new SitemapEntryDTO('/notes');
+        }
 
         try {
             /** @var Tag $tag */
@@ -27,6 +37,10 @@ class SitemapPagesProvider implements ISitemapPagesProvider {
             /** @var Post $post */
             foreach (Post::iterate(['published' => true]) as $post) {
                 $result[] = new SitemapEntryDTO($post->getUrl());
+            }
+
+            foreach ($this->notesProvider->getNotes(true) as $note) {
+                $result[] = new SitemapEntryDTO($note->getUrl());
             }
         } catch (Exception) {
         } finally {

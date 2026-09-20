@@ -42,7 +42,7 @@ class BlogPage extends APage {
             new AssetDTO(
                 'posts',
                 'css/modules/Blog/posts.css'
-            ),
+            )
         ];
     }
 
