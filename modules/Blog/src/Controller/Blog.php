@@ -18,17 +18,20 @@ use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Model\Exception\ModelException;
 use Runway\Request\Response;
+use Throwable;
 
 readonly class Blog {
     use Controller404Trait;
 
     public function __construct(
         private IAuth $auth,
-        private IPostsProvider $postsProvider,
-        private IPostPreviewGenerator $previewGenerator,
+        private IPostsProvider $postsProvider
     ) {
     }
 
+    /**
+     * @throws Throwable
+     */
     public function renderPostList(string $tag = '', string $page = ''): Response {
         if ($page) {
             if (!is_numeric($page)) {
@@ -63,9 +66,7 @@ readonly class Blog {
     }
 
     /**
-     * @throws ModelException
-     * @throws DBException
-     * @throws QueryBuilderException
+     * @throws Throwable
      */
     public function renderPost(string $slug): Response {
         $post = $this->getPost($slug);
@@ -76,30 +77,6 @@ readonly class Blog {
 
         return new SuccessfulHtmlResponse(
             new PostPage(['post' => $post])->render()
-        );
-    }
-
-    /**
-     * Тестовый эндпоинт: превью поста для соцсетей, рисуется на каждый запрос.
-     *
-     * @throws ModelException
-     * @throws DBException
-     * @throws QueryBuilderException
-     * @throws ImageException
-     */
-    public function renderPreview(string $id): Response {
-        $post = is_numeric($id)
-            ? $this->getPost(id: (int) $id)
-            : null;
-
-        if (!$post) {
-            return $this->get404Controller()->run();
-        }
-
-        return new Response(
-            200,
-            $this->previewGenerator->generate($post),
-            ['Content-Type' => 'image/jpeg']
         );
     }
 
