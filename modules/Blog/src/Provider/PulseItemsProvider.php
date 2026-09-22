@@ -18,7 +18,7 @@ class PulseItemsProvider extends \BC\Provider\PulseItemsProvider {
             && ($image = $post->getCover())
         ) {
             $items[] = new PulseItemDTO(
-                title: $post->getShortTitle() ?: $post->getTitle(),
+                title: $post->getTitle(),
                 url: $post->getUrl(),
                 tag: 'Блог',
                 text: $annotation,

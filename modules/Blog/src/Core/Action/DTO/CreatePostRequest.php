@@ -15,6 +15,7 @@ readonly class CreatePostRequest {
     public function __construct(
         public string $title,
         public string $shortTitle,
+        public string $subtitle,
         public string $annotation,
         public array $content,
         public string $slug,

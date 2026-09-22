@@ -44,6 +44,7 @@ readonly class BlogPostDataBuilder implements IBlogPostDataBuilder {
             id: $post->getId(),
             title: $post->getTitle(),
             shortTitle: $post->getShortTitle(),
+            subtitle: $post->getSubtitle(),
             metaDescription: $post->getMetaDescription(),
             annotation: $post->getAnnotation(),
             coverImage: $this->mediaConverter->convertMedia(

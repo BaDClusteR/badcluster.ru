@@ -58,7 +58,7 @@ readonly class PostPreviewGenerator implements IPostPreviewGenerator {
         $canvas = $this->createCanvas($post);
 
         $this->drawFade($canvas);
-        $this->drawTitle($canvas, $post->getShortTitle() ?: $post->getTitle());
+        $this->drawTitle($canvas, $post->getTitle());
         $tagsLeftBound = $this->drawLogo($canvas);
         $this->drawTags($canvas, $post->getTags(), $tagsLeftBound);
 

@@ -21,7 +21,7 @@ readonly class PageProvider implements IPageProvider {
                 $post = Post::findByUniqueIdentifier($pageId);
                 return $post
                     ? new PageDTO(
-                        sprintf('Пост "%s"', $post->getShortTitle() ?: $post->getTitle()),
+                        sprintf('Пост "%s"', $post->getTitle()),
                         "/admin/blog/{$post->getId()}",
                         $post->getUrl()
                     )

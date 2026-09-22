@@ -14,11 +14,25 @@
   flex: 0 0 100%;
 }
 
+.post__subtitle {
+  flex: 0 0 100%;
+  font-weight: 440;
+  line-height: 1.4;
+  font-size: var(--font-size-bigger);
+  text-wrap: auto;
+  text-wrap-style: pretty;
+  color: var(--color-text-secondary);
+
+  .post & {
+    margin: 0 0 calc(.5 * var(--rhythmic-unit));
+  }
+}
+
 .post__lead {
   font-size: 1.1rem;
   font-weight: 400;
   color: var(--color-text-secondary);
-  margin-bottom: calc(2 * var(--rhythmic-unit));
+  margin-block-end: calc(2 * var(--rhythmic-unit));
   line-height: 1.6;
   transition: var(--transition-mode) color;
 }

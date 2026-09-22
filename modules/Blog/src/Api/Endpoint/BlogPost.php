@@ -105,6 +105,8 @@ class BlogPost extends AEndpoint {
         string $slug,
         #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle = '',
+        #[API\Parameter(source: 'body', name: 'subtitle')]
+        string $subtitle = '',
         #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation = '',
         #[API\Parameter(source: 'body', name: 'published')]
@@ -123,6 +125,7 @@ class BlogPost extends AEndpoint {
             fn () => new CreatePostRequest(
                 title: $title,
                 shortTitle: $shortTitle,
+                subtitle: $subtitle,
                 annotation: $annotation,
                 content: $content,
                 slug: $slug,
@@ -170,6 +173,8 @@ class BlogPost extends AEndpoint {
         int $id,
         #[API\Parameter(source: 'body', name: 'shortTitle')]
         string $shortTitle = '',
+        #[API\Parameter(source: 'body', name: 'subtitle')]
+        string $subtitle = '',
         #[API\Parameter(source: 'body', name: 'annotation')]
         string $annotation = '',
         #[API\Parameter(source: 'body', name: 'published')]
@@ -188,6 +193,7 @@ class BlogPost extends AEndpoint {
                 id: $id,
                 title: $title,
                 shortTitle: $shortTitle,
+                subtitle: $subtitle,
                 annotation: $annotation,
                 content: $content,
                 slug: $slug,

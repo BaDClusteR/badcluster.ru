@@ -26,6 +26,9 @@ $blocks = (array) ($post->getContent()['blocks'] ?? []);
             <?php endif; ?>
             <?=$post->getTitle()?>
         </h1>
+        <?php if ($subtitle = $post->getSubtitle()) : ?>
+            <h2 class="post__subtitle"><?=$subtitle?></h2>
+        <?php endif; ?>
         <?php if ($tags = $post->getTags()) : ?>
             <ul class="list--block tags post__tags">
                 <?php foreach ($tags as $tag) : ?>

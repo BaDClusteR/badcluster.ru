@@ -21,6 +21,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setTitle(string $title)
  * @method string getShortTitle()
  * @method self setShortTitle(string $shortTitle)
+ * @method string getSubtitle()
+ * @method self setSubtitle(string $subtitle)
  * @method string getAnnotation()
  * @method self setAnnotation(string $annotation)
  * @method \DateTime getCreatedDate()
@@ -53,6 +55,9 @@ class Post extends AEntity {
 
     #[DS\Column]
     protected string $shortTitle = '';
+
+    #[DS\Column]
+    protected string $subtitle = '';
 
     #[DS\Column]
     protected string $annotation = '';

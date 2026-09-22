@@ -13,6 +13,21 @@
   box-shadow: none !important;
 }
 
+.postSubtitle {
+  font-weight: 440;
+  color: var(--color-text-secondary);
+  margin: 0 calc(.5 * var(--rhythmic-unit));
+  line-height: 1.4;
+  font-size: var(--font-size-bigger);
+  text-wrap: auto;
+  text-wrap-style: pretty;
+  background: transparent;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
 .contentInline {
   padding: 0;
   border: none;

@@ -87,7 +87,7 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
     }
 
     private function getPostTitle(): string {
-        return $this->post->getShortTitle() ?: $this->post->getTitle();
+        return $this->post->getTitle();
     }
 
     public function getMetaDescription(): string {

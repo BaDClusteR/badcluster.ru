@@ -12,6 +12,7 @@ readonly class BlogPostDTO {
         public int $id,
         public string $title,
         public string $shortTitle,
+        public string $subtitle,
         public string $metaDescription,
         public string $annotation,
         public ?array $coverImage,

@@ -18,6 +18,7 @@ export default function PostEditor(
   const tags = options?.context?.tags;
   const {BlocksField, FieldGroup} = options!.components;
   const titleProps = form.getInputProps("title");
+  const subtitleProps = form.getInputProps("subtitle");
   return <>
     <FieldGroup isSubmitting={form.submitting}>
       <Skeleton visible={options?.loading}>
@@ -37,6 +38,25 @@ export default function PostEditor(
             (e) => {
               e.target.value = e.target.value.replace(/[\r\n]+/gm, " ");
               titleProps.onChange(e);
+            }
+          }
+        />
+        <Textarea
+          autosize
+          placeholder="Подзаголовок"
+          {...subtitleProps}
+          classNames={{input: classes.postSubtitle}}
+          onKeyDown={
+            (e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+              }
+            }
+          }
+          onChange={
+            (e) => {
+              e.target.value = e.target.value.replace(/[\r\n]+/gm, " ");
+              subtitleProps.onChange(e);
             }
           }
         />

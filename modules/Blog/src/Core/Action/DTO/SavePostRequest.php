@@ -16,6 +16,7 @@ readonly class SavePostRequest {
         public int $id,
         public string $title,
         public string $shortTitle,
+        public string $subtitle,
         public string $annotation,
         public array $content,
         public string $slug,

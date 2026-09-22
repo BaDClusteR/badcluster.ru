@@ -8,6 +8,7 @@ export interface Post {
   id: number,
   title: string,
   shortTitle: string,
+  subtitle: string,
   annotation: string,
   publishDate: string,
   updateDate: string,

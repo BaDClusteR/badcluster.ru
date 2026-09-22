@@ -26,6 +26,7 @@ abstract class APostAction {
     protected function syncModel(Post $post, CreatePostRequest|SavePostRequest $request): void {
         $post->setTitle($request->title)
              ->setShortTitle($request->shortTitle)
+             ->setSubtitle($request->subtitle)
              ->setAnnotation($request->annotation)
              ->setContent(
                  $this->getBlockHelper()->cleanBlocks(
