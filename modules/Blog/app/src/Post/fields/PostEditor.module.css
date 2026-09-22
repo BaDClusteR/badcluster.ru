@@ -16,7 +16,7 @@
 .postSubtitle {
   font-weight: 440;
   color: var(--color-text-secondary);
-  margin: 0 calc(.5 * var(--rhythmic-unit));
+  margin: calc(.5 * var(--rhythmic-unit)) 0;
   line-height: 1.4;
   font-size: var(--font-size-bigger);
   text-wrap: auto;
