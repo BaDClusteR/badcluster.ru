@@ -28,8 +28,20 @@ class Paragraph extends AWidget {
     /** @noinspection CascadeStringReplacementInspection */
     private function prepareContent(string $content): string {
         $content = str_replace(
-            ['<br>', '<br />'],
-            '</p><p>',
+            ['<br></b>', '<br>', '<br />', '<span>', '</span>'],
+            ['</b></p><p>', '</p><p>', '</p><p>', '', ''],
+            $content
+        );
+
+        $content = str_replace(
+            '<strong></strong>',
+            '',
+            $content
+        );
+
+        $content = str_replace(
+            '<p> </p>',
+            '<empty-line />',
             $content
         );
 

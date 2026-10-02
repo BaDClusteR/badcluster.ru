@@ -13,7 +13,6 @@ $chapters = $this->getChapters();
 <?='<?xml version="1.0" encoding="UTF-8"?>' . "\n"?>
 <FictionBook
     xmlns:l="http://www.w3.org/1999/xlink"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns="http://www.gribuser.ru/xml/fictionbook/2.0"
 >
     <description>
@@ -35,7 +34,7 @@ $chapters = $this->getChapters();
             <?php else : ?>
                 <author>
                     <nickname>BaD ClusteR</nickname>
-                    <homepage><?=$website?></homepage>
+                    <home-page><?=$website?></home-page>
                     <email><?=$email?></email>
                 </author>
             <?php endif; ?>
@@ -52,7 +51,7 @@ $chapters = $this->getChapters();
                 <src-lang>en</src-lang>
                 <translator>
                     <nickname>BaD ClusteR</nickname>
-                    <homepage><?=$website?></homepage>
+                    <home-page><?=$website?></home-page>
                     <email><?=$email?></email>
                 </translator>
             <?php else : ?>
@@ -60,13 +59,14 @@ $chapters = $this->getChapters();
             <?php endif; ?>
         </title-info>
         <document-info>
+            <version>1.0</version>
             <author>
                 <nickname>BaD ClusteR</nickname>
-                <homepage><?=$website?></homepage>
+                <home-page><?=$website?></home-page>
                 <email><?=$email?></email>
             </author>
             <date
-                value="<?=$dateConverter->toIsoFormat($ts)?>"
+                value="<?=$dateConverter->toDateTime($ts)->format('Y-m-d')?>"
             >
                 <?=$dateConverter->toDateTime($ts)->format('Y-m-d')?>
             </date>
