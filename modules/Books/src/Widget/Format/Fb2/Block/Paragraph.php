@@ -34,12 +34,6 @@ class Paragraph extends AWidget {
         );
 
         $content = str_replace(
-            '<strong></strong>',
-            '',
-            $content
-        );
-
-        $content = str_replace(
             '<p> </p>',
             '<empty-line />',
             $content
@@ -96,6 +90,12 @@ class Paragraph extends AWidget {
                 '</strong></p>',
                 '</code></p>'
             ],
+            $content
+        );
+
+        $content = str_replace(
+            '<strong></strong>',
+            '',
             $content
         );
 
