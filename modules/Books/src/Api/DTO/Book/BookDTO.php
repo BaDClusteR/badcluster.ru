@@ -21,6 +21,8 @@ readonly class BookDTO {
         public string $group,
         public int $position,
         public string $fb2Genre,
+        public string $fb2Id,
+        public string $fb2Version,
         public array $formats
     ) {
     }

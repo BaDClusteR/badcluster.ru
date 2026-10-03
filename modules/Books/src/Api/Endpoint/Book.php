@@ -148,9 +148,12 @@ class Book extends AEndpoint {
         array $formats = [],
 
         #[API\Parameter(source: 'body', name: 'fb2Genre')]
-        string $fb2Genre = ''
+        string $fb2Genre = '',
+
+        #[API\Parameter(source: 'body', name: 'fb2Version')]
+        string $fb2Version = BookModel::DEFAULT_FB2_VERSION
     ): CreatedDTO {
-        $this->validateEntity($slug, $type, null, 'Ошибки при добавлении произведения.');
+        $this->validateEntity($slug, $type, $fb2Version, null, 'Ошибки при добавлении произведения.');
 
         $book = $this->handleWithException(
             fn () => new BookModel()
@@ -173,6 +176,8 @@ class Book extends AEndpoint {
                 )->setShortAnnotation($shortAnnotation)
                 ->setType($type)
                 ->setFb2Genre($fb2Genre)
+                ->setFb2Id(BookModel::generateUuid())
+                ->setFb2Version($fb2Version)
         );
 
         $allowedFormats = array_map(
@@ -253,9 +258,12 @@ class Book extends AEndpoint {
         array $formats = [],
 
         #[API\Parameter(source: 'body', name: 'fb2Genre')]
-        string $fb2Genre = ''
+        string $fb2Genre = '',
+
+        #[API\Parameter(source: 'body', name: 'fb2Version')]
+        string $fb2Version = BookModel::DEFAULT_FB2_VERSION
     ): SuccessfulResultDTO {
-        $this->validateEntity($slug, $type, $id, 'Ошибки при редактировании произведения.');
+        $this->validateEntity($slug, $type, $fb2Version, $id, 'Ошибки при редактировании произведения.');
 
         /** @var BookModel|null $book */
         $book = $this->handleWithException(
@@ -286,6 +294,7 @@ class Book extends AEndpoint {
                           )->setShortAnnotation($shortAnnotation)
                           ->setType($type)
                           ->setFb2Genre($fb2Genre)
+                          ->setFb2Version($fb2Version)
         );
 
         $this->handleWithException(
@@ -382,11 +391,16 @@ class Book extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    private function validateEntity(string $slug, string $type, ?int $id, string $errorTitle): void {
+    private function validateEntity(string $slug, string $type, string $fb2Version, ?int $id, string $errorTitle): void {
         $errors = [];
 
         if (!in_array($type, ['A', 'T'], true)) {
             $errors['type'] = 'Неизвестный тип произведения';
+        }
+
+        // В схеме FB2 <version> — xs:float.
+        if (!preg_match('/^\d+(\.\d+)?$/', $fb2Version)) {
+            $errors['fb2Version'] = 'Версия должна быть числом, например 1.0';
         }
 
         if ($bookBySlug = $this->getEntityBySlug(BookModel::class, $slug, $id)) {

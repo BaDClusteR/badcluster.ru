@@ -13,6 +13,8 @@ export interface Book {
   group: string,
   position: number,
   fb2Genre: string,
+  fb2Id: string,
+  fb2Version: string,
   formats: {
     [key: string]: BookFormat
   }

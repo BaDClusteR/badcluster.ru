@@ -70,6 +70,8 @@ export interface FieldDefText<T> extends FieldDefBase<T>, FieldDefNamed<T> {
   type: "text" | "textarea";
   placeholder?: string;
   softMaxLength?: number;
+  /** Показывать значение без возможности редактирования. */
+  readOnly?: boolean;
 }
 
 export interface FieldDefCommon<T> extends FieldDefBase<T>, FieldDefNamed<T> {

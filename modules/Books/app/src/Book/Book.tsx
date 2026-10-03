@@ -25,7 +25,8 @@ export default function Book() {
       fields={fields}
       context={(data as BookContext | undefined) ?? {formats: []}}
       initialValues={{
-        type: "A"
+        type: "A",
+        fb2Version: "1.0"
       }}
       dataProvider={createEntityFormDataProvider<Book>("book", id, isCreateMode)}
       webPath="books"

@@ -123,6 +123,22 @@ const FIELDS: FieldDef<Book, BookContext>[] = [
     </a>
   },
   {
+    name: "fb2Version",
+    type: "text",
+    role: "primary",
+    required: true,
+    label: "Версия (для FB2)",
+    hint: "Номер версии документа в FB2, например 1.0"
+  },
+  {
+    name: "fb2Id",
+    type: "text",
+    role: "primary",
+    readOnly: true,
+    label: "ID (для FB2)",
+    hint: "Генерируется автоматически и больше не меняется, чтобы читалки узнавали книгу при обновлении"
+  },
+  {
     type: "group",
     span: "full",
     render: (form, options, values) =>

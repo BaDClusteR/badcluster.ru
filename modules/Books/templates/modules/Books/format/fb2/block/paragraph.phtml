@@ -1,9 +1,16 @@
 <?php
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 /** @var \BC\Modules\Books\Widget\Format\Fb2\Block\Paragraph $this */
-$content = $this->getContent();
-?><?php if ($content) : ?>
-    <p<?php if ($align = $this->getAlignment()) : ?> align="<?=$align?>"<?php endif; ?>><?=$content?></p>
+$lines = $this->getLines();
+$tag = $this->getTag();
+?><?php if ($lines) : ?>
+<?php foreach ($lines as $line) : ?>
+<?php if ($line === '') : ?>
+    <?='<empty-line />'?>
+<?php else : ?>
+    <<?=$tag?>><?=$line?></<?=$tag?>>
+<?php endif; ?>
+<?php endforeach; ?>
 <?php else : ?>
     <?='<empty-line />'?>
 <?php endif; ?>

@@ -295,6 +295,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
         return withCounter(
           <TextInput
             {...common}
+            readOnly={field.readOnly}
             value={form.values[field.name] as string ?? ""}
             onChange={(e) => form.setFieldValue(field.name as string, e.currentTarget.value as never)}
             error={form.errors[field.name as string]}
@@ -315,6 +316,7 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
         return withCounter(
           <Textarea
             {...common}
+            readOnly={field.readOnly}
             autosize
             minRows={3}
             value={form.values[field.name] as string ?? ""}

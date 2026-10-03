@@ -42,6 +42,10 @@ use Runway\Model\Exception\ModelException;
  * @method self setPosition(int $position)
  * @method string getFb2Genre()
  * @method self setFb2Genre(string $fb2Genre)
+ * @method string getFb2Id()
+ * @method self setFb2Id(string $fb2Id)
+ * @method string getFb2Version()
+ * @method self setFb2Version(string $fb2Version)
  */
 #[DS\Table('books')]
 class Book extends AEntity {
@@ -51,6 +55,8 @@ class Book extends AEntity {
     public const string TYPE_AUTEUR = 'A';
 
     public const string TYPE_TRANSLATION = 'T';
+
+    public const string DEFAULT_FB2_VERSION = '1.0';
 
     #[DS\Id]
     protected int $id;
@@ -90,6 +96,12 @@ class Book extends AEntity {
 
     #[DS\Column]
     protected string $fb2Genre = '';
+
+    #[DS\Column]
+    protected string $fb2Id = '';
+
+    #[DS\Column]
+    protected string $fb2Version = self::DEFAULT_FB2_VERSION;
 
     /**
      * @return BookFormat[]
@@ -172,6 +184,34 @@ class Book extends AEntity {
         $this->persist();
 
         return $this;
+    }
+
+    /**
+     * Идентификатор книги для <id> в FB2. Должен оставаться неизменным между сборками,
+     * чтобы читалки узнавали в новой версии ту же книгу, поэтому генерируется один раз.
+     *
+     * @throws ModelException
+     * @throws DBException
+     * @throws QueryBuilderException
+     */
+    public function getOrCreateFb2Id(): string {
+        if ($this->fb2Id === '') {
+            $this->setFb2Id(self::generateUuid());
+            $this->persist();
+        }
+
+        return $this->fb2Id;
+    }
+
+    /**
+     * UUID v4.
+     */
+    public static function generateUuid(): string {
+        $bytes = random_bytes(16);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($bytes), 4));
     }
 
     public function getUrl(): string {

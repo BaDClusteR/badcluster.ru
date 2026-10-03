@@ -59,7 +59,6 @@ $chapters = $this->getChapters();
             <?php endif; ?>
         </title-info>
         <document-info>
-            <version>1.0</version>
             <author>
                 <nickname>BaD ClusteR</nickname>
                 <home-page><?=$website?></home-page>
@@ -70,6 +69,8 @@ $chapters = $this->getChapters();
             >
                 <?=$dateConverter->toDateTime($ts)->format('Y-m-d')?>
             </date>
+            <id><?=$book->getOrCreateFb2Id()?></id>
+            <version><?=htmlspecialchars($book->getFb2Version(), ENT_XML1)?></version>
         </document-info>
     </description>
     <body>
