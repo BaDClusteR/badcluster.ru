@@ -8,6 +8,7 @@ use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Model\Media;
 use BC\Modules\Books\Core\Trait\BookFormatProviderTrait;
 use DateTime;
+use Random\RandomException;
 use Runway\DataStorage\Attribute as DS;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
@@ -193,6 +194,7 @@ class Book extends AEntity {
      * @throws ModelException
      * @throws DBException
      * @throws QueryBuilderException
+     * @throws RandomException
      */
     public function getOrCreateFb2Id(): string {
         if ($this->fb2Id === '') {
@@ -205,6 +207,8 @@ class Book extends AEntity {
 
     /**
      * UUID v4.
+     *
+     * @throws RandomException
      */
     public static function generateUuid(): string {
         $bytes = random_bytes(16);
