@@ -536,7 +536,7 @@ html {
   }
 
   .header__nav-link {
-    font-size: var(--font-size-root);
+    font-size: var(--font-size-medium);
     line-height: calc(1.875 * var(--rhythmic-unit));
     font-weight: 530;
     font-style: normal;
