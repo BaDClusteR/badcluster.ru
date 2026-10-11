@@ -165,6 +165,11 @@ input[type='checkbox'] {
     border-color: var(--input-bd-focus);
     box-shadow: 0 1px 2px color-mix(in sRGB, var(--input-bd-focus), transparent 70%);
   }
+
+  &[readonly] {
+    background: transparent;
+    color: color-mix(in sRGB, currentColor, transparent 40%);
+  }
 }
 
 .mantine-DateTimePicker-datePickerRoot button[data-selected] {

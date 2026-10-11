@@ -102,14 +102,6 @@ html {
   }
 }
 
-/* Иконки вращаются вокруг точки под кнопкой, поэтому отклонение на ±30°
-   уводит иконку за её пределы. В покое в кадре та иконка, которая
-   соответствует текущей теме, вторая — отведена. */
-.header__nav-action-button--mode {
-  --mode-button-sun-angle: 360deg;
-  --mode-button-moon-angle: 390deg;
-}
-
 @media (prefers-color-scheme: dark) {
   .header__nav-action-button--mode {
     --mode-button-sun-angle: 390deg;
@@ -149,6 +141,8 @@ html {
 }
 
 .header__nav-action-button--mode {
+  --mode-button-sun-angle: 360deg;
+  --mode-button-moon-angle: 390deg;
   --mode-button-color: light-dark(#131415, #E5E5E5);
   --mode-button-inactive-color: light-dark(#71717A, #A1A1A1);
   --mode-button-shadow: none;
@@ -317,6 +311,10 @@ html {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: var(--rhythmic-unit);
+
   &,
   &:visited,
   &:hover,
@@ -325,6 +323,7 @@ html {
   &:active {
     color: inherit;
     transition: none;
+    text-decoration: none;
   }
 
   img,
@@ -332,6 +331,54 @@ html {
     max-height: 100%;
     width: auto;
     height: auto;
+  }
+
+  svg {
+    /* Свечение зеленого квадратика выходит за viewBox */
+    overflow: visible;
+  }
+}
+
+/* Пасхалка: если подержать курсор на логотипе, зеленый квадратик начинает мягко светиться.
+   Группа плавно проявляется с задержкой (на быстром проходе курсора почти незаметно),
+   а пульсирует сам прямоугольник внутри. Без наведения пульсация на паузе, а не снята, —
+   так при уходе курсора свечение плавно гаснет, а не скачет. */
+.logo__glow {
+  opacity: 0;
+  transition: opacity .4s ease-out;
+
+  rect {
+    animation: logo-glow-pulse 2.8s ease-in-out infinite paused;
+  }
+}
+
+.logo:hover,
+.logo:focus-visible {
+  .logo__glow {
+    opacity: 1;
+    transition: opacity 1.2s ease-in .3s;
+
+    rect {
+      animation-play-state: running;
+    }
+  }
+}
+
+@keyframes logo-glow-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo__glow rect {
+    animation: none;
+    opacity: .5;
   }
 }
 
@@ -427,12 +474,20 @@ html {
 @media (width >= 768px) {
   html body .header {
     background: var(--color-bg);
-    border-bottom: var(--border);
     box-shadow: none;
+    height: auto;
+    padding-block: calc(.75 * var(--rhythmic-unit)) 0;
 
     &::before {
-      backdrop-filter: none;
+      display: none;
     }
+  }
+
+  .header__container {
+    border-block-end: var(--border);
+    flex-wrap: wrap;
+    row-gap: calc(1.5 * var(--rhythmic-unit));
+    padding-block-end: calc(.75 * var(--rhythmic-unit));
   }
 
   .header {
@@ -465,22 +520,23 @@ html {
     overflow: visible;
     background: transparent;
     transform: none;
+    gap: calc(2 * var(--rhythmic-unit));
   }
 
   .header__column--logo {
     flex-grow: 0;
+    height: 2.22rem;
   }
 
   .header__nav {
     flex-direction: row;
     align-items: center;
     column-gap: calc(1.75 * var(--rhythmic-unit));
-    flex: 1;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .header__nav-link {
-    font-size: calc(var(--font-size-root) - 1px);
+    font-size: var(--font-size-root);
     line-height: calc(1.875 * var(--rhythmic-unit));
     font-weight: 530;
     font-style: normal;

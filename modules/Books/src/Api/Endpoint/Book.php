@@ -93,10 +93,7 @@ class Book extends AEndpoint {
     #[API\Endpoint(path: 'book_formats', method: 'GET')]
     public function getFormats(): BookFormatsDTO {
         return new BookFormatsDTO(
-            formats: array_map(
-                static fn (BookFormatDTO $format): string => $format->type,
-                $this->formatProvider->getFormats()
-            )
+            formats: $this->getFormatTypes()
         );
     }
 
@@ -153,7 +150,7 @@ class Book extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'fb2Version')]
         string $fb2Version = BookModel::DEFAULT_FB2_VERSION
     ): CreatedDTO {
-        $this->validateEntity($slug, $type, $fb2Version, null, 'Ошибки при добавлении произведения.');
+        $this->validateEntity($slug, $type, $fb2Version, $formats, null, 'Ошибки при добавлении произведения.');
 
         $book = $this->handleWithException(
             fn () => new BookModel()
@@ -180,10 +177,7 @@ class Book extends AEndpoint {
                 ->setFb2Version($fb2Version)
         );
 
-        $allowedFormats = array_map(
-            static fn (BookFormatDTO $format): string => $format->type,
-            $this->formatProvider->getFormats()
-        );
+        $allowedFormats = $this->getFormatTypes();
 
         $this->handleWithException(
             static function () use ($book, $formats, $allowedFormats): void {
@@ -263,7 +257,7 @@ class Book extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'fb2Version')]
         string $fb2Version = BookModel::DEFAULT_FB2_VERSION
     ): SuccessfulResultDTO {
-        $this->validateEntity($slug, $type, $fb2Version, $id, 'Ошибки при редактировании произведения.');
+        $this->validateEntity($slug, $type, $fb2Version, $formats, $id, 'Ошибки при редактировании произведения.');
 
         /** @var BookModel|null $book */
         $book = $this->handleWithException(
@@ -301,10 +295,7 @@ class Book extends AEndpoint {
             static fn () => $book->persist()
         );
 
-        $allowedFormats = array_map(
-            static fn (BookFormatDTO $format): string => $format->type,
-            $this->formatProvider->getFormats()
-        );
+        $allowedFormats = $this->getFormatTypes();
 
         $this->handleWithException(
             static function () use ($book, $formats, $allowedFormats): void {
@@ -391,15 +382,26 @@ class Book extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    private function validateEntity(string $slug, string $type, string $fb2Version, ?int $id, string $errorTitle): void {
+    private function validateEntity(
+        string $slug,
+        string $type,
+        string $fb2Version,
+        array $formats,
+        ?int $id,
+        string $errorTitle
+    ): void {
         $errors = [];
 
         if (!in_array($type, ['A', 'T'], true)) {
             $errors['type'] = 'Неизвестный тип произведения';
         }
 
-        // В схеме FB2 <version> — xs:float.
-        if (!preg_match('/^\d+(\.\d+)?$/', $fb2Version)) {
+        // В схеме FB2 <version> — xs:float. Пока FB2 выключен, версию не проверяем,
+        // чтобы не мешать сохранять книгу, — значение все равно сохранится как есть.
+        if (
+            !empty($formats['fb2']['allowed'])
+            && !preg_match('/^\d+(\.\d+)?$/', $fb2Version)
+        ) {
             $errors['fb2Version'] = 'Версия должна быть числом, например 1.0';
         }
 
@@ -407,8 +409,88 @@ class Book extends AEndpoint {
             $errors['slug'] = "Этот слаг уже занят произведением \"{$bookBySlug->getTitle()}\"";
         }
 
+        $errors += $this->validateFormatFilenames($formats, $id);
+
         if (!empty($errors)) {
             throw new UnprocessableEntityException($errors, $errorTitle);
         }
+    }
+
+    /**
+     * Имя файла — это слаг для скачивания (/books/<filename>), а Books::download ищет его
+     * среди всех форматов без учета типа. Поэтому включенный формат не должен совпадать
+     * по имени файла ни с одним другим включенным форматом — ни этой книги, ни чужих.
+     * Выключенные форматы не мешают: их имена файлов просто хранятся про запас.
+     *
+     * @return array<string, string> ошибки с ключами вида formats.<type>.filename
+     */
+    private function validateFormatFilenames(array $formats, ?int $id): array {
+        $errors = [];
+        $usedByThisBook = [];
+
+        foreach ($this->getFormatTypes() as $formatType) {
+            if (empty($formats[$formatType]['allowed'])) {
+                continue;
+            }
+
+            $errorKey = "formats.$formatType.filename";
+            $filename = trim((string) ($formats[$formatType]['filename'] ?? ''));
+
+            if ($filename === '') {
+                $errors[$errorKey] = 'Обязательное поле';
+                continue;
+            }
+
+            if ($sameBookFormat = $usedByThisBook[$filename] ?? null) {
+                $errors[$errorKey] = sprintf(
+                    'Слаг "%s" уже указан для формата %s этой книги',
+                    $filename,
+                    mb_strtoupper($sameBookFormat)
+                );
+                continue;
+            }
+
+            $usedByThisBook[$filename] = $formatType;
+
+            if ($conflict = $this->findAllowedFormatByFilename($filename, $id)) {
+                $errors[$errorKey] = sprintf(
+                    'Слаг "%s" для формата %s уже есть у книги "%s"',
+                    $filename,
+                    mb_strtoupper($conflict->getType()),
+                    $conflict->getBook()?->getTitle()
+                );
+            }
+        }
+
+        return $errors;
+    }
+
+    private function findAllowedFormatByFilename(string $filename, ?int $exceptBookId): ?BookFormat {
+        return $this->handleWithException(
+            static function () use ($filename, $exceptBookId): ?BookFormat {
+                $qb = BookFormat::getQueryBuilder()
+                                ->andWhere('filename = :filename')
+                                ->setVariable('filename', $filename)
+                                ->andWhere('allowed = :allowed')
+                                ->setVariable('allowed', 1);
+
+                if ($exceptBookId) {
+                    $qb->andWhere('book_id != :bookId')
+                       ->setVariable('bookId', $exceptBookId);
+                }
+
+                return $qb->getFirstEntity();
+            }
+        );
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getFormatTypes(): array {
+        return array_map(
+            static fn (BookFormatDTO $format): string => $format->type,
+            $this->formatProvider->getFormats()
+        );
     }
 }

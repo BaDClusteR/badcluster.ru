@@ -49,11 +49,22 @@ class GamesListPage extends APage {
                 'games',
                 'css/modules/Games/games.css'
             ),
+            new AssetDTO(
+                'games',
+                'js/modules/Games/games.js'
+            ),
         ];
     }
 
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
+        $list[] = 'games';
+
+        return $list;
+    }
+
+    public function getJsBundles(): array {
+        $list = parent::getJsBundles();
         $list[] = 'games';
 
         return $list;

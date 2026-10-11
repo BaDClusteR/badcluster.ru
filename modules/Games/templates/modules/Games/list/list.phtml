@@ -4,8 +4,29 @@
 
 $listItem = new \BC\Modules\Games\Widget\GamesList\GamesListItem();
 ?>
-<ul class="games list--block">
+<?php /* Фильтр работает только на JS, поэтому без скриптов поле прячется (.js-only) */ ?>
+<search class="games__search js-only">
+    <label for="games-search" class="visually-hidden">Поиск по названию игры</label>
+    <input
+        type="search"
+        id="games-search"
+        class="games__search-input"
+        placeholder="Найти игру..."
+        autocomplete="off"
+        spellcheck="false"
+        aria-controls="games-list"
+    >
+    <button type="button" class="games__search-clear" aria-label="Очистить поиск"></button>
+</search>
+<ul class="games list--block" id="games-list">
     <?php foreach ($this->getGames() as $game) : ?>
         <?=$listItem->render(['game' => $game])?>
     <?php endforeach; ?>
 </ul>
+<div aria-live="polite">
+    <div class="games__empty" hidden>
+        <h2 class="games__empty-title">Ничего не нашлось 🥺</h2>
+        <p class="games__empty-text">Возможно, игра включила стелс-камуфляж или спряталась в картонной коробке.</p>
+        <button type="button" class="btn btn--secondary games__empty-reset">Показать весь список</button>
+    </div>
+</div>

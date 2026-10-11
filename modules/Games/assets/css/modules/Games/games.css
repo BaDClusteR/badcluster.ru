@@ -4,6 +4,130 @@
   grid-template-columns: 1fr;
 }
 
+.games__search {
+  --search-clear-size: calc(1.25 * var(--rhythmic-unit));
+
+  display: block;
+  position: relative;
+  margin-top: calc(2.5 * var(--rhythmic-unit));
+}
+
+/* Поле повторяет .comment__field из блока комментариев */
+.games__search-input {
+  --field-bg: light-dark(var(--color-bg), color-mix(in sRGB, var(--color-contrast), var(--color-bg) 97%));
+
+  width: 100%;
+  padding: calc(.75 * var(--rhythmic-unit));
+  padding-inline-end: calc(var(--search-clear-size) + 1.25 * var(--rhythmic-unit));
+  margin: 0;
+  border: var(--border);
+  border-radius: var(--border-radius);
+  outline: none;
+  transition: var(--transition) border-color;
+  background: var(--field-bg);
+  color: inherit;
+  font: inherit;
+  appearance: none;
+
+  &:hover,
+  &:focus {
+    border-color: var(--color-accent);
+  }
+
+  &::placeholder {
+    color: color-mix(in sRGB, var(--color-text-secondary), var(--color-bg) 50%);
+  }
+
+  &:focus {
+    --field-bg: color-mix(in sRGB, var(--color-surface), var(--color-bg) 20%);
+  }
+
+  /* Системный крестик у type="search" заменён своим .games__search-clear */
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration {
+    appearance: none;
+  }
+}
+
+[data-theme='dark'] .games__search-input:focus {
+  --field-bg: var(--color-surface);
+}
+
+.games__search-clear {
+  width: var(--search-clear-size);
+  height: var(--search-clear-size);
+  appearance: none;
+  position: absolute;
+  top: 50%;
+  right: calc(.5 * var(--rhythmic-unit));
+  transform: translateY(-50%);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: transparent;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 15%;
+    mask: url('/static/images/icons/cross.svg') no-repeat center;
+    mask-size: contain;
+    pointer-events: none;
+    transition: var(--transition) background-color;
+    background: var(--color-text-secondary);
+  }
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    &::before {
+      background: var(--color-link);
+    }
+  }
+}
+
+/* Крестик нужен, только пока в поле что-то введено */
+.games__search-input:placeholder-shown + .games__search-clear {
+  display: none;
+}
+
+:dir(rtl) .games__search-clear {
+  right: auto;
+  left: calc(.5 * var(--rhythmic-unit));
+}
+
+.games__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(2.5 * var(--rhythmic-unit)) calc(1.5 * var(--rhythmic-unit));
+  border-radius: var(--border-radius);
+  background: var(--color-surface);
+  text-align: center;
+  text-wrap: balance;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.games__empty-title {
+  font-size: var(--font-size-big);
+}
+
+.games__empty-text {
+  margin-top: calc(.5 * var(--rhythmic-unit));
+  color: var(--color-text-secondary);
+  transition: var(--transition-mode) color;
+}
+
+.games__empty-reset {
+  align-self: center;
+  margin-top: calc(1.5 * var(--rhythmic-unit));
+}
+
 .game {
   --game-miniature-width: 100px;
   --game-miniature-height: 70px;
@@ -15,6 +139,10 @@
   border-top: var(--border);
   align-items: start;
   grid-column: 1 / -1;
+
+  &[hidden] {
+    display: none;
+  }
 }
 
 .game__card {
@@ -45,12 +173,6 @@
   font-size: var(--font-size-big);
   line-height: 1.2;
   text-wrap-style: pretty;
-}
-
-.game__year {
-  font-size: var(--font-size-small);
-  color: var(--color-text-secondary);
-  transition: var(--transition-mode) color;
 }
 
 .game__materials {
@@ -153,7 +275,7 @@
 
 @media (width >= 320px) {
   .game__card {
-    gap: var(--rhythmic-unit);
+    gap: calc(.75 * var(--rhythmic-unit)) var(--rhythmic-unit);
   }
 
   .game__materials {
@@ -161,30 +283,26 @@
   }
 }
 
-@media (width >= 320px) and (width < 700px) {
+@media (width >= 320px) {
   .games {
     grid-template-columns: max-content 1fr;
+  }
+
+  .game__card-header {
+    align-self: center;
   }
 
   .game__materials {
     grid-column: 1 / 3;
   }
-
-  .game__card-header {
-    align-self: center;
-  }
 }
 
-@media (width >= 700px) {
-  .games {
-    grid-template-columns: max-content max-content 1fr;
-  }
-
-  .game__card-header {
-    max-width: 180px;
+@media (width >= 600px) {
+  .game__card-miniature {
+    grid-row: span 2;
   }
 
   .game__materials {
-    align-self: center;
+    grid-column: 3;
   }
 }

@@ -26,7 +26,6 @@ class GameDataBuilder implements IGameDataBuilder {
         return new GameRowDTO(
             id: (int) ($game['id'] ?? 0),
             title: (string) ($game['title'] ?? ''),
-            releaseYear: (int) ($game['release_year'] ?? 0),
             cover: $cover?->toMediaDTO(),
             count: (int) ($game['count'] ?? 0),
         );
@@ -36,7 +35,6 @@ class GameDataBuilder implements IGameDataBuilder {
         return new GameDTO(
             title: $game->getTitle(),
             slug: $game->getSlug(),
-            releaseYear: (string) $game->getReleaseYear(),
             cover: $game->getCover()?->toMediaDTO(),
         );
     }

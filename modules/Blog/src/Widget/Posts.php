@@ -8,10 +8,12 @@ use BC\Core\Trait\AuthTrait;
 use BC\Core\Trait\DateConverterTrait;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Modules\Blog\Model\Post;
+use BC\Modules\Blog\Model\Tag;
 use BC\Modules\Blog\Provider\IPostsProvider;
 use BC\Widget\AWidget;
 use BC\Widget\Common\Picture;
 use DateTime;
+use Runway\Exception\Exception;
 use Runway\Singleton\Container;
 
 class Posts extends AWidget {
@@ -99,5 +101,16 @@ class Posts extends AWidget {
 
     private function getPostsProvider(): IPostsProvider {
         return Container::getInstance()->getService(IPostsProvider::class);
+    }
+
+    /**
+     * @return Tag[]
+     */
+    protected function getAllTags(): array {
+        try {
+            return Tag::find([], ['id', 'ASC']);
+        } catch (Exception) {
+            return [];
+        }
     }
 }

@@ -20,7 +20,14 @@
 }
 
 @media (width >= 768px) {
-  .footer > .content-container {
-    justify-content: space-between;
+  .footer {
+    padding-block: 0 var(--rhythmic-unit);
+    border-block-start: none;
+
+    > .content-container {
+      justify-content: space-between;
+      border-top: var(--border);
+      padding-block-start: var(--rhythmic-unit);
+    }
   }
 }

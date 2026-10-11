@@ -1,6 +1,7 @@
 import type {FieldDef} from "@admin/types";
 import {Book, BookContext} from "../types";
 import BookFormats from "./BookFormats";
+import Fb2Fields from "./BookFormats/Fb2Fields";
 
 const FIELDS: FieldDef<Book, BookContext>[] = [
   {
@@ -83,7 +84,7 @@ const FIELDS: FieldDef<Book, BookContext>[] = [
     name: "coverBg",
     type: "image",
     label: "Картинка на заднем фоне",
-    hint: "Придает цвет заблюренному фону книги, если у нее нет обложки. 40 пикселей в ширину.",
+    hint: "Придает цвет заблюренному фону книги, если у нее нет обложки. Ресайзится до 40 пикселей в ширину.",
     span: "full",
     role: "primary",
     uploadPurpose: "book_cover_bg"
@@ -110,56 +111,36 @@ const FIELDS: FieldDef<Book, BookContext>[] = [
     role: "primary"
   },
   {
-    name: "fb2Genre",
-    type: "text",
-    span: "full",
-    role: "primary",
-    label: "Жанр (для FB2)",
-    hint: <a
-      href="http://www.fictionbook.org/index.php/Eng:FictionBook_2.1_genres"
-      target="_blank"
-    >
-      Список всех жанров на fictionbook.org
-    </a>
-  },
-  {
-    name: "fb2Version",
-    type: "text",
-    role: "primary",
-    required: true,
-    label: "Версия (для FB2)",
-    hint: "Номер версии документа в FB2, например 1.0"
-  },
-  {
-    name: "fb2Id",
-    type: "text",
-    role: "primary",
-    readOnly: true,
-    label: "ID (для FB2)",
-    hint: "Генерируется автоматически и больше не меняется, чтобы читалки узнавали книгу при обновлении"
-  },
-  {
     type: "group",
     span: "full",
     render: (form, options, values) =>
       <BookFormats formats={options.context?.formats ?? []} generatedFormats={values?.formats}
-                   submitting={options.submitting} onChange={
-        (format: string, allowed: boolean, filename: string, postfix: string) => {
-          const current = form.values.formats ?? {};
-          form.setFieldValue(
-            "formats",
-            {
-              ...current,
-              [format]: {
-                ...values?.formats[format] ?? {},
-                allowed,
-                filename,
-                postfix
-              }
-            } as never
-          );
-        }
-      }/>
+                   submitting={options.submitting}
+                   extraFields={{fb2: <Fb2Fields form={form}/>}}
+                   errors={form.errors}
+                   onChange={
+                     (format: string, allowed: boolean, filename: string, postfix: string) => {
+                       form.clearFieldError(`formats.${format}.filename`);
+                       if (format === "fb2" && !allowed) {
+                         // При выключенном FB2 версия не проверяется, старая ошибка не нужна
+                         form.clearFieldError("fb2Version");
+                       }
+
+                       const current = form.values.formats ?? {};
+                       form.setFieldValue(
+                         "formats",
+                         {
+                           ...current,
+                           [format]: {
+                             ...values?.formats[format] ?? {},
+                             allowed,
+                             filename,
+                             postfix
+                           }
+                         } as never
+                       );
+                     }
+                   }/>
   }
 ];
 

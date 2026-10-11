@@ -5,6 +5,16 @@ $updateIcon = $this->getSvgContent('images/icons/update.svg');
 $pages = $this->getPages();
 $currPage = $this->getPage();
 ?>
+<div class="posts__tags">
+    <span class="posts__tags-caption">Тэги: </span>
+    <ul class="list--block tags post__tags posts__tags-list">
+        <?php foreach ($this->getAllTags() as $tag): ?>
+            <li class="tag post__tag">
+                <a href="<?=$tag->getUrl()?>" class="post__tag-link"><?=$tag->getTitle()?></a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
 
 <ul class="posts list--block">
     <?php foreach ($this->getPosts() as $post): ?>

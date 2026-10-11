@@ -20,8 +20,6 @@ use Runway\Model\Exception\ModelException;
  * @method self setTitle(string $title)
  * @method string getSlug()
  * @method self setSlug(string $slug)
- * @method int|null getReleaseYear()
- * @method self setReleaseYear(int|null $releaseYear)
  * @method Media|null getCover()
  */
 #[DS\Table('games')]
@@ -36,9 +34,6 @@ class Game extends AEntity {
 
     #[DS\Column]
     protected string $slug = '';
-
-    #[DS\Column]
-    protected ?int $releaseYear = null;
 
     #[DS\Column]
     protected ?Media $cover = null;

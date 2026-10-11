@@ -12,8 +12,7 @@ const columns: ColumnDef<GameRow>[] = [
     key: "title",
     header: "Название",
     sortable: true,
-    link: true,
-    subKey: "releaseYear"
+    link: true
   },
   {
     key: "count",

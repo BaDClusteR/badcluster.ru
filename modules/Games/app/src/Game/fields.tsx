@@ -1,18 +1,6 @@
 import type {FieldDef} from "@admin/types";
 import {type Game} from "./types";
 
-const years = [
-  {value: "", label: "Не задан"}
-];
-
-for (let i = new Date().getFullYear(); i >= 1980; i--) {
-  const str = i.toString();
-
-  years.push(
-    {value: str, label: str}
-  );
-}
-
 const FIELDS: FieldDef<Game>[] = [
   {
     name: "title",
@@ -28,14 +16,8 @@ const FIELDS: FieldDef<Game>[] = [
     label: "Слаг",
     required: true,
     role: "primary",
+    span: "full",
     url: () => ""
-  },
-  {
-    name: "releaseYear",
-    label: "Год выхода",
-    role: "primary",
-    type: "select",
-    options: years
   },
   {
     name: "cover",

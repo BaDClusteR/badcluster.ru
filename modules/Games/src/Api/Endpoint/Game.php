@@ -106,8 +106,6 @@ class Game extends AEndpoint {
         string $title,
         #[API\Parameter(source: 'body', name: 'slug')]
         string $slug,
-        #[API\Parameter(source: 'body', name: 'releaseYear')]
-        ?string $releaseYear = null,
         #[API\Parameter(source: 'body', name: 'cover')]
         ?array $coverImage = null,
     ): CreatedDTO {
@@ -117,11 +115,7 @@ class Game extends AEndpoint {
             fn () => new GameModel()
                 ->setTitle($title)
                 ->setSlug($slug)
-                ->setReleaseYear(
-                    $releaseYear
-                        ? (int) $releaseYear
-                        : null
-                )->setCover(
+                ->setCover(
                     $this->findMedia($coverImage)
                 )
         );
@@ -147,15 +141,13 @@ class Game extends AEndpoint {
         string $title,
         #[API\Parameter(source: 'body', name: 'slug')]
         string $slug,
-        #[API\Parameter(source: 'body', name: 'releaseYear')]
-        ?string $releaseYear = null,
         #[API\Parameter(source: 'body', name: 'cover')]
         ?array $coverImage = null,
     ): SuccessfulResultDTO {
         $this->validateEntity($slug, $title, $id, 'Не могу сохранить изменения.');
 
         $this->handleWithException(
-            function () use ($slug, $title, $releaseYear, $coverImage, $id): void {
+            function () use ($slug, $title, $coverImage, $id): void {
                 $game = GameModel::findByUniqueIdentifier($id);
 
                 if (!$game) {
@@ -164,13 +156,9 @@ class Game extends AEndpoint {
 
                 $game->setTitle($title)
                      ->setSlug($slug)
-                     ->setReleaseYear(
-                         $releaseYear
-                             ? (int) $releaseYear
-                             : null
-                     )->setCover(
-                        $this->findMedia($coverImage)
-                    );
+                     ->setCover(
+                         $this->findMedia($coverImage)
+                     );
                 $game->persist();
             }
         );

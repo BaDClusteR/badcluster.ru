@@ -38,10 +38,11 @@ readonly class Books {
      */
     public function download(string $basename, string $ext): Response {
         $format = BookFormat::findOne([
-            'filename' => "$basename.$ext"
+            'filename' => "$basename.$ext",
+            'allowed'  => true
         ]);
 
-        if ($format?->getAllowed()) {
+        if ($format) {
             if ($format->getSize() === 0) {
                 $format->generateDump();
             }

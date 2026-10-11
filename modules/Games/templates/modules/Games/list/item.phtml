@@ -20,9 +20,6 @@ use BC\Widget\Common\Picture;
             ])->render()?>
             <header class="game__card-header">
                 <h2 class="game__name"><?=$game->game->getTitle()?></h2>
-                <?php if ($releaseYear = $game->game->getReleaseYear()) : ?>
-                    <span class="game__year"><?=$releaseYear?></span>
-                <?php endif; ?>
             </header>
             <ul class="game__materials list--block">
                 <?php foreach ($game->getMaterials() as $material) : ?>

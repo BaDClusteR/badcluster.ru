@@ -10,7 +10,6 @@ class GameRowDTO {
     public function __construct(
         public int $id,
         public string $title,
-        public ?int $releaseYear,
         public ?MediaDTO $cover,
         public int $count
     ) {

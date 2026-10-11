@@ -1,6 +1,6 @@
 import {type BookFormat} from "../../types";
 import {Skeleton, Switch, Textarea, TextInput} from "@mantine/core";
-import {useEffect, useRef, useState} from "react";
+import {type ReactNode, useEffect, useRef, useState} from "react";
 import {Optional} from "@admin/types";
 import classes from "./BookFormats.module.css";
 import {useAdminCore} from "../../../admin/useAdminCore";
@@ -13,7 +13,9 @@ function BookFormat(props: {
   format: Optional<BookFormat>,
   type?: string,
   onChange: BookFormatChangeCallback,
-  submitting?: boolean
+  submitting?: boolean,
+  extraFields?: ReactNode,
+  filenameError?: ReactNode
 }) {
   const {format, type} = props;
   const {Button, apiCall, notify} = useAdminCore();
@@ -84,6 +86,7 @@ function BookFormat(props: {
           required
           withAsterisk
           value={format?.filename ?? ""}
+          error={props.filenameError}
           onChange={(e) => props.onChange(
             String(format?.type ?? type),
             true,
@@ -95,6 +98,7 @@ function BookFormat(props: {
           label="Текст после глав:"
           description="Если оставить пустым, будет стандартный текст после глав. Плейсхолдеры: {{start_year}}, {{end_year}}."
           value={format?.postfix ?? ""}
+          rows={4}
           onChange={(e) => props.onChange(
             String(format?.type ?? type),
             true,
@@ -102,6 +106,7 @@ function BookFormat(props: {
             e.target.value
           )}
         />
+        {props.extraFields}
       </>
     }
     {
@@ -195,7 +200,11 @@ export default function BookFormats(
     formats: string[],
     generatedFormats?: { [key: string]: BookFormat },
     onChange: BookFormatChangeCallback,
-    submitting?: boolean
+    submitting?: boolean,
+    /** Дополнительные поля формы, которые выводятся в блоке формата после его настроек */
+    extraFields?: { [format: string]: ReactNode },
+    /** Ошибки формы — нужны ключи вида formats.<type>.filename */
+    errors?: { [path: string]: ReactNode }
   }
 ) {
   const {formats, generatedFormats, onChange} = props;
@@ -211,6 +220,8 @@ export default function BookFormats(
             type={format}
             onChange={onChange}
             submitting={props.submitting}
+            extraFields={props.extraFields?.[format]}
+            filenameError={props.errors?.[`formats.${format}.filename`]}
           />
         )
       }
