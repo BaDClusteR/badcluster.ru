@@ -26,11 +26,13 @@ class Paragraph extends AWidget {
 
         $content = strip_tags($content, ['sup']);
 
+        // В тексте из редактора бывают сущности (&nbsp;, &gt; и т.п.) — в TXT
+        // они нужны символами, а неразрывные пробелы — обычными.
         $content = trim(
             str_replace(
-                '&nbsp;',
+                "\u{00A0}",
                 ' ',
-                $content
+                html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8')
             )
         );
 

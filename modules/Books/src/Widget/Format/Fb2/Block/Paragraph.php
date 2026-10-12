@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace BC\Modules\Books\Widget\Format\Fb2\Block;
 
+use BC\Modules\Books\Core\Typography\ITypographer;
 use BC\Widget\AWidget;
 use Dom\Element;
 use Dom\HTMLDocument;
 use Dom\Node;
 use Dom\Text;
+use Runway\Singleton\Container;
 
 class Paragraph extends AWidget {
     /**
@@ -40,8 +42,16 @@ class Paragraph extends AWidget {
      * @return list<string>
      */
     protected function getLines(): array {
-        return $this->splitLines(
-            (string) ($this->context['text'] ?? '')
+        $lines = $this->splitLines(
+            Container::getInstance()->getService(ITypographer::class)->process(
+                (string) ($this->context['text'] ?? '')
+            )
+        );
+
+        // Именованной сущности &nbsp; в XML нет, а числовая ссылка валидна везде.
+        return array_map(
+            static fn (string $line): string => str_replace("\u{00A0}", '&#160;', $line),
+            $lines
         );
     }
 
@@ -92,9 +102,7 @@ class Paragraph extends AWidget {
     private function walk(Node $parent, array $stack, array &$lines): void {
         foreach ($parent->childNodes as $node) {
             if ($node instanceof Text) {
-                $lines[array_key_last($lines)] .= $this->escape(
-                    str_replace("\u{00A0}", ' ', $node->textContent)
-                );
+                $lines[array_key_last($lines)] .= $this->escape($node->textContent);
 
                 continue;
             }
