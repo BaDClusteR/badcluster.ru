@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Trait\TypographerTrait;
 use BC\Model\Media as MediaModel;
 use BC\Widget\AWidget;
 use Exception;
 
 class Media extends AWidget {
+    use TypographerTrait;
+
     protected ?MediaModel $media = null {
         get {
             return $this->media;
@@ -61,7 +64,9 @@ class Media extends AWidget {
                 $this->alt = (string) ($this->context['alt'] ?? '');
 
                 $this->lazy = (bool) ($this->context['lazy'] ?? false);
-                $this->caption = (string) ($this->context['caption'] ?? '');
+                $this->caption = $this->getTypographer()->process(
+                    (string) ($this->context['caption'] ?? '')
+                );
                 $this->lightbox = (bool) ($this->context['lightbox'] ?? false);
                 $this->border = (bool) ($this->context['border'] ?? false);
             } catch (Exception) {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BC\Modules\Books\Core\Typography;
+namespace BC\Core\Typography;
 
 class Typographer implements ITypographer {
     private const string NBSP = "\u{00A0}";
@@ -12,6 +12,11 @@ class Typographer implements ITypographer {
      */
     private const array RAW_TAGS = ['kbd', 'code', 'pre'];
 
+    /**
+     * Открывающие тэги, с которых начинается новая строка (абзацы в цитатах и т.п.).
+     */
+    private const array LINE_TAGS = ['p', 'li', 'div', 'blockquote'];
+
     public function process(string $html): string {
         $parts = preg_split('/(<[^>]*>)/u', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -20,7 +25,7 @@ class Typographer implements ITypographer {
         }
 
         $rawDepth = 0;
-        // Начало абзаца или строки после <br>: тире здесь открывает реплику.
+        // Начало абзаца или новой строки: тире здесь открывает реплику.
         $lineStart = true;
 
         foreach ($parts as $i => $part) {
@@ -30,7 +35,10 @@ class Typographer implements ITypographer {
 
                     if (in_array($tag, self::RAW_TAGS, true)) {
                         $rawDepth = max(0, $rawDepth + ($matches[1] === '/' ? -1 : 1));
-                    } elseif ($tag === 'br') {
+                    } elseif (
+                        $tag === 'br'
+                        || ($matches[1] === '' && in_array($tag, self::LINE_TAGS, true))
+                    ) {
                         $lineStart = true;
                     }
                 }

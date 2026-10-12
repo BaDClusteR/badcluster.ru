@@ -20,9 +20,6 @@ services:
   BC\Modules\Books\Core\Extractor\INotesExtractor:
     class: BC\Modules\Books\Core\Extractor\NotesExtractor
 
-  BC\Modules\Books\Core\Typography\ITypographer:
-    class: BC\Modules\Books\Core\Typography\Typographer
-
   BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg: ~
 
   BC\Modules\Books\Controller\Books: ~

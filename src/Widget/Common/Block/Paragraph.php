@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Trait\TypographerTrait;
 use BC\Widget\AWidget;
 
 class Paragraph extends AWidget {
+    use TypographerTrait;
+
     protected function getTemplatePath(): string {
         return 'common/block/paragraph.phtml';
     }
 
     protected function getContent(): string {
-        return (string) ($this->context['text'] ?? '');
+        return $this->getTypographer()->process(
+            (string) ($this->context['text'] ?? '')
+        );
     }
 
     protected function getAlignment(): string {

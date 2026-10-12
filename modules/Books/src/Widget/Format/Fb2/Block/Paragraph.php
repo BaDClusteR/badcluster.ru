@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace BC\Modules\Books\Widget\Format\Fb2\Block;
 
-use BC\Modules\Books\Core\Typography\ITypographer;
+use BC\Core\Trait\TypographerTrait;
 use BC\Widget\AWidget;
 use Dom\Element;
 use Dom\HTMLDocument;
 use Dom\Node;
 use Dom\Text;
-use Runway\Singleton\Container;
 
 class Paragraph extends AWidget {
+    use TypographerTrait;
+
     /**
      * HTML-тэги редактора → inline-тэги FB2. Всё, чего здесь нет (span и прочее),
      * разворачивается: остаётся только содержимое.
@@ -43,7 +44,7 @@ class Paragraph extends AWidget {
      */
     protected function getLines(): array {
         $lines = $this->splitLines(
-            Container::getInstance()->getService(ITypographer::class)->process(
+            $this->getTypographer()->process(
                 (string) ($this->context['text'] ?? '')
             )
         );

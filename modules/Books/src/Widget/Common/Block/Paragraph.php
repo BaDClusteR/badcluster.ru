@@ -2,18 +2,9 @@
 
 namespace BC\Modules\Books\Widget\Common\Block;
 
-use BC\Modules\Books\Core\Typography\ITypographer;
-use Runway\Singleton\Container;
-
 class Paragraph extends \BC\Widget\Common\Block\Paragraph {
     protected function getTemplatePath(): string {
         return 'modules/Books/common/block/paragraph.phtml';
-    }
-
-    protected function getContent(): string {
-        return Container::getInstance()->getService(ITypographer::class)->process(
-            parent::getContent()
-        );
     }
 
     protected function isDirectSpeech(string $paragraph): bool {

@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Trait\TypographerTrait;
 use BC\Widget\AWidget;
 
 class Quote extends AWidget {
+    use TypographerTrait;
+
     protected function getTemplatePath(): string {
         return $this->isTranslated()
             ? 'common/block/quote-switchable.phtml'
@@ -18,11 +21,15 @@ class Quote extends AWidget {
     }
 
     protected function getText(): string {
-        return (string) ($this->context['text'] ?? '');
+        return $this->getTypographer()->process(
+            (string) ($this->context['text'] ?? '')
+        );
     }
 
     protected function getTranslatedText(): string {
-        return (string) ($this->context['translatedText'] ?? '');
+        return $this->getTypographer()->process(
+            (string) ($this->context['translatedText'] ?? '')
+        );
     }
 
     protected function isTranslated(): bool {
