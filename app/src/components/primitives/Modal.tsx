@@ -15,7 +15,8 @@ export default function Modal(
     onClose: () => void,
     withCloseButton?: boolean,
     title?: ReactNode,
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    size?: string | number
   }
 ): React.JSX.Element {
   return <MantineModal

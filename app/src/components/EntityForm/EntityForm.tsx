@@ -44,6 +44,27 @@ import clsx from "clsx";
 import {useNavigate} from "react-router";
 import {buildAdminUrl} from "@/utils/buildAdminUrl.ts";
 import apiCall from "@/utils/apiCall";
+import {
+  applySuggestions,
+  autoFixValues,
+  countFixes,
+  dismiss,
+  FIX_KIND_LABELS,
+  type FixKind,
+  type FixStats,
+  findSuggestions,
+  getDismissed,
+  isBlocksDocument,
+  type Suggestion
+} from "@/lib/typography";
+import {BlocksRevisionContext} from "./BlocksRevisionContext";
+import {TypographyReview} from "./TypographyReview";
+
+function describeFixes(stats: FixStats): string {
+  return (Object.entries(stats) as [FixKind, number][])
+  .map(([kind, n]) => `${FIX_KIND_LABELS[kind]}: ${n}`)
+  .join(", ");
+}
 
 const JsonField = lazy(() =>
   import("./fields/JsonField").then((m) => ({default: m.JsonField}))
@@ -192,6 +213,79 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
 
 
   const formRef = useRef<HTMLFormElement>(null);
+
+  const [blocksRevision, setBlocksRevision] = useState(0);
+  const [suggestions, setSuggestions] = useState<Suggestion[] | null>(null);
+  const [typographyRunning, setTypographyRunning] = useState(false);
+
+  /** Puts rewritten blocks values into the form and makes the editors show them. */
+  function setBlocksValues(values: T, fields: string[]) {
+    for (const field of fields) {
+      form.setFieldValue(field, values[field] as never);
+    }
+    setBlocksRevision((r) => r + 1);
+  }
+
+  /** Unambiguous typography fixes; never blocks saving if the typographer fails. */
+  async function autoTypograph(values: T): Promise<T> {
+    try {
+      const result = await autoFixValues(values);
+
+      if (result.changedFields.length > 0) {
+        setBlocksValues(result.values, result.changedFields);
+        notify.info(
+          `Типограф: исправлено ${countFixes(result.stats)}`,
+          describeFixes(result.stats)
+        );
+      }
+
+      return result.values;
+    } catch (err) {
+      console.error(err);
+      notify.warning("Типограф не сработал", "Сохраняю текст как есть");
+
+      return values;
+    }
+  }
+
+  async function runTypographyCheck() {
+    setTypographyRunning(true);
+    try {
+      const values = await autoTypograph(form.getValues());
+      const dismissed = getDismissed();
+      const found = (await findSuggestions(values)).filter((s) => !dismissed.has(s.key));
+
+      if (found.length === 0) {
+        notify.success("Типограф", "Спорных мест не найдено");
+      } else {
+        setSuggestions(found);
+      }
+    } finally {
+      setTypographyRunning(false);
+    }
+  }
+
+  function applyTypographyReview(accepted: Suggestion[], rejected: Suggestion[], rememberRejected: boolean) {
+    if (rememberRejected) {
+      dismiss(rejected.map((s) => s.key));
+    }
+
+    if (accepted.length > 0) {
+      const result = applySuggestions(form.getValues(), accepted);
+      setBlocksValues(result.values, [...new Set(accepted.map((s) => s.field))]);
+
+      if (result.applied < accepted.length) {
+        notify.warning(
+          "Типограф",
+          `Применено ${result.applied} из ${accepted.length}: часть текста изменилась после проверки`
+        );
+      }
+    }
+
+    setSuggestions(null);
+  }
+
+  const hasBlocks = Object.values(form.getValues() ?? {}).some(isBlocksDocument);
 
   // Warn before leaving with unsaved changes
   useEffect(() => {
@@ -591,8 +685,10 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
   return (
     <>
       {titleNode}
-      <form ref={formRef} className="entity-form" onSubmit={form.onSubmit(async (values) => {
+      <BlocksRevisionContext.Provider value={blocksRevision}>
+      <form ref={formRef} className="entity-form" onSubmit={form.onSubmit(async (submitted) => {
         try {
+          const values = await autoTypograph(submitted);
           const submitData = preprocessValues
             ? preprocessValues(values, context, isCreateMode)
             : values;
@@ -630,6 +726,16 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
           {secondaryFields.length > 0 && renderSection(secondaryFields, renderField, true)}
 
           <Group justify="flex-end">
+            {
+              hasBlocks
+              && <Button
+                variant="default"
+                loading={typographyRunning}
+                onClick={() => runTypographyCheck()}
+              >
+                Типограф
+              </Button>
+            }
             <Button type="submit" loading={form.submitting}>
               {
                 isCreateMode
@@ -640,6 +746,12 @@ export function EntityForm<T extends Record<string, any>, C = unknown>(
           </Group>
         </Stack>
       </form>
+      </BlocksRevisionContext.Provider>
+      <TypographyReview
+        suggestions={suggestions}
+        onApply={applyTypographyReview}
+        onClose={() => setSuggestions(null)}
+      />
     </>
   );
 }

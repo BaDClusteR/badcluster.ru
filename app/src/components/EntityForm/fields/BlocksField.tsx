@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {Box, Text, TextInput} from "@mantine/core";
 import EditorJS, {type OutputData, type ToolConstructable} from "@editorjs/editorjs";
 import List from "@editorjs/list";
@@ -21,6 +21,7 @@ import classes from "./BlocksField.module.css";
 import "./editorjs.css";
 import {Optional, ParagraphClassRule} from "@admin/types";
 import clsx from "clsx";
+import {BlocksRevisionContext} from "../BlocksRevisionContext";
 
 interface BlocksFieldProps {
   label?: string,
@@ -84,6 +85,27 @@ export function BlocksField(
       editor.render(value);
     });
   }, [value]);
+
+  // The form rewrote the value itself (typographer) — show it even right after typing.
+  const revision = useContext(BlocksRevisionContext);
+  const valueRef = useRef(value);
+  valueRef.current = value;
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    const current = valueRef.current;
+    if (!revision || !editor || !current) return;
+
+    const json = JSON.stringify(current);
+    if (json === lastValueJson.current) return;
+
+    lastValueJson.current = json;
+    isInternalChange.current = false;
+    const scrollY = window.scrollY;
+    editor.isReady
+    .then(() => editor.render(current))
+    .then(() => window.scrollTo({top: scrollY}));
+  }, [revision]);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
