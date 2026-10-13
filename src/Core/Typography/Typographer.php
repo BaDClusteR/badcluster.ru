@@ -17,6 +17,12 @@ class Typographer implements ITypographer {
      */
     private const array LINE_TAGS = ['p', 'li', 'div', 'blockquote'];
 
+    /**
+     * Короткие английские слова, после которых ставится неразрывный пробел
+     * (в любом регистре; «I» — отдельно, только заглавная).
+     */
+    private const string EN_SHORT_WORDS = '(?i:a|an|the|at|by|in|of|on|to|for|as|and|or|but|nor)';
+
     public function process(string $html): string {
         $parts = preg_split('/(<[^>]*>)/u', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -77,8 +83,16 @@ class Typographer implements ITypographer {
         $text = (string) preg_replace('/(?<=\S) +—/u', self::NBSP . '—', $text);
 
         // Однобуквенные предлоги и союзы не остаются в конце строки.
-        return (string) preg_replace(
+        $text = (string) preg_replace(
             '/(?<![\p{L}\p{N}\-])([авиксоуяАВИКСОУЯ]) +(?=\S)/u',
+            '$1' . self::NBSP,
+            $text
+        );
+
+        // То же для английских вставок: артикли, «I», короткие предлоги и союзы
+        // («Call of Duty», «two in the chest»).
+        return (string) preg_replace(
+            '/(?<![\p{L}\p{N}\-\'’])(' . self::EN_SHORT_WORDS . '|I) +(?=\S)/u',
             '$1' . self::NBSP,
             $text
         );
