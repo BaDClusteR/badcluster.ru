@@ -6,7 +6,7 @@ const ERROR_POLL_INTERVAL_MS = 15_000;
 
 /**
  * Поллинг admin API для дашборда: одинаковый endpoint = один общий запрос
- * (react-query дедуплицирует по queryKey), при 401 поллинг останавливается,
+ * (react-query дедуплицирует по queryKey), при протухшей авторизации поллинг останавливается,
  * при прочих ошибках отходит на паузу, сетевые сбои не спамят тостами.
  */
 export default function usePolledQuery<T>(endpoint: string, intervalMs: number): T | undefined {
@@ -18,7 +18,7 @@ export default function usePolledQuery<T>(endpoint: string, intervalMs: number):
 
             // Авторизация протухла — прекращаем поллинг, иначе предупреждение
             // о логине будет всплывать бесконечно
-            if (error instanceof HttpError && error.status === 401) {
+            if (error instanceof HttpError && error.isAuthExpired) {
                 return false;
             }
 

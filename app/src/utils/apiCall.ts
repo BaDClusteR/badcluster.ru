@@ -38,9 +38,14 @@ export default async function apiCall(
         const errorPayload = await response.json().catch(() => null);
         const error = new HttpError(response.status, errorPayload);
 
+        // Unauthenticated API requests get the site's HTML 404 page, while
+        // the API's own errors (including its 404s) are always JSON.
+        error.isAuthExpired = response.status === 401
+            || (response.status === 404 && errorPayload === null);
+
         // 422 = validation errors — don't show generic toast,
         // let the caller (e.g. EntityForm) handle field-level errors.
-        if (response.status === 401) {
+        if (error.isAuthExpired) {
             showAuthExpiredWarning();
             error.isHandled = true;
         } else if (response.status !== 422 && errorPayload) {

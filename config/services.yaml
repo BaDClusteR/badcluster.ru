@@ -38,6 +38,10 @@ services:
   BC\Controller\System\APIResponseController:
     decorates: ApiPlatform\Controller\System\IApiResponseController
 
+  # Неавторизованным на любой запрос к API, кроме логина, — обычная 404
+  BC\Controller\System\ApiRouter:
+    decorates: ApiPlatform\Controller\IApiRouter
+
   BC\Logger\MaskingLogger:
     decorates: Runway\Logger\ILogger
     arguments:
