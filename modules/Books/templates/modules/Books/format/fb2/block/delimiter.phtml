@@ -1,0 +1,11 @@
+<?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @var \BC\Modules\Books\Widget\Format\Fb2\Block\Delimiter $this */
+
+// Общепринятый в FB2 разрыв сцены: большинство читалок выводят subtitle по центру,
+// жирным и с отступами. Но есть читалки, которые показывают его обычным абзацем, —
+// для них strong и пустые строки вокруг.
+?>
+<empty-line />
+<subtitle><strong>* * *</strong></subtitle>
+<empty-line />

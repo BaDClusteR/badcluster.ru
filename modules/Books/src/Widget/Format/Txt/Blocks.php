@@ -2,6 +2,7 @@
 
 namespace BC\Modules\Books\Widget\Format\Txt;
 
+use BC\Modules\Books\Widget\Format\Txt\Block\Delimiter;
 use BC\Modules\Books\Widget\Format\Txt\Block\Media;
 use BC\Modules\Books\Widget\Format\Txt\Block\Paragraph;
 
@@ -12,6 +13,7 @@ class Blocks extends \BC\Widget\Blocks {
         $widget = match ($type) {
             'paragraph' => new Paragraph($context),
             'media' => new Media($context),
+            'delimiter' => new Delimiter($context),
             default => null
         };
 
