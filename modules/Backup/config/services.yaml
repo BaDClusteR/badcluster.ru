@@ -33,6 +33,10 @@ services:
     tags:
       - name: backup.uploader
 
+  BC\Modules\Backup\Uploader\S3Uploader:
+    tags:
+      - name: backup.uploader
+
   # SFTP wire transports, probed at runtime (PHP builds differ between machines).
   # Lower priority = preferred.
   BC\Modules\Backup\Uploader\Sftp\ISftpTransportProvider:

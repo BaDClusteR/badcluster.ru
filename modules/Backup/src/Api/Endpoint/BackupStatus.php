@@ -7,6 +7,7 @@ namespace BC\Modules\Backup\Api\Endpoint;
 use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use BC\Api\Endpoint\AEndpoint;
+use BC\Modules\Backup\Api\DTO\BackupDestinationStatusDTO;
 use BC\Modules\Backup\Api\DTO\BackupStatusDTO;
 use BC\Modules\Backup\Model\BackupLog;
 use BC\Modules\Backup\Repository\IBackupLogRepository;
@@ -34,7 +35,32 @@ class BackupStatus extends AEndpoint {
             sizeBytes: $log?->getSizeBytes() ?? 0,
             archiveName: $log?->getArchiveName() ?? '',
             url: $log?->getUrl() ?? '',
-            error: $log?->getError() ?? ''
+            error: $log?->getError() ?? '',
+            destinations: $log ? $this->getDestinations($log) : []
+        );
+    }
+
+    /**
+     * @return BackupDestinationStatusDTO[]
+     */
+    private function getDestinations(BackupLog $log): array {
+        $results = json_decode($log->getDestinationResults(), true);
+
+        // Записи до появления destination_results знают только, куда бэкап дошёл
+        if (!is_array($results)) {
+            return array_map(
+                static fn (string $name): BackupDestinationStatusDTO => new BackupDestinationStatusDTO($name, true, ''),
+                array_values(array_filter(array_map('trim', explode(',', $log->getDestinations()))))
+            );
+        }
+
+        return array_map(
+            static fn (array $result): BackupDestinationStatusDTO => new BackupDestinationStatusDTO(
+                name: (string) ($result['name'] ?? ''),
+                success: (bool) ($result['success'] ?? false),
+                error: (string) ($result['error'] ?? '')
+            ),
+            array_values(array_filter($results, 'is_array'))
         );
     }
 }

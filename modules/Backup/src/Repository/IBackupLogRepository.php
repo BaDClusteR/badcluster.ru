@@ -8,7 +8,8 @@ use BC\Modules\Backup\Model\BackupLog;
 
 interface IBackupLogRepository {
     /**
-     * Creates the log table if it does not exist yet. Safe to call repeatedly.
+     * Creates the log table if it does not exist yet, or adds missing columns to an existing
+     * one. Safe to call repeatedly.
      */
     public function ensureSchema(): void;
 

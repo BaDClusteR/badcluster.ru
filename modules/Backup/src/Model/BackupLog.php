@@ -29,6 +29,8 @@ use Runway\Model\AEntity;
  * @method self setUrl(string $url)
  * @method string getDestinations()
  * @method self setDestinations(string $destinations)
+ * @method string getDestinationResults()
+ * @method self setDestinationResults(string $destinationResults)
  * @method string getError()
  * @method self setError(string $error)
  * @method int getDurationSeconds()
@@ -57,6 +59,14 @@ class BackupLog extends AEntity {
     /** Comma-separated names of destinations the archive was successfully uploaded to. */
     #[DS\Column]
     protected string $destinations = '';
+
+    /**
+     * JSON list of every configured destination with its outcome:
+     * [{"name": "S3", "success": true, "error": ""}, …]. Empty for records written before
+     * the column existed.
+     */
+    #[DS\Column]
+    protected string $destinationResults = '';
 
     /** Failure reason / accumulated non-fatal errors; empty on a clean success. */
     #[DS\Column]

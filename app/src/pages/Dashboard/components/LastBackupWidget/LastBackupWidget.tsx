@@ -1,10 +1,17 @@
 import {ReactNode} from "react";
-import {Anchor, Tooltip} from "@mantine/core";
-import {IconArchive} from "@tabler/icons-react";
+import {Tooltip} from "@mantine/core";
+import {IconArchive, IconCircleCheck, IconCircleX} from "@tabler/icons-react";
+import clsx from "clsx";
 import Widget from "../Widget";
 import usePolledQuery from "../usePolledQuery";
 import {formatBytes} from "../SystemMetricsWidget/format";
 import classes from "./LastBackupWidget.module.css";
+
+type BackupDestinationStatus = {
+  name: string;
+  success: boolean;
+  error: string;
+};
 
 type BackupStatusResponse = {
   lastBackupAt: number | null;
@@ -13,6 +20,7 @@ type BackupStatusResponse = {
   archiveName: string;
   url: string;
   error: string;
+  destinations: BackupDestinationStatus[];
 };
 
 const POLL_INTERVAL_MS = 60_000;
@@ -51,7 +59,7 @@ function formatAge(seconds: number): string {
   }
 
   if (!result && minutes > 0) {
-    result = `${minutes === 1 ? "" : `${minutes} `}${getWordForm(hours, "минуту", "минуты", "минут")} назад`;
+    result = `${minutes === 1 ? "" : `${minutes} `}${getWordForm(minutes, "минуту", "минуты", "минут")} назад`;
   }
 
   if (!result) {
@@ -83,6 +91,18 @@ export default function LastBackupWidget() {
     }
   }
 
+  const destinations = status?.destinations ?? [];
+
+  let color = "blue";
+  if (status && lastBackupAt !== null) {
+    if (!status.success) {
+      color = "red";
+    } else if (destinations.some((destination) => !destination.success)) {
+      // Бэкап есть, но куда-то не доехал
+      color = "orange";
+    }
+  }
+
   return <Widget
     label="Последний бэкап"
     value={
@@ -90,27 +110,37 @@ export default function LastBackupWidget() {
         ? <>
           <Tooltip label={tooltip} target="#backup-info"/>
           <span id="backup-info">
-            {
-              status?.url
-                ? <Anchor
-                  href={status.url}
-                  target="_blank"
-                  rel="noopener"
-                  classNames={{root: classes.name}}
-                >
-                  {formatAge(Date.now() / 1000 - lastBackupAt)}
-                  {status?.success === false && " ⚠"}
-                </Anchor>
-                : <>
-                  {formatAge(Date.now() / 1000 - lastBackupAt)}
-                  {status?.success === false && " ⚠"}
-                </>
-            }
+            {formatAge(Date.now() / 1000 - lastBackupAt)}
+            {status?.success === false && " ⚠"}
           </span>
+          {
+            destinations.length > 0 &&
+            <span className={classes.destinations}>
+              {destinations.map((destination) =>
+                <Tooltip
+                  key={destination.name}
+                  label={destination.error}
+                  disabled={destination.success || !destination.error}
+                  multiline
+                  maw={360}
+                >
+                  <span
+                    className={clsx(
+                      classes.destination,
+                      destination.success ? classes.destinationOk : classes.destinationFailed
+                    )}
+                  >
+                    {destination.success ? <IconCircleCheck size={14}/> : <IconCircleX size={14}/>}
+                    {destination.name}
+                  </span>
+                </Tooltip>
+              )}
+            </span>
+          }
         </>
         : "—"
     }
-    color={!status || status.success || lastBackupAt === null ? "blue" : "red"}
+    color={color}
     icon={<IconArchive/>}
   />;
 }

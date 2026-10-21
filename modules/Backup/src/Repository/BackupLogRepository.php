@@ -9,7 +9,8 @@ use Runway\Singleton\Container;
 
 /**
  * Persists backup log records. Because the project has no migration tooling, the repository
- * creates its own table on demand (CREATE TABLE IF NOT EXISTS), mirroring schema.sql.
+ * creates its own table on demand (CREATE TABLE IF NOT EXISTS), mirroring schema.sql, and
+ * adds columns introduced later to an already existing table.
  *
  * The driver is obtained via Container::getDataStorageDriver() (the same call QueryBuilder
  * uses) so it is the connected instance — a plain getService()/injected driver is not yet
@@ -29,12 +30,20 @@ class BackupLogRepository implements IBackupLogRepository {
             . '`archive_name` VARCHAR(255) NOT NULL DEFAULT \'\','
             . '`url` VARCHAR(1024) NOT NULL DEFAULT \'\','
             . '`destinations` VARCHAR(255) NOT NULL DEFAULT \'\','
+            . '`destination_results` TEXT NOT NULL,'
             . '`error` TEXT NOT NULL,'
             . '`duration_seconds` INT UNSIGNED NOT NULL DEFAULT 0,'
             . 'PRIMARY KEY (`id`),'
             . 'KEY `idx_created_at` (`created_at`)'
             . ') ENGINE = InnoDB DEFAULT CHARSET = utf8mb4'
         );
+
+        // Tables created before destination_results was introduced.
+        if (!$driver->getFirstResult('SHOW COLUMNS FROM `' . $table . '` LIKE \'destination_results\'')) {
+            $driver->execute(
+                'ALTER TABLE `' . $table . '` ADD COLUMN `destination_results` TEXT NOT NULL AFTER `destinations`'
+            );
+        }
     }
 
     public function save(BackupLog $log): void {

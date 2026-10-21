@@ -7,18 +7,19 @@ namespace BC\Modules\Backup\Config;
 use BC\Modules\Backup\Config\Destination\DestinationConfig;
 use BC\Modules\Backup\Config\Destination\FtpDestinationConfig;
 use BC\Modules\Backup\Config\Destination\GoogleDriveDestinationConfig;
+use BC\Modules\Backup\Config\Destination\S3DestinationConfig;
 use BC\Modules\Backup\Config\Destination\SftpDestinationConfig;
 use BC\Provider\IPathsProvider;
 use Runway\Env\Provider\IEnvVariablesProvider;
 
 /**
  * Assembles the BackupConfig from sensible in-code defaults, overridable via environment
- * variables (see .env.local). Secrets (FTP / Google Drive credentials) live only in the
+ * variables (see .env.local). Secrets (FTP / Google Drive / S3 credentials) live only in the
  * environment, never in the repo.
  *
  * Destinations auto-activate when their credentials are present: set BACKUP_FTP_HOST to
  * enable FTP, BACKUP_SFTP_HOST to enable SFTP, BACKUP_GDRIVE_KEY_FILE to enable Google
- * Drive. Any combination may be set at once.
+ * Drive, BACKUP_S3_BUCKET to enable S3. Any combination may be set at once.
  */
 class BackupConfigProvider implements IBackupConfigProvider {
     public function __construct(
@@ -100,6 +101,23 @@ class BackupConfigProvider implements IBackupConfigProvider {
                 keepWeekly: (int)$this->str('BACKUP_GDRIVE_KEEP_WEEKLY', '1'),
                 keepMonthly: (int)$this->str('BACKUP_GDRIVE_KEEP_MONTHLY', '1'),
                 keepYearly: (int)$this->str('BACKUP_GDRIVE_KEEP_YEARLY', '0'),
+            );
+        }
+
+        if ($bucket = $this->str('BACKUP_S3_BUCKET', '')) {
+            $destinations[] = new S3DestinationConfig(
+                name: $this->str('BACKUP_S3_NAME', 'S3'),
+                endpoint: $this->str('BACKUP_S3_ENDPOINT', ''),
+                bucket: $bucket,
+                accessKeyId: $this->str('BACKUP_S3_ACCESS_KEY_ID', ''),
+                secretAccessKey: $this->str('BACKUP_S3_SECRET_ACCESS_KEY', ''),
+                region: $this->str('BACKUP_S3_REGION', 'auto'),
+                prefix: $this->str('BACKUP_S3_PREFIX', ''),
+                partSizeMb: (int)$this->str('BACKUP_S3_PART_SIZE_MB', '32'),
+                keepDaily: (int)$this->str('BACKUP_S3_KEEP_DAILY', '3'),
+                keepWeekly: (int)$this->str('BACKUP_S3_KEEP_WEEKLY', '1'),
+                keepMonthly: (int)$this->str('BACKUP_S3_KEEP_MONTHLY', '1'),
+                keepYearly: (int)$this->str('BACKUP_S3_KEEP_YEARLY', '0'),
             );
         }
 

@@ -10,8 +10,10 @@ namespace BC\Modules\Backup\Service;
  */
 readonly class BackupResult {
     /**
-     * @param string[] $succeededDestinations names of destinations the archive reached
-     * @param string[] $errors                non-fatal (per-destination) and fatal errors
+     * @param string[]            $succeededDestinations names of destinations the archive reached
+     * @param string[]            $errors                non-fatal (per-destination) and fatal errors
+     * @param DestinationResult[] $destinationResults    every configured destination with its outcome;
+     *                                                   empty when the run failed before uploading
      */
     public function __construct(
         public bool $success,
@@ -20,5 +22,16 @@ readonly class BackupResult {
         public ?string $url,
         public array $succeededDestinations,
         public array $errors,
+        public array $destinationResults = [],
     ) {}
+
+    /**
+     * @return DestinationResult[] destinations where something went wrong
+     */
+    public function getFailedDestinations(): array {
+        return array_values(array_filter(
+            $this->destinationResults,
+            static fn(DestinationResult $result): bool => !$result->isClean()
+        ));
+    }
 }
