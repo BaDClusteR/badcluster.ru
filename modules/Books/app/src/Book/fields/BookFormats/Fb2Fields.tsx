@@ -1,4 +1,4 @@
-import {SimpleGrid, TextInput} from "@mantine/core";
+import {SimpleGrid, Textarea, TextInput} from "@mantine/core";
 import type {FieldDefGroup} from "@admin/types";
 import type {Book, BookContext} from "../../types";
 
@@ -34,6 +34,20 @@ export default function Fb2Fields({form}: { form: BookForm }) {
         error={form.errors.fb2Version}
       />
     </SimpleGrid>
+    <Textarea
+      label="История изменений:"
+      description={
+        "Каждая строка — отдельная запись (абзац в <history>). В FB2-файлах принято писать "
+        + "по порядку версий: сверху первая, ниже — более поздние."
+      }
+      placeholder={"1.0 — создание файла\n1.1 — исправлены опечатки"}
+      autosize
+      minRows={3}
+      maxRows={12}
+      value={form.values.fb2History ?? ""}
+      onChange={(e) => form.setFieldValue("fb2History", e.currentTarget.value as never)}
+      error={form.errors.fb2History}
+    />
     <TextInput
       label="ID:"
       description="Генерируется автоматически и больше не меняется, чтобы читалки узнавали книгу при обновлении"

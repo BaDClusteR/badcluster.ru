@@ -77,6 +77,7 @@ readonly class BookDataBuilder implements IBookDataBuilder {
             fb2Genre: $book->getFb2Genre(),
             fb2Id: $book->getFb2Id(),
             fb2Version: $book->getFb2Version(),
+            fb2History: $book->getFb2History(),
             formats: $formats
         );
     }

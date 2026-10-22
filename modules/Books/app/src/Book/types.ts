@@ -15,6 +15,7 @@ export interface Book {
   fb2Genre: string,
   fb2Id: string,
   fb2Version: string,
+  fb2History: string,
   formats: {
     [key: string]: BookFormat
   }

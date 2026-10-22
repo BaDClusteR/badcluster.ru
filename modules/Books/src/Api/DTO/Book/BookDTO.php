@@ -23,6 +23,7 @@ readonly class BookDTO {
         public string $fb2Genre,
         public string $fb2Id,
         public string $fb2Version,
+        public string $fb2History,
         public array $formats
     ) {
     }

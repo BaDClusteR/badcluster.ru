@@ -148,7 +148,10 @@ class Book extends AEndpoint {
         string $fb2Genre = '',
 
         #[API\Parameter(source: 'body', name: 'fb2Version')]
-        string $fb2Version = BookModel::DEFAULT_FB2_VERSION
+        string $fb2Version = BookModel::DEFAULT_FB2_VERSION,
+
+        #[API\Parameter(source: 'body', name: 'fb2History')]
+        string $fb2History = ''
     ): CreatedDTO {
         $this->validateEntity($slug, $type, $fb2Version, $formats, null, 'Ошибки при добавлении произведения.');
 
@@ -175,6 +178,7 @@ class Book extends AEndpoint {
                 ->setFb2Genre($fb2Genre)
                 ->setFb2Id(BookModel::generateUuid())
                 ->setFb2Version($fb2Version)
+                ->setFb2History($fb2History)
         );
 
         $allowedFormats = $this->getFormatTypes();
@@ -255,7 +259,10 @@ class Book extends AEndpoint {
         string $fb2Genre = '',
 
         #[API\Parameter(source: 'body', name: 'fb2Version')]
-        string $fb2Version = BookModel::DEFAULT_FB2_VERSION
+        string $fb2Version = BookModel::DEFAULT_FB2_VERSION,
+
+        #[API\Parameter(source: 'body', name: 'fb2History')]
+        string $fb2History = ''
     ): SuccessfulResultDTO {
         $this->validateEntity($slug, $type, $fb2Version, $formats, $id, 'Ошибки при редактировании произведения.');
 
@@ -289,6 +296,7 @@ class Book extends AEndpoint {
                           ->setType($type)
                           ->setFb2Genre($fb2Genre)
                           ->setFb2Version($fb2Version)
+                          ->setFb2History($fb2History)
         );
 
         $this->handleWithException(

@@ -47,6 +47,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setFb2Id(string $fb2Id)
  * @method string getFb2Version()
  * @method self setFb2Version(string $fb2Version)
+ * @method string getFb2History()
+ * @method self setFb2History(string $fb2History)
  */
 #[DS\Table('books')]
 class Book extends AEntity {
@@ -103,6 +105,10 @@ class Book extends AEntity {
 
     #[DS\Column]
     protected string $fb2Version = self::DEFAULT_FB2_VERSION;
+
+    /** История изменений для <history> в FB2: строка — запись */
+    #[DS\Column]
+    protected string $fb2History = '';
 
     /**
      * @return BookFormat[]
@@ -203,6 +209,21 @@ class Book extends AEntity {
         }
 
         return $this->fb2Id;
+    }
+
+    /**
+     * Записи истории изменений для <history> в FB2 — по одной на абзац <p>.
+     * Пустые строки пропускаются.
+     *
+     * @return string[]
+     */
+    public function getFb2HistoryLines(): array {
+        return array_values(
+            array_filter(
+                array_map(trim(...), preg_split('/\R/u', $this->fb2History) ?: []),
+                static fn (string $line): bool => $line !== ''
+            )
+        );
     }
 
     /**

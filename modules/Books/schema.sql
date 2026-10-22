@@ -12,3 +12,7 @@
 ALTER TABLE `bc_books`
     ADD COLUMN `fb2_id`      VARCHAR(36) NOT NULL DEFAULT ''    AFTER `fb2_genre`,
     ADD COLUMN `fb2_version` VARCHAR(16) NOT NULL DEFAULT '1.0' AFTER `fb2_id`;
+
+-- <history> of the FB2 document-info: a line is a <p>. Run by hand too.
+ALTER TABLE `bc_books`
+    ADD COLUMN `fb2_history` TEXT NOT NULL AFTER `fb2_version`;

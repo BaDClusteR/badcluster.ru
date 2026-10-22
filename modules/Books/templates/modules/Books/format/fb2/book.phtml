@@ -71,6 +71,13 @@ $chapters = $this->getChapters();
             </date>
             <id><?=$book->getOrCreateFb2Id()?></id>
             <version><?=htmlspecialchars($book->getFb2Version(), ENT_XML1)?></version>
+            <?php if ($historyLines = $book->getFb2HistoryLines()) : ?>
+                <history>
+                    <?php foreach ($historyLines as $line) : ?>
+                        <p><?=htmlspecialchars($line, ENT_XML1)?></p>
+                    <?php endforeach; ?>
+                </history>
+            <?php endif; ?>
         </document-info>
     </description>
     <body>
