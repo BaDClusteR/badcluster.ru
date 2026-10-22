@@ -95,12 +95,8 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 icon: file_get_contents(__DIR__ . '/../../../app/assets/news.svg'),
                 position: 13000
             ),
-            new NavigationDTO(
-                label: 'Настройки',
-                path: '/admin/settings',
-                icon: 'settings',
-                position: 14000
-            )
+            // «Настройки» (/admin/settings — чёрный список комментариев) из меню убраны:
+            // со спамом справляется ханипот, а страница и фильтр остались на будущее
         ];
     }
 

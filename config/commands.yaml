@@ -6,3 +6,7 @@ services:
   BC\Core\Command\SystemMetricsSampleCommand:
     tags:
       - name: console.command
+
+  BC\Core\Command\LogRotateCommand:
+    tags:
+      - name: console.command
