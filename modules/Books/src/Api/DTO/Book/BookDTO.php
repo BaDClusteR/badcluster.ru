@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BC\Modules\Books\Api\DTO\Book;
 
 use BC\Core\DTO\MediaDTO;
