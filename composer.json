@@ -12,7 +12,8 @@
     "bad_cluster/runway-api-platform": "dev-main",
     "bad_cluster/runway-console-app": "dev-main",
     "james-heinrich/getid3": "^1.9",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "bad_cluster/runway-queue-manager": "dev-main"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

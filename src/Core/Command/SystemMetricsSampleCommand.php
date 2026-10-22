@@ -27,7 +27,6 @@ class SystemMetricsSampleCommand extends ACommand {
     public function __construct(
         private readonly ISystemMetricsHistory $history
     ) {
-        parent::__construct();
     }
 
     public function getName(): string {

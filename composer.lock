@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b13f259af61d318484b3f31d6a954ac5",
+    "content-hash": "3173913236007b5dc377ab5dcfa427d0",
     "packages": [
         {
             "name": "bad_cluster/runway",
@@ -126,12 +126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/BaDClusteR/runway-console-app.git",
-                "reference": "30c7519b91787282c3aa6394892608f3d5be10b6"
+                "reference": "4f8609482ed31ead63fca912317987a36ae4176a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BaDClusteR/runway-console-app/zipball/30c7519b91787282c3aa6394892608f3d5be10b6",
-                "reference": "30c7519b91787282c3aa6394892608f3d5be10b6",
+                "url": "https://api.github.com/repos/BaDClusteR/runway-console-app/zipball/4f8609482ed31ead63fca912317987a36ae4176a",
+                "reference": "4f8609482ed31ead63fca912317987a36ae4176a",
                 "shasum": ""
             },
             "require": {
@@ -163,7 +163,66 @@
                 "issues": "https://github.com/BaDClusteR/runway-console-app/issues",
                 "source": "https://github.com/BaDClusteR/runway-console-app/tree/main"
             },
-            "time": "2026-02-12T14:03:35+00:00"
+            "time": "2026-10-06T14:48:09+00:00"
+        },
+        {
+            "name": "bad_cluster/runway-queue-manager",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BaDClusteR/runway-queue-manager.git",
+                "reference": "b8f404ffdd7da86a9faabf6e802047b0e3db411c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BaDClusteR/runway-queue-manager/zipball/b8f404ffdd7da86a9faabf6e802047b0e3db411c",
+                "reference": "b8f404ffdd7da86a9faabf6e802047b0e3db411c",
+                "shasum": ""
+            },
+            "require": {
+                "bad_cluster/runway": "dev-main",
+                "bad_cluster/runway-console-app": "dev-main",
+                "ext-json": "*",
+                "ext-pdo": "*",
+                "php": ">=8.4"
+            },
+            "require-dev": {
+                "ext-pdo_sqlite": "*",
+                "phpunit/phpunit": "^13.4",
+                "roave/security-advisories": "dev-latest"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Runway\\QueueManager\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "BaD ClusteR",
+                    "email": "admin@badcluster.ru"
+                }
+            ],
+            "description": "Background job queue for Runway: the jobs in a database table, one worker at a time, progress and cancellation",
+            "keywords": [
+                "jobs",
+                "queue",
+                "runway",
+                "worker"
+            ],
+            "support": {
+                "issues": "https://github.com/BaDClusteR/runway-queue-manager/issues",
+                "source": "https://github.com/BaDClusteR/runway-queue-manager/tree/main"
+            },
+            "time": "2026-10-22T14:51:19+00:00"
         },
         {
             "name": "brick/math",
@@ -4537,6 +4596,7 @@
         "bad_cluster/runway": 20,
         "bad_cluster/runway-api-platform": 20,
         "bad_cluster/runway-console-app": 20,
+        "bad_cluster/runway-queue-manager": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
@@ -4547,7 +4607,8 @@
         "ext-fileinfo": "*",
         "ext-mbstring": "*",
         "ext-yaml": "*",
-        "ext-zip": "*"
+        "ext-zip": "*",
+        "ext-gd": "*"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"

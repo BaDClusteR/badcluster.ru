@@ -48,7 +48,9 @@ class LogRecorder implements ILogRecorder {
 
         $now = new DateTime();
         $message = mb_strcut($message, 0, self::MAX_TEXT_BYTES);
-        $fingerprint = sha1($level . "\n" . $message);
+        // Числа не различаем: «после 3012 мс» и «после 15001 мс», ID задачи или
+        // строки — повторы одной и той же ошибки
+        $fingerprint = sha1($level . "\n" . preg_replace('/\d+/', 'N', $message));
 
         /** @var LogRecord|null $existing */
         $existing = LogRecord::getQueryBuilder()

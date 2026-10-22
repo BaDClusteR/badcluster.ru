@@ -13,7 +13,6 @@ class AssetsBuildCommand extends ACommand {
     public function __construct(
         private readonly IAssetBuilder $assetBundler,
     ) {
-        parent::__construct();
     }
 
     public function getName(): string {

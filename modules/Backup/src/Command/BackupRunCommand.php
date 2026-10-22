@@ -18,7 +18,6 @@ class BackupRunCommand extends ACommand {
     public function __construct(
         private readonly IBackupService $backupService,
     ) {
-        parent::__construct();
     }
 
     public function getName(): string {
