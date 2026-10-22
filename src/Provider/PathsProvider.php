@@ -65,6 +65,13 @@ class PathsProvider implements IPathsProvider {
         return $this->websiteSettings->getWebRoot() . '/static';
     }
 
+    public function getVersionedStaticWebPath(string $relativePath): string {
+        $webPath = $this->getStaticWebPath() . '/' . $relativePath;
+        $mtime = @filemtime($this->getStaticPath() . '/' . $relativePath);
+
+        return $mtime ? "$webPath?v=$mtime" : $webPath;
+    }
+
     public function getImagesPath(): string {
         return $this->getStaticPath() . '/images';
     }

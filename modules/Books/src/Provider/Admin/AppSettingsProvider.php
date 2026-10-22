@@ -46,7 +46,7 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
             new ModuleDTO(
                 id: 'books',
                 path: 'books',
-                remoteEntry: $this->pathsProvider->getStaticWebPath() . '/modules/books/remoteEntry.js'
+                remoteEntry: $this->pathsProvider->getVersionedStaticWebPath('modules/books/remoteEntry.js')
             )
         );
 

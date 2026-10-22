@@ -101,7 +101,9 @@ class Admin extends AWidget {
                     $mfBootstrap = 'mf-entry-bootstrap-0.js';
 
                     if (file_exists("$appStaticPath/$mfBootstrap")) {
-                        $result['js'][] = "$appWebRoot/$mfBootstrap";
+                        // Имя не меняется от сборки к сборке — без версии
+                        // Cloudflare отдаёт старую точку входа
+                        $result['js'][] = $pathsProvider->getVersionedStaticWebPath("app/$mfBootstrap");
                     } elseif (isset($data[$entryKey]['file'])) {
                         $result['js'][] = "$appWebRoot/" . $data[$entryKey]['file'];
                     }
