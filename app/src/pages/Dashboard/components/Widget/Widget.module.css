@@ -21,6 +21,15 @@
   justify-content: space-between;
 }
 
+/*
+ * Иконка всегда справа сверху: группа не переносится, а длинное значение
+ * (например, список точек назначения бэкапа) переносится внутри своей колонки
+ */
+.cardContent {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* noinspection CssUnresolvedCustomProperty */
 .cardTitle {
   --text-fz: var(--mantine-font-size-xs);
@@ -46,6 +55,7 @@
   --ti-radius: var(--mantine-radius-md);
   --ti-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;
 
+  flex-shrink: 0;
   background: var(--widget-bg);
   color: var(--widget-color);
 

@@ -25,8 +25,8 @@ export default function Widget(
         <Text classNames={{root: classes.cardTitle}}>{label}</Text>
         <div className={classes.cardBody}>{children}</div>
       </>
-      : <Group classNames={{root: classes.cardGroup}}>
-        <div>
+      : <Group classNames={{root: classes.cardGroup}} wrap="nowrap" align="flex-start">
+        <div className={classes.cardContent}>
           <Text classNames={{root: classes.cardTitle}}>{label}</Text>
           <Text classNames={{root: classes.cardText}}>{value}</Text>
         </div>
