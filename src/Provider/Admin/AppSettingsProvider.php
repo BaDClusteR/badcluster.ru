@@ -72,31 +72,49 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 position: 10000
             ),
             new NavigationDTO(
-                label: 'Редиректы',
-                path: '/admin/redirects',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/redirect.svg'),
-                position: 11000
-            ),
-            new NavigationDTO(
-                label: 'Фан-факты',
-                path: '/admin/facts',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/fun-fact.svg'),
-                position: 12000
+                label: 'Виджеты',
+                path: '',
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/widgets.svg'),
+                position: 12000,
+                children: [
+                    new NavigationDTO(
+                        label: 'Фан-факты',
+                        path: '/admin/facts',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/fun-fact.svg')
+                    ),
+                    new NavigationDTO(
+                        label: 'Новостные блоки',
+                        path: '/admin/pulse',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/news.svg')
+                    )
+                ]
             ),
             new NavigationDTO(
                 label: 'Страницы',
                 path: '/admin/static-pages',
                 icon: file_get_contents(__DIR__ . '/../../../app/assets/static-page.svg'),
-                position: 12500
-            ),
-            new NavigationDTO(
-                label: 'Новостные блоки',
-                path: '/admin/pulse',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/news.svg'),
-                position: 13000
+                position: 11000
             ),
             // «Настройки» (/admin/settings — чёрный список комментариев) из меню убраны:
             // со спамом справляется ханипот, а страница и фильтр остались на будущее
+            new NavigationDTO(
+                label: 'Системные',
+                path: '',
+                icon: 'settings',
+                position: 14000,
+                children: [
+                    new NavigationDTO(
+                        label: 'Редиректы',
+                        path: '/admin/redirects',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/redirect.svg')
+                    ),
+                    new NavigationDTO(
+                        label: 'Журнал ошибок',
+                        path: '/admin/logs',
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/log.svg')
+                    )
+                ]
+            ),
         ];
     }
 
