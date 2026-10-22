@@ -7,7 +7,7 @@ theme/static
 new
 .env.local
 vendor
-log
+/log
 /static
 
 node_modules

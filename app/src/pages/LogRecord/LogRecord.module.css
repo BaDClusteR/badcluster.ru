@@ -1,0 +1,40 @@
+.title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.message {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.code {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-default-hover);
+  font-family: var(--font-family-mono), monospace;
+  font-size: var(--mantine-font-size-xs);
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0;
+  font-size: var(--mantine-font-size-sm);
+
+  dt {
+    color: var(--mantine-color-dimmed);
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+}

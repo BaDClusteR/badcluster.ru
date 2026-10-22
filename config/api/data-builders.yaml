@@ -25,3 +25,6 @@ services:
 
   BC\Api\DataBuilder\PulseItem\IPulseItemDataBuilder:
     class: BC\Api\DataBuilder\PulseItem\PulseItemDataBuilder
+
+  BC\Api\DataBuilder\LogRecord\ILogRecordDataBuilder:
+    class: BC\Api\DataBuilder\LogRecord\LogRecordDataBuilder

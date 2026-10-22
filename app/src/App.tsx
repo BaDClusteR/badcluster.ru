@@ -25,6 +25,8 @@ import PulseItem from "@/pages/PulseItem";
 import Settings from "@/pages/Settings";
 import StaticPages from "@/pages/StaticPages";
 import StaticPage from "@/pages/StaticPage";
+import LogRecords from "@/pages/LogRecords";
+import LogRecord from "@/pages/LogRecord";
 
 export function App() {
   const {nav, modules, loading} = useModules();
@@ -61,6 +63,8 @@ export function App() {
         <Route key="static-page-add" path="static-pages/new" element={<StaticPage/>}/>
         <Route key="static-page-edit" path="static-pages/:id" element={<StaticPage/>}/>
         <Route key="settings" path="settings" element={<Settings/>}/>
+        <Route key="log-records-list" path="logs" element={<LogRecords/>}/>
+        <Route key="log-record-view" path="logs/:id" element={<LogRecord/>}/>
         {modules.map((mod) => (
           <Route
             key={mod.id}

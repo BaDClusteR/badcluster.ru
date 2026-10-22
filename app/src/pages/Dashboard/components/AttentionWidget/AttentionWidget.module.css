@@ -30,14 +30,17 @@
   text-decoration: none;
 }
 
+/* Ссылка не меняет цвет, только подчёркивается: цвет точки и так говорит о важности */
 a.row,
 a.row:visited {
   color: var(--color-text);
 
+  /* Цвет повторяем явно: иначе его перекрасит глобальное a:hover */
+
   &:hover,
   &:focus-visible,
   &:active {
-    color: var(--color-link);
+    text-decoration: underline;
   }
 }
 

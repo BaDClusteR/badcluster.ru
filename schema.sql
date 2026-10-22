@@ -32,3 +32,24 @@ CREATE TABLE IF NOT EXISTS `bc_static_pages` (
     -- TEXT needs a prefix length; 128 chars is well past any sane slug.
     UNIQUE KEY `slug` (`slug`(128))
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- BC\Model\LogRecord — журнал предупреждений и ошибок для админки (пишет
+-- BC\Logger\AlertingLogger). Повторы одной записи увеличивают `occurrences`.
+-- LogRecorder::ensureSchema() создаёт таблицу сам, применять руками не обязательно.
+CREATE TABLE IF NOT EXISTS `bc_log_records` (
+    `id`            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `level`         VARCHAR(16)  NOT NULL DEFAULT '', -- WARNING, ERROR, CRITICAL, EMERGENCY
+    `message`       TEXT         NOT NULL,
+    `context`       MEDIUMTEXT   NOT NULL,            -- JSON, уже замаскированный
+    `trace`         TEXT         NOT NULL,
+    `url`           TEXT         NOT NULL,            -- «GET /path» или «CLI: команда»
+    `ip`            VARCHAR(64)  NOT NULL DEFAULT '',
+    `request_id`    VARCHAR(64)  NOT NULL DEFAULT '',
+    `fingerprint`   CHAR(40)     NOT NULL DEFAULT '', -- sha1 уровня и текста
+    `occurrences`   INT UNSIGNED NOT NULL DEFAULT 1,
+    `first_seen_at` INT UNSIGNED NOT NULL DEFAULT 0,  -- unix timestamp
+    `last_seen_at`  INT UNSIGNED NOT NULL DEFAULT 0,  -- unix timestamp
+    PRIMARY KEY (`id`),
+    KEY `idx_fingerprint` (`fingerprint`),
+    KEY `idx_last_seen_at` (`last_seen_at`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;

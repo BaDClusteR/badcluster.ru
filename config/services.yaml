@@ -42,6 +42,15 @@ services:
   BC\Controller\System\ApiRouter:
     decorates: ApiPlatform\Controller\IApiRouter
 
+  # Порядок важен: декораторы оборачивают логгер в порядке объявления, так что
+  # AlertingLogger оказывается внутри MaskingLogger и пишет в журнал уже
+  # замаскированный контекст. Поменяете местами — в журнал уйдут пароли
+  BC\Logger\AlertingLogger:
+    decorates: Runway\Logger\ILogger
+
+  BC\Core\Log\ILogRecorder:
+    class: BC\Core\Log\LogRecorder
+
   BC\Logger\MaskingLogger:
     decorates: Runway\Logger\ILogger
     arguments:
