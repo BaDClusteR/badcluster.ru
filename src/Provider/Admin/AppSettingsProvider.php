@@ -66,12 +66,6 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                 ]
             ),
             new NavigationDTO(
-                label: 'Комментарии',
-                path: '/admin/comments',
-                icon: 'message',
-                position: 10000
-            ),
-            new NavigationDTO(
                 label: 'Виджеты',
                 path: '',
                 icon: file_get_contents(__DIR__ . '/../../../app/assets/widgets.svg'),
@@ -88,12 +82,6 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                         icon: file_get_contents(__DIR__ . '/../../../app/assets/news.svg')
                     )
                 ]
-            ),
-            new NavigationDTO(
-                label: 'Страницы',
-                path: '/admin/static-pages',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/static-page.svg'),
-                position: 11000
             ),
             // «Настройки» (/admin/settings — чёрный список комментариев) из меню убраны:
             // со спамом справляется ханипот, а страница и фильтр остались на будущее
@@ -114,6 +102,18 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                         icon: file_get_contents(__DIR__ . '/../../../app/assets/log.svg')
                     )
                 ]
+            ),
+            new NavigationDTO(
+                label: 'Страницы',
+                path: '/admin/static-pages',
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/static-page.svg'),
+                position: 15000
+            ),
+            new NavigationDTO(
+                label: 'Комментарии',
+                path: '/admin/comments',
+                icon: 'message',
+                position: 16000
             ),
         ];
     }
