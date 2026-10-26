@@ -13,6 +13,7 @@ use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Modules\Music\Api\DataBuilder\Album\IAlbumDataBuilder;
@@ -82,6 +83,8 @@ class Album extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $cover The media: ['id' => ...].
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'album', method: 'POST')]
@@ -138,7 +141,7 @@ class Album extends AEndpoint {
                 ->setReleaseDate($this->dateConverter->toDateTime($releaseDate))
                 ->setCover(
                     Media::findByUniqueIdentifier(
-                        (int) ($cover['id'] ?? 0)
+                        MixedValue::toInt($cover['id'] ?? 0)
                     )
                 )->setGenre($genre)
                 ->setMusicBy($musicBy)
@@ -157,6 +160,8 @@ class Album extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $cover The media: ['id' => ...].
+     *
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
@@ -216,7 +221,7 @@ class Album extends AEndpoint {
                 ->setReleaseDate($this->dateConverter->toDateTime($releaseDate))
                 ->setCover(
                     Media::findByUniqueIdentifier(
-                        (int) ($cover['id'] ?? 0)
+                        MixedValue::toInt($cover['id'] ?? 0)
                     )
                 )->setGenre($genre)
                 ->setMusicBy($musicBy)
@@ -229,6 +234,9 @@ class Album extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows Album ids.
+     */
     #[API\Endpoint(path: 'albums', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]

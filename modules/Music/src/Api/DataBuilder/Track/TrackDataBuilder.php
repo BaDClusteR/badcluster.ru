@@ -9,6 +9,7 @@ use BC\Modules\Music\Api\DTO\Track\SongDTO;
 use BC\Modules\Music\Api\DTO\Track\TrackDTO;
 use BC\Modules\Music\Api\DTO\Track\TrackRowDTO;
 use BC\Modules\Music\Model\Track;
+use Runway\Model\Exception\ModelException;
 
 readonly class TrackDataBuilder implements ITrackDataBuilder {
     public function __construct(
@@ -21,12 +22,18 @@ readonly class TrackDataBuilder implements ITrackDataBuilder {
             id: $track->getId(),
             title: $track->getTitle(),
             duration: $this->formatter->formatAsHumanReadableDuration(
-                $track->getSong()->getDuration()
+                $track->getSong()?->getDuration() ?? 0
             ),
         );
     }
 
+    /**
+     * @throws ModelException The track has no song (the song is required in the admin).
+     */
     public function buildEntity(Track $track): TrackDTO {
+        $song = $track->getSong()
+            ?? throw new ModelException(sprintf('Track #%d has no song', $track->getId()));
+
         return new TrackDTO(
             title: $track->getTitle(),
             explicitLanguage: $track->getExplicitLanguage(),
@@ -36,9 +43,9 @@ readonly class TrackDataBuilder implements ITrackDataBuilder {
             position: $track->getPosition(),
             annotation: $track->getAnnotation(),
             song: SongDTO::fromFileDTO(
-                $track->getSong()->toFileDTO(),
+                $song->toFileDTO(),
                 $this->formatter->formatAsHumanReadableDuration(
-                    $track->getSong()->getDuration()
+                    $song->getDuration()
                 )
             ),
             albumId: $track->getAlbum()->getId()

@@ -16,6 +16,9 @@ class AlbumsList extends AWidget {
      * @return Album[]
      */
     protected function getAlbums(): array {
-        return (array) ($this->context['albums'] ?? []);
+        return array_filter(
+            (array) ($this->context['albums'] ?? []),
+            static fn (mixed $album): bool => $album instanceof Album
+        );
     }
 }

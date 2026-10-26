@@ -26,7 +26,7 @@ class Album extends AWidget {
 
     protected function hasExplicitLanguage(): bool {
         try {
-            return $this->getAlbum()->hasExplicitLanguage();
+            return $this->getAlbum()?->hasExplicitLanguage() ?? false;
         } catch (Exception) {
             return false;
         }

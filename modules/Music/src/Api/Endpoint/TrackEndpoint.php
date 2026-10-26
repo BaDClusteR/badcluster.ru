@@ -14,6 +14,7 @@ use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Formatter\IFormatter;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Modules\Music\Api\DataBuilder\Track\ITrackDataBuilder;
 use BC\Modules\Music\Api\DTO\Track\SongDTO;
@@ -104,7 +105,7 @@ class TrackEndpoint extends AEndpoint {
             $model->getLocalPath()
         );
         $duration = (int) round(
-            (float) ($songInfo['playtime_seconds'] ?? 0.0)
+            MixedValue::toFloat($songInfo['playtime_seconds'] ?? 0.0)
         );
         $model->setDuration($duration);
 
@@ -119,6 +120,8 @@ class TrackEndpoint extends AEndpoint {
     }
 
     /**
+     * @param array<mixed> $song The uploaded song: ['id' => ...].
+     *
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
@@ -188,6 +191,8 @@ class TrackEndpoint extends AEndpoint {
     }
 
     /**
+     * @param array<mixed> $song The uploaded song: ['id' => ...].
+     *
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
@@ -256,6 +261,9 @@ class TrackEndpoint extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows Track ids.
+     */
     #[API\Endpoint(path: 'tracks', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]
@@ -267,22 +275,23 @@ class TrackEndpoint extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $songData The uploaded song: ['id' => ...].
+     *
      * @throws UnprocessableEntityException
      */
     protected function getSong(?array $songData): ?Song {
         $song = null;
 
         if (!empty($songData['id'])) {
+            $songId = MixedValue::toInt($songData['id']);
             $song = $this->handleWithException(
-                static fn () => Song::findByUniqueIdentifier(
-                    (int) ($songData['id'])
-                )
+                static fn () => Song::findByUniqueIdentifier($songId)
             );
 
             if (!$song) {
                 throw new UnprocessableEntityException(
-                    ['file' => "Песня #{$songData['id']} не найдена"],
-                    "Ошибка: песня #{$songData['id']} не найдена."
+                    ['file' => "Песня #$songId не найдена"],
+                    "Ошибка: песня #$songId не найдена."
                 );
             }
         }

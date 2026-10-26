@@ -37,7 +37,7 @@ class ReleasePage extends APage {
     }
 
     public function getMetaDescription(): string {
-        return $this->album->getShortAnnotation();
+        return $this->album->getShortAnnotation() ?? '';
     }
 
     public function getCanonicalUrl(): string {

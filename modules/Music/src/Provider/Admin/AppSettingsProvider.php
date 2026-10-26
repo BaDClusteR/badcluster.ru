@@ -23,19 +23,19 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
         $settings->addNavItem(
             new NavigationDTO(
                 label: 'Музыка',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg') ?: null,
                 position: 700,
                 children: [
                     new NavigationDTO(
                         label: 'Альбомы',
                         path: '/admin/music',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/albums.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/albums.svg') ?: null,
                         position: 100
                     ),
                     new NavigationDTO(
                         label: 'Добавить альбом',
                         path: '/admin/music/new',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/add-album.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/add-album.svg') ?: null,
                         position: 200
                     )
                 ]

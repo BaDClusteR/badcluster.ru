@@ -11,18 +11,12 @@ use BC\Modules\Music\Widget\Page\AlbumsListPage;
 use BC\Modules\Music\Widget\Page\ReleasePage;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
-use Runway\Logger\ILogger;
 use Runway\Model\Exception\ModelException;
 use Runway\Request\Response;
 use Throwable;
 
 readonly class Music {
     use Controller404Trait;
-
-    public function __construct(
-        private ILogger $logger
-    ) {
-    }
 
     /**
      * @throws Throwable
@@ -36,6 +30,8 @@ readonly class Music {
     }
 
     /**
+     * @return Album[]
+     *
      * @throws DBException
      * @throws ModelException
      * @throws QueryBuilderException

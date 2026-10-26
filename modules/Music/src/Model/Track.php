@@ -21,12 +21,12 @@ use Runway\Model\Exception\ModelException;
  * @method self setTitle(string $title)
  * @method bool getExplicitLanguage()
  * @method self setExplicitLanguage(bool $explicitLanguage)
- * @method string|null getSourceUrl()
- * @method self setSourceUrl(string|null $sourceUrl)
- * @method string|null getLyrics()
- * @method self setLyrics(string|null $lyrics)
- * @method string|null getClipUrl()
- * @method self setClipUrl(string|null $clipUrl)
+ * @method string getSourceUrl()
+ * @method self setSourceUrl(string $sourceUrl)
+ * @method string getLyrics()
+ * @method self setLyrics(string $lyrics)
+ * @method string getClipUrl()
+ * @method self setClipUrl(string $clipUrl)
  * @method int getPosition()
  * @method self setPosition(int $position)
  * @method string getAnnotation()
@@ -95,6 +95,6 @@ class Track extends AEntity {
     }
 
     public function getUrl(): string {
-        return $this->getSong()->getUrl();
+        return $this->getSong()?->getUrl() ?? '';
     }
 }

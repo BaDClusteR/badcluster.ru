@@ -41,18 +41,7 @@ readonly class AlbumDataBuilder implements IAlbumDataBuilder {
     }
 
     public function getTracksText(int $count): string {
-        $countMod100 = $count % 100;
-        if ($countMod100 >= 10 && $countMod100 <= 20) {
-            $postfix = 'песен';
-        } else {
-            $postfix = match ($count % 10) {
-                1 => 'песня',
-                2, 3, 4 => 'песни',
-                default => 'песен'
-            };
-        }
-
-        return "$count $postfix";
+        return $this->formatter->formatAsWordForm($count, 'песня', 'песни', 'песен');
     }
 
     public function buildEntity(Album $album): AlbumDTO {
@@ -64,10 +53,10 @@ readonly class AlbumDataBuilder implements IAlbumDataBuilder {
             type: $album->getType(),
             releaseDate: $this->dateConverter->toPickerValue($album->getReleaseDate()),
             annotation: $album->getAnnotation(),
-            shortAnnotation: $album->getShortAnnotation(),
-            musicBy: $album->getMusicBy(),
-            visualBy: $album->getVisualBy(),
-            coverBy: $album->getCoverBy(),
+            shortAnnotation: $album->getShortAnnotation() ?? '',
+            musicBy: $album->getMusicBy() ?? '',
+            visualBy: $album->getVisualBy() ?? '',
+            coverBy: $album->getCoverBy() ?? '',
             position: $album->getPosition()
         );
     }
