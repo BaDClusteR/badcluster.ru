@@ -22,8 +22,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setBook(Book $book)
  * @method string getTitle()
  * @method self setTitle(string $title)
- * @method array getContent()
- * @method self setContent(array $content)
+ * @method array<string, mixed> getContent()
+ * @method self setContent(array<string, mixed> $content)
  * @method int getPosition()
  * @method self setPosition(int $position)
  * @method bool getPublished()
@@ -48,6 +48,7 @@ class Chapter extends AEntity {
     #[DS\Column]
     protected string $title = '';
 
+    /** @var array<string, mixed> */
     #[DS\Column]
     protected array $content = [];
 

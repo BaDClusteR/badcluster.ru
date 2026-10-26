@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Model;
 
+use BC\Core\Helper\EntityList;
 use DateTime;
 use Runway\DataStorage\Attribute as DS;
 use Runway\DataStorage\Exception\DBException;
@@ -93,10 +94,13 @@ class Comment extends AEntity {
      * @throws QueryBuilderException
      */
     public function getChildren(): array {
-        return self::getQueryBuilder()->where('parent_id = :id')
-                   ->setVariable('id', $this->id)
-                   ->orderBy('date', 'ASC')
-                   ->getEntities();
+        return EntityList::of(
+            self::class,
+            self::getQueryBuilder()->where('parent_id = :id')
+                ->setVariable('id', $this->id)
+                ->orderBy('date', 'ASC')
+                ->getEntities()
+        );
     }
 
     /**

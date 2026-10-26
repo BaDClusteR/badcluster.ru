@@ -52,6 +52,7 @@ class Photos extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Photo::class,
             // parent_id IS NULL — отсекаем строки тамбнейлов, они живут в той же таблице
                 qb: Photo::getQueryBuilder()
                          ->where('parent_id IS NULL')

@@ -10,22 +10,23 @@ use BC\Core\Trait\FileSystemTrait;
 use BC\Core\Trait\PathsProviderTrait;
 use Runway\DataStorage\Attribute as DS;
 use Runway\FileSystem\Exception\CannotCreateDirectoryException;
+use Runway\FileSystem\Exception\CannotReadFileException;
 use Runway\FileSystem\Exception\FileSystemException;
 use Runway\Model\AEntity;
 use Runway\Singleton\Container;
 
 /**
  * @generated-model-helpers
- * @method int getId
- * @method self setId(int $id)
- * @method string getMime
- * @method self setMime(string $mime)
- * @method int getSize
- * @method self setSize(int $size)
- * @method string getPath
- * @method self setPath(string $path)
- * @method string getHash
- * @method self setHash(string $hash)
+ * @method int getId()
+ * @method static setId(int $id)
+ * @method string getMime()
+ * @method static setMime(string $mime)
+ * @method int getSize()
+ * @method static setSize(int $size)
+ * @method string getPath()
+ * @method static setPath(string $path)
+ * @method string getHash()
+ * @method static setHash(string $hash)
  */
 abstract class AFile extends AEntity {
     use PathsProviderTrait;
@@ -61,11 +62,19 @@ abstract class AFile extends AEntity {
         $fileSystem->mkdir($dir);
         $newFilename = $fileSystem->copy($filePath, "$dir/$filename");
 
+        $mime = $mime ?: mime_content_type($filePath);
+        $size = filesize($filePath);
+        $hash = md5_file($filePath);
+
+        if (($mime === false) || ($size === false) || ($hash === false)) {
+            throw new CannotReadFileException($filePath);
+        }
+
         return new static()
             ->setPath(basename($newFilename))
-            ->setMime($mime ?: mime_content_type($filePath))
-            ->setSize(filesize($filePath))
-            ->setHash(md5_file($filePath));
+            ->setMime($mime)
+            ->setSize($size)
+            ->setHash($hash);
     }
 
     protected static function getFolderPath(): string {

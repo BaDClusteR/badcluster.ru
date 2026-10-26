@@ -55,6 +55,7 @@ class Note extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: NoteModel::class,
                 qb: NoteModel::getQueryBuilder()->orderBy('publish_date', 'DESC'),
                 filter: $filter,
                 columnsToFind: ['title'],

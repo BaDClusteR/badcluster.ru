@@ -13,5 +13,5 @@ interface IAssetBuilder {
 
     public function getBundleFileName(string $bundleName, string $type): ?string;
 
-    public function getBundleWebPath(string $bundleName, string $type): ?string;
+    public function getBundleWebPath(string $bundleName, string $type): string;
 }

@@ -52,6 +52,7 @@ class LogRecords extends AEndpoint {
 
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: LogRecord::class,
                 qb: LogRecord::getQueryBuilder()->orderBy('last_seen_at', 'DESC'),
                 filter: $filter,
                 columnsToFind: ['message'],

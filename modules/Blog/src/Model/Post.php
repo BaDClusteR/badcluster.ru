@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Blog\Model;
 
+use BC\Core\Helper\EntityList;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Model\Media;
 use DateTime;
@@ -31,8 +32,8 @@ use Runway\Model\Exception\ModelException;
  * @method self setPublishDate(\DateTime $publishDate)
  * @method \DateTime|null getUpdateDate()
  * @method self setUpdateDate(\DateTime|null $updateDate)
- * @method array getContent()
- * @method self setContent(array $content)
+ * @method array<string, mixed> getContent()
+ * @method self setContent(array<string, mixed> $content)
  * @method bool getPublished()
  * @method self setPublished(bool $published)
  * @method string getSlug()
@@ -71,6 +72,7 @@ class Post extends AEntity {
     #[DS\Column]
     protected ?DateTime $updateDate = null;
 
+    /** @var array<string, mixed> */
     #[DS\Column]
     protected array $content;
 
@@ -86,6 +88,7 @@ class Post extends AEntity {
     #[DS\Column]
     protected ?Media $cover = null;
 
+    /** @var PostTag[]|null */
     #[DS\Reference(refModel: PostTag::class, refProp: 'post')]
     protected ?array $postTags = null;
 
@@ -131,13 +134,13 @@ class Post extends AEntity {
 
         if (!empty($tagIds)) {
             $qb->andWhere(
-                $qb->expr()->in('tag_id', $tagIds)
+                $qb->expr()->in('tag_id', array_map(strval(...), $tagIds))
             );
         }
 
         $existingTagIds = array_map(
             static fn (PostTag $t): int => $t->getTag()->getId(),
-            $qb->getEntities()
+            EntityList::of(PostTag::class, $qb->getEntities())
         );
 
         foreach ($tagIds as $tagId) {

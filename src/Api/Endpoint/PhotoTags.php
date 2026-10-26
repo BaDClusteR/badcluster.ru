@@ -76,6 +76,7 @@ class PhotoTags extends AEndpoint {
 
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: PhotoTag::class,
                 qb: PhotoTag::getQueryBuilder()->orderBy('position', 'ASC'),
                 filter: $filter,
                 columnsToFind: ['title'],

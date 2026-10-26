@@ -9,6 +9,8 @@ use ApiPlatform\Exception\RuntimeInternalErrorException;
 use BC\Api\DTO\GetEntitiesListRequest;
 use BC\Api\DTO\ListResponseDTO;
 use BC\Api\Exception\NotFoundException;
+use BC\Core\Helper\EntityList;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
@@ -35,11 +37,16 @@ abstract class AEndpoint {
     }
 
     /**
+     * @template T
+     * @param callable(): T $handler
+     *
+     * @return T The result of the handler.
+     *
      * @throws UnprocessableEntityException
      */
-    protected function handleActionWithException(callable $handler, string $unprocessableErrorTitle): void {
+    protected function handleActionWithException(callable $handler, string $unprocessableErrorTitle): mixed {
         try {
-            $handler();
+            return $handler();
         } catch (ActionValidationException $e) {
             throw new UnprocessableEntityException(
                 $e->getErrors(),
@@ -113,21 +120,22 @@ abstract class AEndpoint {
             $qb->clearOrderBy()->addOrderBy($sortBy, $this->sanitizeSortDirection($sortDir));
         }
 
-        if ($page) {
-            $qb->setLimit($perPage, ($page - 1) * $perPage);
-        }
+        $qb->setLimit($perPage, ($page - 1) * $perPage);
 
         return $total;
     }
 
     /**
      * @param class-string<AEntity> $entityFQN
-     * @param int[]                 $entityIds
+     * @param array<mixed>          $entityIds The ids from the request body.
      */
     protected function deleteEntities(string $entityFQN, array $entityIds): void {
         // expr()->in() подставляет значения в SQL без биндинга, поэтому id
         // из тела запроса приводим к int — иначе тут SQL-инъекция
-        $entityIds = array_map('intval', $entityIds);
+        $entityIds = array_map(
+            static fn (mixed $id): string => (string) MixedValue::toInt($id),
+            $entityIds
+        );
         $qb = $entityFQN::getQueryBuilder();
 
         $this->handleWithException(
@@ -147,7 +155,12 @@ abstract class AEndpoint {
     }
 
     /**
-     * @param callable(AEntity $entity): mixed $buildListResponseItem
+     * @template T of AEntity
+     * @template R
+     * @param GetEntitiesListRequest<T> $request
+     * @param callable(T $entity): R    $buildListResponseItem
+     *
+     * @return ListResponseDTO<R>
      *
      * @throws BadRequestException
      */
@@ -168,10 +181,10 @@ abstract class AEndpoint {
         );
 
         return $this->handleWithException(
-            fn () => new ListResponseDTO(
+            static fn () => new ListResponseDTO(
                 items: array_map(
                     static fn (AEntity $entity) => $buildListResponseItem($entity),
-                    $qb->getEntities()
+                    EntityList::of($request->entityFQN, $qb->getEntities())
                 ),
                 total: $total
             )
@@ -179,8 +192,12 @@ abstract class AEndpoint {
     }
 
     /**
-     * @param class-string<AEntity>           $entityFQN
-     * @param callable(AEntity $model): mixed $buildData
+     * @template T of AEntity
+     * @template R
+     * @param class-string<T>     $entityFQN
+     * @param callable(T $model): R $buildData
+     *
+     * @return R
      *
      * @throws NotFoundException
      */
@@ -190,7 +207,6 @@ abstract class AEndpoint {
         string $notFoundMessage,
         callable $buildData
     ): mixed {
-        /** @var AEntity|null $entity */
         $entity = $this->handleWithException(
             static fn () => $entityFQN::findByUniqueIdentifier($id)
         );
@@ -206,12 +222,15 @@ abstract class AEndpoint {
         );
     }
 
+    /**
+     * @param array<mixed>|null $mediaInfo The media of the request body: ['id' => ...].
+     */
     protected function findMedia(?array $mediaInfo): ?Media {
         return $mediaInfo === null
             ? null
             : $this->handleWithException(
-                fn () => Media::findByUniqueIdentifier(
-                    (int) ($mediaInfo['id'] ?? 0)
+                static fn () => Media::findByUniqueIdentifier(
+                    MixedValue::toInt($mediaInfo['id'] ?? 0)
                 )
             );
     }
@@ -239,7 +258,11 @@ abstract class AEndpoint {
         }
 
         try {
-            return $qb->getFirstEntity();
+            $entity = $qb->getFirstEntity();
+
+            return ($entity instanceof $modelFQN)
+                ? $entity
+                : null;
         } catch (Exception) {
             return null;
         }

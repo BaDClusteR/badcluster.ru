@@ -56,6 +56,7 @@ class BlogPost extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Post::class,
                 qb: Post::getQueryBuilder()->orderBy('publish_date', 'DESC'),
                 filter: $filter,
                 columnsToFind: ['title'],

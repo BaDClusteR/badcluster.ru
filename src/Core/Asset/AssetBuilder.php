@@ -143,7 +143,7 @@ class AssetBuilder implements IAssetBuilder {
         return $storedBundles[$key]['path'] ?? null;
     }
 
-    public function getBundleWebPath(string $bundleName, string $type): ?string {
+    public function getBundleWebPath(string $bundleName, string $type): string {
         return $this->pathsProvider->getStaticWebPath() . "/{$this->getBundleFileName($bundleName, $type)}";
     }
 

@@ -51,6 +51,7 @@ class Screenshots extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Screenshot::class,
             // parent_id IS NULL — отсекаем строки тамбнейлов, они живут в той же таблице
                 qb: Screenshot::getQueryBuilder()
                               ->where('parent_id IS NULL')

@@ -54,6 +54,7 @@ class TrackEndpoint extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Track::class,
                 qb: Track::getQueryBuilder()
                          ->where('album_id = :albumId')
                          ->setVariable('albumId', $albumId)

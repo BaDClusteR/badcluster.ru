@@ -61,6 +61,7 @@ class Book extends AEndpoint {
 
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: BookModel::class,
                 qb: BookModel::getQueryBuilder()->orderBy('position', 'ASC'),
                 filter: $filter,
                 columnsToFind: ['title', 'shortAnnotation', 'annotation'],

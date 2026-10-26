@@ -19,8 +19,8 @@ use Runway\Model\AEntity;
  * @method self setTitle(string $title)
  * @method string getShortTitle()
  * @method self setShortTitle(string $shortTitle)
- * @method array getContent()
- * @method self setContent(array $content)
+ * @method array<string, mixed> getContent()
+ * @method self setContent(array<string, mixed> $content)
  * @method string getSlug()
  * @method self setSlug(string $slug)
  * @method bool getPublished()
@@ -54,6 +54,7 @@ class StaticPage extends AEntity {
     #[DS\Column]
     protected string $shortTitle = '';
 
+    /** @var array<string, mixed> */
     #[DS\Column]
     protected array $content;
 

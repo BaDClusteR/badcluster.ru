@@ -51,6 +51,7 @@ class Album extends AEndpoint {
 
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: AlbumModel::class,
                 qb: AlbumModel::getQueryBuilder()->orderBy('position', 'ASC'),
                 filter: $filter,
                 columnsToFind: ['title', 'shortAnnotation', 'annotation'],

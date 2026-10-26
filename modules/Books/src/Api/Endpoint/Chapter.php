@@ -57,6 +57,7 @@ class Chapter extends AEndpoint {
 
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: ChapterModel::class,
                 qb: ChapterModel::getQueryBuilder()
                                 ->where('book_id = :bookId')
                                 ->setVariable('bookId', $bookId)

@@ -53,6 +53,7 @@ class StaticPages extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: StaticPage::class,
                 qb: StaticPage::getQueryBuilder()->orderBy('id', 'DESC'),
                 filter: $filter,
                 columnsToFind: ['title', 'slug'],

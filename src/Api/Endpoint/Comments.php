@@ -44,6 +44,7 @@ class Comments extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Comment::class,
                 qb: Comment::getQueryBuilder()->orderBy('date', 'DESC'),
                 filter: $filter,
                 columnsToFind: ['name', 'email', 'comment'],

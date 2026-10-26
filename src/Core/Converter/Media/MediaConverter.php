@@ -9,6 +9,9 @@ use BC\Core\DTO\MediaThumbnailDTO;
 use BC\Model\Media;
 
 class MediaConverter implements IMediaConverter {
+    /**
+     * @return ($media is null ? null : MediaDTO)
+     */
     public function convertMedia(?Media $media): ?MediaDTO {
         if ($media === null) {
             return null;

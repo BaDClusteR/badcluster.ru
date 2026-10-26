@@ -50,6 +50,7 @@ class Facts extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Fact::class,
                 qb: Fact::getQueryBuilder()->orderBy('id', 'DESC'),
                 filter: $filter,
                 columnsToFind: ['title', 'content'],

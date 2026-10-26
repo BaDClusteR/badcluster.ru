@@ -19,8 +19,8 @@ use Runway\Model\AEntity;
  * @method self setCreatedDate(\DateTime $createdDate)
  * @method \DateTime getPublishDate()
  * @method self setPublishDate(\DateTime $publishDate)
- * @method array getContent()
- * @method self setContent(array $content)
+ * @method array<string, mixed> getContent()
+ * @method self setContent(array<string, mixed> $content)
  * @method bool getPublished()
  * @method self setPublished(bool $published)
  * @method string getSlug()
@@ -44,6 +44,7 @@ class Note extends AEntity {
     #[DS\Column]
     protected DateTime $publishDate;
 
+    /** @var array<string, mixed> */
     #[DS\Column]
     protected array $content;
 

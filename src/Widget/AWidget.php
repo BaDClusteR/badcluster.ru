@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace BC\Widget;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Scanner\IWidgetClassScanner;
 use BC\Core\Trait\AssetBuilderTrait;
 use BC\Core\Trait\LoggerTrait;
 use BC\Provider\IPathsProvider;
 use BC\Widget\Attribute\WidgetList;
 use ReflectionClass;
-use ReflectionException;
 use Runway\Exception\RuntimeException;
 use Runway\Singleton\Container;
 use Throwable;
@@ -19,14 +19,23 @@ abstract class AWidget {
     use LoggerTrait;
     use AssetBuilderTrait;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $context = [];
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function __construct(array $context = []) {
         $this->applyContext($context);
     }
 
     abstract protected function getTemplatePath(): string;
 
+    /**
+     * @param array<string, mixed> $context
+     */
     protected function applyContext(array $context): void {
         $this->context = array_merge(
             $this->context,
@@ -35,6 +44,8 @@ abstract class AWidget {
     }
 
     /**
+     * @param array<string, mixed> $context
+     *
      * @throws Throwable
      */
     public function render(array $context = []): string {
@@ -87,8 +98,12 @@ abstract class AWidget {
         return Container::getInstance()->getService(IPathsProvider::class);
     }
 
+    /**
+     * @param array<string, mixed> $context
+     *
+     * @throws Throwable
+     */
     public function renderWidgetList(string $list, array $context = []): string {
-        /** @var array{0: integer, 1: AWidget} $entries */
         $entries = array_merge(
             $this->getWidgetListEntriesByAttribute($list),
             $this->getWidgetListEntriesByTag($list)
@@ -97,7 +112,6 @@ abstract class AWidget {
         usort($entries, static fn (array $a, array $b) => $a[0] <=> $b[0]);
 
         $result = '';
-        /** @var AWidget $widget */
         foreach ($entries as [, $widget]) {
             $result .= $widget->render($context);
         }
@@ -106,25 +120,16 @@ abstract class AWidget {
     }
 
     /**
-     * @return AWidget[]
+     * @return list<array{int, AWidget}> [priority, widget]
      */
     protected function getWidgetListEntriesByAttribute(string $list): array {
         $entries = [];
         $container = Container::getInstance();
 
-        /** @var IWidgetClassScanner $scanner */
         $scanner = $container->getService(IWidgetClassScanner::class);
 
         foreach ($scanner->getWidgetClasses() as $className) {
-            try {
-                $reflection = new ReflectionClass($className);
-            } catch (ReflectionException $e) {
-                $this->getLogger()->warning(
-                    sprintf('%s: Cannot get reflection of class %s: %s', __METHOD__, $className, $e->getMessage())
-                );
-
-                continue;
-            }
+            $reflection = new ReflectionClass($className);
 
             if (!$reflection->isInstantiable() || !$reflection->isSubclassOf(self::class)) {
                 continue;
@@ -138,7 +143,9 @@ abstract class AWidget {
                         ? $container->getService($className)
                         : new $className();
 
-                    $entries[] = [$widgetListAttr->priority, $service];
+                    if ($service instanceof self) {
+                        $entries[] = [$widgetListAttr->priority, $service];
+                    }
                 }
             }
         }
@@ -146,6 +153,9 @@ abstract class AWidget {
         return $entries;
     }
 
+    /**
+     * @return list<array{int, AWidget}> [priority, widget]
+     */
     protected function getWidgetListEntriesByTag(string $list): array {
         $entries = [];
         $container = Container::getInstance();
@@ -154,7 +164,7 @@ abstract class AWidget {
             $widget = $container->getService($tagInfo['serviceName']);
 
             if ($widget instanceof self) {
-                $priority = (int) ($tagInfo['extra']['priority'] ?? 100);
+                $priority = MixedValue::toInt($tagInfo['extra']['priority'] ?? 100);
                 $entries[] = [$priority, $widget];
             }
         }
@@ -167,7 +177,11 @@ abstract class AWidget {
 
         foreach ($pathProvider->getAssetPaths() as $path) {
             if (file_exists("$path/$relativePath")) {
-                return file_get_contents("$path/$relativePath");
+                $content = file_get_contents("$path/$relativePath");
+
+                if ($content !== false) {
+                    return $content;
+                }
             }
         }
 

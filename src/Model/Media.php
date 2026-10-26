@@ -6,6 +6,8 @@ namespace BC\Model;
 
 use BC\Core\DTO\MediaDTO;
 use BC\Core\DTO\MediaThumbnailDTO;
+use BC\Core\Helper\EntityList;
+use BC\Core\Helper\MixedValue;
 use BC\Core\Media\IThumbnailGenerator;
 use BC\Core\Trait\FileSystemTrait;
 use BC\Core\Trait\LoggerTrait;
@@ -123,6 +125,8 @@ class Media extends AEntity {
     }
 
     /**
+     * @param int[] $widths
+     *
      * @return self[][]
      */
     public function generateThumbnails(array $widths, bool $force = false, bool $postprocess = true): array {
@@ -148,6 +152,9 @@ class Media extends AEntity {
         }
     }
 
+    /**
+     * @return self[]
+     */
     public function generateThumbnail(int $width, bool $force = false): array {
         $this->__thumbnails = null;
 
@@ -174,11 +181,14 @@ class Media extends AEntity {
                 )
             );
 
-            return $this->__thumbnails = static::getQueryBuilder()
-                         ->select(implode(', ', $columns))
-                         ->where('parent_id = :parentId')
-                         ->setVariable('parentId', $this->getId())
-                         ->getEntities();
+            return $this->__thumbnails = EntityList::of(
+                static::class,
+                static::getQueryBuilder()
+                      ->select(implode(', ', $columns))
+                      ->where('parent_id = :parentId')
+                      ->setVariable('parentId', $this->getId())
+                      ->getEntities()
+            );
         } catch (Exception $e) {
             $this->getLogger()->warning("Cannot get thumbnails for image #{$this->getId()}: {$e->getMessage()}");
 
@@ -211,11 +221,11 @@ class Media extends AEntity {
         try {
             $qb = static::getQueryBuilder();
             $rows = $qb->where(
-                $qb->expr()->in('parent_id', array_keys($mediasById))
+                $qb->expr()->in('parent_id', array_map(strval(...), array_keys($mediasById)))
             )->getResults();
 
             foreach ($rows as $row) {
-                $parentId = (int) ($row['parent_id'] ?? 0);
+                $parentId = MixedValue::toInt($row['parent_id'] ?? 0);
 
                 // parent_id вырезаем по той же причине, что и в getThumbnails()
                 unset($row['parent_id']);

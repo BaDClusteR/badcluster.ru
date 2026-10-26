@@ -29,10 +29,10 @@ use Runway\Model\Exception\ModelException;
  * @method self setDateAdded(DateTime|null $dateAdded)
  * @method string getAnnotation()
  * @method self setAnnotation(string $annotation)
- * @method array getDescription()
- * @method self setDescription(array $description)
- * @method array getSetupInstructions()
- * @method self setSetupInstructions(array $setupInstructions)
+ * @method array<string, mixed> getDescription()
+ * @method self setDescription(array<string, mixed> $description)
+ * @method array<string, mixed> getSetupInstructions()
+ * @method self setSetupInstructions(array<string, mixed> $setupInstructions)
  * @method GameMaterialFile|null getFile()
  * @method string getType()
  * @method self setType(string $type)
@@ -67,9 +67,11 @@ class GameMaterial extends AEntity {
     #[DS\Column]
     protected string $annotation = '';
 
+    /** @var array<string, mixed> */
     #[DS\Column]
     protected array $description = [];
 
+    /** @var array<string, mixed> */
     #[DS\Column]
     protected array $setupInstructions = [];
 

@@ -47,6 +47,7 @@ class MediaLibrary extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Media::class,
             // parent_id IS NULL — тамбнейлы в списке не показываем
                 qb: Media::getQueryBuilder()
                          ->where('parent_id IS NULL')

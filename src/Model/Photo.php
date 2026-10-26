@@ -2,6 +2,7 @@
 
 namespace BC\Model;
 
+use BC\Core\Helper\EntityList;
 use DateTime;
 use Runway\DataStorage\Attribute as DS;
 use Runway\DataStorage\Exception\DBException;
@@ -42,6 +43,7 @@ class Photo extends Media {
     #[DS\Column]
     protected DateTime $uploadedAt;
 
+    /** @var PhotoPhotoTag[]|null */
     #[DS\Reference(refModel: PhotoPhotoTag::class, refProp: 'photo')]
     protected ?array $photoTags = null;
 
@@ -91,13 +93,13 @@ class Photo extends Media {
 
         if (!empty($tagIds)) {
             $qb->andWhere(
-                $qb->expr()->in('tag_id', $tagIds)
+                $qb->expr()->in('tag_id', array_map(strval(...), $tagIds))
             );
         }
 
         $existingTagIds = array_map(
             static fn (PhotoPhotoTag $ppt): int => $ppt->getTag()->getId(),
-            $qb->getEntities()
+            EntityList::of(PhotoPhotoTag::class, $qb->getEntities())
         );
 
         foreach ($tagIds as $tagId) {

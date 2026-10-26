@@ -50,6 +50,7 @@ class Redirects extends AEndpoint {
     ): ListResponseDTO {
         return $this->getEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Redirect::class,
                 qb: Redirect::getQueryBuilder()->orderBy('path', 'ASC'),
                 filter: $filter,
                 columnsToFind: ['path', 'destination'],
