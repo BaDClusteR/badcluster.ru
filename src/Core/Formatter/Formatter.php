@@ -39,12 +39,12 @@ class Formatter implements IFormatter {
         $hours = 0;
         $minutes = 0;
 
-        if ($durationInSeconds > 3600) {
+        if ($durationInSeconds >= 3600) {
             $hours = (int) floor($durationInSeconds / 3600);
             $durationInSeconds -= ($hours * 3600);
         }
 
-        if ($durationInSeconds > 60) {
+        if ($durationInSeconds >= 60) {
             $minutes = (int) floor($durationInSeconds / 60);
             $durationInSeconds -= ($minutes * 60);
         }
