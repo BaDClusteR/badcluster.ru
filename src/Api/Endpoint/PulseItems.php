@@ -18,6 +18,7 @@ use BC\Core\Action\DTO\CreatePulseItemRequest;
 use BC\Core\Action\DTO\SavePulseItemRequest;
 use BC\Core\Action\PulseItem\ICreatePulseItemAction;
 use BC\Core\Action\PulseItem\ISavePulseItemAction;
+use BC\Core\Helper\EntityList;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Model\PulseItem;
@@ -86,7 +87,7 @@ class PulseItems extends AEndpoint {
         return array_map(
             fn (PulseItem $item): PulseItemRowDTO => $this->dataBuilder->buildRow($item),
             $this->handleWithException(
-                static fn (): array => $qb->getEntities()
+                static fn (): array => EntityList::of(PulseItem::class, $qb->getEntities())
             )
         );
     }
@@ -151,6 +152,8 @@ class PulseItems extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $image ['id' => media id]
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'pulse_item', method: 'POST')]
@@ -180,11 +183,11 @@ class PulseItems extends AEndpoint {
     ): CreatedDTO {
         $media = $this->requireMediaIfGiven($image, 'Ошибки при создании элемента');
 
-        $response = null;
-        $this->handleActionWithException(
-            function () use (&$response, $media, $tag, $title, $text, $statusTitle, $statusText, $icon, $position, $url, $isTall, $isSurfaced) {
+        $response = $this->handleActionWithException(
+            function () use ($media, $tag, $title, $text, $statusTitle, $statusText, $icon, $position, $url, $isTall, $isSurfaced) {
                 $action = Container::getInstance()->getService(ICreatePulseItemAction::class);
-                $response = $action->run(
+
+                return $action->run(
                     new CreatePulseItemRequest(
                         image: $media,
                         tag: $tag,
@@ -209,6 +212,8 @@ class PulseItems extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $image ['id' => media id]
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'pulse_item/{identifier}', method: 'PUT')]
@@ -266,6 +271,9 @@ class PulseItems extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'pulse_items', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]
@@ -281,6 +289,8 @@ class PulseItems extends AEndpoint {
     /**
      * Картинка опциональна: null — элемент без картинки,
      * а вот переданная картинка обязана существовать в медиа-библиотеке.
+     *
+     * @param array<mixed>|null $image ['id' => media id]
      *
      * @throws UnprocessableEntityException
      */

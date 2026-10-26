@@ -92,11 +92,11 @@ class Redirects extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'destination')]
         string $destination = ''
     ): CreatedDTO {
-        $response = null;
-        $this->handleActionWithException(
-            function () use (&$response, $path, $code, $destination) {
+        $response = $this->handleActionWithException(
+            function () use ($path, $code, $destination) {
                 $action = Container::getInstance()->getService(ICreateRedirectAction::class);
-                $response = $action->run(
+
+                return $action->run(
                     new CreateRedirectRequest(
                         path: $path,
                         code: $code,
@@ -144,6 +144,9 @@ class Redirects extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'redirects', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]

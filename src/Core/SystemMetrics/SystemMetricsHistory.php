@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Core\SystemMetrics;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\SystemMetrics\DTO\SystemCountersDTO;
 use BC\Core\SystemMetrics\DTO\SystemMetricsSampleDTO;
 
@@ -46,14 +47,20 @@ class SystemMetricsHistory implements ISystemMetricsHistory {
         try {
             flock($fp, LOCK_EX);
 
-            $state = json_decode((string) stream_get_contents($fp), true);
+            $storedState = json_decode((string) stream_get_contents($fp), true);
 
             if (
-                !is_array($state)
-                || ($state['v'] ?? 0) !== self::STATE_VERSION
-                || !is_array($state['points'] ?? null)
+                !is_array($storedState)
+                || ($storedState['v'] ?? 0) !== self::STATE_VERSION
+                || !is_array($storedState['points'] ?? null)
             ) {
                 $state = ['v' => self::STATE_VERSION, 'last' => null, 'points' => []];
+            } else {
+                $state = [
+                    'v' => self::STATE_VERSION,
+                    'last' => is_array($storedState['last'] ?? null) ? $storedState['last'] : null,
+                    'points' => $this->readPoints($storedState['points']),
+                ];
             }
 
             $state = $this->addPoint($state, $counters, $nowMs);
@@ -67,28 +74,63 @@ class SystemMetricsHistory implements ISystemMetricsHistory {
         }
 
         return new SystemMetricsSampleDTO(
-            array_values($state['points']),
+            $state['points'],
             $counters
         );
     }
 
+    /**
+     * Точки из файла: битые (не массив из 7 чисел) отбрасываются.
+     *
+     * @param array<mixed> $storedPoints
+     *
+     * @return list<array{int, float, float, float, float, float, float}>
+     */
+    private function readPoints(array $storedPoints): array {
+        $points = [];
+
+        foreach ($storedPoints as $point) {
+            if (!is_array($point) || (count($point) < 7)) {
+                continue;
+            }
+
+            $point = array_values($point);
+            $points[] = [
+                MixedValue::toInt($point[0]),
+                MixedValue::toFloat($point[1]),
+                MixedValue::toFloat($point[2]),
+                MixedValue::toFloat($point[3]),
+                MixedValue::toFloat($point[4]),
+                MixedValue::toFloat($point[5]),
+                MixedValue::toFloat($point[6]),
+            ];
+        }
+
+        return $points;
+    }
+
+    /**
+     * @param array{v: int, last: array<mixed>|null, points: list<array{int, float, float, float, float, float, float}>} $state
+     *
+     * @return array{v: int, last: array<mixed>|null, points: list<array{int, float, float, float, float, float, float}>}
+     */
     private function addPoint(array $state, SystemCountersDTO $counters, int $nowMs): array {
-        $last = $state['last'] ?? null;
+        $last = $state['last'];
         $isComparable = is_array($last) && ($last['source'] ?? '') === $counters->source;
 
-        if ($isComparable && $nowMs - (int) ($last['time'] ?? 0) < self::MIN_SAMPLE_INTERVAL_MS) {
+        if ($isComparable && $nowMs - MixedValue::toInt($last['time'] ?? 0) < self::MIN_SAMPLE_INTERVAL_MS) {
             return $state;
         }
 
         if ($isComparable) {
-            $dtSeconds = ($nowMs - (int) ($last['time'] ?? 0)) / 1000;
+            $dtSeconds = ($nowMs - MixedValue::toInt($last['time'] ?? 0)) / 1000;
 
-            $deltaTotal = $counters->cpuTotalTicks - (float) ($last['total'] ?? 0);
-            $deltaBusy = $counters->cpuBusyTicks - (float) ($last['busy'] ?? 0);
-            $deltaDiskRead = $counters->diskReadOps - (float) ($last['diskR'] ?? 0);
-            $deltaDiskWrite = $counters->diskWriteOps - (float) ($last['diskW'] ?? 0);
-            $deltaNetRx = $counters->netRxBytes - (float) ($last['netRx'] ?? 0);
-            $deltaNetTx = $counters->netTxBytes - (float) ($last['netTx'] ?? 0);
+            $deltaTotal = $counters->cpuTotalTicks - MixedValue::toFloat($last['total'] ?? 0);
+            $deltaBusy = $counters->cpuBusyTicks - MixedValue::toFloat($last['busy'] ?? 0);
+            $deltaDiskRead = $counters->diskReadOps - MixedValue::toFloat($last['diskR'] ?? 0);
+            $deltaDiskWrite = $counters->diskWriteOps - MixedValue::toFloat($last['diskW'] ?? 0);
+            $deltaNetRx = $counters->netRxBytes - MixedValue::toFloat($last['netRx'] ?? 0);
+            $deltaNetTx = $counters->netTxBytes - MixedValue::toFloat($last['netTx'] ?? 0);
 
             // Отрицательная дельта — счётчики сбросились (перезагрузка сервера),
             // такую точку пропускаем и просто начинаем отсчёт заново

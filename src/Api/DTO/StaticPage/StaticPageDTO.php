@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace BC\Api\DTO\StaticPage;
 
 readonly class StaticPageDTO {
+    /**
+     * @param array<string, mixed> $content The content of the editor.
+     */
     public function __construct(
         public string $title,
         public string $shortTitle,

@@ -21,6 +21,7 @@ use BC\Core\Action\DTO\CreatePhotoTagRequest;
 use BC\Core\Action\DTO\SavePhotoTagRequest;
 use BC\Core\Action\PhotoTag\ICreatePhotoTagAction;
 use BC\Core\Action\PhotoTag\ISavePhotoTagAction;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\PhotoPhotoTag;
 use BC\Model\PhotoTag;
@@ -119,11 +120,11 @@ class PhotoTags extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'position')]
         int $position = 0
     ): CreatedDTO {
-        $response = null;
-        $this->handleActionWithException(
-            function () use (&$response, $title, $position) {
+        $response = $this->handleActionWithException(
+            function () use ($title, $position) {
                 $action = Container::getInstance()->getService(ICreatePhotoTagAction::class);
-                $response = $action->run(
+
+                return $action->run(
                     new CreatePhotoTagRequest(
                         title: $title,
                         position: $position
@@ -167,6 +168,9 @@ class PhotoTags extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'photo_tags', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]
@@ -190,7 +194,7 @@ class PhotoTags extends AEndpoint {
 
         $counts = [];
         foreach ($rows as $row) {
-            $counts[(int)$row['tag_id']] = (int)$row['photos_count'];
+            $counts[MixedValue::toInt($row['tag_id'])] = MixedValue::toInt($row['photos_count']);
         }
 
         return $counts;

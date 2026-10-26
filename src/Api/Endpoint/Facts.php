@@ -90,11 +90,11 @@ class Facts extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'content')]
         string $content
     ): CreatedDTO {
-        $response = null;
-        $this->handleActionWithException(
-            function () use (&$response, $title, $content) {
+        $response = $this->handleActionWithException(
+            function () use ($title, $content) {
                 $action = Container::getInstance()->getService(ICreateFactAction::class);
-                $response = $action->run(
+
+                return $action->run(
                     new CreateFactRequest(
                         title: $title,
                         content: $content
@@ -138,6 +138,9 @@ class Facts extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'facts', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]

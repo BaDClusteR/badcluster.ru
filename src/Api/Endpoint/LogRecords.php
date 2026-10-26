@@ -84,6 +84,9 @@ class LogRecords extends AEndpoint {
         );
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'log-records', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]

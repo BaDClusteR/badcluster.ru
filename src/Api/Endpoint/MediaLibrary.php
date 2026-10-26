@@ -16,6 +16,7 @@ use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Action\DTO\SaveMediaRequest;
 use BC\Core\Action\Media\ISaveMediaAction;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use Runway\Singleton\Container;
@@ -112,6 +113,9 @@ class MediaLibrary extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'media', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]
@@ -119,7 +123,7 @@ class MediaLibrary extends AEndpoint {
     ): SuccessfulResultDTO {
         // id из тела приводим к int: find() кладет массив в expr()->in(),
         // который подставляет значения в SQL без биндинга
-        $ids = array_map('intval', $rows);
+        $ids = array_map(MixedValue::toInt(...), $rows);
 
         // Удаляем через remove() каждой модели: заодно удаляются
         // тамбнейлы и файлы с диска

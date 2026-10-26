@@ -11,6 +11,7 @@ use ApiPlatform\Exception\BadRequestException;
 use BC\Api\Processor\IImageProcessor;
 use BC\Core\Converter\Media\IMediaConverter;
 use BC\Core\DTO\MediaDTO;
+use BC\Core\Helper\MixedValue;
 use BC\Model\Media;
 use BC\Provider\IPathsProvider;
 use getID3;
@@ -103,8 +104,9 @@ class Upload extends AEndpoint {
         $info = @getimagesize($imagePath);
         if ($this->isVideo($mime)) {
             $info = new getID3()->analyze($imagePath);
-            $width = (int) ($info['video']['resolution_x'] ?? 0);
-            $height = (int) ($info['video']['resolution_y'] ?? 0);
+            $video = is_array($info['video'] ?? null) ? $info['video'] : [];
+            $width = MixedValue::toInt($video['resolution_x'] ?? 0);
+            $height = MixedValue::toInt($video['resolution_y'] ?? 0);
         } else {
             $width = (int) ($info[0] ?? 0);
             $height = (int) ($info[1] ?? 0);

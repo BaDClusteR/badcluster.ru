@@ -114,6 +114,9 @@ class Comments extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'comments', method: 'DELETE')]
     public function deleteComments(
         #[API\Parameter(source: 'body', name: 'rows')]

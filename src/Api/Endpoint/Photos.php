@@ -19,6 +19,7 @@ use BC\Core\Action\DTO\CreatePhotoRequest;
 use BC\Core\Action\DTO\SavePhotoRequest;
 use BC\Core\Action\Photo\ICreatePhotoAction;
 use BC\Core\Action\Photo\ISavePhotoAction;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Model\Photo;
@@ -88,6 +89,9 @@ class Photos extends AEndpoint {
     }
 
     /**
+     * @param array<mixed> $image ['id' => media id]
+     * @param array<mixed> $tags  Tag ids.
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'photo', method: 'POST')]
@@ -103,11 +107,11 @@ class Photos extends AEndpoint {
     ): CreatedDTO {
         $media = $this->requireMedia($image, 'Ошибки при создании фотки');
 
-        $response = null;
-        $this->handleActionWithException(
-            function () use (&$response, $media, $alt, $position, $tags) {
+        $response = $this->handleActionWithException(
+            function () use ($media, $alt, $position, $tags) {
                 $action = Container::getInstance()->getService(ICreatePhotoAction::class);
-                $response = $action->run(
+
+                return $action->run(
                     new CreatePhotoRequest(
                         media: $media,
                         alt: $alt,
@@ -125,6 +129,9 @@ class Photos extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $image ['id' => media id]
+     * @param array<mixed>      $tags  Tag ids.
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'photo/{identifier}', method: 'PUT')]
@@ -142,7 +149,7 @@ class Photos extends AEndpoint {
     ): SuccessfulResultDTO {
         // image.id = 0 приходит для существующей картинки фотки (см. PhotoDataBuilder),
         // media ищем только для свежей загрузки
-        $media = ($image !== null) && ((int) ($image['id'] ?? 0) > 0)
+        $media = ($image !== null) && (MixedValue::toInt($image['id'] ?? 0) > 0)
             ? $this->requireMedia($image, 'Ошибки при сохранении фотки')
             : null;
 
@@ -165,6 +172,9 @@ class Photos extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows Photo ids.
+     */
     #[API\Endpoint(path: 'photos', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]
@@ -172,7 +182,7 @@ class Photos extends AEndpoint {
     ): SuccessfulResultDTO {
         // id из тела приводим к int: find() кладет массив в expr()->in(),
         // который подставляет значения в SQL без биндинга
-        $ids = array_map('intval', $rows);
+        $ids = array_map(MixedValue::toInt(...), $rows);
 
         // Удаляем через remove() каждой модели, а не bulk-запросом:
         // Media::remove() заодно удаляет файл с диска.
@@ -189,6 +199,8 @@ class Photos extends AEndpoint {
     }
 
     /**
+     * @param array<mixed> $image ['id' => media id]
+     *
      * @throws UnprocessableEntityException
      */
     private function requireMedia(array $image, string $errorTitle): Media {
@@ -205,10 +217,12 @@ class Photos extends AEndpoint {
     }
 
     /**
+     * @param array<mixed> $tagIds
+     *
      * @return PhotoTag[]
      */
     private function findTags(array $tagIds): array {
-        $tagIds = array_map('intval', $tagIds);
+        $tagIds = array_map(MixedValue::toInt(...), $tagIds);
 
         return $tagIds
             ? $this->handleWithException(

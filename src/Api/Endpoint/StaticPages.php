@@ -84,6 +84,8 @@ class StaticPages extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $content The content of the editor.
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'static-page', method: 'POST')]
@@ -111,7 +113,6 @@ class StaticPages extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'backLinkUrl')]
         string $backLinkUrl = ''
     ): CreatedDTO {
-        $response = null;
         $request = new CreateStaticPageRequest(
             title: $title,
             shortTitle: $shortTitle,
@@ -126,10 +127,11 @@ class StaticPages extends AEndpoint {
             backLinkUrl: $backLinkUrl
         );
 
-        $this->handleActionWithException(
-            function () use (&$response, $request) {
+        $response = $this->handleActionWithException(
+            static function () use ($request) {
                 $action = Container::getInstance()->getService(ICreateStaticPageAction::class);
-                $response = $action->run($request);
+
+                return $action->run($request);
             },
             'Ошибки при создании страницы'
         );
@@ -140,6 +142,8 @@ class StaticPages extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $content The content of the editor.
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'static-page/{identifier}', method: 'PUT')]
@@ -195,6 +199,9 @@ class StaticPages extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows Page ids.
+     */
     #[API\Endpoint(path: 'static-pages', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]

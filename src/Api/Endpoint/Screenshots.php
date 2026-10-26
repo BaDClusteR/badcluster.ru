@@ -19,6 +19,7 @@ use BC\Core\Action\DTO\CreateScreenshotRequest;
 use BC\Core\Action\DTO\SaveScreenshotRequest;
 use BC\Core\Action\Screenshot\ICreateScreenshotAction;
 use BC\Core\Action\Screenshot\ISaveScreenshotAction;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Model\Screenshot;
@@ -87,6 +88,8 @@ class Screenshots extends AEndpoint {
     }
 
     /**
+     * @param array<mixed> $image ['id' => media id]
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'screenshot', method: 'POST')]
@@ -100,11 +103,11 @@ class Screenshots extends AEndpoint {
     ): CreatedDTO {
         $media = $this->requireMedia($image, 'Ошибки при создании скриншота');
 
-        $response = null;
-        $this->handleActionWithException(
-            function () use (&$response, $media, $alt, $position) {
+        $response = $this->handleActionWithException(
+            function () use ($media, $alt, $position) {
                 $action = Container::getInstance()->getService(ICreateScreenshotAction::class);
-                $response = $action->run(
+
+                return $action->run(
                     new CreateScreenshotRequest(
                         media: $media,
                         alt: $alt,
@@ -121,6 +124,8 @@ class Screenshots extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $image ['id' => media id]
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'screenshot/{identifier}', method: 'PUT')]
@@ -136,7 +141,7 @@ class Screenshots extends AEndpoint {
     ): SuccessfulResultDTO {
         // Image.id = 0 приходит для существующей картинки скриншота (см. ScreenshotDataBuilder),
         // media ищем только для свежей загрузки
-        $media = ($image !== null) && ((int) ($image['id'] ?? 0) > 0)
+        $media = ($image !== null) && (MixedValue::toInt($image['id'] ?? 0) > 0)
             ? $this->requireMedia($image, 'Ошибки при сохранении скриншота')
             : null;
 
@@ -158,6 +163,9 @@ class Screenshots extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'screenshots', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]
@@ -165,7 +173,7 @@ class Screenshots extends AEndpoint {
     ): SuccessfulResultDTO {
         // id из тела приводим к int: find() кладет массив в expr()->in(),
         // который подставляет значения в SQL без биндинга
-        $ids = array_map('intval', $rows);
+        $ids = array_map(MixedValue::toInt(...), $rows);
 
         // Удаляем через remove() каждой модели, а не bulk-запросом:
         // Media::remove() заодно удаляет файл с диска
@@ -181,6 +189,8 @@ class Screenshots extends AEndpoint {
     }
 
     /**
+     * @param array<mixed> $image ['id' => media id]
+     *
      * @throws UnprocessableEntityException
      */
     private function requireMedia(array $image, string $errorTitle): Media {
