@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Blog\Widget;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\AuthTrait;
 use BC\Core\Trait\DateConverterTrait;
 use BC\Core\Trait\WebsiteSettingsTrait;
@@ -34,8 +35,6 @@ class Posts extends AWidget {
         if ($posts) {
             yield from $posts;
         }
-
-        yield;
     }
 
     protected function getTemplatePath(): string {
@@ -71,11 +70,11 @@ class Posts extends AWidget {
     }
 
     protected function getPage(): int {
-        return max(1, (int) ($this->context['pageNum'] ?? 1));
+        return max(1, MixedValue::toInt($this->context['pageNum'] ?? 1));
     }
 
     private function getTag(): string {
-        return (string) ($this->context['tag'] ?? '');
+        return MixedValue::toString($this->context['tag'] ?? '');
     }
 
     protected function getPages(): int {
@@ -83,7 +82,7 @@ class Posts extends AWidget {
 
         return $showBy === 0
             ? 1
-            : max(1, (int) ceil(($this->context['total'] ?? 0) / $showBy));
+            : max(1, (int) ceil(MixedValue::toInt($this->context['total'] ?? 0) / $showBy));
     }
 
     protected function getFirstPageUrl(): string {

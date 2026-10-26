@@ -6,7 +6,9 @@ namespace BC\Modules\Blog\Api\DTO;
 
 readonly class BlogPostDTO {
     /**
-     * @param string[] $tags
+     * @param array<string, mixed>|null $coverImage The media (MediaDTO::toArray()).
+     * @param array<string, mixed>      $content    The content of the editor.
+     * @param string[]                  $tags       The ids of the tags.
      */
     public function __construct(
         public int $id,

@@ -8,6 +8,9 @@ use BC\DTO\PulseItemDTO;
 use BC\Modules\Blog\Model\Post;
 
 class PulseItemsProvider extends \BC\Provider\PulseItemsProvider {
+    /**
+     * @return PulseItemDTO[]
+     */
     public function getPulseItemsUnsorted(): array {
         $items = parent::getPulseItemsUnsorted();
 

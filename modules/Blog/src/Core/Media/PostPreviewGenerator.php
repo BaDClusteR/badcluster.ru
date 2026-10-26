@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Modules\Blog\Core\Media;
 
 use BC\Core\Exception\ImageException;
+use BC\Core\Helper\MixedValue;
 use BC\Modules\Blog\Model\Post;
 use BC\Modules\Blog\Model\Tag;
 use GdImage;
@@ -128,7 +129,7 @@ readonly class PostPreviewGenerator implements IPostPreviewGenerator {
                 0,
                 0,
                 $diagonal,
-                imagecolorallocate(
+                $this->allocateColor(
                     $canvas,
                     (int) round($from[0] + ($to[0] - $from[0]) * $ratio),
                     (int) round($from[1] + ($to[1] - $from[1]) * $ratio),
@@ -157,7 +158,7 @@ readonly class PostPreviewGenerator implements IPostPreviewGenerator {
                 $y,
                 self::WIDTH,
                 $y,
-                imagecolorallocatealpha($canvas, 0, 0, 0, (int) round(127 * (1 - $opacity)))
+                $this->allocateColor($canvas, 0, 0, 0, (int) round(127 * (1 - $opacity)))
             );
         }
     }
@@ -254,7 +255,13 @@ readonly class PostPreviewGenerator implements IPostPreviewGenerator {
 
         for ($x = 0; $x < $width; $x++) {
             for ($y = 0; $y < $height; $y++) {
-                $color = imagecolorsforindex($logo, imagecolorat($logo, $x, $y));
+                $colorIndex = imagecolorat($logo, $x, $y);
+
+                if ($colorIndex === false) {
+                    continue;
+                }
+
+                $color = imagecolorsforindex($logo, $colorIndex);
                 $isDark = max($color['red'], $color['green'], $color['blue']) < 0x80;
 
                 if (!$isDark || $color['alpha'] === 127) {
@@ -266,7 +273,7 @@ readonly class PostPreviewGenerator implements IPostPreviewGenerator {
                     $logo,
                     $x,
                     $y,
-                    imagecolorallocatealpha($logo, 0xFF, 0xFF, 0xFF, (int) round(127 * (1 - $opacity)))
+                    $this->allocateColor($logo, 0xFF, 0xFF, 0xFF, (int) round(127 * (1 - $opacity)))
                 );
             }
         }
@@ -353,29 +360,74 @@ readonly class PostPreviewGenerator implements IPostPreviewGenerator {
     /**
      * Белый текст с лёгкой тенью, чтобы читался и на светлых участках обложки.
      */
+    /**
+     * @throws ImageException
+     */
     private function drawText(GdImage $canvas, string $font, int $size, int $x, int $y, string $text): void {
-        $box = imagettfbbox($size, 0, $font, $text);
+        $box = $this->getTextBox($font, $size, $text);
         // bbox считается от базовой линии, и левый край может выступать —
         // сдвигаем, чтобы текст начинался ровно в $x
         $x -= $box[0];
 
-        $shadow = imagecolorallocatealpha($canvas, 0, 0, 0, 60);
+        $shadow = $this->allocateColor($canvas, 0, 0, 0, 60);
         $shadowOffset = max(1, (int) round($size / 30));
         imagettftext($canvas, $size, 0, $x + $shadowOffset, $y + $shadowOffset, $shadow, $font, $text);
 
-        imagettftext($canvas, $size, 0, $x, $y, imagecolorallocate($canvas, 0xFF, 0xFF, 0xFF), $font, $text);
+        imagettftext($canvas, $size, 0, $x, $y, $this->allocateColor($canvas, 0xFF, 0xFF, 0xFF), $font, $text);
     }
 
+    /**
+     * @throws ImageException
+     */
     private function getTextWidth(string $font, int $size, string $text): int {
-        $box = imagettfbbox($size, 0, $font, $text);
+        $box = $this->getTextBox($font, $size, $text);
 
         return $box[2] - $box[0];
     }
 
+    /**
+     * @throws ImageException
+     */
     private function getTextHeight(string $font, int $size, string $text): int {
-        $box = imagettfbbox($size, 0, $font, $text);
+        $box = $this->getTextBox($font, $size, $text);
 
         return $box[1] - $box[7];
+    }
+
+    /**
+     * @return array<int> The corners of the text: imagettfbbox().
+     *
+     * @throws ImageException
+     */
+    private function getTextBox(string $font, int $size, string $text): array {
+        $box = imagettfbbox($size, 0, $font, $text);
+
+        if ($box === false) {
+            throw new ImageException("Cannot get the box of a text with the font $font");
+        }
+
+        return array_map(MixedValue::toInt(...), $box);
+    }
+
+    /**
+     * Цвет RGB (0–255) с прозрачностью (0 — непрозрачный, 127 — прозрачный).
+     *
+     * @throws ImageException
+     */
+    private function allocateColor(GdImage $image, int $red, int $green, int $blue, int $alpha = 0): int {
+        $color = imagecolorallocatealpha(
+            $image,
+            max(0, min(255, $red)),
+            max(0, min(255, $green)),
+            max(0, min(255, $blue)),
+            max(0, min(127, $alpha))
+        );
+
+        if ($color === false) {
+            throw new ImageException('Cannot allocate a color');
+        }
+
+        return $color;
     }
 
     /**

@@ -41,6 +41,10 @@ class NotePage extends APageWithBlocks {
         $this->note ??= $context['note'];
     }
 
+    private function getNote(): NoteModel {
+        return $this->note ?? throw new RuntimeException(__METHOD__ . ': note is not set');
+    }
+
     public function getHeader(): string {
         return '';
     }
@@ -63,6 +67,9 @@ class NotePage extends APageWithBlocks {
         );
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
         $list[] = 'post';
@@ -71,15 +78,15 @@ class NotePage extends APageWithBlocks {
     }
 
     public function getTitle(): string {
-        return $this->note->getTitle() . ' :: ' . $this->getTitleBase();
+        return $this->getNote()->getTitle() . ' :: ' . $this->getTitleBase();
     }
 
     public function getMetaTitle(): string {
-        return $this->note->getTitle() . ' — ' . parent::getMetaTitle();
+        return $this->getNote()->getTitle() . ' — ' . parent::getMetaTitle();
     }
 
     public function getMetaDescription(): string {
-        return $this->note->getMetaDescription();
+        return $this->getNote()->getMetaDescription();
     }
 
     public function getOpenGraphType(): string {
@@ -95,7 +102,7 @@ class NotePage extends APageWithBlocks {
             ),
             new MetaTagDTO(
                 name: 'og:article:published_time',
-                content: $this->note->getPublishDate()->format(DATE_ATOM),
+                content: $this->getNote()->getPublishDate()->format(DATE_ATOM),
             ),
         ];
     }

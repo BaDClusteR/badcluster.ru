@@ -7,6 +7,9 @@ namespace BC\Modules\Blog\Core\Action\DTO;
 use DateTime;
 
 readonly class SaveNoteRequest {
+    /**
+     * @param array<string, mixed> $content The content of the editor.
+     */
     public function __construct(
         public int $id,
         public string $title,

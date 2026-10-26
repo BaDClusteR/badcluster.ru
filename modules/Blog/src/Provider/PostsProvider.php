@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Blog\Provider;
 
+use BC\Core\Helper\EntityList;
 use BC\Modules\Blog\Model\Post;
 use BC\Modules\Blog\Model\Tag;
 use Runway\DataStorage\Exception\DBException;
@@ -54,7 +55,7 @@ readonly class PostsProvider implements IPostsProvider {
            ->setLimit($showBy, $offset);
 
         try {
-            return $qb->iterateEntities();
+            return EntityList::iterate(Post::class, $qb->iterateEntities());
         } catch (Exception $e) {
             $this->logger->error(
                 sprintf('[%s] Cannot iterate posts: %s', __METHOD__, $e->getMessage()),
@@ -96,6 +97,9 @@ readonly class PostsProvider implements IPostsProvider {
         return $qb;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getLogContext(Exception $e, string $tag, int $page, bool $onlyPublished): array {
         return [
             'tag'           => $tag,

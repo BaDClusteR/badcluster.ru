@@ -14,6 +14,7 @@ use BC\Api\DTO\SuccessfulResultDTO;
 use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Modules\Blog\Api\DataBuilder\Post\IBlogPostDataBuilder;
 use BC\Modules\Blog\Api\DTO\BlogPostDTO;
@@ -92,6 +93,10 @@ class BlogPost extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $content    The content of the editor (a JSON object).
+     * @param array<mixed>         $tags       The ids of the tags.
+     * @param array<mixed>|null    $coverImage The media: ['id' => ..., 'alt' => ...].
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'post', method: 'POST')]
@@ -121,7 +126,6 @@ class BlogPost extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'coverImage')]
         ?array $coverImage = null,
     ): CreatedDTO {
-        $response = null;
         $request = $this->handleWithException(
             fn () => new CreatePostRequest(
                 title: $title,
@@ -137,17 +141,18 @@ class BlogPost extends AEndpoint {
                     ? $this->dateConverter->toDateTime($updateDate)
                     : null,
                 coverImage: $this->findMedia($coverImage),
-                coverImageAltText: (string) ($coverImage['alt'] ?? ''),
+                coverImageAltText: MixedValue::toString($coverImage['alt'] ?? ''),
                 tags: Tag::find([
                     'id' => $tags,
                 ])
             )
         );
 
-        $this->handleActionWithException(
-            function () use (&$response, $request) {
+        $response = $this->handleActionWithException(
+            static function () use ($request) {
                 $action = Container::getInstance()->getService(ICreatePostAction::class);
-                $response = $action->run($request);
+
+                return $action->run($request);
             },
             'Ошибки при создании поста'
         );
@@ -158,6 +163,10 @@ class BlogPost extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $content    The content of the editor (a JSON object).
+     * @param array<mixed>         $tags       The ids of the tags.
+     * @param array<mixed>|null    $coverImage The media: ['id' => ..., 'alt' => ...].
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'post/{identifier}', method: 'PUT')]
@@ -205,7 +214,7 @@ class BlogPost extends AEndpoint {
                     ? $this->dateConverter->toDateTime($updateDate)
                     : null,
                 coverImage: $this->findMedia($coverImage),
-                coverImageAltText: (string) ($coverImage['alt'] ?? ''),
+                coverImageAltText: MixedValue::toString($coverImage['alt'] ?? ''),
                 tags: Tag::find([
                     'id' => $tags,
                 ])
@@ -223,6 +232,9 @@ class BlogPost extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids of the posts.
+     */
     #[API\Endpoint(path: 'posts', method: 'DELETE')]
     public function deletePosts(
         #[API\Parameter(source: 'body', name: 'rows')]

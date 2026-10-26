@@ -23,37 +23,37 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
         $settings->addNavItem(
             new NavigationDTO(
                 label: 'Блог',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                icon: $this->getIcon('icon.svg'),
                 position: 100,
                 children: [
                     new NavigationDTO(
                         label: 'Посты',
                         path: '/admin/blog',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/posts.svg'),
+                        icon: $this->getIcon('posts.svg'),
                         position: 100
                     ),
                     new NavigationDTO(
                         label: 'Новый пост',
                         path: '/admin/blog/new',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/post.svg'),
+                        icon: $this->getIcon('post.svg'),
                         position: 200
                     ),
                     new NavigationDTO(
                         label: 'Тэги',
                         path: '/admin/blog/tags',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/tags.svg'),
+                        icon: $this->getIcon('tags.svg'),
                         position: 300
                     ),
                     new NavigationDTO(
                         label: 'Заметки',
                         path: '/admin/blog/notes',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/notes.svg'),
+                        icon: $this->getIcon('notes.svg'),
                         position: 400
                     ),
                     new NavigationDTO(
                         label: 'Добавить заметку',
                         path: '/admin/blog/notes/new',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/note.svg'),
+                        icon: $this->getIcon('note.svg'),
                         position: 500
                     )
                 ]
@@ -69,5 +69,16 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
         );
 
         return $settings;
+    }
+
+    /**
+     * @return string|null The SVG of the icon of the admin app, null if it cannot be read.
+     */
+    private function getIcon(string $filename): ?string {
+        $svg = file_get_contents(__DIR__ . "/../../../app/assets/$filename");
+
+        return ($svg !== false)
+            ? $svg
+            : null;
     }
 }

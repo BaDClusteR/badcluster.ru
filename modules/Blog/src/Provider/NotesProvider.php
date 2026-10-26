@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Modules\Blog\Provider;
 
 use BC\Core\Auth\IAuth;
+use BC\Core\Helper\EntityList;
 use BC\Modules\Blog\Model\Note;
 use Runway\Exception\Exception;
 use Runway\Logger\ILogger;
@@ -27,7 +28,10 @@ readonly class NotesProvider implements INotesProvider {
 
             // yield from, а не return: запрос выполняется лениво, при обходе, и его
             // ошибка должна попасть в этот catch, а не уронить страницу (меню, sitemap)
-            yield from $qb->orderBy('publish_date', 'DESC')->iterateEntities();
+            yield from EntityList::iterate(
+                Note::class,
+                $qb->orderBy('publish_date', 'DESC')->iterateEntities()
+            );
         } catch (Exception $e) {
             $this->logger->error(
                 sprintf('[%s] Cannot get notes: %s', __METHOD__, $e->getMessage()),

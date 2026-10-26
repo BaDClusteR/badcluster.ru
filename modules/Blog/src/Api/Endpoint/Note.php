@@ -91,6 +91,8 @@ class Note extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $content The content of the editor (a JSON object).
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'note', method: 'POST')]
@@ -108,7 +110,6 @@ class Note extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'metaDescription')]
         string $metaDescription = ''
     ): CreatedDTO {
-        $response = null;
         $request = $this->handleWithException(
             fn () => new CreateNoteRequest(
                 title: $title,
@@ -120,10 +121,11 @@ class Note extends AEndpoint {
             )
         );
 
-        $this->handleActionWithException(
-            function () use (&$response, $request) {
+        $response = $this->handleActionWithException(
+            static function () use ($request) {
                 $action = Container::getInstance()->getService(ICreateNoteAction::class);
-                $response = $action->run($request);
+
+                return $action->run($request);
             },
             'Ошибки при создании заметки'
         );
@@ -134,6 +136,8 @@ class Note extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $content The content of the editor (a JSON object).
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'note/{identifier}', method: 'PUT')]
@@ -176,6 +180,9 @@ class Note extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids of the notes.
+     */
     #[API\Endpoint(path: 'notes', method: 'DELETE')]
     public function deleteNotes(
         #[API\Parameter(source: 'body', name: 'rows')]

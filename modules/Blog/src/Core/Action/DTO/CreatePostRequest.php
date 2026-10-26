@@ -10,7 +10,8 @@ use DateTime;
 
 readonly class CreatePostRequest {
     /**
-     * @param Tag[] $tags
+     * @param array<string, mixed> $content The content of the editor.
+     * @param Tag[]                $tags
      */
     public function __construct(
         public string $title,

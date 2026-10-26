@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Modules\Blog\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Core\Helper\MixedValue;
 use BC\Modules\Blog\Model\Tag;
 use BC\Modules\Blog\Widget\Posts;
 use BC\Widget\AWidget;
@@ -22,15 +23,15 @@ class BlogPage extends APage {
         parent::applyContext($context);
 
         if (array_key_exists('tag', $this->context)) {
-            $this->tag = (string) $this->context['tag'];
+            $this->tag = MixedValue::toString($this->context['tag']);
         }
 
         if (array_key_exists('page', $this->context)) {
-            $this->page = (int) $this->context['page'];
+            $this->page = MixedValue::toInt($this->context['page']);
         }
 
         if (array_key_exists('total', $this->context)) {
-            $this->total = (int) $this->context['total'];
+            $this->total = MixedValue::toInt($this->context['total']);
         }
     }
 
@@ -103,6 +104,9 @@ class BlogPage extends APage {
         ]);
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
         $list[] = 'posts';

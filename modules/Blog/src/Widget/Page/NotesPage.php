@@ -41,6 +41,9 @@ class NotesPage extends APage {
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
 

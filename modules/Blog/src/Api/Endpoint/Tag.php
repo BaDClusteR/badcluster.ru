@@ -170,6 +170,9 @@ class Tag extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows The ids of the tags.
+     */
     #[API\Endpoint(path: 'tags', method: 'DELETE')]
     public function deleteTags(
         #[API\Parameter(source: 'body', name: 'rows')]

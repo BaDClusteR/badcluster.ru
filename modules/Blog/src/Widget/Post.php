@@ -59,7 +59,9 @@ class Post extends AWidget {
     }
 
     protected function getTitle(): string {
-        return $this->post->getTitle();
+        $post = $this->post ?? throw new RuntimeException(__METHOD__ . ': post is not set');
+
+        return $post->getTitle();
     }
 
     protected function getDateTime(DateTime $dt): string {

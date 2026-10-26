@@ -53,6 +53,10 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
         $this->post ??= $context['post'];
     }
 
+    private function getPost(): Post {
+        return $this->post ?? throw new RuntimeException(__METHOD__ . ': post is not set');
+    }
+
     public function getHeader(): string {
         return '';
     }
@@ -75,6 +79,9 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
         );
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
         $list[] = 'post';
@@ -87,11 +94,11 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
     }
 
     private function getPostTitle(): string {
-        return $this->post->getTitle();
+        return $this->getPost()->getTitle();
     }
 
     public function getMetaDescription(): string {
-        return $this->post->getMetaDescription() ?: $this->post->getAnnotation();
+        return $this->getPost()->getMetaDescription() ?: $this->getPost()->getAnnotation();
     }
 
     public function getMetaTitle(): string {
@@ -111,18 +118,18 @@ class PostPage extends APageWithBlocks implements IPageWithComments {
             ),
             new MetaTagDTO(
                 name: 'og:article:published_time',
-                content: $this->post->getPublishDate()->format(DATE_ATOM),
+                content: $this->getPost()->getPublishDate()->format(DATE_ATOM),
             ),
         ];
 
-        if ($modified = $this->post->getUpdateDate()) {
+        if ($modified = $this->getPost()->getUpdateDate()) {
             $list[] = new MetaTagDTO(
                 name: 'og:article:modified_time',
                 content: $modified->format(DATE_ATOM),
             );
         }
 
-        foreach ($this->post->getTags() as $tag) {
+        foreach ($this->getPost()->getTags() as $tag) {
             $list[] = new MetaTagDTO(
                 name: 'og:article:tag',
                 content: $tag->getTitle(),
