@@ -13,7 +13,7 @@ class UnprocessableEntityException extends Exception {
         private readonly ?string $error = null,
         ?Throwable $previous = null
     ) {
-        parent::__construct($error, 422, $previous);
+        parent::__construct($error ?? '', 422, $previous);
     }
 
     public function getError(): ?string {
