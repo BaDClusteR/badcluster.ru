@@ -171,6 +171,7 @@ class S3Client {
      * Signed request with retries. The body is either a string or a slice of a local file
      * [path, offset, length], streamed from disk.
      *
+     * @param non-empty-string                     $method
      * @param array<string, string>                $query
      * @param array{0: string, 1: int, 2: int}|null $fileSlice
      * @param array<string, string>                $headers extra headers, lowercase names; all are signed
@@ -223,6 +224,7 @@ class S3Client {
     }
 
     /**
+     * @param non-empty-string                     $method
      * @param array<string, string>                $query
      * @param array{0: string, 1: int, 2: int}|null $fileSlice
      * @param array<string, string>                $headers
@@ -277,7 +279,7 @@ class S3Client {
                 CURLOPT_INFILE       => $handle,
                 CURLOPT_INFILESIZE   => $length,
                 CURLOPT_READFUNCTION => static function ($curl, $stream, int $maxLength) use ($handle, &$remaining): string {
-                    if ($remaining <= 0) {
+                    if (($remaining <= 0) || ($maxLength <= 0)) {
                         return '';
                     }
 
@@ -331,7 +333,7 @@ class S3Client {
      *
      * @param array<string, string> $headers
      *
-     * @return string[]
+     * @return list<string>
      */
     private function sign(string $method, string $path, string $queryString, array $headers, string $payloadHash): array {
         $amzDate = gmdate('Ymd\THis\Z');

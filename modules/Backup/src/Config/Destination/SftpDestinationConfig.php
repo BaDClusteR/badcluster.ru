@@ -24,6 +24,8 @@ readonly class SftpDestinationConfig extends DestinationConfig {
         /**
          * Optional SHA256 pin of the server's host key (base64, the part after "SHA256:" in
          * `ssh-keyscan host | ssh-keygen -lf -` output). Null → no host key verification.
+         *
+         * @var non-empty-string|null
          */
         public ?string $hostKeySha256 = null,
         /**

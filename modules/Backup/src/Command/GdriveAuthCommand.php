@@ -133,9 +133,17 @@ class GdriveAuthCommand extends ACommand {
         $data = json_decode((string)file_get_contents($path), true);
 
         // Google wraps desktop-client credentials in "installed" (or "web" for web clients).
-        $client = $data['installed'] ?? $data['web'] ?? $data;
+        $client = is_array($data)
+            ? ($data['installed'] ?? $data['web'] ?? $data)
+            : null;
 
-        if (empty($client['client_id']) || empty($client['client_secret'])) {
+        if (
+            !is_array($client)
+            || empty($client['client_id'])
+            || empty($client['client_secret'])
+            || !is_string($client['client_id'])
+            || !is_string($client['client_secret'])
+        ) {
             throw new \RuntimeException(
                 'The credentials file has no client_id/client_secret. '
                 . 'Download the JSON of an OAuth client of type "Desktop app".'
@@ -160,10 +168,17 @@ class GdriveAuthCommand extends ACommand {
         preg_match('/^GET\s+(\S+)/', $requestLine, $match);
         parse_str((string)parse_url($match[1] ?? '', PHP_URL_QUERY), $query);
 
-        $isOk = isset($query['code']);
+        // The values of the query are strings or arrays (?code[]=…).
+        $code = $query['code'] ?? null;
+        $error = $query['error'] ?? null;
+        $error = is_string($error)
+            ? $error
+            : 'no code in the redirect';
+
+        $isOk = is_string($code);
         $message = $isOk
             ? 'Authorised! You can close this tab and return to the console.'
-            : 'Authorisation failed: ' . ($query['error'] ?? 'no code in the redirect') . ' — see the console.';
+            : 'Authorisation failed: ' . $error . ' — see the console.';
 
         fwrite(
             $connection,
@@ -173,10 +188,10 @@ class GdriveAuthCommand extends ACommand {
         fclose($connection);
 
         if (!$isOk) {
-            throw new \RuntimeException('Authorisation failed: ' . ($query['error'] ?? 'no code in the redirect'));
+            throw new \RuntimeException('Authorisation failed: ' . $error);
         }
 
-        return (string)$query['code'];
+        return $code;
     }
 
     private function exchangeCode(string $code, string $clientId, string $clientSecret, string $redirectUri): string {
@@ -201,14 +216,17 @@ class GdriveAuthCommand extends ACommand {
         }
 
         $data = json_decode((string)$response, true);
+        $refreshToken = is_array($data)
+            ? ($data['refresh_token'] ?? null)
+            : null;
 
-        if (empty($data['refresh_token'])) {
+        if (empty($refreshToken) || !is_string($refreshToken)) {
             throw new \RuntimeException(
                 'Token endpoint returned no refresh_token: ' . mb_substr((string)$response, 0, 300)
             );
         }
 
-        return $data['refresh_token'];
+        return $refreshToken;
     }
 
     private function writeTokenFile(string $path, string $clientId, string $clientSecret, string $refreshToken): void {

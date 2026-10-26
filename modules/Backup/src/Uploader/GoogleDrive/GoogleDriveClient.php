@@ -48,7 +48,17 @@ class GoogleDriveClient {
             'includeItemsFromAllDrives' => 'true',
         ]));
 
-        return $response['files'][0]['id'] ?? null;
+        $files = $response['files'] ?? null;
+        $file = is_array($files)
+            ? ($files[0] ?? null)
+            : null;
+        $id = is_array($file)
+            ? ($file['id'] ?? null)
+            : null;
+
+        return is_string($id)
+            ? $id
+            : null;
     }
 
     /** Creates a sub-folder and returns its ID. */
@@ -63,11 +73,13 @@ class GoogleDriveClient {
             ]
         );
 
-        if (empty($response['id'])) {
+        $id = $response['id'] ?? null;
+
+        if (empty($id) || !is_string($id)) {
             throw new BackupException('Google Drive: folder creation returned no id.');
         }
 
-        return $response['id'];
+        return $id;
     }
 
     /**
@@ -103,18 +115,24 @@ class GoogleDriveClient {
         }
 
         $file = $this->decodeJson($response);
+        $id = $file['id'] ?? null;
 
-        if (empty($file['id'])) {
+        if (empty($id) || !is_string($id)) {
             throw new BackupException('Google Drive: upload finished but no file id was returned.');
         }
 
-        return $file;
+        // The session asks for these fields only ("id, webViewLink").
+        $webViewLink = $file['webViewLink'] ?? null;
+
+        return is_string($webViewLink)
+            ? ['id' => $id, 'webViewLink' => $webViewLink]
+            : ['id' => $id];
     }
 
     /**
      * Lists non-trashed files in a folder, newest (by createdTime) first.
      *
-     * @return array<array{id: string, name: string, createdTime: string}>
+     * @return list<array{id: string, name: string, createdTime: string}>
      */
     public function listFiles(string $parentId): array {
         $response = $this->request('GET', self::API_BASE . '/files?' . http_build_query([
@@ -126,7 +144,21 @@ class GoogleDriveClient {
             'includeItemsFromAllDrives' => 'true',
         ]));
 
-        return $response['files'] ?? [];
+        $files = $response['files'] ?? [];
+        $result = [];
+
+        // The request asks for these fields only ("files(id, name, createdTime)").
+        foreach (is_array($files) ? $files : [] as $file) {
+            $id = is_array($file) ? ($file['id'] ?? null) : null;
+            $name = is_array($file) ? ($file['name'] ?? null) : null;
+            $createdTime = is_array($file) ? ($file['createdTime'] ?? null) : null;
+
+            if (is_string($id) && is_string($name) && is_string($createdTime)) {
+                $result[] = ['id' => $id, 'name' => $name, 'createdTime' => $createdTime];
+            }
+        }
+
+        return $result;
     }
 
     /** Permanently deletes a file (service-account-owned files bypass the trash). */
@@ -174,6 +206,10 @@ class GoogleDriveClient {
 
     /**
      * JSON request against the Drive API with Bearer auth.
+     *
+     * @param array<string, mixed>|null $jsonBody
+     *
+     * @return array<mixed> The decoded response.
      */
     private function request(string $method, string $url, ?array $jsonBody = null): array {
         $options = [CURLOPT_CUSTOMREQUEST => $method];
@@ -195,6 +231,8 @@ class GoogleDriveClient {
     /**
      * Low-level curl call. Adds the Bearer header unless the caller supplied its own
      * CURLOPT_HTTPHEADER (or asked to skip). Throws on curl errors and HTTP >= 400.
+     *
+     * @param array<int, mixed> $options CURLOPT_* => value.
      */
     protected function rawRequest(string $url, array $options, bool $skipAuthHeader = false): string {
         $curl = curl_init();
@@ -237,7 +275,9 @@ class GoogleDriveClient {
             ? $this->buildServiceAccountTokenRequest($key)
             : $this->buildRefreshTokenRequest($key);
 
-        $response = $this->rawRequest($key['token_uri'] ?? 'https://oauth2.googleapis.com/token', [
+        $tokenUri = $key['token_uri'] ?? null;
+
+        $response = $this->rawRequest(is_string($tokenUri) ? $tokenUri : 'https://oauth2.googleapis.com/token', [
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS    => http_build_query($tokenRequest),
         ], skipAuthHeader: true);
@@ -252,13 +292,21 @@ class GoogleDriveClient {
     }
 
     /**
+     * @param array<mixed> $key The key file.
+     *
      * @return array<string, string>
      */
     private function buildServiceAccountTokenRequest(array $key): array {
+        $values = [];
+
         foreach (['client_email', 'private_key', 'token_uri'] as $field) {
-            if (empty($key[$field])) {
+            $value = $key[$field] ?? null;
+
+            if (empty($value) || !is_string($value)) {
                 throw new BackupException('Google Drive: service-account key file lacks "' . $field . '".');
             }
+
+            $values[$field] = $value;
         }
 
         $now = time();
@@ -267,38 +315,44 @@ class GoogleDriveClient {
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
             'assertion'  => $this->buildJwt(
                 [
-                    'iss'   => $key['client_email'],
+                    'iss'   => $values['client_email'],
                     'scope' => self::SCOPE,
-                    'aud'   => $key['token_uri'],
+                    'aud'   => $values['token_uri'],
                     'iat'   => $now,
                     'exp'   => $now + 3600,
                 ],
-                $key['private_key']
+                $values['private_key']
             ),
         ];
     }
 
     /**
+     * @param array<mixed> $key The key file.
+     *
      * @return array<string, string>
      */
     private function buildRefreshTokenRequest(array $key): array {
+        $request = ['grant_type' => 'refresh_token'];
+
         foreach (['client_id', 'client_secret', 'refresh_token'] as $field) {
-            if (empty($key[$field])) {
+            $value = $key[$field] ?? null;
+
+            if (empty($value) || !is_string($value)) {
                 throw new BackupException(
                     'Google Drive: key file is neither a service-account key nor an OAuth token file '
                     . '(missing "' . $field . '"). Run `./console backup:gdrive-auth` to create one.'
                 );
             }
+
+            $request[$field] = $value;
         }
 
-        return [
-            'grant_type'    => 'refresh_token',
-            'client_id'     => $key['client_id'],
-            'client_secret' => $key['client_secret'],
-            'refresh_token' => $key['refresh_token'],
-        ];
+        return $request;
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function readKeyFile(): array {
         if (!is_readable($this->keyFilePath)) {
             throw new BackupException('Google Drive: key file is not readable: ' . $this->keyFilePath);
@@ -307,6 +361,9 @@ class GoogleDriveClient {
         return $this->decodeJson((string)file_get_contents($this->keyFilePath));
     }
 
+    /**
+     * @param array<string, mixed> $claims
+     */
     private function buildJwt(array $claims, string $privateKey): string {
         $segments = [
             $this->base64UrlEncode(json_encode(['alg' => 'RS256', 'typ' => 'JWT'], JSON_THROW_ON_ERROR)),
@@ -315,7 +372,7 @@ class GoogleDriveClient {
 
         $signed = openssl_sign(implode('.', $segments), $signature, $privateKey, OPENSSL_ALGO_SHA256);
 
-        if (!$signed) {
+        if (!$signed || !is_string($signature)) {
             throw new BackupException('Google Drive: cannot sign the auth JWT (bad private key?).');
         }
 
@@ -328,6 +385,9 @@ class GoogleDriveClient {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function decodeJson(string $json): array {
         $data = json_decode($json, true);
 

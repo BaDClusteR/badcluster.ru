@@ -24,7 +24,12 @@ class CurlSftpTransport implements ISftpTransport {
             return false;
         }
 
-        return in_array('sftp', (curl_version()['protocols'] ?? []), true);
+        $version = curl_version();
+        $protocols = is_array($version)
+            ? ($version['protocols'] ?? [])
+            : [];
+
+        return is_array($protocols) && in_array('sftp', $protocols, true);
     }
 
     public function getUnavailabilityReason(): string {
@@ -41,6 +46,13 @@ class CurlSftpTransport implements ISftpTransport {
             return UploadResult::fail('Cannot open archive for reading: ' . $target->localFile);
         }
 
+        $size = filesize($target->localFile);
+        if ($size === false) {
+            fclose($handle);
+
+            return UploadResult::fail('Cannot get the size of the archive: ' . $target->localFile);
+        }
+
         $url = 'sftp://' . $destination->host . ':' . $destination->port
             . $this->buildUrlPath($destination, $target);
 
@@ -48,7 +60,7 @@ class CurlSftpTransport implements ISftpTransport {
             CURLOPT_URL                     => $url,
             CURLOPT_UPLOAD                  => true,
             CURLOPT_INFILE                  => $handle,
-            CURLOPT_INFILESIZE              => filesize($target->localFile),
+            CURLOPT_INFILESIZE              => $size,
             CURLOPT_FTP_CREATE_MISSING_DIRS => CURLFTP_CREATE_DIR,
             CURLOPT_CONNECTTIMEOUT          => 30,
             // No hard time limit — a full backup on a slow link can legitimately take hours.

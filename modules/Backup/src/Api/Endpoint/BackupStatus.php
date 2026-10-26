@@ -7,6 +7,7 @@ namespace BC\Modules\Backup\Api\Endpoint;
 use ApiPlatform\Attribute as API;
 use ApiPlatform\Attribute\Docs;
 use BC\Api\Endpoint\AEndpoint;
+use BC\Core\Helper\MixedValue;
 use BC\Modules\Backup\Api\DTO\BackupDestinationStatusDTO;
 use BC\Modules\Backup\Api\DTO\BackupStatusDTO;
 use BC\Modules\Backup\Model\BackupLog;
@@ -56,9 +57,9 @@ class BackupStatus extends AEndpoint {
 
         return array_map(
             static fn (array $result): BackupDestinationStatusDTO => new BackupDestinationStatusDTO(
-                name: (string) ($result['name'] ?? ''),
+                name: MixedValue::toString($result['name'] ?? ''),
                 success: (bool) ($result['success'] ?? false),
-                error: (string) ($result['error'] ?? '')
+                error: MixedValue::toString($result['error'] ?? '')
             ),
             array_values(array_filter($results, 'is_array'))
         );

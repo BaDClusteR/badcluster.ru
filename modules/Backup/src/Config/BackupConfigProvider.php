@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Backup\Config;
 
+use BC\Core\Helper\MixedValue;
 use BC\Modules\Backup\Config\Destination\DestinationConfig;
 use BC\Modules\Backup\Config\Destination\FtpDestinationConfig;
 use BC\Modules\Backup\Config\Destination\GoogleDriveDestinationConfig;
@@ -131,7 +132,7 @@ class BackupConfigProvider implements IBackupConfigProvider {
             return $default;
         }
 
-        return (string)$value;
+        return MixedValue::toString($value, $default);
     }
 
     private function bool(string $key, bool $default): bool {
@@ -159,7 +160,7 @@ class BackupConfigProvider implements IBackupConfigProvider {
 
         return array_values(
             array_filter(
-                array_map('trim', explode(',', (string)$value)),
+                array_map('trim', explode(',', MixedValue::toString($value))),
                 static fn(string $item): bool => $item !== ''
             )
         );

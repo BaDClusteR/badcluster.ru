@@ -13,7 +13,6 @@ use Runway\Singleton\Container;
  */
 class UploaderResolver implements IUploaderResolver {
     public function resolve(DestinationConfig $destination): IBackupUploader {
-        /** @var IBackupUploader $uploader */
         foreach (Container::getInstance()->getServicesByTag('backup.uploader') as $uploader) {
             if ($uploader instanceof IBackupUploader && $uploader->supports($destination)) {
                 return $uploader;

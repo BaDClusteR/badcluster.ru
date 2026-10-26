@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Backup\Dumper;
 
+use BC\Core\Helper\MixedValue;
 use BC\Modules\Backup\Config\DatabaseConfig;
 use BC\Modules\Backup\Exception\BackupException;
 use Runway\DataStorage\IDataStorageDriver;
@@ -62,6 +63,9 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
         return $result;
     }
 
+    /**
+     * @param array{host?: string, port?: string, dbname?: string, charset?: string} $dsn
+     */
     private function writeDefaultsFile(array $dsn, ?string $user, ?string $password, string $charset): string {
         $path = tempnam(sys_get_temp_dir(), 'bc-backup-my-');
 
@@ -105,7 +109,7 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     private function buildCommand(
         DatabaseConfig $config,
@@ -114,7 +118,7 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
         string $prefix,
         string $charset,
     ): array {
-        $binary = (string) ($this->env->getEnvVariable('BACKUP_MYSQLDUMP_BIN') ?: 'mysqldump');
+        $binary = MixedValue::toString($this->env->getEnvVariable('BACKUP_MYSQLDUMP_BIN')) ?: 'mysqldump';
 
         $command = [
             $binary,
@@ -179,7 +183,7 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
      * @return string[]
      */
     private function extraArgs(): array {
-        $raw = trim((string) ($this->env->getEnvVariable('BACKUP_MYSQLDUMP_EXTRA_ARGS') ?? ''));
+        $raw = trim(MixedValue::toString($this->env->getEnvVariable('BACKUP_MYSQLDUMP_EXTRA_ARGS')));
 
         if ($raw === '') {
             return [];
@@ -189,7 +193,7 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
     }
 
     /**
-     * @param string[] $command
+     * @param list<string> $command
      */
     protected function run(array $command, string $outputFile): void {
         $output = fopen($outputFile, 'wb');
