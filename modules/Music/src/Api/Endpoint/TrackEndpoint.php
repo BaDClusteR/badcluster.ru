@@ -261,7 +261,7 @@ class TrackEndpoint extends AEndpoint {
         #[API\Parameter(source: 'body', name: 'rows')]
         array $rows
     ): SuccessfulResultDTO {
-        $this->deleteEntities(Song::class, $rows);
+        $this->deleteEntities(Track::class, $rows);
 
         return new SuccessfulResultDTO();
     }
