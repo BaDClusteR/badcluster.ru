@@ -12,10 +12,9 @@ class Formatter implements IFormatter {
 
         foreach (static::SIZE_POSTFIXES as $i => $postfix) {
             if ($size < 1024 || $i === count(static::SIZE_POSTFIXES) - 1) {
-                $sizeStr = rtrim(number_format($size, 2), '0.');
-                if (!$sizeStr) {
-                    $sizeStr = '0';
-                }
+                // Нули срезаем только у дробной части: rtrim(…, '0.') делал из «10.00» «1»,
+                // а разделитель тысяч — «1,» из «1,000.00»
+                $sizeStr = rtrim(rtrim(number_format($size, 2, '.', ''), '0'), '.');
 
                 return sprintf('%s %s', $sizeStr, $postfix);
             }
