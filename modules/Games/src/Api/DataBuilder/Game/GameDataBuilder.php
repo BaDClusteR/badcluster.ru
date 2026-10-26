@@ -2,6 +2,7 @@
 
 namespace BC\Modules\Games\Api\DataBuilder\Game;
 
+use BC\Core\Helper\MixedValue;
 use BC\Model\Media;
 use BC\Modules\Games\Api\DTO\GameDTO;
 use BC\Modules\Games\Api\DTO\GameRowDTO;
@@ -20,14 +21,14 @@ class GameDataBuilder implements IGameDataBuilder {
      */
     public function buildRow(array $game): GameRowDTO {
         $cover = Media::findByUniqueIdentifier(
-            (int) ($game['cover_id'] ?? 0)
+            MixedValue::toInt($game['cover_id'] ?? 0)
         );
 
         return new GameRowDTO(
-            id: (int) ($game['id'] ?? 0),
-            title: (string) ($game['title'] ?? ''),
+            id: MixedValue::toInt($game['id'] ?? 0),
+            title: MixedValue::toString($game['title'] ?? ''),
             cover: $cover?->toMediaDTO(),
-            count: (int) ($game['count'] ?? 0),
+            count: MixedValue::toInt($game['count'] ?? 0),
         );
     }
 

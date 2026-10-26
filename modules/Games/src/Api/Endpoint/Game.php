@@ -98,6 +98,8 @@ class Game extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $coverImage ['id' => media id]
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'game', method: 'POST')]
@@ -130,6 +132,8 @@ class Game extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $coverImage ['id' => media id]
+     *
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
@@ -189,6 +193,9 @@ class Game extends AEndpoint {
         }
     }
 
+    /**
+     * @param array<mixed> $rows Game ids.
+     */
     #[API\Endpoint(path: 'games', method: 'DELETE')]
     public function deletePosts(
         #[API\Parameter(source: 'body', name: 'rows')]

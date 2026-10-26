@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Games\Controller;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Response\SuccessfulHtmlResponse;
 use BC\Core\Trait\Controller404Trait;
 use BC\Model\Media;
@@ -42,7 +43,7 @@ readonly class Games {
 
             $coverIds = array_filter(
                 array_map(
-                    static fn (array $row): int => (int) ($row['cover_id'] ?? 0),
+                    static fn (array $row): int => MixedValue::toInt($row['cover_id'] ?? 0),
                     $gameRows
                 )
             );
@@ -52,7 +53,7 @@ readonly class Games {
             Media::preloadThumbnails($coversById);
 
             foreach ($gameRows as $row) {
-                $coverId = (int) ($row['cover_id'] ?? 0);
+                $coverId = MixedValue::toInt($row['cover_id'] ?? 0);
                 unset($row['cover_id']);
 
                 $game = new Game()->map($row);
@@ -68,7 +69,7 @@ readonly class Games {
             $materialRows = GameMaterial::getQueryBuilder()->orderBy('id', 'ASC')->getResults();
 
             foreach ($materialRows as $row) {
-                $gameDTO = $games[(int) ($row['game_id'] ?? 0)] ?? null;
+                $gameDTO = $games[MixedValue::toInt($row['game_id'] ?? 0)] ?? null;
 
                 if (!$gameDTO) {
                     continue;
@@ -116,8 +117,8 @@ readonly class Games {
         $qb = $entityFQN::getQueryBuilder();
         $entities = [];
 
-        foreach ($qb->where($qb->expr()->in('id', $ids))->getResults() as $row) {
-            $id = (int) $row['id'];
+        foreach ($qb->where($qb->expr()->in('id', array_map(strval(...), $ids)))->getResults() as $row) {
+            $id = MixedValue::toInt($row['id']);
 
             foreach ($stripColumns as $column) {
                 unset($row[$column]);

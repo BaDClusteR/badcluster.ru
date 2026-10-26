@@ -23,6 +23,9 @@ class GameDTO {
         return $this;
     }
 
+    /**
+     * @return GameMaterial[]
+     */
     public function getMaterials(): array {
         return $this->materials;
     }

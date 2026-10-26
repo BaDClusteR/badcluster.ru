@@ -23,31 +23,31 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
         $settings->addNavItem(
             new NavigationDTO(
                 label: 'Игры',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg'),
+                icon: file_get_contents(__DIR__ . '/../../../app/assets/icon.svg') ?: null,
                 position: 200,
                 children: [
                     new NavigationDTO(
                         label: 'Список игр',
                         path: '/admin/games',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/games.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/games.svg') ?: null,
                         position: 100
                     ),
                     new NavigationDTO(
                         label: 'Добавить игру',
                         path: '/admin/games/new',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/games.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/games.svg') ?: null,
                         position: 200
                     ),
                     new NavigationDTO(
                         label: 'Материалы',
                         path: '/admin/games/materials',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/materials.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/materials.svg') ?: null,
                         position: 300
                     ),
                     new NavigationDTO(
                         label: 'Новый материал',
                         path: '/admin/games/materials/new',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/materials.svg'),
+                        icon: file_get_contents(__DIR__ . '/../../../app/assets/materials.svg') ?: null,
                         position: 400
                     ),
                 ]

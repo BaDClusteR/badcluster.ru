@@ -3,6 +3,7 @@
 namespace BC\Modules\Games\Api\DataBuilder\GameMaterial;
 
 use BC\Core\Converter\IDateConverter;
+use BC\Core\Helper\MixedValue;
 use BC\Modules\Games\Api\DTO\GameMaterialDTO;
 use BC\Modules\Games\Api\DTO\GameMaterialRowDTO;
 use BC\Modules\Games\Api\DTO\GameMaterialRowGameDTO;
@@ -16,31 +17,31 @@ readonly class GameMaterialDataBuilder implements IGameMaterialDataBuilder {
     }
 
     public function buildRow(array $data): GameMaterialRowDTO {
-        $timestamp = (int) ($data['date_added'] ?? 0);
+        $timestamp = MixedValue::toInt($data['date_added'] ?? 0);
 
         if (($data['type'] ?? '') === GameMaterialModel::TYPE_FILE) {
             $title = empty($data['title'])
                 ? '[Безымянный материал]'
-                : $data['title'];
+                : MixedValue::toString($data['title']);
         } else {
             $title = empty($data['short_title'])
                 ? '[Безымянная статья]'
-                : '[Статья] ' . $data['short_title'];
+                : '[Статья] ' . MixedValue::toString($data['short_title']);
         }
 
         return new GameMaterialRowDTO(
-            id: (int) ($data['id'] ?? 0),
+            id: MixedValue::toInt($data['id'] ?? 0),
             game: new GameMaterialRowGameDTO(
-                id: (int) ($data['game_id'] ?? 0),
-                title: (string) ($data['game_title'] ?? ''),
+                id: MixedValue::toInt($data['game_id'] ?? 0),
+                title: MixedValue::toString($data['game_title'] ?? ''),
             ),
-            title: (string) $title,
-            game_title: (string) ($data['game_title'] ?? ''),
+            title: $title,
+            game_title: MixedValue::toString($data['game_title'] ?? ''),
             date_added: $timestamp
                 ? $this->dateConverter->toShortForm($timestamp)
                 : '-',
-            type: (string) ($data['type'] ?? ''),
-            annotation: (string) ($data['annotation'] ?? '')
+            type: MixedValue::toString($data['type'] ?? ''),
+            annotation: MixedValue::toString($data['annotation'] ?? '')
         );
     }
 

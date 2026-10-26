@@ -40,7 +40,10 @@ class GamesListPage extends APage {
      * @return GameDTO[]
      */
     protected function getGames(): array {
-        return (array) ($this->context['games'] ?? []);
+        return array_filter(
+            (array) ($this->context['games'] ?? []),
+            static fn (mixed $game): bool => $game instanceof GameDTO
+        );
     }
 
     public static function getAssets(): array {

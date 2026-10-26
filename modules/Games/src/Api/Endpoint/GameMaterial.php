@@ -15,6 +15,7 @@ use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
 use BC\Core\Formatter\IFormatter;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Modules\Games\Api\DataBuilder\GameMaterial\IGameMaterialDataBuilder;
 use BC\Modules\Games\Api\DTO\GameDTO;
@@ -139,6 +140,10 @@ class GameMaterial extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $description       The content of the editor (a JSON object).
+     * @param array<string, mixed> $setupInstructions The content of the editor (a JSON object).
+     * @param array<mixed>|null    $file              The uploaded file: ['id' => ...].
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'material', method: 'POST')]
@@ -209,6 +214,10 @@ class GameMaterial extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $description       The content of the editor (a JSON object).
+     * @param array<string, mixed> $setupInstructions The content of the editor (a JSON object).
+     * @param array<mixed>|null    $file              The uploaded file: ['id' => ...].
+     *
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
@@ -285,6 +294,9 @@ class GameMaterial extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
+    /**
+     * @param array<mixed> $rows Material ids.
+     */
     #[API\Endpoint(path: 'materials', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]
@@ -296,21 +308,22 @@ class GameMaterial extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $file The uploaded file: ['id' => ...].
+     *
      * @throws UnprocessableEntityException
      */
     protected function getFile(?array $file): ?GameMaterialFile {
         $materialFile = null;
         if (!empty($file['id'])) {
+            $fileId = MixedValue::toInt($file['id']);
             $materialFile = $this->handleWithException(
-                static fn () => GameMaterialFile::findByUniqueIdentifier(
-                    (int) ($file['id'])
-                )
+                static fn () => GameMaterialFile::findByUniqueIdentifier($fileId)
             );
 
             if (!$materialFile) {
                 throw new UnprocessableEntityException(
-                    ['file' => "Файл #{$file['id']} не найден"],
-                    "Ошибка: файл #{$file['id']} не найден."
+                    ['file' => "Файл #$fileId не найден"],
+                    "Ошибка: файл #$fileId не найден."
                 );
             }
         }
@@ -337,6 +350,10 @@ class GameMaterial extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $description
+     * @param array<string, mixed> $setupInstructions
+     * @param array<mixed>|null    $file
+     *
      * @throws UnprocessableEntityException
      */
     protected function validate(
