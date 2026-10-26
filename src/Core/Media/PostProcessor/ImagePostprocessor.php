@@ -26,6 +26,8 @@ readonly class ImagePostprocessor implements IImagePostprocessor {
      * @return Media[][]
      */
     public function postProcessThumbnails(array $thumbnailGroups): array {
+        $pairs = [];
+
         foreach ($thumbnailGroups as $group) {
             $webp = $this->getWebpThumbnail($group);
             $avif = $this->getAvifThumbnail($group);
@@ -33,6 +35,8 @@ readonly class ImagePostprocessor implements IImagePostprocessor {
             if (!$webp || !$avif || $webp->getSize() - $avif->getSize() > $this->significantSizeDifferenceBytes) {
                 return $thumbnailGroups;
             }
+
+            $pairs[] = [$webp, $avif];
         }
 
         /*
@@ -40,19 +44,16 @@ readonly class ImagePostprocessor implements IImagePostprocessor {
          * corresponding AVIF thumbnails is less than self::SIGNIFICANT_SIZE_DIFFERENCE.
          */
         $newGroups = [];
-        foreach ($thumbnailGroups as $group) {
-            $webp = $this->getWebpThumbnail($group);
-            $avif = $this->getAvifThumbnail($group);
-
+        foreach ($pairs as [$webp, $avif]) {
             try {
                 $avif->remove();
             } catch (Exception $e) {
                 $this->getLogger()->warning(
                     "Cannot delete redundant AVIF thumbnail: {$e->getMessage()}",
                     [
-                        'webp_id' => $webp?->getId(),
+                        'webp_id' => $webp->getId(),
                         'avif_id' => $avif->getId(),
-                        'parent'  => $avif->getParent()->getId(),
+                        'parent'  => $avif->getParent()?->getId(),
                     ]
                 );
             }
@@ -63,14 +64,23 @@ readonly class ImagePostprocessor implements IImagePostprocessor {
         return $newGroups;
     }
 
+    /**
+     * @param Media[] $thumbnailGroup
+     */
     private function getWebpThumbnail(array $thumbnailGroup): ?Media {
         return $this->getThumbnailByMimeType($thumbnailGroup, 'image/webp');
     }
 
+    /**
+     * @param Media[] $thumbnailGroup
+     */
     private function getAvifThumbnail(array $thumbnailGroup): ?Media {
         return $this->getThumbnailByMimeType($thumbnailGroup, 'image/avif');
     }
 
+    /**
+     * @param Media[] $thumbnailGroup
+     */
     private function getThumbnailByMimeType(array $thumbnailGroup, string $mimeType): ?Media {
         return array_find(
             $thumbnailGroup,

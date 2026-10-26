@@ -43,6 +43,9 @@ readonly class ThumbnailsGenerator implements IThumbnailsGenerator {
      * @return IImagePostprocessor[]
      */
     private function getImagePostprocessors(): array {
-        return Container::getInstance()->getServicesByTag('image.postprocessor');
+        return array_filter(
+            Container::getInstance()->getServicesByTag('image.postprocessor'),
+            static fn (mixed $postprocessor): bool => $postprocessor instanceof IImagePostprocessor
+        );
     }
 }

@@ -25,7 +25,7 @@ class ResizeCommand extends ACommand {
     public function execute(): void {
         $command = $this->getCommand();
 
-        /** @var string[] $output */
+        $output = [];
         exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {

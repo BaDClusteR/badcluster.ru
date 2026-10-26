@@ -6,14 +6,12 @@ namespace BC\Core\Media;
 
 use BC\Core\Media\Processor\IImageProcessor;
 use BC\Model\Media;
-use BC\Provider\IPathsProvider;
 use Runway\Exception\Exception;
 use Runway\Logger\ILogger;
 use Runway\Singleton\Container;
 
 readonly class ThumbnailGenerator implements IThumbnailGenerator {
     public function __construct(
-        private IPathsProvider $pathProvider,
         private ILogger $logger
     ) {
     }
@@ -69,7 +67,7 @@ readonly class ThumbnailGenerator implements IThumbnailGenerator {
                         ->setHeight($thumbnailDTO->height)
                         ->setMime($thumbnailDTO->mime)
                         ->setMd5($thumbnailDTO->md5)
-                        ->setSize(filesize($thumbnailDTO->path))
+                        ->setSize($thumbnailDTO->size)
                         ->setParent($image);
 
                     $model->persist();

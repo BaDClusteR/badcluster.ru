@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Core\Log;
 
+use BC\Core\Helper\MixedValue;
 use BC\Model\LogRecord;
 use DateTime;
 use DateTimeImmutable;
@@ -134,7 +135,9 @@ class LogRecorder implements ILogRecorder {
 
     private function getUrl(): string {
         if ($this->request->isCLI()) {
-            return 'CLI: ' . implode(' ', $_SERVER['argv'] ?? []);
+            $argv = $_SERVER['argv'] ?? [];
+
+            return 'CLI: ' . implode(' ', is_array($argv) ? array_map(MixedValue::toString(...), $argv) : []);
         }
 
         return $this->request->getMethod() . ' ' . $this->request->getRequestUri();
@@ -143,6 +146,8 @@ class LogRecorder implements ILogRecorder {
     /**
      * Стектрейс исключения из контекста (оттуда он убирается, чтобы не
      * дублироваться), а если исключения нет — место, откуда писали в лог
+     *
+     * @param array<mixed> $context
      */
     private function extractTrace(array &$context): string {
         foreach (self::TRACE_KEYS as $key) {
@@ -152,7 +157,7 @@ class LogRecorder implements ILogRecorder {
 
                 return is_array($trace)
                     ? $this->formatFrames($trace)
-                    : (string) $trace;
+                    : MixedValue::toString($trace);
             }
         }
 
@@ -177,6 +182,8 @@ class LogRecorder implements ILogRecorder {
 
     /**
      * В формате Exception::getTraceAsString(), с путями от корня проекта
+     *
+     * @param array<mixed> $frames
      */
     private function formatFrames(array $frames): string {
         $lines = [];
@@ -187,22 +194,26 @@ class LogRecorder implements ILogRecorder {
             }
 
             $place = isset($frame['file'])
-                ? str_replace(PROJECT_ROOT . '/', '', (string) $frame['file']) . '(' . ($frame['line'] ?? '?') . ')'
+                ? str_replace(PROJECT_ROOT . '/', '', MixedValue::toString($frame['file']))
+                    . '(' . MixedValue::toString($frame['line'] ?? '?') . ')'
                 : '[internal function]';
 
             $lines[] = sprintf(
                 '#%d %s: %s%s%s()',
                 $i,
                 $place,
-                $frame['class'] ?? '',
-                $frame['type'] ?? '',
-                $frame['function'] ?? ''
+                MixedValue::toString($frame['class'] ?? ''),
+                MixedValue::toString($frame['type'] ?? ''),
+                MixedValue::toString($frame['function'] ?? '')
             );
         }
 
         return implode("\n", $lines);
     }
 
+    /**
+     * @param array<mixed> $context
+     */
     private function encodeContext(array $context): string {
         if (!$context) {
             return '';

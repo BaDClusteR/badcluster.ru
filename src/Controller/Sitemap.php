@@ -34,6 +34,9 @@ class Sitemap {
      * @return ISitemapPagesProvider[]
      */
     private function getSitemapPagesProviders(): array {
-        return Container::getInstance()->getServicesByTag('sitemap');
+        return array_filter(
+            Container::getInstance()->getServicesByTag('sitemap'),
+            static fn (mixed $provider): bool => $provider instanceof ISitemapPagesProvider
+        );
     }
 }

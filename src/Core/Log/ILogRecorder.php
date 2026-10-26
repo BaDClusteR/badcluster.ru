@@ -13,6 +13,7 @@ interface ILogRecorder {
      * EVENT_RECORDED.
      *
      * @param string $level Уровень, как его пишет логгер: WARNING, ERROR, …
+     * @param array<mixed> $context Контекст записи (исключение, стектрейс и т.д.).
      */
     public function record(string $level, string $message, array $context): void;
 

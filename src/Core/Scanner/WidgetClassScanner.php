@@ -8,6 +8,7 @@ use BC\Provider\IPathsProvider;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SplFileInfo;
 
 readonly class WidgetClassScanner implements IWidgetClassScanner {
     public function __construct(
@@ -28,7 +29,7 @@ readonly class WidgetClassScanner implements IWidgetClassScanner {
             );
 
             foreach ($iterator as $file) {
-                if ($file->getExtension() !== 'php') {
+                if (!($file instanceof SplFileInfo) || ($file->getExtension() !== 'php')) {
                     continue;
                 }
 
@@ -45,6 +46,10 @@ readonly class WidgetClassScanner implements IWidgetClassScanner {
 
     private function extractClassName(string $filePath): ?string {
         $content = file_get_contents($filePath);
+
+        if ($content === false) {
+            return null;
+        }
 
         $namespace = '';
         if (preg_match('/^\s*namespace\s+([^;{]+)/m', $content, $m)) {

@@ -11,6 +11,7 @@ use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
 use Runway\Exception\Exception;
 
 abstract class ARedirectAction {
+    /** @var int[] */
     protected const array ALLOWED_CODES = [301, 410];
 
     /**

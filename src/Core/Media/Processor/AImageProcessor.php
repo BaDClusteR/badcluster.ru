@@ -6,6 +6,7 @@ namespace BC\Core\Media\Processor;
 
 use BC\Core\DTO\ImageDTO;
 use BC\Core\Exception\ImageException;
+use BC\Core\Helper\MixedValue;
 use BC\Core\Media\Processor\Command\ResizeCommand;
 use Runway\Env\Provider\IEnvVariablesProvider;
 use Runway\Singleton\Container;
@@ -39,8 +40,8 @@ abstract readonly class AImageProcessor implements IImageProcessor {
         //        }
 
         $output = $this->getFreeOutputPath(
-            $pathInfo['dirname'] ?? '',
-            $pathInfo['filename'] ?? '',
+            $pathInfo['dirname'],
+            $pathInfo['filename'],
             $sizeSuffix
         );
 
@@ -60,13 +61,20 @@ abstract readonly class AImageProcessor implements IImageProcessor {
             throw new ImageException("Cannot get image meta info for $output. Is it an image?");
         }
 
+        $size = filesize($output);
+        $md5 = md5_file($output);
+
+        if (($size === false) || ($md5 === false)) {
+            throw new ImageException("Cannot read $output");
+        }
+
         return new ImageDTO(
             $output,
-            (int) ($sizes[0] ?? 0),
-            (int) ($sizes[1] ?? 0),
-            (string) ($sizes['mime'] ?? ''),
-            filesize($output),
-            md5_file($output)
+            $sizes[0],
+            $sizes[1],
+            $sizes['mime'],
+            $size,
+            $md5
         );
     }
 
@@ -102,7 +110,7 @@ abstract readonly class AImageProcessor implements IImageProcessor {
     }
 
     private function getVipsThumbnailPath(): string {
-        return (string) $this->getEnvVariablesProvider()->getEnvVariable('VIPSTHUMBNAIL_PATH');
+        return MixedValue::toString($this->getEnvVariablesProvider()->getEnvVariable('VIPSTHUMBNAIL_PATH'));
     }
 
     private function getEnvVariablesProvider(): IEnvVariablesProvider {

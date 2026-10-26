@@ -62,6 +62,11 @@ class MaskingLogger implements ILogger {
         $this->inner->emergency($message, $this->maskArray($context));
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
     protected function maskArray(array $data, int $depth = 0): array {
         if ($depth > static::MAX_DEPTH) {
             return $data;

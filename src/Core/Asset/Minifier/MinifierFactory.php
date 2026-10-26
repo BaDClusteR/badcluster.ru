@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Core\Asset\Minifier;
 
+use BC\Core\Helper\MixedValue;
 use Runway\Env\Provider\IEnvVariablesProvider;
 use Runway\Logger\ILogger;
 
@@ -25,7 +26,7 @@ class MinifierFactory implements IMinifier {
             $nodePath = $this->envVariablesProvider->getEnvVariable('NODE_PATH');
 
             $this->minifier = $nodePath
-                ? new NodeMinifier($this->logger, (string) $nodePath)
+                ? new NodeMinifier($this->logger, MixedValue::toString($nodePath))
                 : new PhpMinifier();
         }
 

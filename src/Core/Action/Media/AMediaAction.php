@@ -17,7 +17,11 @@ use Runway\FileSystem\Exception\FileSystemException;
 abstract class AMediaAction {
     use FileSystemTrait;
 
-    /** Ширины тамбнейлов, которые генерируются для каждой картинки. */
+    /**
+     * Ширины тамбнейлов, которые генерируются для каждой картинки.
+     *
+     * @var int[]
+     */
     protected const array THUMBNAIL_WIDTHS = [500, 1000, 2000];
 
     /**

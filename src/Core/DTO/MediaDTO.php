@@ -20,6 +20,9 @@ readonly class MediaDTO {
     ) {
     }
 
+    /**
+     * @return array{id: int, url: string, width: int, height: int, mime: string, alt: string, thumbs: array<array{id: int, width: int, height: int, mime: string, url: string}>}
+     */
     public function toArray(): array {
         return [
             'id' => $this->id,

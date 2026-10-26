@@ -48,7 +48,15 @@ class LogRotateCommand extends ACommand {
     protected function execute(IInput $input, IOutput $output): int {
         $keepDays = max(1, (int) ($input->getOption('keep-days') ?? 90));
         $today = date('Y-m-d');
-        $oldestKept = date('Y-m-d', strtotime("-$keepDays days"));
+        $oldestKeptTimestamp = strtotime("-$keepDays days");
+
+        if ($oldestKeptTimestamp === false) {
+            $output->error("Cannot get the date $keepDays days ago.");
+
+            return 1;
+        }
+
+        $oldestKept = date('Y-m-d', $oldestKeptTimestamp);
         $compressed = 0;
         $deleted = 0;
 

@@ -14,6 +14,9 @@ readonly class MediaThumbnailDTO {
     ) {
     }
 
+    /**
+     * @return array{id: int, width: int, height: int, mime: string, url: string}
+     */
     public function toArray(): array {
         return [
             'id'     => $this->id,

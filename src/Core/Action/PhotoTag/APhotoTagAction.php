@@ -6,6 +6,7 @@ namespace BC\Core\Action\PhotoTag;
 
 use BC\Core\Action\DTO\CreatePhotoTagRequest;
 use BC\Core\Action\DTO\SavePhotoTagRequest;
+use BC\Core\Helper\MixedValue;
 use BC\Model\PhotoTag;
 use BC\Modules\Blog\Core\Action\Exception\ActionValidationException;
 use Runway\Exception\Exception;
@@ -59,7 +60,7 @@ abstract class APhotoTagAction {
             $max = 0;
         }
 
-        return ((int) $max) + 100;
+        return MixedValue::toInt($max) + 100;
     }
 
     private function getTagWithTheSameTitle(CreatePhotoTagRequest|SavePhotoTagRequest $request): ?PhotoTag {

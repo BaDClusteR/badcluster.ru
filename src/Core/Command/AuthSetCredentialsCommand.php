@@ -46,6 +46,13 @@ class AuthSetCredentialsCommand extends ACommand {
                 : throw new InvalidAnswerException('The passwords do not match.')
         );
 
+        // The answers of the validators: strings.
+        if (!is_string($login) || !is_string($password)) {
+            $output->error('The login and the password must be strings.');
+
+            return 1;
+        }
+
         try {
             $this->auth->setCredentials($login, $password);
         } catch (BadRequestException $e) {

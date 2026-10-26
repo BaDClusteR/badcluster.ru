@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Logger;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Log\ILogRecorder;
 use Runway\Logger\Enum\LogLevelEnum;
 use Runway\Logger\ILogger;
@@ -74,6 +75,9 @@ class AlertingLogger implements ILogger {
         $this->record('EMERGENCY', $message, $context);
     }
 
+    /**
+     * @param array<mixed> $context
+     */
     protected function record(string $level, string $message, array $context): void {
         if ($this->isRecording || $this->isClientError($context)) {
             return;
@@ -100,8 +104,11 @@ class AlertingLogger implements ILogger {
         return Container::getInstance()->getService(ILogRecorder::class);
     }
 
+    /**
+     * @param array<mixed> $context
+     */
     protected function isClientError(array $context): bool {
-        $code = (int) ($context[self::CONTEXT_HTTP_CODE] ?? 0);
+        $code = MixedValue::toInt($context[self::CONTEXT_HTTP_CODE] ?? 0);
 
         return $code >= 400 && $code < 500;
     }

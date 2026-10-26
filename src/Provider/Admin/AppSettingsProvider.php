@@ -40,46 +40,46 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
             new NavigationDTO(
                 label: 'Медиа',
                 path: '',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/media.svg'),
+                icon: $this->getIcon('media.svg'),
                 position: 9900,
                 children: [
                     new NavigationDTO(
                         label: 'Медиатека',
                         path: '/admin/media',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/media.svg')
+                        icon: $this->getIcon('media.svg')
                     ),
                     new NavigationDTO(
                         label: 'Скриншоты',
                         path: '/admin/screenshots',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/joystick.svg')
+                        icon: $this->getIcon('joystick.svg')
                     ),
                     new NavigationDTO(
                         label: 'Фотки',
                         path: '/admin/photos',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/photo.svg')
+                        icon: $this->getIcon('photo.svg')
                     ),
                     new NavigationDTO(
                         label: 'Тэги фоток',
                         path: '/admin/photo-tags',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/photo-tag.svg')
+                        icon: $this->getIcon('photo-tag.svg')
                     )
                 ]
             ),
             new NavigationDTO(
                 label: 'Виджеты',
                 path: '',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/widgets.svg'),
+                icon: $this->getIcon('widgets.svg'),
                 position: 12000,
                 children: [
                     new NavigationDTO(
                         label: 'Фан-факты',
                         path: '/admin/facts',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/fun-fact.svg')
+                        icon: $this->getIcon('fun-fact.svg')
                     ),
                     new NavigationDTO(
                         label: 'Новостные блоки',
                         path: '/admin/pulse',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/news.svg')
+                        icon: $this->getIcon('news.svg')
                     )
                 ]
             ),
@@ -94,19 +94,19 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
                     new NavigationDTO(
                         label: 'Редиректы',
                         path: '/admin/redirects',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/redirect.svg')
+                        icon: $this->getIcon('redirect.svg')
                     ),
                     new NavigationDTO(
                         label: 'Журнал ошибок',
                         path: '/admin/logs',
-                        icon: file_get_contents(__DIR__ . '/../../../app/assets/log.svg')
+                        icon: $this->getIcon('log.svg')
                     )
                 ]
             ),
             new NavigationDTO(
                 label: 'Страницы',
                 path: '/admin/static-pages',
-                icon: file_get_contents(__DIR__ . '/../../../app/assets/static-page.svg'),
+                icon: $this->getIcon('static-page.svg'),
                 position: 15000
             ),
             new NavigationDTO(
@@ -123,5 +123,16 @@ readonly class AppSettingsProvider implements IAppSettingsProvider {
      */
     private function getModules(): array {
         return [];
+    }
+
+    /**
+     * @return string|null The SVG of the icon of the admin app, null if it cannot be read.
+     */
+    private function getIcon(string $filename): ?string {
+        $svg = file_get_contents(__DIR__ . "/../../../app/assets/$filename");
+
+        return ($svg !== false)
+            ? $svg
+            : null;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Core\Formatter;
 
 class Formatter implements IFormatter {
+    /** @var string[] */
     protected const array SIZE_POSTFIXES = ['байт', 'Кб', 'Мб', 'Гб', 'Тб', 'Пб', 'Эб'];
 
     public function formatAsHumanReadableSize(int $sizeInBytes): string {

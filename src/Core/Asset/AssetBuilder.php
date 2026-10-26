@@ -6,12 +6,11 @@ namespace BC\Core\Asset;
 
 use BC\Core\Asset\DTO\BundleFileDTO;
 use BC\Core\Asset\Minifier\IMinifier;
+use BC\Core\Helper\MixedValue;
 use BC\Core\Scanner\IWidgetClassScanner;
 use BC\Model\Config;
 use BC\Provider\IPathsProvider;
 use BC\Widget\IAssetProvider;
-use ReflectionClass;
-use ReflectionException;
 use Runway\Exception\Exception;
 use Runway\FileSystem\Exception\CannotCreateDirectoryException;
 use Runway\FileSystem\Exception\CannotDeleteFileException;
@@ -152,19 +151,8 @@ class AssetBuilder implements IAssetBuilder {
      * and calls their static getAssets() method.
      */
     private function collectAssetsFromProviders(): void {
-        /** @var class-string<IAssetProvider> $className */
         foreach ($this->scanner->getWidgetClasses() as $className) {
-            try {
-                $reflection = new ReflectionClass($className);
-            } catch (ReflectionException $e) {
-                $this->logger->warning(
-                    sprintf('Cannot create Reflection for %s: %s', $className, $e->getMessage()),
-                );
-
-                continue;
-            }
-
-            if (!$reflection->implementsInterface(IAssetProvider::class)) {
+            if (!is_a($className, IAssetProvider::class, true)) {
                 continue;
             }
 
@@ -190,9 +178,9 @@ class AssetBuilder implements IAssetBuilder {
 
             if (!empty($extra['bundle']) && !empty($extra['path'])) {
                 $this->addFile(
-                    (string) $extra['bundle'],
-                    (string) $extra['path'],
-                    (int) ($extra['priority'] ?? 100),
+                    MixedValue::toString($extra['bundle']),
+                    MixedValue::toString($extra['path']),
+                    MixedValue::toInt($extra['priority'] ?? 100),
                 );
             }
         }
@@ -285,7 +273,7 @@ class AssetBuilder implements IAssetBuilder {
     }
 
     /**
-     * @return array{path: string, hash: string, version: integer}[]
+     * @return array<string, array{path: string, hash: string, version: int}> "bundle.type" => the stored bundle
      */
     private function loadStoredBundles(): array {
         try {
@@ -295,7 +283,30 @@ class AssetBuilder implements IAssetBuilder {
                 return [];
             }
 
-            return json_decode($config->getValue(), true, 512, JSON_THROW_ON_ERROR) ?: [];
+            $storedBundles = json_decode($config->getValue(), true, 512, JSON_THROW_ON_ERROR);
+
+            if (!is_array($storedBundles)) {
+                return [];
+            }
+
+            $bundles = [];
+
+            foreach ($storedBundles as $key => $bundle) {
+                if (
+                    is_array($bundle)
+                    && is_string($bundle['path'] ?? null)
+                    && is_string($bundle['hash'] ?? null)
+                    && is_int($bundle['version'] ?? null)
+                ) {
+                    $bundles[(string) $key] = [
+                        'path' => $bundle['path'],
+                        'hash' => $bundle['hash'],
+                        'version' => $bundle['version'],
+                    ];
+                }
+            }
+
+            return $bundles;
         } catch (\Exception $e) {
             $this->logger->warning(
                 'Error while loading stored bundles: ' . $e->getMessage()
@@ -306,7 +317,7 @@ class AssetBuilder implements IAssetBuilder {
     }
 
     /**
-     * @param array{path: string, hash: string, version: integer}[] $bundles
+     * @param array<string, array{path: string, hash: string, version: int}> $bundles
      *
      * @throws Exception
      */

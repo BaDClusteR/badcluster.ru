@@ -5,6 +5,9 @@ parameters:
         - src
         - modules
         - tests
+        # A trait of the API platform used by src/Controller/System/MethodNotAllowedController: PHPStan sees the code
+        # of a trait (here the reads of the $pathPrefix property of the class) only if the trait is analysed.
+        - vendor/bad_cluster/runway-api-platform/src/Controller/ApiPathTrait.php
     excludePaths:
         analyseAndScan:
             - modules/*/app/*

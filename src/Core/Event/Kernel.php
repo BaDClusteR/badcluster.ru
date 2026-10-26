@@ -10,10 +10,8 @@ use Exception;
 class Kernel {
     public function onInit(): void {
         try {
-            if ($timezone = Config::findOne(['name' => 'timezone'])) {
-                date_default_timezone_set(
-                    $timezone->getValue()
-                );
+            if ($timezone = Config::findOne(['name' => 'timezone'])?->getValue()) {
+                date_default_timezone_set($timezone);
             }
         } catch (Exception) {
         }

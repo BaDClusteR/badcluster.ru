@@ -8,6 +8,7 @@ use BC\Core\Action\DTO\GetCommentsRequest;
 use BC\Core\Action\DTO\GetCommentsResponse;
 use BC\Core\Auth\IAuth;
 use BC\Core\DTO\CommentDTO;
+use BC\Core\Helper\EntityList;
 use BC\Core\Trait\LoggerTrait;
 use BC\Model\Comment;
 use Runway\DataStorage\Exception\DBException;
@@ -77,7 +78,7 @@ class GetCommentsAction implements IGetCommentsAction {
 
         $comments = array_map(
             fn (Comment $comment) => $this->buildComment($comment, $statuses),
-            $qb->getEntities()
+            EntityList::of(Comment::class, $qb->getEntities())
         );
 
         return new GetCommentsResponse($comments);
