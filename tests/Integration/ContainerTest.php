@@ -16,6 +16,6 @@ final class ContainerTest extends TestCase {
         $driver = Container::getInstance()->getDataStorageDriver();
 
         self::assertInstanceOf(IDataStorageDriver::class, $driver);
-        self::assertSame('1', (string)$driver->getFirstScalarResult('SELECT sqlite_version() IS NOT NULL'));
+        self::assertEquals(1, $driver->getFirstScalarResult('SELECT sqlite_version() IS NOT NULL'));
     }
 }

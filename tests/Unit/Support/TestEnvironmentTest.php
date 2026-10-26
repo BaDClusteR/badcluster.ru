@@ -6,13 +6,13 @@ namespace BC\Tests\Unit\Support;
 
 use BC\Tests\Support\TestEnvironment;
 use LogicException;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * The guards of the tests themselves: the env of the developer is never read, the database is SQLite.
  */
-#[CoversClass(TestEnvironment::class)]
+#[CoversNothing]
 final class TestEnvironmentTest extends TestCase {
     public function testEnvLocalIsNotRead(): void {
         $files = array_map(static fn(string $path): string => str_replace('\\', '/', $path), TestEnvironment::getEnvFiles());
@@ -32,9 +32,12 @@ final class TestEnvironmentTest extends TestCase {
     }
 
     public function testWorkingDirectoryIsTemporary(): void {
-        self::assertStringStartsWith(
-            str_replace('\\', '/', (string)realpath(sys_get_temp_dir())),
-            str_replace('\\', '/', (string)realpath((string)getcwd()))
-        );
+        $temp = str_replace('\\', '/', (string)realpath(sys_get_temp_dir()));
+
+        if ($temp === '') {
+            self::fail('No temporary folder.');
+        }
+
+        self::assertStringStartsWith($temp, str_replace('\\', '/', (string)realpath((string)getcwd())));
     }
 }

@@ -6,10 +6,10 @@ namespace BC\Tests\Unit\Support;
 
 use BC\Tests\Support\TempDir;
 use LogicException;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(TempDir::class)]
+#[CoversNothing]
 final class TempDirTest extends TestCase {
     public function testCreatesAndRemovesFolder(): void {
         $path = TempDir::create();
