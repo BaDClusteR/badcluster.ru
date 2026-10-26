@@ -50,10 +50,19 @@ class GetCommentsAction implements IGetCommentsAction {
 
         $qb = Comment::getQueryBuilder();
 
+        // expr()->in() подставляет значения в SQL как есть: статусы — строки,
+        // поэтому идут переменными запроса (без них вышло бы "status IN (A, M)")
+        $statusVariables = [];
+
+        foreach ($statuses as $i => $status) {
+            $statusVariables[] = ":status_$i";
+            $qb->setVariable("status_$i", $status);
+        }
+
         $qb->where(
             $qb->expr()->isNull('parent_id')
         )->andWhere(
-            $qb->expr()->in('status', $statuses)
+            $qb->expr()->in('status', $statusVariables)
         )->orderBy('date', 'DESC');
 
         if ($request->pageType) {
