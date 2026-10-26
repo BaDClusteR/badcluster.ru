@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Core\Converter;
 
+use BC\Core\Helper\RussianPlural;
 use BC\Core\Trait\LoggerTrait;
 use DateInvalidTimeZoneException;
 use DateMalformedStringException;
@@ -116,23 +117,16 @@ readonly class DateConverter implements IDateConverter {
     }
 
     private function formatHourInterval(int $hours): string {
-        return $this->formatInterval($hours, '{{diff}} час назад', '{{diff}} часов назад', '{{diff}} часов назад');
+        return $this->formatInterval($hours, '{{diff}} час назад', '{{diff}} часа назад', '{{diff}} часов назад');
     }
 
     private function formatMinuteInterval(int $minutes): string {
-        return $this->formatInterval($minutes, '{{diff}} минуту назад', '{{diff}} минут назад', '{{diff}} минут назад');
+        return $this->formatInterval($minutes, '{{diff}} минуту назад', '{{diff}} минуты назад', '{{diff}} минут назад');
     }
 
     private function formatInterval(int $diff, string $firstForm, string $secondForm, string $thirdForm): string {
-        $diffMod10 = abs($diff) % 10;
-
-        if ($diffMod10 === 1) {
-            $template = $firstForm;
-        } elseif (in_array($diffMod10, [2, 3, 4])) {
-            $template = $secondForm;
-        } else {
-            $template = $thirdForm;
-        }
+        // 11–14 — «лет», «часов», а не «год», «часа»
+        $template = RussianPlural::form($diff, $firstForm, $secondForm, $thirdForm);
 
         if ($diff === 1) {
             $template = str_replace('{{diff}} ', '', $template);
