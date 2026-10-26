@@ -51,7 +51,7 @@ readonly class PostsProvider implements IPostsProvider {
         }
 
         $qb->orderBy('publish_date', 'DESC')
-           ->setLimit($offset, $showBy);
+           ->setLimit($showBy, $offset);
 
         try {
             return $qb->iterateEntities();

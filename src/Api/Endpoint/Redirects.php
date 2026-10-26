@@ -66,7 +66,7 @@ class Redirects extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'redirect', method: 'GET')]
+    #[API\Endpoint(path: 'redirect/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -114,7 +114,7 @@ class Redirects extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'redirect', method: 'PUT')]
+    #[API\Endpoint(path: 'redirect/{identifier}', method: 'PUT')]
     public function updateRedirect(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

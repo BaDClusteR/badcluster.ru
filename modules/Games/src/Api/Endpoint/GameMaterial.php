@@ -88,7 +88,7 @@ class GameMaterial extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'material', method: 'GET')]
+    #[API\Endpoint(path: 'material/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -212,7 +212,7 @@ class GameMaterial extends AEndpoint {
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'material', method: 'PUT')]
+    #[API\Endpoint(path: 'material/{identifier}', method: 'PUT')]
     public function update(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

@@ -72,7 +72,7 @@ class BlogPost extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'post', method: 'GET')]
+    #[API\Endpoint(path: 'post/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -159,7 +159,7 @@ class BlogPost extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'post', method: 'PUT')]
+    #[API\Endpoint(path: 'post/{identifier}', method: 'PUT')]
     public function savePost(
         #[API\Parameter(source: 'body', name: 'title')]
         string $title,

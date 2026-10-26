@@ -76,7 +76,7 @@ class Chapter extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'chapter', method: 'GET')]
+    #[API\Endpoint(path: 'chapter/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -171,7 +171,7 @@ class Chapter extends AEndpoint {
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'chapter', method: 'PUT')]
+    #[API\Endpoint(path: 'chapter/{identifier}', method: 'PUT')]
     public function update(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

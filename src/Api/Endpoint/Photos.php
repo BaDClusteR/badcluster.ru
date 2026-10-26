@@ -73,7 +73,7 @@ class Photos extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'photo', method: 'GET')]
+    #[API\Endpoint(path: 'photo/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -126,7 +126,7 @@ class Photos extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'photo', method: 'PUT')]
+    #[API\Endpoint(path: 'photo/{identifier}', method: 'PUT')]
     public function updatePhoto(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

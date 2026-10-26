@@ -84,7 +84,7 @@ class Game extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'game', method: 'GET')]
+    #[API\Endpoint(path: 'game/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -133,7 +133,7 @@ class Game extends AEndpoint {
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'game', method: 'PUT')]
+    #[API\Endpoint(path: 'game/{identifier}', method: 'PUT')]
     public function update(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

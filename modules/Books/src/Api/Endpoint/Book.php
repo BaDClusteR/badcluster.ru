@@ -77,7 +77,7 @@ class Book extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'book', method: 'GET')]
+    #[API\Endpoint(path: 'book/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -208,7 +208,7 @@ class Book extends AEndpoint {
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'book', method: 'PUT')]
+    #[API\Endpoint(path: 'book/{identifier}', method: 'PUT')]
     public function update(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

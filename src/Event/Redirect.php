@@ -2,9 +2,9 @@
 
 namespace BC\Event;
 
-use ApiPlatform\Core\Trait\RequestTrait;
 use BC\Core\Trait\Controller404Trait;
 use BC\Core\Trait\LoggerTrait;
+use BC\Core\Trait\RequestTrait;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use Runway\Exception\Exception;
 use Runway\Request\Response;

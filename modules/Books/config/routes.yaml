@@ -8,7 +8,7 @@ routes:
     controller: BC\Modules\Books\Controller\Books::renderBook
 
   books_download:
-    path: /books/{basename}\.{ext}
+    path: /books/{basename}.{ext}
     controller: BC\Modules\Books\Controller\Books::download
 
   books_chapter_or_download:

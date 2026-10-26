@@ -1,0 +1,5 @@
+parameters:
+  # Эндпоинты — маршруты роутера с этим префиксом: "fact/{identifier}" — это /admin/api/fact/42
+  api_path_prefix: '/admin/api'
+
+  api_title: 'badcluster.ru admin API'

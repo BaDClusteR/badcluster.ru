@@ -23,7 +23,10 @@ readonly class Admin {
     ) {
     }
 
-    public function index(): Response {
+    /**
+     * @param string $path Путь внутри админки (маршрутизирует уже само SPA)
+     */
+    public function index(string $path = ''): Response {
         if (!$this->auth->isAuthenticated()) {
             return $this->get404Controller()->run();
         }

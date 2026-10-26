@@ -66,7 +66,7 @@ class MediaLibrary extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'media_file', method: 'GET')]
+    #[API\Endpoint(path: 'media_file/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -82,7 +82,7 @@ class MediaLibrary extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'media_file', method: 'PUT')]
+    #[API\Endpoint(path: 'media_file/{identifier}', method: 'PUT')]
     public function updateMedia(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

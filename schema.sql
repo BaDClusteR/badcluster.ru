@@ -53,3 +53,43 @@ CREATE TABLE IF NOT EXISTS `bc_log_records` (
     KEY `idx_fingerprint` (`fingerprint`),
     KEY `idx_last_seen_at` (`last_seen_at`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Авторизация API platform 2 (см. README пакета bad_cluster/runway-api-platform).
+-- options и tokens остались от API platform 1: их колонки те же (даты — unix
+-- timestamp), но в tokens.token теперь лежит sha256 токена (64 символа), так что
+-- старые сессии недействительны. Логин и хеш пароля (Argon2id) — в options,
+-- задаются командой `php console auth:set-credentials`; AUTH_SALT, AUTH_HASH,
+-- API_CRYPTO_KEY и API_CRYPTO_KEY_LENGTH из .env.local больше не нужны.
+CREATE TABLE IF NOT EXISTS `bc_options` (
+    `id`    INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`  VARCHAR(255) NOT NULL,
+    `value` TEXT         NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `bc_tokens` (
+    `id`          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `token`       VARCHAR(64)  NOT NULL,           -- sha256 токена сессии
+    `generated`   INT UNSIGNED NOT NULL DEFAULT 0, -- unix timestamp
+    `valid_until` INT UNSIGNED NOT NULL DEFAULT 0, -- unix timestamp
+    `last_active` INT UNSIGNED NOT NULL DEFAULT 0, -- unix timestamp
+    `ip`          VARCHAR(64)  NOT NULL DEFAULT '',
+    `user_agent`  TEXT         NOT NULL,
+    `server_info` TEXT         NOT NULL,
+    `expired`     INT(1)       NOT NULL DEFAULT 0,
+    `active`      INT(1)       NOT NULL DEFAULT 1,
+    PRIMARY KEY (`id`),
+    KEY `idx_token` (`token`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Неудачные логины: 5 с одного IP и 50 всего за 15 минут, дальше 429.
+-- Записи старше суток удаляются при следующей неудачной попытке.
+CREATE TABLE IF NOT EXISTS `bc_login_attempts` (
+    `id`        INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `ip`        VARCHAR(64)  NOT NULL,
+    `attempted` INT UNSIGNED NOT NULL, -- unix timestamp
+    PRIMARY KEY (`id`),
+    KEY `idx_attempted` (`attempted`),
+    KEY `idx_ip_attempted` (`ip`, `attempted`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;

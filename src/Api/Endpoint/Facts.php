@@ -66,7 +66,7 @@ class Facts extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'fact', method: 'GET')]
+    #[API\Endpoint(path: 'fact/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -111,7 +111,7 @@ class Facts extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'fact', method: 'PUT')]
+    #[API\Endpoint(path: 'fact/{identifier}', method: 'PUT')]
     public function updateFact(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

@@ -25,7 +25,7 @@ export function LoginPage() {
   async function handleSubmit(values: typeof form.values) {
     setLoading(true);
     try {
-      const res = await fetch("/admin/api/auth", {
+      const res = await fetch("/admin/api/auth/login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(values)
@@ -34,10 +34,10 @@ export function LoginPage() {
 
       if (!res.ok) {
         // noinspection ExceptionCaughtLocallyJS
-        throw new Error(data?.error ?? "Login failed");
+        throw new Error(data?.errors?.[0]?.message ?? "Login failed");
       }
 
-      // The server sets the HttpOnly "token" cookie on this response.
+      // The server sets the HttpOnly session cookie on this response.
       notify.success("Welcome back");
       navigate("/admin");
     } catch (err) {

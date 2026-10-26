@@ -6,6 +6,4 @@ namespace BC\Core\Auth;
 
 interface IAuth {
     public function isAuthenticated(): bool;
-
-    public function isCredentialsCorrect(string $login, string $password): bool;
 }

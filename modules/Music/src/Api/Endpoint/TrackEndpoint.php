@@ -73,7 +73,7 @@ class TrackEndpoint extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'track', method: 'GET')]
+    #[API\Endpoint(path: 'track/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -190,7 +190,7 @@ class TrackEndpoint extends AEndpoint {
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'track', method: 'PUT')]
+    #[API\Endpoint(path: 'track/{identifier}', method: 'PUT')]
     public function update(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,
@@ -255,7 +255,7 @@ class TrackEndpoint extends AEndpoint {
         return new SuccessfulResultDTO();
     }
 
-    #[API\Endpoint(path: 'chapters', method: 'DELETE')]
+    #[API\Endpoint(path: 'tracks', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]
         array $rows

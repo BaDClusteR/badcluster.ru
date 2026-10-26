@@ -68,7 +68,7 @@ class LogRecords extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'log-record', method: 'GET')]
+    #[API\Endpoint(path: 'log-record/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id

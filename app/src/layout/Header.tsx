@@ -25,8 +25,8 @@ export default function Header(
 
   async function handleLogout() {
     try {
-      // The server expires the HttpOnly "token" cookie on this response.
-      await apiCall("GET", "logoff");
+      // The server ends the session and expires its HttpOnly cookie.
+      await apiCall("POST", "auth/logout");
     } catch {
       // Network error — still leave the admin area on the client
     }

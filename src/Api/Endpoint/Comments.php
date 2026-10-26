@@ -60,7 +60,7 @@ class Comments extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'comment', method: 'GET')]
+    #[API\Endpoint(path: 'comment/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -77,7 +77,7 @@ class Comments extends AEndpoint {
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'comment', method: 'PUT')]
+    #[API\Endpoint(path: 'comment/{identifier}', method: 'PUT')]
     public function saveComment(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

@@ -35,12 +35,17 @@ services:
   BC\Controller\System\ExceptionController:
     decorates: Runway\Controller\IExceptionController
 
-  BC\Controller\System\APIResponseController:
-    decorates: ApiPlatform\Controller\System\IApiResponseController
-
   # Неавторизованным на любой запрос к API, кроме логина, — обычная 404
-  BC\Controller\System\ApiRouter:
-    decorates: ApiPlatform\Controller\IApiRouter
+  BC\Controller\System\ApiController:
+    decorates: ApiPlatform\Controller\IApiController
+    arguments:
+      pathPrefix: '%api_path_prefix'
+
+  # И 405 на путь API неавторизованным — тоже 404
+  BC\Controller\System\MethodNotAllowedController:
+    decorates: Runway\Controller\IMethodNotAllowedController
+    arguments:
+      pathPrefix: '%api_path_prefix'
 
   # Порядок важен: декораторы оборачивают логгер в порядке объявления, так что
   # AlertingLogger оказывается внутри MaskingLogger и пишет в журнал уже
@@ -94,16 +99,6 @@ services:
 
   BC\Core\Auth\IAuth:
     class: BC\Core\Auth\Auth
-    arguments:
-      tokenStorage: '@BC\Core\Storage\CookieTokenStorage'
-
-  BC\Core\Auth\ApiAuth:
-    decorates: ApiPlatform\Core\Singleton\IAuth
-
-  BC\Core\Storage\CookieTokenStorage: ~
-
-  BC\Core\Storage\ApiTokenStorage:
-    decorates: ApiPlatform\Core\Storage\ITokenStorage
 
   BC\Core\Converter\IDateConverter:
     class: BC\Core\Converter\DateConverter
@@ -158,6 +153,8 @@ services:
 
   BC\Controller\Controller404:
     decorates: Runway\Controller\IController404
+    arguments:
+      apiPathPrefix: '%api_path_prefix'
 
   BC\Provider\IRandomFactProvider:
     class: BC\Provider\RandomFactProvider

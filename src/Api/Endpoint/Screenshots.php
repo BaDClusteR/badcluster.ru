@@ -72,7 +72,7 @@ class Screenshots extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'screenshot', method: 'GET')]
+    #[API\Endpoint(path: 'screenshot/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -122,7 +122,7 @@ class Screenshots extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'screenshot', method: 'PUT')]
+    #[API\Endpoint(path: 'screenshot/{identifier}', method: 'PUT')]
     public function updateScreenshot(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

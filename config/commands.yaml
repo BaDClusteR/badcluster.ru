@@ -10,3 +10,7 @@ services:
   BC\Core\Command\LogRotateCommand:
     tags:
       - name: console.command
+
+  BC\Core\Command\AuthSetCredentialsCommand:
+    tags:
+      - name: console.command

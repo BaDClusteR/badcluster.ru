@@ -137,7 +137,7 @@ class PulseItems extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'pulse_item', method: 'GET')]
+    #[API\Endpoint(path: 'pulse_item/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -211,7 +211,7 @@ class PulseItems extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'pulse_item', method: 'PUT')]
+    #[API\Endpoint(path: 'pulse_item/{identifier}', method: 'PUT')]
     public function updateItem(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

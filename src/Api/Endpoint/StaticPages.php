@@ -69,7 +69,7 @@ class StaticPages extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'static-page', method: 'GET')]
+    #[API\Endpoint(path: 'static-page/{identifier}', method: 'GET')]
     public function getOne(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -141,7 +141,7 @@ class StaticPages extends AEndpoint {
     /**
      * @throws UnprocessableEntityException
      */
-    #[API\Endpoint(path: 'static-page', method: 'PUT')]
+    #[API\Endpoint(path: 'static-page/{identifier}', method: 'PUT')]
     public function updateStaticPage(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id,

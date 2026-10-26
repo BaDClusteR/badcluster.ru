@@ -13,7 +13,7 @@ class CommentsModeration extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'comment_approve', method: 'GET')]
+    #[API\Endpoint(path: 'comment_approve/{identifier}', method: 'GET')]
     public function approve(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -26,7 +26,7 @@ class CommentsModeration extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'comment_reject', method: 'GET')]
+    #[API\Endpoint(path: 'comment_reject/{identifier}', method: 'GET')]
     public function reject(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
@@ -39,7 +39,7 @@ class CommentsModeration extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'comment_delete', method: 'GET')]
+    #[API\Endpoint(path: 'comment_delete/{identifier}', method: 'GET')]
     public function delete(
         #[API\Parameter(source: 'path', name: 'identifier')]
         int $id
