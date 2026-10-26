@@ -51,7 +51,7 @@ class Book extends ABook {
 
         return str_replace(
             ['{{start_year}}', '{{end_year}}'],
-            [$this->getStartYear(), $this->getEndYear()],
+            [(string) $this->getStartYear(), (string) $this->getEndYear()],
             $template
         );
     }

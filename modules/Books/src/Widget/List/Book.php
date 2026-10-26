@@ -7,6 +7,7 @@ use BC\Modules\Books\Model\Book as BookModel;
 use BC\Modules\Books\Model\BookFormat;
 use BC\Widget\AWidget;
 use Runway\Exception\Exception;
+use Runway\Exception\RuntimeException;
 use Runway\Singleton\Container;
 
 class Book extends AWidget {
@@ -15,7 +16,11 @@ class Book extends AWidget {
     }
 
     protected function getBook(): BookModel {
-        return $this->context['book'];
+        $book = $this->context['book'] ?? null;
+
+        return ($book instanceof BookModel)
+            ? $book
+            : throw new RuntimeException('The widget needs a book');
     }
 
     protected function getDateConverter(): IDateConverter {

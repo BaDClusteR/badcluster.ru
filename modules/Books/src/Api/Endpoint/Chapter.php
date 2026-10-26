@@ -15,7 +15,6 @@ use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
 use BC\Exception\UnprocessableEntityException;
 use BC\Modules\Books\Api\DataBuilder\Chapter\IChapterDataBuilder;
-use BC\Modules\Books\Api\DTO\Book\BookRowDTO;
 use BC\Modules\Books\Api\DTO\Chapter\ChapterDTO;
 use BC\Modules\Books\Api\DTO\Chapter\ChapterRowDTO;
 use BC\Modules\Books\Model\Book as BookModel;
@@ -30,7 +29,7 @@ class Chapter extends AEndpoint {
     }
 
     /**
-     * @return ListResponseDTO<BookRowDTO>
+     * @return ListResponseDTO<ChapterRowDTO>
      *
      * @throws BadRequestException
      */
@@ -91,6 +90,8 @@ class Chapter extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $content The content of the editor.
+     *
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
@@ -169,6 +170,8 @@ class Chapter extends AEndpoint {
     }
 
     /**
+     * @param array<string, mixed> $content The content of the editor.
+     *
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
@@ -269,6 +272,9 @@ class Chapter extends AEndpoint {
         }
     }
 
+    /**
+     * @param array<mixed> $rows The ids.
+     */
     #[API\Endpoint(path: 'chapters', method: 'DELETE')]
     public function delete(
         #[API\Parameter(source: 'body', name: 'rows')]

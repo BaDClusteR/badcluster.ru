@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BC\Modules\Books\Widget\Format\Fb2\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Model\Media as MediaModel;
 use BC\Modules\Books\Widget\Format\Fb2\Book;
 use BC\Widget\AWidget;
 use Exception;
+use Runway\Exception\RuntimeException;
 
 class Media extends AWidget {
     protected ?MediaModel $media = null {
@@ -29,13 +31,15 @@ class Media extends AWidget {
     protected function applyContext(array $context): void {
         parent::applyContext($context);
 
-        if (isset($this->context['media']['id'])) {
+        $media = $this->context['media'] ?? null;
+
+        if (is_array($media) && isset($media['id'])) {
             try {
                 $this->media = MediaModel::findByUniqueIdentifier(
-                    (int) $this->context['media']['id']
+                    MixedValue::toInt($media['id'])
                 );
 
-                $this->caption = (string) ($this->context['caption'] ?? '');
+                $this->caption = MixedValue::toString($this->context['caption'] ?? '');
             } catch (Exception) {
             }
         }
@@ -46,20 +50,26 @@ class Media extends AWidget {
     }
 
     protected function getImageThumbnailPath(): string {
-        if (!$this->isImage()) {
+        $media = $this->media;
+
+        if (($media === null) || !$media->isImage()) {
             return '';
         }
 
-        $thumbnail = $this->media->getThumbnail(1500, 'image/jpeg');
+        $thumbnail = $media->getThumbnail(1500, 'image/jpeg');
         if ($thumbnail) {
             // Путь к файлу, а не URL: картинка встраивается в книгу через file_get_contents()
             return $thumbnail->getLocalPath();
         }
 
-        return $this->media->getLocalPath();
+        return $media->getLocalPath();
     }
 
     protected function getBook(): Book {
-        return $this->context['book'];
+        $book = $this->context['book'] ?? null;
+
+        return ($book instanceof Book)
+            ? $book
+            : throw new RuntimeException('The widget needs a book');
     }
 }

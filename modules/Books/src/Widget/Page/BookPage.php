@@ -13,6 +13,7 @@ use BC\Widget\AWidget;
 use BC\Widget\DTO\BackLinkDTO;
 use BC\Widget\Page\APage;
 use BC\Widget\Page\IPageWithComments;
+use Runway\Exception\RuntimeException;
 
 class BookPage extends APage implements IPageWithComments {
     use AuthTrait;
@@ -60,7 +61,11 @@ class BookPage extends APage implements IPageWithComments {
     protected function applyContext(array $context): void {
         parent::applyContext($context);
 
-        $this->book = $this->context['book'];
+        $book = $this->context['book'] ?? null;
+
+        $this->book = ($book instanceof Book)
+            ? $book
+            : throw new RuntimeException('The page needs a book');
     }
 
     public static function getAssets(): array {
@@ -73,6 +78,9 @@ class BookPage extends APage implements IPageWithComments {
         return $list;
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
 

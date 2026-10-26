@@ -3,16 +3,15 @@
 namespace BC\Modules\Books\Widget\Page;
 
 use BC\Core\Asset\DTO\AssetDTO;
-use BC\Modules\Books\Model\Book;
 use BC\Modules\Books\Widget\List\BookList;
 use BC\Widget\AWidget;
 use BC\Widget\Page\APage;
 
 class BookListPage extends APage {
     /**
-     * @var array{0: string, 1: Book[]}
+     * @var array<mixed> The groups of BookList: [title => Book[]].
      */
-    private array $bookGroups;
+    private array $bookGroups = [];
 
     public function getHeader(): string {
         return 'Книги';
@@ -42,8 +41,10 @@ class BookListPage extends APage {
     protected function applyContext(array $context): void {
         parent::applyContext($context);
 
-        if (!empty($this->context['groups'])) {
-            $this->bookGroups = $this->context['groups'];
+        $groups = $this->context['groups'] ?? null;
+
+        if (!empty($groups) && is_array($groups)) {
+            $this->bookGroups = $groups;
         }
     }
 
@@ -55,6 +56,9 @@ class BookListPage extends APage {
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
 

@@ -13,6 +13,7 @@ use BC\Widget\AWidget;
 use BC\Widget\IAssetProvider;
 use BC\Widget\Page\APage;
 use Runway\Exception\Exception;
+use Runway\Exception\RuntimeException;
 
 class Book extends AWidget implements IAssetProvider {
     use DateConverterTrait;
@@ -24,11 +25,19 @@ class Book extends AWidget implements IAssetProvider {
     }
 
     protected function getBook(): BookModel {
-        return $this->context['book'];
+        $book = $this->context['book'] ?? null;
+
+        return ($book instanceof BookModel)
+            ? $book
+            : throw new RuntimeException('The widget needs a book');
     }
 
     protected function getPage(): APage {
-        return $this->context['page'];
+        $page = $this->context['page'] ?? null;
+
+        return ($page instanceof APage)
+            ? $page
+            : throw new RuntimeException('The widget needs a page');
     }
 
     /**
@@ -61,7 +70,6 @@ class Book extends AWidget implements IAssetProvider {
             ];
             $currentGroup = '';
 
-            /** @var Chapter|null $chapter */
             foreach ($allChapters as $chapter) {
                 $group = $chapter->getPart();
 

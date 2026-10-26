@@ -13,7 +13,6 @@ class BookFormatProvider implements IBookFormatProvider {
     public function getFormats(): array {
         $result = [];
 
-        /** @var IBookFormat $formatter */
         foreach ($this->getFormatters() as $formatter) {
             $result[] = new BookFormatDTO(
                 $formatter->getType(),
@@ -25,10 +24,15 @@ class BookFormatProvider implements IBookFormatProvider {
     }
 
     /**
-     * @return IBookFormat[]
+     * @return list<IBookFormat>
      */
     private function getFormatters(): array {
-        return Container::getInstance()->getServicesByTag('book_format');
+        return array_values(
+            array_filter(
+                Container::getInstance()->getServicesByTag('book_format'),
+                static fn (mixed $service): bool => $service instanceof IBookFormat
+            )
+        );
     }
 
     public function getFormat(string $type): ?IBookFormat {

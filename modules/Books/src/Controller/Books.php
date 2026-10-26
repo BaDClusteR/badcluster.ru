@@ -53,7 +53,7 @@ readonly class Books {
                 [
                     'Content-Type'        => 'application/octet-stream',
                     'Content-Disposition' => 'attachment; filename="' . $basename . '.' . $ext . '"',
-                    'Content-Length'      => $format->getSize()
+                    'Content-Length'      => (string) $format->getSize()
                 ]
             );
         }

@@ -6,7 +6,6 @@ use BC\Api\Processor\IImageProcessor;
 use BC\Core\Exception\ImageException;
 use BC\Model\Media;
 use BC\Modules\Books\Core\Media\Processor\ImageProcessorJpg;
-use BC\Provider\IPathsProvider;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Exception\Exception;
@@ -17,7 +16,6 @@ readonly class ImageProcessor implements IImageProcessor {
     public function __construct(
         private IImageProcessor $inner,
         private ImageProcessorJpg $jpgProcessor,
-        private IPathsProvider $pathProvider,
         protected ILogger $logger
     ) {
     }

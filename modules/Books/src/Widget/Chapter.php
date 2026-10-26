@@ -11,6 +11,7 @@ use BC\Modules\Books\Model\Book as BookModel;
 use BC\Modules\Books\Model\Chapter as ChapterModel;
 use BC\Widget\AWidget;
 use Runway\Exception\Exception;
+use Runway\Exception\RuntimeException;
 use Runway\Singleton\Container;
 
 class Chapter extends AWidget {
@@ -21,13 +22,21 @@ class Chapter extends AWidget {
     }
 
     protected function getChapter(): ChapterModel {
-        return $this->context['chapter'];
+        $chapter = $this->context['chapter'] ?? null;
+
+        return ($chapter instanceof ChapterModel)
+            ? $chapter
+            : throw new RuntimeException('The widget needs a chapter');
     }
 
     private function getBook(): BookModel {
         return $this->getChapter()->getBook();
     }
 
+    /**
+     * @return array{prev: array{string, string}|null, toc: array{string, string}, next: array{string, string}|null}
+     *     [url, title]
+     */
     protected function getNavLinks(): array {
         $book = $this->getBook();
         $chapter = $this->getChapter();
@@ -42,8 +51,10 @@ class Chapter extends AWidget {
         ];
 
         try {
-            $allChapters = $book->getChapters(
-                !$this->getAuth()->isAuthenticated()
+            $allChapters = array_values(
+                $book->getChapters(
+                    !$this->getAuth()->isAuthenticated()
+                )
             );
         } catch (Exception) {
             $allChapters = [];

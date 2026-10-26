@@ -4,8 +4,12 @@ namespace BC\Modules\Books\Core\Extractor;
 
 use BC\Modules\Books\Core\DTO\ExtractedNotesWithContentDTO;
 use BC\Modules\Books\Core\DTO\NoteDTO;
+use Runway\Exception\RuntimeException;
 
 class NotesExtractor implements INotesExtractor {
+    /**
+     * @throws RuntimeException The regular expression failed (e.g. the backtrack limit).
+     */
     public function extractNotes(
         string $content,
         int $startIndex = 1,
@@ -16,13 +20,13 @@ class NotesExtractor implements INotesExtractor {
 
         $content = preg_replace_callback(
             '/<sup>\[(.*?)]<\/sup>/',
-            static function ($matches) use (&$notes, &$i, $template) {
-                $noteContent = (string) ($matches[1] ?? '');
+            static function (array $matches) use (&$notes, &$i, $template): string {
+                $noteContent = $matches[1];
                 $notes[] = new NoteDTO("n$i", $noteContent);
 
                 $result = str_replace(
                     ['{{index}}', '{{content}}'],
-                    [$i, $noteContent],
+                    [(string) $i, $noteContent],
                     $template
                 );
                 $i++;
@@ -31,6 +35,10 @@ class NotesExtractor implements INotesExtractor {
             },
             $content
         );
+
+        if ($content === null) {
+            throw new RuntimeException('Cannot extract the notes: ' . preg_last_error_msg());
+        }
 
         return new ExtractedNotesWithContentDTO($content, $notes);
     }

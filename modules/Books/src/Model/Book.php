@@ -252,6 +252,9 @@ class Book extends AEntity {
         return $this->type === self::TYPE_AUTEUR;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getAuthors(): array {
         if ($this->isTranslation()) {
             $authors = explode(',', $this->getAuthor());

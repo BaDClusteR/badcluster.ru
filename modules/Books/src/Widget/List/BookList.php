@@ -14,6 +14,17 @@ class BookList extends AWidget {
      * @return array<string, Book[]>
      */
     protected function getBookGroups(): array {
-        return (array) ($this->context['groups'] ?? []);
+        $groups = [];
+
+        foreach ((array) ($this->context['groups'] ?? []) as $title => $books) {
+            if (is_array($books)) {
+                $groups[(string) $title] = array_filter(
+                    $books,
+                    static fn (mixed $book): bool => $book instanceof Book
+                );
+            }
+        }
+
+        return $groups;
     }
 }

@@ -10,6 +10,7 @@ use BC\Modules\Books\Widget\Chapter as ChapterWidget;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\BackLinkDTO;
 use BC\Widget\Page\APageWithBlocks;
+use Runway\Exception\RuntimeException;
 
 class ChapterPage extends APageWithBlocks {
     protected Chapter $chapter;
@@ -60,6 +61,9 @@ class ChapterPage extends APageWithBlocks {
         return $list;
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         $list = parent::getCssBundles();
 
@@ -71,7 +75,11 @@ class ChapterPage extends APageWithBlocks {
     protected function applyContext(array $context): void {
         parent::applyContext($context);
 
-        $this->chapter = $this->context['chapter'];
+        $chapter = $this->context['chapter'] ?? null;
+
+        $this->chapter = ($chapter instanceof Chapter)
+            ? $chapter
+            : throw new RuntimeException('The page needs a chapter');
     }
 
     public function getContentContainerCssClass(): string {

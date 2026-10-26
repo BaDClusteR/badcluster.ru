@@ -7,6 +7,7 @@ namespace BC\Modules\Books\Api\DTO\Chapter;
 readonly class ChapterDTO {
     public function __construct(
         public string $title,
+        /** @var array<string, mixed> */
         public array $content,
         public int $position,
         public bool $published,

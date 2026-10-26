@@ -17,12 +17,15 @@ class Book extends ABook {
     use PathsProviderTrait;
 
     /**
-     * @var array{id: string, content: string}
+     * @var list<array{id: string, content: string}>
      *
      * @noinspection PhpGetterAndSetterCanBeReplacedWithPropertyHooksInspection
      */
     private array $images = [];
 
+    /**
+     * @return list<array{id: string, content: string}>
+     */
     protected function getImages(): array {
         return $this->images;
     }
@@ -33,7 +36,7 @@ class Book extends ABook {
 
         $this->images[] = [
             'id'      => $id,
-            'content' => $content,
+            'content' => ($content === false) ? '' : $content,
         ];
 
         return $id;
@@ -57,6 +60,9 @@ class Book extends ABook {
         return $image->getLocalPath();
     }
 
+    /**
+     * @return list<array{firstname: string, lastname: string}>
+     */
     protected function getBookAuthors(): array {
         return array_map(
             fn (string $author): array => $this->splitAuthorName($author),
@@ -122,7 +128,7 @@ class Book extends ABook {
 
         return str_replace(
             ['{{start_year}}', '{{end_year}}'],
-            [$this->getStartYear(), $this->getEndYear()],
+            [(string) $this->getStartYear(), (string) $this->getEndYear()],
             $template
         );
     }

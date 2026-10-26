@@ -14,6 +14,8 @@ use BC\Api\Endpoint\AEndpoint;
 use BC\Api\Exception\NotFoundException;
 use BC\Core\Converter\IDateConverter;
 use BC\Core\Formatter\IFormatter;
+use BC\Core\Helper\EntityList;
+use BC\Core\Helper\MixedValue;
 use BC\Exception\UnprocessableEntityException;
 use BC\Model\Media;
 use BC\Modules\Books\Api\DataBuilder\Book\IBookDataBuilder;
@@ -99,6 +101,10 @@ class Book extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $cover   The media: ['id' => ...].
+     * @param array<mixed>|null $coverBg The media: ['id' => ...].
+     * @param array<mixed>      $formats [type => ['filename' => ..., 'allowed' => ..., 'postfix' => ...]].
+     *
      * @throws UnprocessableEntityException
      */
     #[API\Endpoint(path: 'book', method: 'POST')]
@@ -162,13 +168,13 @@ class Book extends AEndpoint {
                 ->setTitle($title)
                 ->setCover(
                     Media::findByUniqueIdentifier(
-                        (int) ($cover['id'] ?? 0)
+                        MixedValue::toInt($cover['id'] ?? 0)
                     )
                 )->setAnnotation($annotation)
                 ->setAuthor($author)
                 ->setCoverBg(
                     Media::findByUniqueIdentifier(
-                        (int) ($coverBg['id'] ?? 0)
+                        MixedValue::toInt($coverBg['id'] ?? 0)
                     )
                 )->setGroup($group)
                 ->setPosition($position)
@@ -191,9 +197,9 @@ class Book extends AEndpoint {
                         ->setDateGenerated(new DateTime('now'))
                         ->setType($format)
                         ->setBook($book)
-                        ->setFilename((string) ($formats[$format]['filename'] ?? ''))
-                        ->setAllowed((bool) ($formats[$format]['allowed'] ?? false))
-                        ->setPostfix((string) ($formats[$format]['postfix'] ?? ''));
+                        ->setFilename(MixedValue::toString(self::getFormatOption($formats, $format, 'filename')))
+                        ->setAllowed((bool) self::getFormatOption($formats, $format, 'allowed'))
+                        ->setPostfix(MixedValue::toString(self::getFormatOption($formats, $format, 'postfix')));
 
                     $format->persist();
                 }
@@ -206,6 +212,10 @@ class Book extends AEndpoint {
     }
 
     /**
+     * @param array<mixed>|null $cover   The media: ['id' => ...].
+     * @param array<mixed>|null $coverBg The media: ['id' => ...].
+     * @param array<mixed>      $formats [type => ['filename' => ..., 'allowed' => ..., 'postfix' => ...]].
+     *
      * @throws UnprocessableEntityException
      * @throws NotFoundException
      */
@@ -281,13 +291,13 @@ class Book extends AEndpoint {
                           ->setTitle($title)
                           ->setCover(
                               Media::findByUniqueIdentifier(
-                                  (int) ($cover['id'] ?? 0)
+                                  MixedValue::toInt($cover['id'] ?? 0)
                               )
                           )->setAnnotation($annotation)
                           ->setAuthor($author)
                           ->setCoverBg(
                               Media::findByUniqueIdentifier(
-                                  (int) ($coverBg['id'] ?? 0)
+                                  MixedValue::toInt($coverBg['id'] ?? 0)
                               )
                           )->setGroup($group)
                           ->setPosition($position)
@@ -318,9 +328,9 @@ class Book extends AEndpoint {
                         ->setDateGenerated(new DateTime('now'))
                         ->setType($format)
                         ->setBook($book)
-                        ->setFilename((string) ($formats[$format]['filename'] ?? ''))
-                        ->setAllowed((bool) ($formats[$format]['allowed'] ?? false))
-                        ->setPostfix((string) ($formats[$format]['postfix'] ?? ''));
+                        ->setFilename(MixedValue::toString(self::getFormatOption($formats, $format, 'filename')))
+                        ->setAllowed((bool) self::getFormatOption($formats, $format, 'allowed'))
+                        ->setPostfix(MixedValue::toString(self::getFormatOption($formats, $format, 'postfix')));
 
                     $formatModel->persist();
                 }
@@ -389,6 +399,8 @@ class Book extends AEndpoint {
     }
 
     /**
+     * @param array<mixed> $formats
+     *
      * @throws UnprocessableEntityException
      */
     private function validateEntity(
@@ -408,7 +420,7 @@ class Book extends AEndpoint {
         // В схеме FB2 <version> — xs:float. Пока FB2 выключен, версию не проверяем,
         // чтобы не мешать сохранять книгу, — значение все равно сохранится как есть.
         if (
-            !empty($formats['fb2']['allowed'])
+            !empty(self::getFormatOption($formats, 'fb2', 'allowed'))
             && !preg_match('/^\d+(\.\d+)?$/', $fb2Version)
         ) {
             $errors['fb2Version'] = 'Версия должна быть числом, например 1.0';
@@ -431,6 +443,8 @@ class Book extends AEndpoint {
      * по имени файла ни с одним другим включенным форматом — ни этой книги, ни чужих.
      * Выключенные форматы не мешают: их имена файлов просто хранятся про запас.
      *
+     * @param array<mixed> $formats
+     *
      * @return array<string, string> ошибки с ключами вида formats.<type>.filename
      */
     private function validateFormatFilenames(array $formats, ?int $id): array {
@@ -438,12 +452,12 @@ class Book extends AEndpoint {
         $usedByThisBook = [];
 
         foreach ($this->getFormatTypes() as $formatType) {
-            if (empty($formats[$formatType]['allowed'])) {
+            if (empty(self::getFormatOption($formats, $formatType, 'allowed'))) {
                 continue;
             }
 
             $errorKey = "formats.$formatType.filename";
-            $filename = trim((string) ($formats[$formatType]['filename'] ?? ''));
+            $filename = trim(MixedValue::toString(self::getFormatOption($formats, $formatType, 'filename')));
 
             if ($filename === '') {
                 $errors[$errorKey] = 'Обязательное поле';
@@ -488,9 +502,24 @@ class Book extends AEndpoint {
                        ->setVariable('bookId', $exceptBookId);
                 }
 
-                return $qb->getFirstEntity();
+                $format = $qb->getFirstEntity();
+
+                return ($format === null)
+                    ? null
+                    : EntityList::check(BookFormat::class, $format);
             }
         );
+    }
+
+    /**
+     * @param array<mixed> $formats The formats of the request body: [type => ['filename' => ..., 'allowed' => ...]].
+     */
+    private static function getFormatOption(array $formats, string $formatType, string $option): mixed {
+        $format = $formats[$formatType] ?? null;
+
+        return is_array($format)
+            ? ($format[$option] ?? null)
+            : null;
     }
 
     /**

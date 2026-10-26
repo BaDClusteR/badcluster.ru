@@ -66,7 +66,7 @@ class BookFormat extends AEntity {
     protected string $postfix = '';
 
     public function getUrl(): string {
-        return dirname($this->getBook()->getUrl()) . '/' . $this->getFilename();
+        return dirname($this->requireBook()->getUrl()) . '/' . $this->getFilename();
     }
 
     /**
@@ -78,7 +78,7 @@ class BookFormat extends AEntity {
         $renderer = $this->getBookFormatProvider()->getFormat($this->getType());
 
         if ($renderer) {
-            $dump = $renderer->generateBook($this->getBook());
+            $dump = $renderer->generateBook($this->requireBook());
             $this->setDump($dump)
                  ->setSize(strlen($dump))
                  ->setDateGenerated(new DateTime('now'))
@@ -98,5 +98,15 @@ class BookFormat extends AEntity {
              ->setSize(0)
              ->setDateGenerated(new DateTime('now'))
              ->persist();
+    }
+
+    /**
+     * @throws ModelException A format without a book.
+     */
+    private function requireBook(): Book {
+        return $this->getBook()
+            ?? throw new ModelException(
+                sprintf('The %s format #%d has no book', $this->getType(), $this->getId())
+            );
     }
 }

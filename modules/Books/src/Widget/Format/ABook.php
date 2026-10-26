@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Books\Widget\Format;
 
+use BC\Core\Helper\EntityList;
 use BC\Core\Trait\WebsiteSettingsTrait;
 use BC\Modules\Books\Core\Extractor\INotesExtractor;
 use BC\Modules\Books\Model\Book as BookModel;
@@ -14,6 +15,7 @@ use BC\Widget\Blocks;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\Exception\Exception;
+use Runway\Exception\RuntimeException;
 use Runway\Model\Exception\ModelException;
 use Runway\Singleton\Container;
 
@@ -30,7 +32,7 @@ abstract class ABook extends AWidget {
     abstract protected function getFormatType(): string;
 
     /**
-     * @var array{id: string, content: string}
+     * @var list<array{id: string, content: string}>
      */
     protected array $notes = [];
 
@@ -45,6 +47,9 @@ abstract class ABook extends AWidget {
         $this->notesExtractor = $this->getNotesExtractor();
     }
 
+    /**
+     * @return list<array{id: string, content: string}>
+     */
     protected function getNotes(): array {
         return $this->notes;
     }
@@ -59,7 +64,11 @@ abstract class ABook extends AWidget {
     }
 
     protected function getBook(): BookModel {
-        return $this->context['book'];
+        $book = $this->context['book'] ?? null;
+
+        return ($book instanceof BookModel)
+            ? $book
+            : throw new RuntimeException('The widget needs a book');
     }
 
     /**
@@ -67,13 +76,16 @@ abstract class ABook extends AWidget {
      */
     protected function getChapters(): array {
         try {
-            $this->chapters ??= Chapter::getQueryBuilder()
-                                       ->where('book_id = :book_id')
-                                       ->andWhere('published = :published')
-                                       ->orderBy('position', 'ASC')
-                                       ->setVariable('book_id', $this->getBook()->getId())
-                                       ->setVariable('published', true)
-                                       ->getEntities();
+            $this->chapters ??= EntityList::of(
+                Chapter::class,
+                Chapter::getQueryBuilder()
+                       ->where('book_id = :book_id')
+                       ->andWhere('published = :published')
+                       ->orderBy('position', 'ASC')
+                       ->setVariable('book_id', $this->getBook()->getId())
+                       ->setVariable('published', true)
+                       ->getEntities()
+            );
         } catch (Exception) {
             $this->chapters = [];
         }

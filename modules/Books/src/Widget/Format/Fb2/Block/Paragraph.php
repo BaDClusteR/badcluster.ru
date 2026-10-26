@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Books\Widget\Format\Fb2\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\TypographerTrait;
 use BC\Widget\AWidget;
 use Dom\Element;
@@ -45,7 +46,7 @@ class Paragraph extends AWidget {
     protected function getLines(): array {
         $lines = $this->splitLines(
             $this->getTypographer()->process(
-                (string) ($this->context['text'] ?? '')
+                MixedValue::toString($this->context['text'] ?? '')
             )
         );
 
@@ -79,7 +80,10 @@ class Paragraph extends AWidget {
         );
 
         $lines = [''];
-        $this->walk($document->body, [], $lines);
+
+        if ($document->body !== null) {
+            $this->walk($document->body, [], $lines);
+        }
 
         $lines = array_map($this->cleanLine(...), $lines);
 
@@ -103,7 +107,7 @@ class Paragraph extends AWidget {
     private function walk(Node $parent, array $stack, array &$lines): void {
         foreach ($parent->childNodes as $node) {
             if ($node instanceof Text) {
-                $lines[array_key_last($lines)] .= $this->escape($node->textContent);
+                $lines[array_key_last($lines)] .= $this->escape($node->textContent ?? '');
 
                 continue;
             }
@@ -161,7 +165,13 @@ class Paragraph extends AWidget {
         // Пустые пары вроде <strong></strong> (или с одними пробелами внутри) остаются
         // после переносов на границе тэга — разворачиваем их, оставляя пробелы.
         do {
-            $line = preg_replace('/<([\w:]+)(?:\s[^>]*)?>(\s*)<\/\1>/u', '$2', $line, -1, $count);
+            $replaced = preg_replace('/<([\w:]+)(?:\s[^>]*)?>(\s*)<\/\1>/u', '$2', $line, -1, $count);
+
+            if ($replaced === null) {
+                break;
+            }
+
+            $line = $replaced;
         } while ($count > 0);
 
         $line = trim($line);

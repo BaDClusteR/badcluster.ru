@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Books\Widget\Format\Txt\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Widget\AWidget;
 
 class Paragraph extends AWidget {
@@ -13,7 +14,7 @@ class Paragraph extends AWidget {
 
     protected function getContent(): string {
         return $this->prepareContent(
-            (string) ($this->context['text'] ?? '')
+            MixedValue::toString($this->context['text'] ?? '')
         );
     }
 
