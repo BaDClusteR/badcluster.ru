@@ -22,8 +22,16 @@ class ProcSystemMetricsProvider implements ISystemMetricsProvider {
      */
     private const string VIRTUAL_IFACE_PATTERN = '/^(lo$|docker|veth|br-|virbr|tun|tap|wg)/';
 
+    /**
+     * @param string $procPath Корень procfs (в тестах — папка с фикстурами)
+     */
+    public function __construct(
+        private readonly string $procPath = '/proc'
+    ) {
+    }
+
     public function isSupported(): bool {
-        return is_readable('/proc/stat') && is_readable('/proc/meminfo');
+        return is_readable($this->procPath . '/stat') && is_readable($this->procPath . '/meminfo');
     }
 
     public function readCounters(): SystemCountersDTO {
@@ -52,7 +60,7 @@ class ProcSystemMetricsProvider implements ISystemMetricsProvider {
 
     private function readUptime(): float {
         // /proc/uptime: "<аптайм в секундах> <суммарный idle всех ядер>"
-        return (float) strtok((string) file_get_contents('/proc/uptime'), ' ');
+        return (float) strtok((string) file_get_contents($this->procPath . '/uptime'), ' ');
     }
 
     /**
@@ -73,7 +81,7 @@ class ProcSystemMetricsProvider implements ISystemMetricsProvider {
         $totalTicks = 0.0;
         $cpuCores = 0;
 
-        foreach ((file('/proc/stat') ?: []) as $line) {
+        foreach ((file($this->procPath . '/stat') ?: []) as $line) {
             if (!preg_match('/^cpu(\d*)\s/', $line, $matches)) {
                 continue;
             }
@@ -103,7 +111,7 @@ class ProcSystemMetricsProvider implements ISystemMetricsProvider {
      * @return array{int, int}
      */
     private function readRam(): array {
-        $memInfo = (string) file_get_contents('/proc/meminfo');
+        $memInfo = (string) file_get_contents($this->procPath . '/meminfo');
 
         $totalBytes = $this->parseMemInfoKb($memInfo, 'MemTotal') * 1024;
         $availableBytes = $this->parseMemInfoKb($memInfo, 'MemAvailable') * 1024;
@@ -126,7 +134,7 @@ class ProcSystemMetricsProvider implements ISystemMetricsProvider {
 
         // major minor name reads_completed reads_merged sectors_read ms_reading
         // writes_completed ...
-        foreach ((file('/proc/diskstats') ?: []) as $line) {
+        foreach ((file($this->procPath . '/diskstats') ?: []) as $line) {
             $fields = preg_split('/\s+/', trim($line)) ?: [];
 
             if (!preg_match(self::DISK_DEVICE_PATTERN, $fields[2] ?? '')) {
@@ -148,7 +156,7 @@ class ProcSystemMetricsProvider implements ISystemMetricsProvider {
         $txBytes = 0.0;
 
         // Первые две строки — заголовок таблицы
-        foreach (array_slice(file('/proc/net/dev') ?: [], 2) as $line) {
+        foreach (array_slice(file($this->procPath . '/net/dev') ?: [], 2) as $line) {
             if (!str_contains($line, ':')) {
                 continue;
             }

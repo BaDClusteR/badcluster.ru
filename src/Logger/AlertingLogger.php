@@ -84,7 +84,7 @@ class AlertingLogger implements ILogger {
         try {
             // Не через конструктор: логгер создаётся раньше всех и нужен самой
             // базе и событиям, при внедрении в конструктор получится цикл
-            Container::getInstance()->getService(ILogRecorder::class)->record($level, $message, $context);
+            $this->getLogRecorder()->record($level, $message, $context);
         } catch (Throwable $e) {
             // Журнал — дополнение к файлу: запись в файле уже есть, а
             // исключение из логгера уронило бы то, что пыталось залогировать
@@ -94,6 +94,10 @@ class AlertingLogger implements ILogger {
         } finally {
             $this->isRecording = false;
         }
+    }
+
+    protected function getLogRecorder(): ILogRecorder {
+        return Container::getInstance()->getService(ILogRecorder::class);
     }
 
     protected function isClientError(array $context): bool {

@@ -18,9 +18,15 @@ use Runway\Console\Parameter\Enum\ParameterModeEnum;
  *   30 4 * * * cd /path/to/site && php console log:rotate >/dev/null 2>&1
  */
 class LogRotateCommand extends ACommand {
-    private const string LOG_ROOT = PROJECT_ROOT . '/log';
-
     private const string DATE_PATTERN = '/^(\d{4}-\d{2}-\d{2})\.log(\.gz)?$/';
+
+    /**
+     * @param string $logRoot Папка логов (в тестах — временная)
+     */
+    public function __construct(
+        private readonly string $logRoot = PROJECT_ROOT . '/log'
+    ) {
+    }
 
     public function getName(): string {
         return 'log:rotate';
@@ -46,7 +52,7 @@ class LogRotateCommand extends ACommand {
         $compressed = 0;
         $deleted = 0;
 
-        foreach (glob(self::LOG_ROOT . '/[0-9][0-9][0-9][0-9]/[0-9][0-9]/*') ?: [] as $path) {
+        foreach (glob($this->logRoot . '/[0-9][0-9][0-9][0-9]/[0-9][0-9]/*') ?: [] as $path) {
             if (!preg_match(self::DATE_PATTERN, basename($path), $matches) || $matches[1] === $today) {
                 continue;
             }
@@ -102,8 +108,8 @@ class LogRotateCommand extends ACommand {
     private function removeEmptyDirs(): void {
         // Сначала месяцы, потом годы: год пустеет только без месяцев
         $dirs = [
-            ...glob(self::LOG_ROOT . '/[0-9][0-9][0-9][0-9]/[0-9][0-9]') ?: [],
-            ...glob(self::LOG_ROOT . '/[0-9][0-9][0-9][0-9]') ?: [],
+            ...glob($this->logRoot . '/[0-9][0-9][0-9][0-9]/[0-9][0-9]') ?: [],
+            ...glob($this->logRoot . '/[0-9][0-9][0-9][0-9]') ?: [],
         ];
 
         foreach ($dirs as $dir) {
