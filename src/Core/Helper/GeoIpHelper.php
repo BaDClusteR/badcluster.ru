@@ -20,12 +20,12 @@ readonly class GeoIpHelper implements IGeoIpHelper {
             ? ip2long($ip)
             : $ip;
 
-        if (!$ip) {
+        // ip2long() gives false for an invalid address
+        if (!$ipAsLong) {
             return null;
         }
 
         try {
-            /** @var GeoIp|null $info */
             $info = GeoIp::getQueryBuilder()
                          ->where('ip_start <= :ip')
                          ->andWhere('ip_end >= :ip')
@@ -40,6 +40,11 @@ readonly class GeoIpHelper implements IGeoIpHelper {
                 ]
             );
 
+            return null;
+        }
+
+        // An address outside the known ranges
+        if (!($info instanceof GeoIp)) {
             return null;
         }
 
