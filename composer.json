@@ -1,5 +1,6 @@
 {
   "private": true,
+  "license": "CC0-1.0",
   "require": {
     "php": ">=8.5",
     "ext-curl": "*",
