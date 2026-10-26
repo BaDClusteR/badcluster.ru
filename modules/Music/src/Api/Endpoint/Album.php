@@ -222,7 +222,7 @@ class Album extends AEndpoint {
                 ->setMusicBy($musicBy)
                 ->setVisualBy($visualBy)
                 ->setCoverBy($coverBy)
-                ->setPosition($position)
+                ->setPosition($position ?? $album->getPosition())
                 ->persist()
         );
 
