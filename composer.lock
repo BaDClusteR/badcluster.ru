@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c87a3aacdbd7e46007a622f4a94c5f98",
+    "content-hash": "ab61233b8e9f98e3475490ee8eba00b3",
     "packages": [
         {
             "name": "bad_cluster/runway",
@@ -7731,6 +7731,8 @@
         "ext-zip": "*",
         "ext-gd": "*"
     },
-    "platform-dev": {},
+    "platform-dev": {
+        "ext-pdo_sqlite": "*"
+    },
     "plugin-api-version": "2.6.0"
 }

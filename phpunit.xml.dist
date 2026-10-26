@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         cacheDirectory="var/phpunit"
+         colors="true"
+         failOnWarning="true"
+         failOnNotice="true"
+         failOnDeprecation="true"
+         failOnRisky="true"
+         beStrictAboutOutputDuringTests="true">
+    <testsuites>
+        <!-- The classes one by one: test doubles, SQLite in memory, temporary folders. -->
+        <testsuite name="unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <!-- The real DI container of the site in the process (tests/config/test.env, SQLite in memory). -->
+        <testsuite name="integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <!-- The site in the PHP built-in server: HTTP requests, a temporary SQLite database. -->
+        <testsuite name="e2e">
+            <directory>tests/E2E</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory>src</directory>
+            <directory>modules/Backup/src</directory>
+            <directory>modules/Blog/src</directory>
+            <directory>modules/Books/src</directory>
+            <directory>modules/Games/src</directory>
+            <directory>modules/Music/src</directory>
+        </include>
+    </source>
+</phpunit>

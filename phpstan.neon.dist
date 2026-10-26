@@ -1,0 +1,11 @@
+parameters:
+    level: max
+    # The modules: the PHP code is in modules/*/src only (the admin apps are in modules/*/app).
+    paths:
+        - src
+        - modules
+        - tests
+    excludePaths:
+        analyseAndScan:
+            - modules/*/app/*
+    tmpDir: var/phpstan
