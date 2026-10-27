@@ -83,14 +83,14 @@ readonly class PostsProvider implements IPostsProvider {
         }
 
         if ($tag) {
+            // Несуществующий тэг (id 0) не находит ни одного поста, а не все посты подряд:
+            // иначе /blog/tag/что-угодно отдаёт ленту блога вместо 404
             $tagId = Tag::findOne(['slug' => $tag])?->getId() ?? 0;
 
-            if ($tagId) {
-                $qb->select('p.*')
-                   ->leftJoin('post_tags', 'pt', ExpressionJoinConditionTypeEnum::ON, 'pt.post_id = p.id')
-                   ->andWhere('pt.tag_id = :tag')
-                   ->setVariable('tag', $tagId);
-            }
+            $qb->select('p.*')
+               ->leftJoin('post_tags', 'pt', ExpressionJoinConditionTypeEnum::ON, 'pt.post_id = p.id')
+               ->andWhere('pt.tag_id = :tag')
+               ->setVariable('tag', $tagId);
         }
 
         return $qb;
