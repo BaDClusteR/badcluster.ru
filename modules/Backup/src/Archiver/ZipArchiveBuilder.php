@@ -52,6 +52,9 @@ class ZipArchiveBuilder implements IArchiveBuilder {
 
         $zip->addEmptyDir($entryPrefix);
 
+        // "static/music/" would cut the first letter of every entry name ("rack.mp3").
+        $dir = rtrim($dir, '/' . DIRECTORY_SEPARATOR);
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS),
             RecursiveIteratorIterator::SELF_FIRST
