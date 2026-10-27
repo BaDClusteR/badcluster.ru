@@ -57,7 +57,9 @@ class Game extends AEntity {
     public function remove(): void {
         $this->getCover()?->remove();
 
-        foreach (GameMaterial::find(['game_id' => $this->id]) as $material) {
+        // Условие — по имени свойства (game), а не колонки (game_id): неизвестное имя
+        // find() молча пропускает, и удалились бы материалы всех игр
+        foreach (GameMaterial::find(['game' => $this->id]) as $material) {
             $material->remove();
         }
 
