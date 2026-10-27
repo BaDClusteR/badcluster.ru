@@ -72,7 +72,8 @@ readonly class BookDataBuilder implements IBookDataBuilder {
             lastUpdateDate: $this->dateConverter->toPickerValue(
                 $book->getLastUpdateDate()
             ),
-            group: $book->getGroup(),
+            // У книги без группы она NULL, а в DTO (и в админке) — строка
+            group: (string) $book->getGroup(),
             position: $book->getPosition(),
             fb2Genre: $book->getFb2Genre(),
             fb2Id: $book->getFb2Id(),
