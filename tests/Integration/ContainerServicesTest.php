@@ -76,7 +76,13 @@ final class ContainerServicesTest extends TestCase {
         self::assertIsObject($service);
 
         $decorators = self::getAllServices()[$name]->getDecorators();
-        self::assertInstanceOf($decorators !== [] ? end($decorators) : $class, $service);
+        $expected = $decorators !== [] ? end($decorators) : $class;
+
+        if (!class_exists($expected)) {
+            self::fail("$expected is not a class.");
+        }
+
+        self::assertInstanceOf($expected, $service);
     }
 
     /**

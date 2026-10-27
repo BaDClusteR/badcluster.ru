@@ -44,7 +44,7 @@ final class AEndpointTest extends TestCase {
 
         try {
             $this->endpoint->callHandleWithException(static fn() => throw $error);
-            self::fail('No exception.');
+            self::fail('No exception.'); // @phpstan-ignore deadCode.unreachable (a mutant may return)
         } catch (RuntimeInternalErrorException $e) {
             self::assertSame('Database is gone', $e->getMessage());
             self::assertSame(['Database is gone'], $e->errors);

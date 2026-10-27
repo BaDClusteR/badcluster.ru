@@ -118,7 +118,9 @@ final class RoutesTest extends TestCase {
         self::assertSame(array_unique($keys), $keys, 'Every endpoint has its own method and path.');
 
         foreach (Container::getInstance()->getServiceTagsByName('api_endpoint_collection') as $tag) {
-            $class = get_class(Container::getInstance()->getService($tag['serviceName']));
+            $service = Container::getInstance()->getService($tag['serviceName']);
+            self::assertIsObject($service);
+            $class = $service::class;
             self::assertContains($class, $classes, "$class has no endpoints.");
         }
 
