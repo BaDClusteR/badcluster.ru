@@ -77,10 +77,10 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
             $lines[] = 'port=' . $dsn['port'];
         }
         if ($user !== null && $user !== '') {
-            $lines[] = 'user=' . $user;
+            $lines[] = 'user=' . $this->quoteOptionValue($user);
         }
         if ($password !== null && $password !== '') {
-            $lines[] = 'password=' . $password;
+            $lines[] = 'password=' . $this->quoteOptionValue($password);
         }
         $lines[] = 'default-character-set=' . $charset;
 
@@ -88,6 +88,20 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
         @chmod($path, 0600);
 
         return $path;
+    }
+
+    /**
+     * A value of an option file as is: unquoted, "#" starts a comment (a password "a#b" would be "a") and the
+     * backslash starts an escape sequence ("\n", "\\", …), so the value is quoted and its backslashes are doubled.
+     */
+    private function quoteOptionValue(string $value): string {
+        $value = str_replace('\\', '\\\\', $value);
+
+        if (!str_contains($value, '"')) {
+            return '"' . $value . '"';
+        }
+
+        return str_contains($value, "'") ? $value : "'" . $value . "'";
     }
 
     /**
@@ -153,7 +167,7 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
         return $value !== null && $value !== '' && filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
-    private function isMariaDbBinary(string $binary): bool {
+    protected function isMariaDbBinary(string $binary): bool {
         $version = (string) shell_exec(escapeshellarg($binary) . ' --version 2>/dev/null');
 
         return stripos($version, 'mariadb') !== false;
@@ -177,7 +191,7 @@ class MysqldumpDatabaseDumper implements IDatabaseDumper {
     /**
      * @param string[] $command
      */
-    private function run(array $command, string $outputFile): void {
+    protected function run(array $command, string $outputFile): void {
         $output = fopen($outputFile, 'wb');
 
         if ($output === false) {
