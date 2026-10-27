@@ -50,7 +50,8 @@ class Book extends ABook {
     protected function getImageThumbnailPath(Media $image): string {
         $thumbnail = $image->getThumbnail(1500, 'image/jpeg');
         if ($thumbnail) {
-            return $thumbnail->getWebPath();
+            // Путь к файлу, а не URL: обложка встраивается в книгу через file_get_contents()
+            return $thumbnail->getLocalPath();
         }
 
         return $image->getLocalPath();

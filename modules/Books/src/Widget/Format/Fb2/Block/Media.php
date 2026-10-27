@@ -52,7 +52,8 @@ class Media extends AWidget {
 
         $thumbnail = $this->media->getThumbnail(1500, 'image/jpeg');
         if ($thumbnail) {
-            return $thumbnail->getWebPath();
+            // Путь к файлу, а не URL: картинка встраивается в книгу через file_get_contents()
+            return $thumbnail->getLocalPath();
         }
 
         return $this->media->getLocalPath();
