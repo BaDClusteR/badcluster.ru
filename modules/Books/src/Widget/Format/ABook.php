@@ -86,21 +86,26 @@ abstract class ABook extends AWidget {
     }
 
     protected function getStartYear(): int {
-        return min(
-            array_map(
-                static fn (Chapter $chapter): int => (int) $chapter->getAddedDate()->format('Y'),
-                $this->getChapters()
-            )
-        );
+        return min($this->getChapterYears());
     }
 
     protected function getEndYear(): int {
-        return max(
-            array_map(
-                static fn (Chapter $chapter): int => (int) $chapter->getAddedDate()->format('Y'),
-                $this->getChapters()
-            )
+        return max($this->getChapterYears());
+    }
+
+    /**
+     * Годы глав; у книги без опубликованных глав (её всё равно можно скачать) — текущий год,
+     * иначе min()/max() на пустом массиве бросают ValueError.
+     *
+     * @return non-empty-array<int>
+     */
+    private function getChapterYears(): array {
+        $years = array_map(
+            static fn (Chapter $chapter): int => (int) $chapter->getAddedDate()->format('Y'),
+            $this->getChapters()
         );
+
+        return $years ?: [(int) date('Y')];
     }
 
     protected function getBookFormat(): ?BookFormat {
