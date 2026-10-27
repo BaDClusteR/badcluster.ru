@@ -137,6 +137,7 @@ class Book extends AEntity {
                             ->setDump('')
                             ->setFilename('')
                             ->setSize(0)
+                            ->setDateGenerated(new DateTime('now'))
                             ->persist();
             }
 
@@ -153,7 +154,7 @@ class Book extends AEntity {
      */
     public function setFormat(BookFormat $format): self {
         /** @var BookFormat|null $storedFormat */
-        $storedFormat = BookFormat::find([
+        $storedFormat = BookFormat::findOne([
             'book' => $this,
             'type' => $format->getType()
         ]);
