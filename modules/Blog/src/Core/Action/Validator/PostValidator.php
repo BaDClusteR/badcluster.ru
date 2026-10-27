@@ -24,7 +24,7 @@ class PostValidator implements IPostValidator {
                 successful: false,
                 errors: [
                     'slug' => sprintf(
-                        '"Такой слаг уже занят постом #%d "%s""',
+                        'Такой слаг уже занят постом #%d "%s"',
                         $postWithTheSameSlug->getId(),
                         $postWithTheSameSlug->getTitle()
                     ),
