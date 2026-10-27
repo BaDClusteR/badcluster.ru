@@ -41,6 +41,16 @@ class Media extends AWidget {
         }
     }
 
+    /**
+     * Блок может ссылаться на медиа, которое уже удалили из библиотеки: в книге его просто нет
+     * (шаблон без медиа упал бы на null).
+     */
+    public function render(array $context = []): string {
+        return $this->media === null
+            ? ''
+            : parent::render($context);
+    }
+
     protected function isImage(): bool {
         return $this->media?->isImage() ?? false;
     }
