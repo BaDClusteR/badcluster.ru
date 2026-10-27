@@ -99,6 +99,45 @@ final class SqliteSchema {
     }
 
     /**
+     * Empty tables of all the models of the site and of the modules of the tests (see MODULES of
+     * tests/config/test.env), and the ones of API platform: everything a page of the site may read.
+     */
+    public static function createSiteTables(): IDataStorageDriver {
+        self::createModelTables(...self::getSiteModels());
+
+        return self::createAuthTables();
+    }
+
+    /**
+     * @return list<class-string<AEntity>> The models of src/Model and modules/<Module>/src/Model with a table.
+     */
+    public static function getSiteModels(): array {
+        $models = [];
+        $folders = ['BC\\Model\\' => PROJECT_ROOT . '/src/Model'];
+
+        foreach (['Blog', 'Books', 'Games', 'Music', 'Backup'] as $module) {
+            $folders["BC\\Modules\\$module\\Model\\"] = PROJECT_ROOT . "/modules/$module/src/Model";
+        }
+
+        foreach ($folders as $namespace => $folder) {
+            foreach (glob("$folder/*.php") ?: [] as $file) {
+                $class = $namespace . basename($file, '.php');
+
+                if (
+                    class_exists($class)
+                    && is_subclass_of($class, AEntity::class)
+                    && !new \ReflectionClass($class)->isAbstract()
+                    && new \ReflectionClass($class)->getAttributes(\Runway\DataStorage\Attribute\Table::class) !== []
+                ) {
+                    $models[] = $class;
+                }
+            }
+        }
+
+        return $models;
+    }
+
+    /**
      * Empty tables of API platform (see AUTH_TABLES).
      */
     public static function createAuthTables(): IDataStorageDriver {
