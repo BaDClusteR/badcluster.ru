@@ -25,7 +25,9 @@ readonly class NotesProvider implements INotesProvider {
                    ->setVariable('published', true);
             }
 
-            return $qb->orderBy('publish_date', 'DESC')->iterateEntities();
+            // yield from, а не return: запрос выполняется лениво, при обходе, и его
+            // ошибка должна попасть в этот catch, а не уронить страницу (меню, sitemap)
+            yield from $qb->orderBy('publish_date', 'DESC')->iterateEntities();
         } catch (Exception $e) {
             $this->logger->error(
                 sprintf('[%s] Cannot get notes: %s', __METHOD__, $e->getMessage()),
@@ -35,8 +37,6 @@ readonly class NotesProvider implements INotesProvider {
                     'errMessage'    => $e->getMessage(),
                 ]
             );
-
-            return [];
         }
     }
 
