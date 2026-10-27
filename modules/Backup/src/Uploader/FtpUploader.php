@@ -33,8 +33,7 @@ class FtpUploader implements IBackupUploader {
         $scheme = $destination->ssl ? 'ftps' : 'ftp';
         $url = $scheme . '://' . $destination->host . ':' . $destination->port . '/' . ltrim($remotePath, '/');
 
-        $curl = curl_init();
-        curl_setopt_array($curl, [
+        $options = [
             CURLOPT_URL                 => $url,
             CURLOPT_UPLOAD              => true,
             CURLOPT_INFILE              => $handle,
@@ -48,23 +47,36 @@ class FtpUploader implements IBackupUploader {
             // Abort only when the transfer stalls (< 1 KB/s for 60 s).
             CURLOPT_LOW_SPEED_LIMIT     => 1024,
             CURLOPT_LOW_SPEED_TIME      => 60,
-        ]);
+        ];
 
         // Active mode: tell curl to hand out the port. Passive (default) needs no extra option.
         if (!$destination->passive) {
-            curl_setopt($curl, CURLOPT_FTPPORT, '-');
+            $options[CURLOPT_FTPPORT] = '-';
         }
 
-        $ok = curl_exec($curl);
-        $error = $ok === false ? curl_error($curl) : null;
+        $error = $this->transfer($options);
 
         fclose($handle);
 
-        if ($ok === false) {
+        if ($error !== null) {
             return UploadResult::fail('FTP upload failed: ' . $error);
         }
 
         return UploadResult::ok($this->buildPublicUrl($destination, $target));
+    }
+
+    /**
+     * Runs the curl transfer.
+     *
+     * @param array<int, mixed> $options
+     *
+     * @return string|null The curl error, null on success.
+     */
+    protected function transfer(array $options): ?string {
+        $curl = curl_init();
+        curl_setopt_array($curl, $options);
+
+        return curl_exec($curl) === false ? curl_error($curl) : null;
     }
 
     private function buildRemotePath(FtpDestinationConfig $destination, UploadTarget $target): string {

@@ -196,7 +196,7 @@ class GoogleDriveClient {
      * Low-level curl call. Adds the Bearer header unless the caller supplied its own
      * CURLOPT_HTTPHEADER (or asked to skip). Throws on curl errors and HTTP >= 400.
      */
-    private function rawRequest(string $url, array $options, bool $skipAuthHeader = false): string {
+    protected function rawRequest(string $url, array $options, bool $skipAuthHeader = false): string {
         $curl = curl_init();
 
         if (!isset($options[CURLOPT_HTTPHEADER]) && !$skipAuthHeader) {

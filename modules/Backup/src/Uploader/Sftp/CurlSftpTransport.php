@@ -44,8 +44,7 @@ class CurlSftpTransport implements ISftpTransport {
         $url = 'sftp://' . $destination->host . ':' . $destination->port
             . $this->buildUrlPath($destination, $target);
 
-        $curl = curl_init();
-        curl_setopt_array($curl, [
+        $options = [
             CURLOPT_URL                     => $url,
             CURLOPT_UPLOAD                  => true,
             CURLOPT_INFILE                  => $handle,
@@ -56,35 +55,48 @@ class CurlSftpTransport implements ISftpTransport {
             // Abort only when the transfer stalls (< 1 KB/s for 60 s).
             CURLOPT_LOW_SPEED_LIMIT         => 1024,
             CURLOPT_LOW_SPEED_TIME          => 60,
-        ]);
+        ];
 
         if ($destination->keyFilePath !== '') {
-            curl_setopt($curl, CURLOPT_USERNAME, $destination->username);
-            curl_setopt($curl, CURLOPT_SSH_AUTH_TYPES, CURLSSH_AUTH_PUBLICKEY);
-            curl_setopt($curl, CURLOPT_SSH_PRIVATE_KEYFILE, $destination->keyFilePath);
+            $options[CURLOPT_USERNAME] = $destination->username;
+            $options[CURLOPT_SSH_AUTH_TYPES] = CURLSSH_AUTH_PUBLICKEY;
+            $options[CURLOPT_SSH_PRIVATE_KEYFILE] = $destination->keyFilePath;
 
             if ($destination->keyPassphrase !== '') {
-                curl_setopt($curl, CURLOPT_KEYPASSWD, $destination->keyPassphrase);
+                $options[CURLOPT_KEYPASSWD] = $destination->keyPassphrase;
             }
         } else {
-            curl_setopt($curl, CURLOPT_USERPWD, $destination->username . ':' . $destination->password);
-            curl_setopt($curl, CURLOPT_SSH_AUTH_TYPES, CURLSSH_AUTH_PASSWORD);
+            $options[CURLOPT_USERPWD] = $destination->username . ':' . $destination->password;
+            $options[CURLOPT_SSH_AUTH_TYPES] = CURLSSH_AUTH_PASSWORD;
         }
 
         if ($destination->hostKeySha256 !== null) {
-            curl_setopt($curl, CURLOPT_SSH_HOST_PUBLIC_KEY_SHA256, $destination->hostKeySha256);
+            $options[CURLOPT_SSH_HOST_PUBLIC_KEY_SHA256] = $destination->hostKeySha256;
         }
 
-        $ok = curl_exec($curl);
-        $error = $ok === false ? curl_error($curl) : null;
+        $error = $this->transfer($options);
 
         fclose($handle);
 
-        if ($ok === false) {
+        if ($error !== null) {
             return UploadResult::fail('SFTP (curl) upload failed: ' . $error);
         }
 
         return UploadResult::ok($this->buildPublicUrl($destination, $target));
+    }
+
+    /**
+     * Runs the curl transfer.
+     *
+     * @param array<int, mixed> $options
+     *
+     * @return string|null The curl error, null on success.
+     */
+    protected function transfer(array $options): ?string {
+        $curl = curl_init();
+        curl_setopt_array($curl, $options);
+
+        return curl_exec($curl) === false ? curl_error($curl) : null;
     }
 
     /**

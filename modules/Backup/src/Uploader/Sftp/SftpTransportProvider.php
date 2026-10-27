@@ -36,7 +36,7 @@ class SftpTransportProvider implements ISftpTransportProvider {
     /**
      * @return ISftpTransport[]
      */
-    private function getTransports(): array {
+    protected function getTransports(): array {
         return array_values(
             array_filter(
                 Container::getInstance()->getServicesByTag('backup.sftp_transport'),

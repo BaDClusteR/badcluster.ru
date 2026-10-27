@@ -111,7 +111,11 @@ class S3Uploader implements IBackupUploader {
     }
 
     private function getClient(S3DestinationConfig $destination): S3Client {
-        return $this->clients[$this->getClientId($destination)] ??= new S3Client($destination);
+        return $this->clients[$this->getClientId($destination)] ??= $this->createClient($destination);
+    }
+
+    protected function createClient(S3DestinationConfig $destination): S3Client {
+        return new S3Client($destination);
     }
 
     private function getClientId(S3DestinationConfig $destination): string {

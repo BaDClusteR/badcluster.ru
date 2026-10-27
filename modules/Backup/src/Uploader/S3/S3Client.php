@@ -212,9 +212,14 @@ class S3Client {
                     $delay
                 ));
 
-                sleep($delay);
+                $this->pause($delay);
             }
         }
+    }
+
+    /** The back-off between the attempts of a request. */
+    protected function pause(int $seconds): void {
+        sleep($seconds);
     }
 
     /**
@@ -224,7 +229,7 @@ class S3Client {
      *
      * @return array{status: int, headers: array<string, string>, body: string}
      */
-    private function send(
+    protected function send(
         string $method,
         string $path,
         array $query,

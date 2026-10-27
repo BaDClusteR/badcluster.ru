@@ -84,6 +84,10 @@ class GoogleDriveUploader implements IBackupUploader {
 
     private function getClient(GoogleDriveDestinationConfig $destination): GoogleDriveClient {
         return $this->clients[$destination->keyFilePath]
-            ??= new GoogleDriveClient($destination->keyFilePath);
+            ??= $this->createClient($destination);
+    }
+
+    protected function createClient(GoogleDriveDestinationConfig $destination): GoogleDriveClient {
+        return new GoogleDriveClient($destination->keyFilePath);
     }
 }
