@@ -64,6 +64,14 @@ services:
         - 'password'
         - 'token'
         - 'X-BC-Token'
+        # The session of the admin area (the cookie of API platform) and the headers and the server
+        # parameters that carry it.
+        - 'api_session'
+        - 'cookie'
+        - 'HTTP_COOKIE'
+        - 'authorization'
+        - 'HTTP_AUTHORIZATION'
+        - 'HTTP_X_BC_TOKEN'
         # Positional call arguments in logged stack traces can contain credentials
         # (e.g. Auth::authenticate("login", "password")), so mask them entirely.
         - 'args'
