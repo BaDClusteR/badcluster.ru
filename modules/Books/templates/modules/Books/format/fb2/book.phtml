@@ -18,27 +18,27 @@ $chapters = $this->getChapters();
     <description>
         <title-info>
             <?php if ($genre = $book->getFb2Genre()) : ?>
-                <genre><?=$genre?></genre>
+                <genre><?=$this->xml($genre)?></genre>
             <?php endif; ?>
             <?php if ($book->isTranslation()) : ?>
                 <?php foreach ($this->getBookAuthors() as $author) : ?>
                     <author>
                         <?php if (!empty($author['firstname'])) : ?>
-                            <first-name><?=$author['firstname']?></first-name>
+                            <first-name><?=$this->xml($author['firstname'])?></first-name>
                         <?php endif; ?>
                         <?php if (!empty($author['lastname'])) : ?>
-                            <last-name><?=$author['lastname']?></last-name>
+                            <last-name><?=$this->xml($author['lastname'])?></last-name>
                         <?php endif; ?>
                     </author>
                 <?php endforeach; ?>
             <?php else : ?>
                 <author>
                     <nickname>BaD ClusteR</nickname>
-                    <home-page><?=$website?></home-page>
-                    <email><?=$email?></email>
+                    <home-page><?=$this->xml($website)?></home-page>
+                    <email><?=$this->xml($email)?></email>
                 </author>
             <?php endif; ?>
-            <book-title><?=$book->getTitle()?></book-title>
+            <book-title><?=$this->xml($book->getTitle())?></book-title>
             <annotation><?=$this->getBookAnnotation()?></annotation>
             <?php if ($cover = $book->getCover()) : ?>
                 <?php $coverId = $this->addImage($this->getImageThumbnailPath($cover)); ?>
@@ -51,8 +51,8 @@ $chapters = $this->getChapters();
                 <src-lang>en</src-lang>
                 <translator>
                     <nickname>BaD ClusteR</nickname>
-                    <home-page><?=$website?></home-page>
-                    <email><?=$email?></email>
+                    <home-page><?=$this->xml($website)?></home-page>
+                    <email><?=$this->xml($email)?></email>
                 </translator>
             <?php else : ?>
                 <src-lang>ru</src-lang>
@@ -61,8 +61,8 @@ $chapters = $this->getChapters();
         <document-info>
             <author>
                 <nickname>BaD ClusteR</nickname>
-                <home-page><?=$website?></home-page>
-                <email><?=$email?></email>
+                <home-page><?=$this->xml($website)?></home-page>
+                <email><?=$this->xml($email)?></email>
             </author>
             <date
                 value="<?=$dateConverter->toDateTime($ts)->format('Y-m-d')?>"
@@ -81,15 +81,15 @@ $chapters = $this->getChapters();
         </document-info>
     </description>
     <body>
-    <title><p><?=$book->getTitle()?></p></title>
+    <title><p><?=$this->xml($book->getTitle())?></p></title>
     <?php foreach ($chapters as $chapter) : ?>
         <?php if ($part = $chapter->getPart()) : ?>
             <section>
-                <title><p><?=$part?></p></title>
+                <title><p><?=$this->xml($part)?></p></title>
             </section>
         <?php endif; ?>
         <section>
-            <title><p><?=$chapter->getTitle()?></p></title>
+            <title><p><?=$this->xml($chapter->getTitle())?></p></title>
             <?=$this->getChapterContent($chapter)?>
         </section>
     <?php endforeach; ?>

@@ -72,4 +72,15 @@ class Media extends AWidget {
             ? $book
             : throw new RuntimeException('The widget needs a book');
     }
+
+    /**
+     * Подпись из редактора может содержать разметку и сущности HTML: в FB2 — только текст
+     */
+    public function getCaptionXml(): string {
+        return htmlspecialchars(
+            html_entity_decode(strip_tags($this->caption), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+            ENT_XML1 | ENT_QUOTES | ENT_SUBSTITUTE,
+            'UTF-8'
+        );
+    }
 }

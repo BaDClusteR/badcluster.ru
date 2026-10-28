@@ -47,7 +47,14 @@ class Book extends ABook {
     }
 
     protected function getBookAnnotation(): string {
-        return $this->getFormatter()->formatAsHtml($this->getBook()->getAnnotation());
+        return $this->getFormatter()->formatAsHtml($this->xml($this->getBook()->getAnnotation()));
+    }
+
+    /**
+     * Обычный текст (названия, имена, жанр) для XML: «Tom & Jerry» иначе ломает файл
+     */
+    public function xml(string $text): string {
+        return htmlspecialchars($text, ENT_XML1 | ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     protected function getImageThumbnailPath(Media $image): string {

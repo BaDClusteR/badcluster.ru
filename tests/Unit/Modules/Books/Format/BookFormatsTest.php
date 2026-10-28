@@ -182,6 +182,28 @@ final class BookFormatsTest extends TestCase {
         );
     }
 
+    /**
+     * The plain texts (the titles, the names, the annotation) are escaped: an "&" or a "<" made the file invalid XML.
+     */
+    public function testFb2EscapesPlainTexts(): void {
+        $book = BooksFixture::createBook(
+            title: 'Tom & Jerry <3',
+            type: Book::TYPE_TRANSLATION,
+            author: 'A&B <C>',
+            annotation: 'Кошки & мышки <b>'
+        );
+        BooksFixture::createChapter($book, 'Глава "1" & <2>', [BooksFixture::paragraph('Текст')], 1, part: 'Часть & I');
+
+        $xpath = $this->loadFb2(new Fb2()->generateBook($book));
+
+        self::assertSame('Tom & Jerry <3', $this->text($xpath, '//f:title-info/f:book-title'));
+        self::assertSame('Tom & Jerry <3', $this->text($xpath, '//f:body[not(@name)]/f:title/f:p'));
+        self::assertSame(['A&B'], $this->texts($xpath, '//f:title-info/f:author/f:first-name'));
+        self::assertSame('Кошки & мышки <b>', $this->text($xpath, '//f:title-info/f:annotation/f:p'));
+        self::assertContains('Часть & I', $this->texts($xpath, '//f:body[not(@name)]//f:section/f:title/f:p'));
+        self::assertContains('Глава "1" & <2>', $this->texts($xpath, '//f:body[not(@name)]//f:section/f:title/f:p'));
+    }
+
     public function testFb2ImageIsReadFromFileOfThumbnail(): void {
         $image = BooksFixture::createMedia('image/png', 'picture.png', width: 3000);
         BooksFixture::createMedia('image/webp', 'picture-1500.webp', $image, 1500);
