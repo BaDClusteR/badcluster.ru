@@ -94,7 +94,7 @@ class Picture extends AWidget {
         }
 
         if (!empty($this->context['alt'])) {
-            $this->caption = MixedValue::toString($this->context['alt']);
+            $this->alt = MixedValue::toString($this->context['alt']);
         }
 
         if (!empty($this->context['fetchPriority'])) {
