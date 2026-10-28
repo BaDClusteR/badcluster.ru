@@ -60,7 +60,7 @@ abstract class AFile extends AEntity {
         $dir = static::getPathsProviderStatic()->getStaticPath() . '/' . static::getFolderRelativePath();
 
         $fileSystem->mkdir($dir);
-        $newFilename = $fileSystem->copy($filePath, "$dir/$filename");
+        $newFilename = $fileSystem->copy($filePath, $dir . '/' . static::buildSafeFilename($filename));
 
         $mime = $mime ?: mime_content_type($filePath);
         $size = filesize($filePath);
@@ -75,6 +75,26 @@ abstract class AFile extends AEntity {
             ->setMime($mime)
             ->setSize($size)
             ->setHash($hash);
+    }
+
+    /**
+     * Имя файла — клиентское: без путей и служебных символов, а расширения, которые
+     * веб-сервер может исполнить или браузер — отрисовать как страницу сайта
+     * (php, html, svg…), обезвреживаются добавлением .txt
+     */
+    protected static function buildSafeFilename(string $filename): string {
+        // Не basename(): он зависит от локали и может съесть кириллицу в начале имени
+        $filename = str_replace('\\', '/', $filename);
+        $filename = substr($filename, (int) strrpos("/$filename", '/'));
+        $filename = (string) preg_replace('/[^\p{L}\p{N} ._()\[\]-]+/u', '-', $filename);
+        $filename = ltrim($filename, '. ') ?: 'file';
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+        if (preg_match('/^(php\d*|phtml|pht|phps|phar|inc|html?|xhtml|shtml|svgz?|xml|xsl|js|mjs|htaccess|cgi|pl|py|sh)$/', $extension)) {
+            $filename .= '.txt';
+        }
+
+        return $filename;
     }
 
     protected static function getFolderPath(): string {
