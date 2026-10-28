@@ -257,7 +257,7 @@ class Book extends AEntity {
      */
     public function getAuthors(): array {
         if ($this->isTranslation()) {
-            $authors = explode(',', $this->getAuthor());
+            $authors = explode(',', $this->getAuthor() ?? '');
         } else {
             $authors = ['BaD ClusteR'];
         }
