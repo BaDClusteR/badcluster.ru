@@ -86,7 +86,7 @@ final class SystemMetricsSampleCommandTest extends TestCase {
                 $this->times[] = microtime(true);
 
                 return new SystemMetricsSampleDTO(
-                    array_fill(0, $this->samples, [1, 1.0, 1.0]),
+                    array_fill(0, $this->samples, [1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]),
                     CountersStub::counters()
                 );
             }

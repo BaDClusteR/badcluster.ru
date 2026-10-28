@@ -144,6 +144,9 @@ final class CurlSftpTransportTest extends TestCase {
         self::assertSame([], $transport->calls);
     }
 
+    /**
+     * @param non-empty-string|null $hostKeySha256
+     */
     private function createDestination(
         string  $basePath = '/srv/backups',
         string  $keyFilePath = '',

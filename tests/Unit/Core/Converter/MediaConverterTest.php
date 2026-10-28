@@ -21,7 +21,8 @@ final class MediaConverterTest extends TestCase {
     }
 
     public function testNull(): void {
-        self::assertNull(new MediaConverter()->convertMedia(null));
+        // A media that is not found: null
+        self::assertNull(new MediaConverter()->convertMedia(Media::findByUniqueIdentifier(404)));
     }
 
     public function testMediaWithThumbnails(): void {
@@ -67,7 +68,6 @@ final class MediaConverterTest extends TestCase {
 
         $dto = new MediaConverter()->convertMedia($media);
 
-        self::assertNotNull($dto);
         self::assertSame([], $dto->thumbs);
         self::assertSame('http://bc.test/static/media/clip.mp4', $dto->url);
     }

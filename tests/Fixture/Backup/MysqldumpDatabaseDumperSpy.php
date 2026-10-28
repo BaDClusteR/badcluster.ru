@@ -41,7 +41,7 @@ final class MysqldumpDatabaseDumperSpy extends MysqldumpDatabaseDumper {
     /**
      * The real run of a command (e.g. a PHP one-liner standing for mysqldump).
      *
-     * @param string[] $command
+     * @param list<string> $command
      */
     public function runCommand(array $command, string $outputFile): void {
         parent::run($command, $outputFile);

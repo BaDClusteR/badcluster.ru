@@ -60,12 +60,13 @@ final class TestEndpoint extends AEndpoint {
      * @param array<int|string>     $ids The IDs of a request body: anything, the endpoint casts them.
      */
     public function callDeleteEntities(string $entityFQN, array $ids): void {
-        // @phpstan-ignore argument.type (the tests check that a string ID cannot inject SQL)
         $this->deleteEntities($entityFQN, $ids);
     }
 
     /**
-     * @param callable(AEntity): mixed $build
+     * @template T of AEntity
+     * @param GetEntitiesListRequest<T> $request
+     * @param callable(T): mixed         $build
      *
      * @return ListResponseDTO<mixed>
      */

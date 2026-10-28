@@ -297,7 +297,7 @@ final class ContentActionsTest extends TestCase {
     }
 
     /**
-     * @param array<mixed> $content
+     * @param array<string, mixed> $content
      */
     private static function createPageRequest(
         string    $title,

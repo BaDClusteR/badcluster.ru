@@ -17,7 +17,7 @@ final class FakeGoogleDriveClient extends GoogleDriveClient {
     /** @var array<string, string> Name of a child folder => its ID. */
     public array $folders = [];
 
-    /** @var array<array{id: string, name: string, createdTime: string}> Newest first. */
+    /** @var list<array{id: string, name: string, createdTime: string}> Newest first. */
     public array $files = [];
 
     /** @var array{id: string, webViewLink?: string} */

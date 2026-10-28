@@ -240,6 +240,7 @@ final class AEndpointTest extends TestCase {
 
         $list = $this->endpoint->callGetEntitiesList(
             new GetEntitiesListRequest(
+                entityFQN: Fact::class,
                 qb: Fact::getQueryBuilder()->orderBy('id', 'DESC'),
                 filter: 'i',
                 columnsToFind: ['title'],
@@ -249,7 +250,7 @@ final class AEndpointTest extends TestCase {
                 perPage: 1,
                 sortableColumns: ['title']
             ),
-            static fn(AEntity $fact): string => $fact instanceof Fact ? strtoupper($fact->getTitle()) : ''
+            static fn(Fact $fact): string => strtoupper($fact->getTitle())
         );
 
         self::assertSame(['FIRST'], $list->items);
