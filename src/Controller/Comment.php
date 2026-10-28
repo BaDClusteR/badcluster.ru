@@ -45,7 +45,8 @@ readonly class Comment {
                 code: 400,
                 data: [
                     'status'  => 'error',
-                    'message' => sprintf('Сущность %s с ID = %d не найдена, либо к ней нет доступа', $pageType, $pageId)
+                    // Без type и id из запроса: тост на странице выводит сообщение как HTML
+                    'message' => 'Страница для комментария не найдена, либо к ней нет доступа'
                 ]
             );
         }
