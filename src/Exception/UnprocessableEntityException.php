@@ -8,6 +8,9 @@ use Runway\Exception\Exception;
 use Throwable;
 
 class UnprocessableEntityException extends Exception {
+    /**
+     * @param array<string, string> $fieldErrors [fieldName => error]
+     */
     public function __construct(
         private readonly array $fieldErrors,
         private readonly ?string $error = null,
