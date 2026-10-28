@@ -12,7 +12,7 @@ class Screenshots extends AWidget {
     }
 
     /**
-     * @return iterable<Screenshot>
+     * @return iterable<array<string, mixed>> The rows of the screenshots (the template maps them).
      */
     protected function getScreenshotsIterator(): iterable {
         try {

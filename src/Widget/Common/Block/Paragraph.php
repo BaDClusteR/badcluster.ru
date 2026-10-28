@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\TypographerTrait;
 use BC\Widget\AWidget;
 
@@ -16,12 +17,12 @@ class Paragraph extends AWidget {
 
     protected function getContent(): string {
         return $this->getTypographer()->process(
-            (string) ($this->context['text'] ?? '')
+            MixedValue::toString($this->context['text'] ?? '')
         );
     }
 
     protected function getAlignment(): string {
-        $align = (string) ($this->context['alignment'] ?? '');
+        $align = MixedValue::toString($this->context['alignment'] ?? '');
 
         return (in_array($align, ['center', 'right'], true))
             ? $align

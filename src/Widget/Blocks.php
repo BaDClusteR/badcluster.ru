@@ -21,6 +21,9 @@ class Blocks extends AWidget implements IAssetProvider {
         return 'common/blocks.phtml';
     }
 
+    /**
+     * @return array<mixed> The blocks of the content of the editor.
+     */
     protected function getBlocks(): array {
         return (array) ($this->context['blocks'] ?? []);
     }
@@ -72,6 +75,9 @@ class Blocks extends AWidget implements IAssetProvider {
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data The data of the block.
+     */
     protected function renderBlock(string $type, array $data): string {
         $widget = match($type) {
             'paragraph' => new Paragraph($data),

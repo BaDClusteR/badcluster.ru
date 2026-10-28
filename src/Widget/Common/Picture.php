@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\AttributesHelperTrait;
 use BC\Core\Trait\PathsProviderTrait;
 use BC\Model\Media;
@@ -70,27 +71,31 @@ class Picture extends AWidget {
         }
 
         if (is_array($this->context['breakpoints'] ?? null)) {
-            $this->breakpoints = $this->context['breakpoints'];
+            $this->breakpoints = [];
+
+            foreach ($this->context['breakpoints'] as $minWidth => $width) {
+                $this->breakpoints[(int) $minWidth] = MixedValue::toInt($width);
+            }
         }
 
         if (!empty($this->context['class'])) {
-            $this->imgCssClass = (string) $this->context['class'];
+            $this->imgCssClass = MixedValue::toString($this->context['class']);
         }
 
         if (!empty($this->context['pictureClass'])) {
-            $this->pictureCssClass = (string) $this->context['pictureClass'];
+            $this->pictureCssClass = MixedValue::toString($this->context['pictureClass']);
         }
 
         if (!empty($this->context['caption'])) {
-            $this->caption = (string) $this->context['caption'];
+            $this->caption = MixedValue::toString($this->context['caption']);
         }
 
         if (!empty($this->context['alt'])) {
-            $this->caption = (string) $this->context['alt'];
+            $this->caption = MixedValue::toString($this->context['alt']);
         }
 
         if (!empty($this->context['fetchPriority'])) {
-            $this->fetchPriority = (string) $this->context['fetchPriority'];
+            $this->fetchPriority = MixedValue::toString($this->context['fetchPriority']);
         }
 
         $this->retina = !empty($this->context['retina']) || !array_key_exists('retina', $this->context);
@@ -102,28 +107,29 @@ class Picture extends AWidget {
     }
 
     protected function getSource(int $width, string $mime, int $minWidth, int $maxWidth): string {
-        if (!$this->hasImages($width, $mime)) {
+        $image = $this->image;
+
+        if (!$image || !$this->hasImages($width, $mime)) {
             return '';
         }
 
-        $thumbnail = $this->image->getThumbnail($width, $mime);
+        $thumbnail = $image->getThumbnail($width, $mime);
 
         if ($this->retina) {
-            $thumbnail2x = $this->image->getThumbnail($width * 2, $mime);
+            $thumbnail2x = $image->getThumbnail($width * 2, $mime);
 
             if (!$thumbnail) {
                 $thumbnail = $thumbnail2x;
             } elseif (!$thumbnail2x) {
-                $thumbnail2x = $this->image->getThumbnail($this->image->getWidth(), $mime);
+                $thumbnail2x = $image->getThumbnail($image->getWidth(), $mime);
             }
 
-            if (!$thumbnail2x) {
+            // Без 1x-тамбнейла его место занимает 2x (см. выше): оба есть всегда
+            if (!$thumbnail || !$thumbnail2x) {
                 return '';
             }
 
-            $srcset = $thumbnail
-                ? "{$thumbnail->getWebPath()} 1x, {$thumbnail2x->getWebPath()} 2x"
-                : $thumbnail2x->getWebPath();
+            $srcset = "{$thumbnail->getWebPath()} 1x, {$thumbnail2x->getWebPath()} 2x";
         } else {
             if (!$thumbnail) {
                 return '';
@@ -153,6 +159,9 @@ class Picture extends AWidget {
         return '<source ' . $this->getAttributesHelper()->getAttributesAsString($attrs) . ' />';
     }
 
+    /**
+     * @return string[]
+     */
     protected function getAllowedMimeTypes(): array {
         return [
             'image/avif',
@@ -164,6 +173,9 @@ class Picture extends AWidget {
         return 'common/picture.phtml';
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function getPictureAttributes(): array {
         $result = [];
 
@@ -180,6 +192,9 @@ class Picture extends AWidget {
         );
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function getImgAttributes(): array {
         $image = $this->image;
         if (!$image) {

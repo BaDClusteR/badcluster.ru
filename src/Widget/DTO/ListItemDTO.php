@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BC\Widget\DTO;
 
+use BC\Core\Helper\MixedValue;
+
 readonly class ListItemDTO {
     /**
      * @param ListItemDTO[] $children
@@ -15,18 +17,24 @@ readonly class ListItemDTO {
     }
 
     /**
+     * @param array<mixed> $items The items of the list: ['content' => ..., 'items' => [...]], the ones that are not
+     *                            arrays are skipped.
+     *
      * @return ListItemDTO[]
      */
     public static function buildItems(array $items): array {
         return array_map(
             static fn (array $item) => self::buildItem($item),
-            $items
+            array_filter($items, is_array(...))
         );
     }
 
+    /**
+     * @param array<mixed> $item ['content' => ..., 'items' => [...]]
+     */
     public static function buildItem(array $item): self {
         return new self(
-            content: (string) ($item['content'] ?? ''),
+            content: MixedValue::toString($item['content'] ?? ''),
             children: static::buildItems(
                 (array) ($item['items'] ?? [])
             )

@@ -44,7 +44,7 @@ class StaticPagePage extends APageWithBlocks {
 
     public function getHeader(): string {
         return $this->homePage?->getHeader()
-               ?? $this->expand($this->staticPage->getTitle());
+               ?? $this->expand($this->getStaticPage()->getTitle());
     }
 
     public function getDescription(): array {
@@ -70,7 +70,7 @@ class StaticPagePage extends APageWithBlocks {
     /** The page's own heading can be long; shortTitle is the SEO stand-in. */
     private function getSeoTitle(): string {
         return $this->expand(
-            $this->staticPage->getShortTitle() ?: $this->staticPage->getTitle()
+            $this->getStaticPage()->getShortTitle() ?: $this->getStaticPage()->getTitle()
         );
     }
 
@@ -85,12 +85,12 @@ class StaticPagePage extends APageWithBlocks {
     }
 
     public function getMetaDescription(): string {
-        return $this->staticPage->getMetaDescription();
+        return $this->getStaticPage()->getMetaDescription();
     }
 
     public function getCanonicalUrl(): string {
         return $this->homePage?->getCanonicalUrl()
-               ?? $this->getWebsiteSettings()->getWebRoot() . '/' . $this->staticPage->getSlug();
+               ?? $this->getWebsiteSettings()->getWebRoot() . '/' . $this->getStaticPage()->getSlug();
     }
 
     public function getOpenGraphType(): string {
@@ -110,14 +110,14 @@ class StaticPagePage extends APageWithBlocks {
 
         // Same tag APageNoIndexed emits — here it is per page, not per class,
         // because indexability is a property of the content.
-        if (!$this->staticPage->getIndexable()) {
+        if (!$this->getStaticPage()->getIndexable()) {
             $list[] = new MetaTagDTO(
                 name: 'robots',
                 content: 'noindex,nofollow'
             );
         }
 
-        if ($publishDate = $this->staticPage->getPublishDate()) {
+        if ($publishDate = $this->getStaticPage()->getPublishDate()) {
             $list[] = new MetaTagDTO(
                 name: 'og:article:published_time',
                 content: $publishDate->format(DATE_ATOM),
@@ -136,8 +136,8 @@ class StaticPagePage extends APageWithBlocks {
             return $this->homePage->getBackLink();
         }
 
-        $text = trim($this->staticPage->getBackLinkText());
-        $url = trim($this->staticPage->getBackLinkUrl());
+        $text = trim($this->getStaticPage()->getBackLinkText());
+        $url = trim($this->getStaticPage()->getBackLinkUrl());
 
         if ($text === '' || $url === '') {
             return null;
@@ -163,10 +163,18 @@ class StaticPagePage extends APageWithBlocks {
 
         $classes = [parent::getContentContainerCssClass(), 'static-page'];
 
-        if ($this->staticPage->getTextBlock()) {
+        if ($this->getStaticPage()->getTextBlock()) {
             $classes[] = 'text-block';
         }
 
         return implode(' ', $classes);
+    }
+
+    /**
+     * @throws RuntimeException The page is not set (applyContext() requires it).
+     */
+    private function getStaticPage(): StaticPageModel {
+        return $this->staticPage
+            ?? throw new RuntimeException(__METHOD__ . ': staticPage is not set');
     }
 }

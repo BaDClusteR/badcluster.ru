@@ -115,10 +115,16 @@ abstract class APage extends AWidget implements IAssetProvider {
         return [];
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         return ['core'];
     }
 
+    /**
+     * @return array<string|array{src: string, type: string}> The bundle names, or the bundles with the script type.
+     */
     public function getCriticalJsBundles(): array {
         return ['critical'];
     }

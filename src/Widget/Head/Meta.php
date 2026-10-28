@@ -49,10 +49,13 @@ class Meta extends AWidget {
                 content: $description
             ),
             ...$this->getOpenGraphMeta(),
-            ...(array) $this->page?->getMetaTags(),
+            ...($this->page?->getMetaTags() ?? []),
         ];
     }
 
+    /**
+     * @return MetaTagDTO[]
+     */
     private function getOpenGraphMeta(): array {
         $result = [
             new MetaTagDTO(

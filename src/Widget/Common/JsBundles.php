@@ -30,6 +30,9 @@ class JsBundles extends AWidget {
         return 'common/js-bundles.phtml';
     }
 
+    /**
+     * @return string[]
+     */
     protected function getJsBundles(): array {
         $coreScripts = [];
 

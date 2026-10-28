@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Widget\AWidget;
 
 /**
@@ -17,6 +18,6 @@ class Html extends AWidget {
     }
 
     protected function getHtml(): string {
-        return trim((string) ($this->context['html'] ?? ''));
+        return trim(MixedValue::toString($this->context['html'] ?? ''));
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Widget\AWidget;
 use BC\Widget\DTO\TableOfContentsItemDTO;
 
@@ -22,6 +23,6 @@ class TableOfContents extends AWidget {
     }
 
     protected function getLabel(): string {
-        return (string) ($this->context['label'] ?? '');
+        return MixedValue::toString($this->context['label'] ?? '');
     }
 }

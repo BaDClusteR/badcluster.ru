@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\TypographerTrait;
 use BC\Model\Media as MediaModel;
 use BC\Widget\AWidget;
@@ -56,16 +57,18 @@ class Media extends AWidget {
     protected function applyContext(array $context): void {
         parent::applyContext($context);
 
-        if (isset($this->context['media']['id'])) {
+        $media = $this->context['media'] ?? null;
+
+        if (is_array($media) && isset($media['id'])) {
             try {
                 $this->media = MediaModel::findByUniqueIdentifier(
-                    (int) $this->context['media']['id']
+                    MixedValue::toInt($media['id'])
                 );
-                $this->alt = (string) ($this->context['alt'] ?? '');
+                $this->alt = MixedValue::toString($this->context['alt'] ?? '');
 
                 $this->lazy = (bool) ($this->context['lazy'] ?? false);
                 $this->caption = $this->getTypographer()->process(
-                    (string) ($this->context['caption'] ?? '')
+                    MixedValue::toString($this->context['caption'] ?? '')
                 );
                 $this->lightbox = (bool) ($this->context['lightbox'] ?? false);
                 $this->border = (bool) ($this->context['border'] ?? false);

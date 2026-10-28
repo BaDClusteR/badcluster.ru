@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\TypographerTrait;
 use BC\Widget\AWidget;
 
@@ -15,7 +16,7 @@ class WList extends AWidget {
     }
 
     protected function getStyle(): string {
-        return (string) ($this->context['style'] ?? '');
+        return MixedValue::toString($this->context['style'] ?? '');
     }
 
     protected function getTag(): string {
@@ -29,9 +30,9 @@ class WList extends AWidget {
      */
     protected function getItems(): array {
         return array_map(
-            fn (mixed $item): mixed => is_string($item)
+            fn (mixed $item): string => is_string($item)
                 ? $this->getTypographer()->process($item)
-                : $item,
+                : MixedValue::toString($item),
             (array) ($this->context['items'] ?? [])
         );
     }

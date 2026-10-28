@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\TypographerTrait;
 use BC\Widget\AWidget;
 
@@ -17,18 +18,18 @@ class Quote extends AWidget {
     }
 
     protected function getAnchor(): string {
-        return (string) ($this->context['anchor'] ?? '');
+        return MixedValue::toString($this->context['anchor'] ?? '');
     }
 
     protected function getText(): string {
         return $this->getTypographer()->process(
-            (string) ($this->context['text'] ?? '')
+            MixedValue::toString($this->context['text'] ?? '')
         );
     }
 
     protected function getTranslatedText(): string {
         return $this->getTypographer()->process(
-            (string) ($this->context['translatedText'] ?? '')
+            MixedValue::toString($this->context['translatedText'] ?? '')
         );
     }
 
@@ -37,11 +38,11 @@ class Quote extends AWidget {
     }
 
     protected function getLabelOriginal(): string {
-        return (string) ($this->context['labelOriginal'] ?? '');
+        return MixedValue::toString($this->context['labelOriginal'] ?? '');
     }
 
     protected function getLabelTranslation(): string {
-        return (string) ($this->context['labelTranslation'] ?? '');
+        return MixedValue::toString($this->context['labelTranslation'] ?? '');
     }
 
     protected function sanitizeQuoteText(string $text): string {

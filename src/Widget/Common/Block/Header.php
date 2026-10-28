@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\TypographerTrait;
 use BC\Widget\AWidget;
 
@@ -16,15 +17,15 @@ class Header extends AWidget {
 
     protected function getText(): string {
         return $this->getTypographer()->process(
-            (string) ($this->context['text'] ?? '')
+            MixedValue::toString($this->context['text'] ?? '')
         );
     }
 
     protected function getAnchor(): string {
-        return (string) ($this->context['anchor'] ?? '');
+        return MixedValue::toString($this->context['anchor'] ?? '');
     }
 
     protected function getLevel(): int {
-        return (int) ($this->context['level'] ?? 0);
+        return MixedValue::toInt($this->context['level'] ?? 0);
     }
 }

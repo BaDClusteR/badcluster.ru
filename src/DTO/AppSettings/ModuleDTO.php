@@ -12,6 +12,9 @@ readonly class ModuleDTO {
     ) {
     }
 
+    /**
+     * @return array{id: string, path: string, remoteEntry: string}
+     */
     public function toArray(): array {
         return [
             'id'          => $this->id,

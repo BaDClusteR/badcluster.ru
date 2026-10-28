@@ -2,6 +2,7 @@
 
 namespace BC\Widget\Page\Screenshots;
 
+use BC\Core\Helper\MixedValue;
 use BC\Model\Screenshot as ScreenshotModel;
 use BC\Widget\AWidget;
 
@@ -19,6 +20,6 @@ class Screenshot extends AWidget {
     }
 
     protected function getPosition(): int {
-        return (int) ($this->context['position'] ?? 0);
+        return MixedValue::toInt($this->context['position'] ?? 0);
     }
 }

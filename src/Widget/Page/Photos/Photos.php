@@ -13,7 +13,7 @@ class Photos extends AWidget {
     }
 
     /**
-     * @return iterable<PhotoModel>
+     * @return iterable<array<string, mixed>> The rows of the photos (the template maps them).
      */
     protected function getPhotosIterator(): iterable {
         try {

@@ -9,8 +9,9 @@ use RuntimeException;
 
 class AppSettingsDTO {
     /**
-     * @param NavigationDTO[] $nav
-     * @param ModuleDTO[]     $modules
+     * @param NavigationDTO[]      $nav
+     * @param ModuleDTO[]          $modules
+     * @param array<string, mixed> $extra   More settings for the app (see addExtra()).
      */
     public function __construct(
         public array $nav,
@@ -39,6 +40,9 @@ class AppSettingsDTO {
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array {
         return [
             'nav'        => array_map(

@@ -16,6 +16,9 @@ class TableOfContentsMenu extends AWidget {
      * @return TableOfContentsItemDTO[]
      */
     protected function getItems(): array {
-        return (array) ($this->context['items'] ?? []);
+        return array_filter(
+            (array) ($this->context['items'] ?? []),
+            static fn (mixed $item): bool => $item instanceof TableOfContentsItemDTO
+        );
     }
 }

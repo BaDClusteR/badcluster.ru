@@ -8,6 +8,7 @@ use BC\Provider\PreloadFontProvider;
 use BC\Widget\Attribute\WidgetList;
 use BC\Widget\AWidget;
 use BC\Widget\Page\APage;
+use Runway\Exception\RuntimeException;
 use Runway\Singleton\Container;
 
 #[WidgetList('head', priority: -999)]
@@ -32,6 +33,12 @@ class Preload extends AWidget {
     }
 
     private function getPage(): APage {
-        return $this->context['page'];
+        $page = $this->context['page'] ?? null;
+
+        if (!($page instanceof APage)) {
+            throw new RuntimeException('The page of the preload widget is not set');
+        }
+
+        return $page;
     }
 }

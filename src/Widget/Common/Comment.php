@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BC\Widget\Common;
 
 use BC\Core\DTO\CommentDTO;
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\AuthTrait;
 use BC\Core\Trait\DateConverterTrait;
 use BC\Core\Trait\FormatterTrait;
@@ -26,7 +27,7 @@ class Comment extends AWidget {
     }
 
     protected function getLevel(): int {
-        return (int) ($this->context['level'] ?? 0);
+        return MixedValue::toInt($this->context['level'] ?? 0);
     }
 
     protected function getCommentDateIso(): string {

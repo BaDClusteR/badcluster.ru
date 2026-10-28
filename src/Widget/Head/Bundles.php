@@ -27,10 +27,16 @@ class Bundles extends AWidget {
         return 'head/bundles.phtml';
     }
 
+    /**
+     * @return array<string|array{src: string, type: string}> See APage::getCriticalJsBundles().
+     */
     public function getJsBundles(): array {
         return (array) $this->page?->getCriticalJsBundles();
     }
 
+    /**
+     * @return string[]
+     */
     public function getCssBundles(): array {
         return (array) $this->page?->getCssBundles();
     }

@@ -3,6 +3,7 @@
 namespace BC\Widget\Common;
 
 use BC\Core\Asset\DTO\AssetDTO;
+use BC\Core\Helper\MixedValue;
 use BC\Widget\AWidget;
 use BC\Widget\IAssetProvider;
 
@@ -12,15 +13,15 @@ class Pagination extends AWidget implements IAssetProvider {
     }
 
     protected function getCurrentPage(): int {
-        return max(1, (int) ($this->context['currPage'] ?? 1));
+        return max(1, MixedValue::toInt($this->context['currPage'] ?? 1));
     }
 
     protected function getTotalPages(): int {
-        return max(1, (int) ($this->context['pages'] ?? 1));
+        return max(1, MixedValue::toInt($this->context['pages'] ?? 1));
     }
 
     protected function getUrlPrefix(): string {
-        return (string) ($this->context['urlPrefix'] ?? '');
+        return MixedValue::toString($this->context['urlPrefix'] ?? '');
     }
 
     protected function buildUrl(int $page): string {

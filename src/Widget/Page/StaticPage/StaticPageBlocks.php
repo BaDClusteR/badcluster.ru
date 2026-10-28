@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Page\StaticPage;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Shortcode\IShortcodeResolver;
 use BC\Widget\Blocks;
 use Runway\Singleton\Container;
@@ -23,12 +24,15 @@ use Runway\Singleton\Container;
  *    an <h2> and a grid inside a <p>.
  */
 class StaticPageBlocks extends Blocks {
+    /**
+     * @param array<string, mixed> $data The data of the block.
+     */
     protected function renderBlock(string $type, array $data): string {
         if (!in_array($type, ['paragraph', 'header'], true)) {
             return parent::renderBlock($type, $data);
         }
 
-        $text = (string) ($data['text'] ?? '');
+        $text = MixedValue::toString($data['text'] ?? '');
         $resolver = $this->getShortcodeResolver();
 
         if ($type === 'paragraph' && $name = $resolver->detectBlockShortcode($text)) {

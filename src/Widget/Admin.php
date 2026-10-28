@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget;
 
+use BC\Core\Helper\MixedValue;
 use BC\Core\Trait\LoggerTrait;
 use BC\Core\Trait\PathsProviderTrait;
 use BC\DTO\AppSettings\AppSettingsDTO;
@@ -36,7 +37,7 @@ class Admin extends AWidget {
         parent::applyContext($context);
 
         $this->isDevMode = (bool) ($context['devMode'] ?? false);
-        $this->webRoot = (string) ($context['webRoot'] ?? '');
+        $this->webRoot = MixedValue::toString($context['webRoot'] ?? '');
 
         if (isset($context['appSettings'])) {
             if ($context['appSettings'] instanceof AppSettingsDTO) {
@@ -93,7 +94,13 @@ class Admin extends AWidget {
             if ($manifest) {
                 try {
                     $data = json_decode($manifest, true, 512, JSON_THROW_ON_ERROR);
+
+                    if (!is_array($data)) {
+                        $data = [];
+                    }
+
                     $entryKey = isset($data['index.html']) ? 'index.html' : 'src/main.tsx';
+                    $entry = $data[$entryKey] ?? null;
 
                     // Module federation replaces the entry with a bootstrap that
                     // initializes the host before importing the real entry chunk.
@@ -104,8 +111,8 @@ class Admin extends AWidget {
                         // Имя не меняется от сборки к сборке — без версии
                         // Cloudflare отдаёт старую точку входа
                         $result['js'][] = $pathsProvider->getVersionedStaticWebPath("app/$mfBootstrap");
-                    } elseif (isset($data[$entryKey]['file'])) {
-                        $result['js'][] = "$appWebRoot/" . $data[$entryKey]['file'];
+                    } elseif (is_array($entry) && is_string($entry['file'] ?? null)) {
+                        $result['js'][] = "$appWebRoot/" . $entry['file'];
                     }
 
                     // CSS of statically imported chunks is only listed on those
@@ -113,17 +120,27 @@ class Admin extends AWidget {
                     // entry's own CSS wins the cascade (same order Vite emits).
                     $visited = [];
                     $collectCss = function (string $key) use (&$collectCss, &$visited, &$result, $data, $appWebRoot): void {
-                        if (isset($visited[$key]) || !isset($data[$key])) {
+                        $chunk = $data[$key] ?? null;
+
+                        if (isset($visited[$key]) || !is_array($chunk)) {
                             return;
                         }
                         $visited[$key] = true;
 
-                        foreach ($data[$key]['imports'] ?? [] as $importKey) {
-                            $collectCss($importKey);
+                        $imports = $chunk['imports'] ?? [];
+
+                        foreach (is_array($imports) ? $imports : [] as $importKey) {
+                            if (is_string($importKey)) {
+                                $collectCss($importKey);
+                            }
                         }
 
-                        foreach ($data[$key]['css'] ?? [] as $cssFile) {
-                            $result['css'][] = "$appWebRoot/$cssFile";
+                        $cssFiles = $chunk['css'] ?? [];
+
+                        foreach (is_array($cssFiles) ? $cssFiles : [] as $cssFile) {
+                            if (is_string($cssFile)) {
+                                $result['css'][] = "$appWebRoot/$cssFile";
+                            }
                         }
                     };
                     $collectCss($entryKey);

@@ -41,11 +41,11 @@ class Comments extends AWidget implements IAssetProvider {
      * @return CommentDTO[]
      */
     protected function getComments(): array {
-        return (array) $this->config?->comments;
+        return $this->config->comments ?? [];
     }
 
     protected function getNoCommentsPhrase(): string {
-        return $this->config?->emptyPhrase
+        return $this->config->emptyPhrase
                ?? 'Комментариев пока нет. Будьте первым!';
     }
 

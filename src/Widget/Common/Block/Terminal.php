@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Widget\Common\Block;
 
+use BC\Core\Helper\MixedValue;
 use BC\Widget\AWidget;
 
 class Terminal extends AWidget {
@@ -12,43 +13,43 @@ class Terminal extends AWidget {
     }
 
     protected function getAnchor(): string {
-        return (string) ($this->context['anchor'] ?? '');
+        return MixedValue::toString($this->context['anchor'] ?? '');
     }
 
     protected function getCipher(): string {
-        return (string) ($this->context['cipher'] ?? '');
+        return MixedValue::toString($this->context['cipher'] ?? '');
     }
 
     protected function getEn(): string {
-        return (string) ($this->context['en'] ?? '');
+        return MixedValue::toString($this->context['en'] ?? '');
     }
 
     protected function getRu(): string {
-        return (string) ($this->context['ru'] ?? '');
+        return MixedValue::toString($this->context['ru'] ?? '');
     }
 
     protected function getTitle(): string {
-        return (string) ($this->context['title'] ?? '');
+        return MixedValue::toString($this->context['title'] ?? '');
     }
 
     protected function getKey(): string {
-        return (string) ($this->context['key'] ?? '');
+        return MixedValue::toString($this->context['key'] ?? '');
     }
 
     protected function getPage(): string {
-        return (string) ($this->context['page'] ?? '');
+        return MixedValue::toString($this->context['page'] ?? '');
     }
 
     protected function getCipherLabel(): string {
-        return (string) ($this->context['labelCipher'] ?? '');
+        return MixedValue::toString($this->context['labelCipher'] ?? '');
     }
 
     protected function getEnLabel(): string {
-        return (string) ($this->context['labelEn'] ?? '');
+        return MixedValue::toString($this->context['labelEn'] ?? '');
     }
 
     protected function getRuLabel(): string {
-        return (string) ($this->context['labelRu'] ?? '');
+        return MixedValue::toString($this->context['labelRu'] ?? '');
     }
 
     protected function isShowCipherTab(): bool {

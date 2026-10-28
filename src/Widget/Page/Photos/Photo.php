@@ -2,6 +2,7 @@
 
 namespace BC\Widget\Page\Photos;
 
+use BC\Core\Helper\MixedValue;
 use BC\Model\Photo as PhotoModel;
 use BC\Widget\AWidget;
 
@@ -19,6 +20,6 @@ class Photo extends AWidget {
     }
 
     protected function getPosition(): int {
-        return (int) ($this->context['position'] ?? 0);
+        return MixedValue::toInt($this->context['position'] ?? 0);
     }
 }

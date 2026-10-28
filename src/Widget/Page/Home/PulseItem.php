@@ -98,6 +98,9 @@ class PulseItem extends AWidget {
         return '';
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function getContentContainerAttributes(): array {
         $result = [
             'class' => 'grid__item-content'
