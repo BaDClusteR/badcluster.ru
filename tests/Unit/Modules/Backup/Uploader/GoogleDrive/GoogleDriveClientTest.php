@@ -178,11 +178,12 @@ final class GoogleDriveClientTest extends TestCase {
     }
 
     public function testNonJsonKeyFile(): void {
-        file_put_contents("$this->dir/key.json", 'not json');
+        file_put_contents("$this->dir/key.json", 'not json, but a secret');
         $client = new GoogleDriveClientSpy("$this->dir/key.json");
 
+        // The content of the key file is not in the message.
         $this->expectException(BackupException::class);
-        $this->expectExceptionMessage('Google Drive: unexpected non-JSON response: not json');
+        $this->expectExceptionMessage('Google Drive: unexpected non-JSON data (22 bytes).');
 
         $client->createFolder('parent', 'daily');
     }
@@ -380,7 +381,7 @@ final class GoogleDriveClientTest extends TestCase {
 
         self::assertInstanceOf(BackupException::class, $exception);
         self::assertSame(
-            'Google Drive: unexpected non-JSON response: ' . mb_substr(str_repeat('Ошибка', 50), 0, 200),
+            'Google Drive: unexpected non-JSON data (' . strlen(str_repeat('Ошибка', 50)) . ' bytes).',
             $exception->getMessage()
         );
     }

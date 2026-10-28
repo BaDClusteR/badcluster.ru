@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Modules\Backup\Command;
 
+use BC\Core\Helper\MixedValue;
 use Runway\Console\Command\ACommand;
 use Runway\Console\Input\IInput;
 use Runway\Console\Output\IOutput;
@@ -222,7 +223,9 @@ class GdriveAuthCommand extends ACommand {
 
         if (empty($refreshToken) || !is_string($refreshToken)) {
             throw new \RuntimeException(
-                'Token endpoint returned no refresh_token: ' . mb_substr((string)$response, 0, 300)
+                // Только описание ошибки: в остальном ответе может быть access_token
+                'Token endpoint returned no refresh_token: '
+                . (is_array($data) ? trim(MixedValue::toString($data['error'] ?? '') . ' ' . MixedValue::toString($data['error_description'] ?? '')) : 'not JSON')
             );
         }
 

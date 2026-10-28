@@ -392,7 +392,8 @@ class GoogleDriveClient {
         $data = json_decode($json, true);
 
         if (!is_array($data)) {
-            throw new BackupException('Google Drive: unexpected non-JSON response: ' . mb_substr($json, 0, 200));
+            // Без самого текста: это может быть и файл ключа или ответ с токеном
+            throw new BackupException('Google Drive: unexpected non-JSON data (' . strlen($json) . ' bytes).');
         }
 
         return $data;
