@@ -172,7 +172,6 @@ class TrackEndpoint extends AEndpoint {
                 ->setAlbum($album)
                 ->setTitle($title)
                 ->setExplicitLanguage($explicitLanguage)
-                ->setSourceUrl($clipUrl)
                 ->setLyrics($lyrics)
                 ->setPosition($position)
                 ->setAnnotation($annotation)
@@ -243,7 +242,6 @@ class TrackEndpoint extends AEndpoint {
             fn () => $track
                 ->setTitle($title)
                 ->setExplicitLanguage($explicitLanguage)
-                ->setSourceUrl($clipUrl)
                 ->setLyrics($lyrics)
                 ->setPosition($position)
                 ->setAnnotation($annotation)
