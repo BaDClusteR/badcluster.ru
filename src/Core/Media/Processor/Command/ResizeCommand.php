@@ -47,12 +47,19 @@ class ResizeCommand extends ACommand {
         }
     }
 
-    private function getCommand(): string {
+    /**
+     * Все аргументы экранируются: пути могут содержать пробелы и символы шелла.
+     * Параметры сохранения vips пишет в квадратных скобках прямо после имени файла
+     */
+    protected function getCommand(): string {
         $size = ($this->width ?: '') . 'x' . ($this->height ?: '');
         $saveParams = $this->saveParameters
             ? "[$this->saveParameters]"
             : '';
 
-        return $this->getVipsThumbnailPath() . " $this->path --size $size -o {$this->output}$saveParams";
+        return escapeshellarg($this->getVipsThumbnailPath())
+               . ' ' . escapeshellarg($this->path)
+               . ' --size ' . escapeshellarg($size)
+               . ' -o ' . escapeshellarg($this->output . $saveParams);
     }
 }
