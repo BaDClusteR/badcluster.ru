@@ -54,8 +54,10 @@ readonly class PostsProvider implements IPostsProvider {
         $qb->orderBy('publish_date', 'DESC')
            ->setLimit($showBy, $offset);
 
+        // Массивом, а не ленивым итератором: запрос выполняется при обходе, и его ошибка
+        // иначе прошла бы мимо этого catch. На странице всего getShowBy() постов
         try {
-            return EntityList::iterate(Post::class, $qb->iterateEntities());
+            return iterator_to_array(EntityList::iterate(Post::class, $qb->iterateEntities()), false);
         } catch (Exception $e) {
             $this->logger->error(
                 sprintf('[%s] Cannot iterate posts: %s', __METHOD__, $e->getMessage()),
