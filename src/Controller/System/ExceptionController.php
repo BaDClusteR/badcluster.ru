@@ -22,7 +22,8 @@ class ExceptionController implements IExceptionController {
         protected IExceptionController $apiExceptionController,
         protected IRequest $request,
         protected IKernel $kernel,
-        protected ILogger $logger
+        protected ILogger $logger,
+        protected string $apiPathPrefix = '/admin/api'
     ) {
     }
 
@@ -43,8 +44,9 @@ class ExceptionController implements IExceptionController {
 
     protected function isApiRequest(): bool {
         $path = $this->request->getPath();
+        $prefix = rtrim($this->apiPathPrefix, '/');
 
-        return $path === '/admin/api' || str_starts_with($path, '/admin/api/');
+        return $prefix !== '' && ($path === $prefix || str_starts_with($path, "$prefix/"));
     }
 
     protected function logException(Throwable $exception): void {

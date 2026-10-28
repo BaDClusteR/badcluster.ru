@@ -34,6 +34,8 @@ services:
   # Оборачивает декоратор API platform: для веб-запросов отдаёт HTML вместо JSON
   BC\Controller\System\ExceptionController:
     decorates: Runway\Controller\IExceptionController
+    arguments:
+      apiPathPrefix: '%api_path_prefix'
 
   # Неавторизованным на любой запрос к API, кроме логина, — обычная 404
   BC\Controller\System\ApiController:
