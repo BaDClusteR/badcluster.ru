@@ -71,11 +71,14 @@ class Picture extends AWidget {
         }
 
         if (is_array($this->context['breakpoints'] ?? null)) {
-            $this->breakpoints = [];
+            // Собираем целиком: у свойства с хуком get нельзя менять элементы по одному
+            $breakpoints = [];
 
             foreach ($this->context['breakpoints'] as $minWidth => $width) {
-                $this->breakpoints[(int) $minWidth] = MixedValue::toInt($width);
+                $breakpoints[(int) $minWidth] = MixedValue::toInt($width);
             }
+
+            $this->breakpoints = $breakpoints;
         }
 
         if (!empty($this->context['class'])) {
