@@ -10,7 +10,7 @@ $isPending = !$comment->isDeclined && !$comment->isApproved;
 <article class="<?=$this->getCssClass()?>">
     <section class="comment__meta">
         <?php if ($comment->name) : ?>
-            <span class="comment__author"><?=$comment->name?></span>
+            <span class="comment__author"><?=$this->escape($comment->name)?></span>
         <?php else : ?>
             <span class="comment__author comment__author--anonymous">[ДАННЫЕ УДАЛЕНЫ]</span>
         <?php endif; ?>
@@ -22,7 +22,7 @@ $isPending = !$comment->isDeclined && !$comment->isApproved;
             <?=$this->getCommentDateRelative()?>
         </time>
         <?php if ($comment->part) : ?>
-            <span class="comment__part">[<?=$comment->part?>]</span>
+            <span class="comment__part">[<?=$this->escape($comment->part)?>]</span>
         <?php endif; ?>
 
         <?php if ($comment->isDeclined) : ?>

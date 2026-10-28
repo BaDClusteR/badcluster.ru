@@ -62,8 +62,16 @@ class Comment extends AWidget {
         return $this->getDateConverter()->toRelativeForm($date);
     }
 
+    /**
+     * Текст комментария — обычный текст от посетителя: экранируем при выводе
+     * (strip_tags при сохранении — только первая линия защиты)
+     */
     protected function prepareCommentText(string $text): string {
-        return $this->getFormatter()->formatAsHtml($text);
+        return $this->getFormatter()->formatAsHtml($this->escape($text));
+    }
+
+    protected function escape(string $text): string {
+        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     protected function isAuthenticated(): bool {
