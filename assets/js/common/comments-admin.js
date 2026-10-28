@@ -25,7 +25,7 @@ class Comment {
 
         root.classList.add('comment--loading');
 
-        fetch(`/admin/api/comment_approve/${id}`)
+        fetch(`/admin/api/comment_approve/${id}`, {method: 'POST'})
             .then(() => {
                 Toast.getInstance().success('Успешно', 'Модерация подтверждена');
                 root.classList.remove('comment--rejected', 'comment--pending', 'comment--loading');
@@ -42,7 +42,7 @@ class Comment {
 
         root.classList.add('comment--loading');
 
-        fetch(`/admin/api/comment_reject/${id}`)
+        fetch(`/admin/api/comment_reject/${id}`, {method: 'POST'})
         .then(() => {
             Toast.getInstance().success('Успешно', 'Модерация отклонена');
             root.classList.remove('comment--pending', 'comment--loading');
@@ -64,7 +64,7 @@ class Comment {
 
         root.classList.add('comment--loading');
 
-        fetch(`/admin/api/comment_delete/${id}`)
+        fetch(`/admin/api/comment_delete/${id}`, {method: 'POST'})
         .then(() => {
             let deleted = 0;
             let next = root.nextElementSibling;

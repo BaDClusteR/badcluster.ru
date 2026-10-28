@@ -134,6 +134,22 @@ final class RoutesTest extends TestCase {
         }
     }
 
+    /**
+     * A change is not a GET: the CSRF checks of API platform (the origin) are for the other methods only, and a GET
+     * can be sent by an <img> of a page.
+     */
+    public function testChangesAreNotGetRequests(): void {
+        $keys = array_map(
+            static fn(ApiEndpointDTO $endpoint): string => "$endpoint->requestMethod $endpoint->path",
+            Container::getInstance()->getService(IEndpointsProvider::class)->getApiEndpoints()
+        );
+
+        foreach (['comment_approve/{identifier}', 'comment_reject/{identifier}', 'comment_delete/{identifier}', 'book_format_generate', 'book_format_clear'] as $path) {
+            self::assertContains("POST $path", $keys);
+            self::assertNotContains("GET $path", $keys);
+        }
+    }
+
     public function testConsoleCommands(): void {
         $names = [];
 

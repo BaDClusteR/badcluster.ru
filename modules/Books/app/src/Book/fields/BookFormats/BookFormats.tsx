@@ -140,7 +140,7 @@ function BookFormat(props: {
                       onClick={
                         async () => {
                           setClearing(true);
-                          await apiCall("GET", "book_format_clear", {formatId: format.id});
+                          await apiCall("POST", "book_format_clear", {formatId: format.id});
                           notify.success("Кэш очищен");
                           setSize(0);
                           setSizeHumanReadable("0 байт");
@@ -161,7 +161,7 @@ function BookFormat(props: {
                       async () => {
                         setGenerating(true);
                         const response = await apiCall(
-                          "GET",
+                          "POST",
                           "book_format_generate",
                           {formatId: format.id}
                         ) as BookFormatGenerateResponse;

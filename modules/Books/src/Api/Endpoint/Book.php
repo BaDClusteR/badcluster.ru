@@ -347,9 +347,9 @@ class Book extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'book_format_generate', method: 'GET')]
+    #[API\Endpoint(path: 'book_format_generate', method: 'POST')]
     public function generate(
-        #[API\Parameter(source: 'query')]
+        #[API\Parameter(source: 'body', name: 'formatId')]
         int $formatId
     ): BookFormatGenerateDTO {
         /** @var BookFormat|null $format */
@@ -377,9 +377,9 @@ class Book extends AEndpoint {
     /**
      * @throws NotFoundException
      */
-    #[API\Endpoint(path: 'book_format_clear', method: 'GET')]
+    #[API\Endpoint(path: 'book_format_clear', method: 'POST')]
     public function clearDump(
-        #[API\Parameter(source: 'query')]
+        #[API\Parameter(source: 'body', name: 'formatId')]
         int $formatId
     ): SuccessfulResultDTO {
         /** @var BookFormat|null $format */
