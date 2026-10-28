@@ -21,6 +21,9 @@ class PulseItemsProvider implements IPulseItemsProvider {
         return $items;
     }
 
+    /**
+     * @return PulseItemDTO[]
+     */
     protected function getPulseItemsUnsorted(): array {
         return [];
     }

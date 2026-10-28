@@ -92,6 +92,9 @@ class Page404 extends AWidget {
         return '404.phtml';
     }
 
+    /**
+     * @return array{string, string} [title, text]
+     */
     protected function getRandomPhrase(): array {
         return self::PHRASES[array_rand(self::PHRASES)];
     }

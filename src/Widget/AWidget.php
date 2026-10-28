@@ -189,10 +189,10 @@ abstract class AWidget {
     }
 
     protected function getCssBundleUrl(string $relativePath): string {
-        return $this->getAssetBuilder()->getBundleWebPath($relativePath, 'css');
+        return $this->getAssetBuilder()->getBundleWebPath($relativePath, 'css') ?? '';
     }
 
     protected function getJsBundleUrl(string $relativePath): string {
-        return $this->getAssetBuilder()->getBundleWebPath($relativePath, 'js');
+        return $this->getAssetBuilder()->getBundleWebPath($relativePath, 'js') ?? '';
     }
 }

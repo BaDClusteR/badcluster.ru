@@ -2,6 +2,7 @@
 
 namespace BC\Provider;
 
+use BC\Core\Helper\MixedValue;
 use BC\DTO\RandomFactDTO;
 use BC\Model\Fact;
 use Exception;
@@ -15,8 +16,8 @@ class RandomFactProvider implements IRandomFactProvider {
                         ->getFirstResult();
 
             return new RandomFactDTO(
-                (string) ($fact['title'] ?? ''),
-                (string) ($fact['content'] ?? '')
+                MixedValue::toString($fact['title'] ?? ''),
+                MixedValue::toString($fact['content'] ?? '')
             );
         } catch (Exception) {
             return new RandomFactDTO('', '');

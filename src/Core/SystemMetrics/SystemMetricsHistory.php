@@ -84,9 +84,13 @@ class SystemMetricsHistory implements ISystemMetricsHistory {
      *
      * @param array<mixed> $storedPoints
      *
-     * @return list<array{int, float, float, float, float, float, float}>
+     * @return list<array{int, float|int, float|int, float|int, float|int, float|int, float|int}>
      */
     private function readPoints(array $storedPoints): array {
+        $toNumber = static fn (mixed $value): float|int => (is_int($value) || is_float($value))
+            ? $value
+            : MixedValue::toFloat($value);
+
         $points = [];
 
         foreach ($storedPoints as $point) {
@@ -97,12 +101,12 @@ class SystemMetricsHistory implements ISystemMetricsHistory {
             $point = array_values($point);
             $points[] = [
                 MixedValue::toInt($point[0]),
-                MixedValue::toFloat($point[1]),
-                MixedValue::toFloat($point[2]),
-                MixedValue::toFloat($point[3]),
-                MixedValue::toFloat($point[4]),
-                MixedValue::toFloat($point[5]),
-                MixedValue::toFloat($point[6]),
+                $toNumber($point[1]),
+                $toNumber($point[2]),
+                $toNumber($point[3]),
+                $toNumber($point[4]),
+                $toNumber($point[5]),
+                $toNumber($point[6]),
             ];
         }
 
@@ -110,9 +114,9 @@ class SystemMetricsHistory implements ISystemMetricsHistory {
     }
 
     /**
-     * @param array{v: int, last: array<mixed>|null, points: list<array{int, float, float, float, float, float, float}>} $state
+     * @param array{v: int, last: array<mixed>|null, points: list<array{int, float|int, float|int, float|int, float|int, float|int, float|int}>} $state
      *
-     * @return array{v: int, last: array<mixed>|null, points: list<array{int, float, float, float, float, float, float}>}
+     * @return array{v: int, last: array<mixed>|null, points: list<array{int, float|int, float|int, float|int, float|int, float|int, float|int}>}
      */
     private function addPoint(array $state, SystemCountersDTO $counters, int $nowMs): array {
         $last = $state['last'];

@@ -26,7 +26,10 @@ class Sitemap extends AWidget {
      * @return SitemapEntryDTO[]
      */
     protected function getSitemapPages(): array {
-        return $this->context['pages'] ?? [];
+        return array_filter(
+            (array) ($this->context['pages'] ?? []),
+            static fn (mixed $page): bool => $page instanceof SitemapEntryDTO
+        );
     }
 
     protected function buildFullPageUrl(string $url): string {

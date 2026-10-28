@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BC\Provider;
 
+use BC\Core\Helper\EntityList;
 use BC\Model\StaticPage;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
@@ -42,9 +43,12 @@ readonly class StaticPagesProvider implements IStaticPagesProvider {
      * @throws QueryBuilderException
      */
     public function getPublishedPages(): array {
-        return StaticPage::getQueryBuilder()
-                         ->andWhere('published = 1')
-                         ->orderBy('id', 'ASC')
-                         ->getEntities();
+        return EntityList::of(
+            StaticPage::class,
+            StaticPage::getQueryBuilder()
+                      ->andWhere('published = 1')
+                      ->orderBy('id', 'ASC')
+                      ->getEntities()
+        );
     }
 }
