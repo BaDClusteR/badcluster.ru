@@ -99,6 +99,38 @@ class Book extends ABook {
         ];
     }
 
+    /**
+     * Главы по частям: часть начинается с главы, у которой задан part, и идет до следующей такой.
+     * Главы до первой части — в группе с пустым part. В FB2 секция без текста и без вложенных
+     * секций не проходит схему, поэтому главы части вкладываются в ее секцию.
+     *
+     * @return list<array{part: string, chapters: list<Chapter>}>
+     */
+    protected function getChapterGroups(): array {
+        $groups = [];
+        $part = '';
+        $chapters = [];
+
+        foreach ($this->getChapters() as $chapter) {
+            if ($chapter->getPart()) {
+                if ($chapters) {
+                    $groups[] = ['part' => $part, 'chapters' => $chapters];
+                }
+
+                $part = $chapter->getPart();
+                $chapters = [];
+            }
+
+            $chapters[] = $chapter;
+        }
+
+        if ($chapters) {
+            $groups[] = ['part' => $part, 'chapters' => $chapters];
+        }
+
+        return $groups;
+    }
+
     protected function getBlockRenderer(): \BC\Widget\Blocks {
         return new Blocks();
     }

@@ -140,10 +140,12 @@ final class BookFormatsTest extends TestCase {
         self::assertSame($id, $this->text($this->loadFb2(new Fb2()->generateBook($book)), '//f:document-info/f:id'));
 
         self::assertSame('Doom', $this->text($xpath, '//f:body[not(@name)]/f:title/f:p'));
+        // Главы части — внутри ее секции: секция с одним заголовком не проходит схему FB2
         self::assertSame(
-            ['Первая', 'Часть 1', 'Вторая'],
+            ['Первая', 'Часть 1'],
             $this->texts($xpath, '//f:body[not(@name)]/f:section/f:title/f:p')
         );
+        self::assertSame(['Вторая'], $this->texts($xpath, '//f:body[not(@name)]/f:section[2]/f:section/f:title/f:p'));
         self::assertSame(
             "Он и\u{00A0}она[1].",
             $this->text($xpath, '//f:body[not(@name)]/f:section[1]/f:p')
@@ -151,10 +153,10 @@ final class BookFormatsTest extends TestCase {
         self::assertSame('#n1', $xpath->evaluate('string(//f:body[not(@name)]/f:section[1]/f:p/f:a/@l:href)'));
         self::assertSame('note', $xpath->evaluate('string(//f:body[not(@name)]/f:section[1]/f:p/f:a/@type)'));
         self::assertSame('* * *', $this->text($xpath, '//f:body[not(@name)]/f:section[1]/f:subtitle'));
-        self::assertSame(['Текст', 'строка[2]'], $this->texts($xpath, '//f:body[not(@name)]/f:section[3]/f:p'));
+        self::assertSame(['Текст', 'строка[2]'], $this->texts($xpath, '//f:body[not(@name)]/f:section[2]/f:section/f:p'));
         self::assertSame(
             ['BaD ClusteR', '2019 - 2021, https://badcluster.ru'],
-            $this->texts($xpath, '//f:body[not(@name)]/f:section[4]/f:p')
+            $this->texts($xpath, '//f:body[not(@name)]/f:section[3]/f:p')
         );
 
         self::assertSame('Примечания', $this->text($xpath, '//f:body[@name="notes"]/f:title/f:p'));

@@ -8,7 +8,6 @@ $website = $websiteSettings->getWebRoot();
 $email = $websiteSettings->getAdminContacts()->email;
 $dateConverter = $this->getDateConverter();
 $ts = time();
-$chapters = $this->getChapters();
 ?>
 <?='<?xml version="1.0" encoding="UTF-8"?>' . "\n"?>
 <FictionBook
@@ -82,16 +81,20 @@ $chapters = $this->getChapters();
     </description>
     <body>
     <title><p><?=$this->xml($book->getTitle())?></p></title>
-    <?php foreach ($chapters as $chapter) : ?>
-        <?php if ($part = $chapter->getPart()) : ?>
+    <?php foreach ($this->getChapterGroups() as $group) : ?>
+        <?php if ($group['part']) : ?>
             <section>
-                <title><p><?=$this->xml($part)?></p></title>
+            <title><p><?=$this->xml($group['part'])?></p></title>
+        <?php endif; ?>
+        <?php foreach ($group['chapters'] as $chapter) : ?>
+            <section>
+                <title><p><?=$this->xml($chapter->getTitle())?></p></title>
+                <?=$this->getChapterContent($chapter)?>
+            </section>
+        <?php endforeach; ?>
+        <?php if ($group['part']) : ?>
             </section>
         <?php endif; ?>
-        <section>
-            <title><p><?=$this->xml($chapter->getTitle())?></p></title>
-            <?=$this->getChapterContent($chapter)?>
-        </section>
     <?php endforeach; ?>
     <section>
         <?=$this->getPostfix()?>
