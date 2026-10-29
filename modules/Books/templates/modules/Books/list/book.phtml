@@ -28,20 +28,20 @@ $formats = $this->getBookFormats();
                 <?=$dateConverter->toShortForm($lastUpdateDate)?>
             </time>
         </span>
-        <?php if ($formats) : ?>
-            <div class="material__actions">
-                <?php foreach ($formats as $format) : ?>
-                    <?php $formatTypeUpperCase = strtoupper($format->getType()) ?>
-                    <a
-                        href="<?=$format->getUrl()?>"
-                        class="icon-button material__action material__action--<?=$format->getType()?>"
-                        title="Скачать в формате <?=$formatTypeUpperCase?>"
-                    >
-                        <?=$this->getSvgContent('images/modules/Books/download.svg')?>
-                        <?=$formatTypeUpperCase?>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
     </a>
+    <?php if ($formats) : ?>
+        <div class="material__actions">
+            <?php foreach ($formats as $format) : ?>
+                <?php $formatTypeUpperCase = strtoupper($format->getType()) ?>
+                <a
+                    href="<?=$format->getUrl()?>"
+                    class="icon-button material__action material__action--<?=$format->getType()?>"
+                    title="Скачать в формате <?=$formatTypeUpperCase?>"
+                >
+                    <?=$this->getSvgContent('images/modules/Books/download.svg')?>
+                    <?=$formatTypeUpperCase?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </li>

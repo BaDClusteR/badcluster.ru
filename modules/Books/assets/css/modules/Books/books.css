@@ -52,7 +52,7 @@
 
 @media (width < 600px) {
   .material__action {
-    min-width: 100px;
+    min-width: 120px;
   }
 
   .material__icon {
