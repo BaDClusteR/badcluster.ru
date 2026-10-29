@@ -63,11 +63,11 @@ class Comment extends AWidget {
     }
 
     /**
-     * Текст комментария — обычный текст от посетителя: экранируем при выводе
-     * (strip_tags при сохранении — только первая линия защиты)
+     * Текст комментария хранится готовым HTML: ввод посетителя экранирован при сохранении,
+     * тэги в нём только от админа (см. \BC\Controller\Comment::doPost)
      */
     protected function prepareCommentText(string $text): string {
-        return $this->getFormatter()->formatAsHtml($this->escape($text));
+        return $this->getFormatter()->formatAsHtml($text);
     }
 
     protected function escape(string $text): string {

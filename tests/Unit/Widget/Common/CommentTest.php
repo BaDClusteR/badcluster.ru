@@ -9,14 +9,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
- * A comment is the plain text of a visitor: it is escaped when it is shown.
+ * A comment is stored as HTML (the text of a visitor is escaped when it is saved): it is shown as is.
  */
 #[CoversClass(Comment::class)]
 final class CommentTest extends TestCase {
-    public function testTextIsEscaped(): void {
+    public function testTextIsShownAsIs(): void {
         self::assertSame(
-            '<p>&lt;img src=x onerror=&quot;alert(1)&quot;&gt; &amp; Co</p><p>it&#039;s</p>',
-            new CommentProbe([])->prepare("<img src=x onerror=\"alert(1)\"> & Co\nit's")
+            '<p><b>Админ</b> &amp; Co</p><p>&lt;i&gt;гость&lt;/i&gt;</p>',
+            new CommentProbe([])->prepare("<b>Админ</b> &amp; Co\n\n&lt;i&gt;гость&lt;/i&gt;")
         );
     }
 

@@ -157,11 +157,12 @@ readonly class Comment {
         ?int $parentId
     ): CommentModel {
         $model = new CommentModel();
+        $isAdmin = $this->auth->isAuthenticated();
 
         $model->setPageType($pageType)
               ->setPageId($pageId)
               ->setName(strip_tags($nickname))
-              ->setComment(strip_tags($comment))
+              ->setComment($isAdmin ? $comment : $this->escapeComment($comment))
               ->setDate(new DateTime('now'))
               ->setIp($this->request->getIpAddress())
               ->setParentId(
@@ -170,10 +171,20 @@ readonly class Comment {
                       : null
               );
 
-        if ($this->auth->isAuthenticated()) {
+        if ($isAdmin) {
             $model->setStatus(CommentModel::STATUS_APPROVED);
         }
 
         return $model;
+    }
+
+    /**
+     * Текст коммента хранится готовым HTML и на сайте выводится как есть: тэги может писать
+     * только админ (залогиненный на сайте или в админке). У посетителя экранируем всё — тэги
+     * покажутся текстом, и в админке он виден в экранированном виде. Кавычки не трогаем:
+     * текст выводится только внутри элемента, а в админке &quot; лишь мешал бы читать
+     */
+    private function escapeComment(string $comment): string {
+        return htmlspecialchars($comment, ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }
