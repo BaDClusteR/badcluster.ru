@@ -18,15 +18,12 @@ use getID3;
 use Runway\DataStorage\Exception\DBException;
 use Runway\DataStorage\QueryBuilder\Exception\QueryBuilderException;
 use Runway\FileSystem\IFileSystem;
-use Runway\Logger\ILogger;
 use Runway\Model\Exception\ModelException;
-use Throwable;
 
 #[Docs\Group('Files upload')]
 class Upload extends AEndpoint {
     public function __construct(
         private readonly IFileSystem $fileSystem,
-        private readonly ILogger $logger,
         private readonly IMediaConverter $mediaConverter,
         private readonly IImageProcessor $imageProcessor
     ) {
@@ -69,7 +66,7 @@ class Upload extends AEndpoint {
         );
     }
 
-    protected function doWithPurpose(Media $media, ?string $purpose): Media {
+    private function doWithPurpose(Media $media, ?string $purpose): Media {
         if (
             $media->isImage()
             && $media->getWidth() > 0
@@ -78,23 +75,6 @@ class Upload extends AEndpoint {
         }
 
         return $media;
-    }
-
-    /**
-     * @param int[] $widths
-     */
-    protected function tryGenerateThumbnails(Media $media, array $widths): void {
-        try {
-            $media->generateThumbnails($widths);
-        } catch (Throwable $e) {
-            $this->logger->warning(
-                "Thumbnail generation failed for media {$media->getPath()}: {$e->getMessage()}",
-                [
-                    'mediaPath' => $media->getPath(),
-                    'widths'    => $widths,
-                ]
-            );
-        }
     }
 
     private function createModel(string $imagePath, string $mime): Media {
