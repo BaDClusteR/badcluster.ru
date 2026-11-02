@@ -59,6 +59,7 @@ final class RoutesTest extends TestCase {
         yield 'API create' => ['/admin/api/fact', 'POST', 'api:BC\Api\Endpoint\Facts::createFact()', []];
         yield 'API update' => ['/admin/api/fact/42', 'PUT', 'api:BC\Api\Endpoint\Facts::updateFact()', ['identifier' => '42']];
         yield 'API delete' => ['/admin/api/facts', 'DELETE', 'api:BC\Api\Endpoint\Facts::delete()', []];
+        yield 'API upload' => ['/admin/api/upload', 'POST', 'api:BC\Api\Endpoint\Upload::uploadMedia()', []];
         yield 'API login' => ['/admin/api/auth/login', 'POST', 'api:ApiPlatform\Endpoint\Auth::login()', []];
         yield 'API of a module' => ['/admin/api/books', 'GET', 'api:BC\Modules\Books\Api\Endpoint\Book::getList()', []];
     }
@@ -131,6 +132,24 @@ final class RoutesTest extends TestCase {
             if ($endpoint->isPublic) {
                 self::assertStringStartsWith('ApiPlatform\\', $endpoint->class, "$endpoint->class::$endpoint->method() is public.");
             }
+        }
+    }
+
+    /**
+     * Every endpoint can be called the way ApiPlatform\Api calls it: e.g. the service of an endpoint with a decorator is
+     * the decorated one ("Cannot call decorator service" otherwise).
+     */
+    public function testEndpointServicesAreCallable(): void {
+        $endpoints = Container::getInstance()->getService(IEndpointsProvider::class)->getApiEndpoints();
+
+        foreach ($endpoints as $endpoint) {
+            $service = Container::getInstance()->getService($endpoint->getServiceName());
+
+            self::assertInstanceOf($endpoint->class, $service);
+            self::assertTrue(
+                method_exists($service, $endpoint->method),
+                "{$endpoint->getServiceName()}: no method $endpoint->method()."
+            );
         }
     }
 

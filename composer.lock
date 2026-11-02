@@ -69,16 +69,16 @@
         },
         {
             "name": "bad_cluster/runway-api-platform",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BaDClusteR/runway-api-platform.git",
-                "reference": "2b88152b289177690e3500cd691e188ec24d1ed9"
+                "reference": "526c4e08d0ef62cd5775aae519187c84f5e9381b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BaDClusteR/runway-api-platform/zipball/2b88152b289177690e3500cd691e188ec24d1ed9",
-                "reference": "2b88152b289177690e3500cd691e188ec24d1ed9",
+                "url": "https://api.github.com/repos/BaDClusteR/runway-api-platform/zipball/526c4e08d0ef62cd5775aae519187c84f5e9381b",
+                "reference": "526c4e08d0ef62cd5775aae519187c84f5e9381b",
                 "shasum": ""
             },
             "require": {
@@ -123,9 +123,9 @@
             ],
             "support": {
                 "issues": "https://github.com/BaDClusteR/runway-api-platform/issues",
-                "source": "https://github.com/BaDClusteR/runway-api-platform/tree/2.0.0"
+                "source": "https://github.com/BaDClusteR/runway-api-platform/tree/2.0.1"
             },
-            "time": "2026-10-25T14:49:21+00:00"
+            "time": "2026-11-02T15:05:35+00:00"
         },
         {
             "name": "bad_cluster/runway-console-app",
