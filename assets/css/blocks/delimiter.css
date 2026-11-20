@@ -8,7 +8,7 @@
   pointer-events: none;
   user-select: none;
   color: var(--color-text);
-  margin: var(--rhythmic-unit) 0;
+  margin: calc(2.5 * var(--rhythmic-unit)) 0;
 
   &::before {
     content: '***';
@@ -17,3 +17,6 @@
   }
 }
 
+.text-block .block__delimiter {
+  margin-block: var(--rhythmic-unit);
+}
